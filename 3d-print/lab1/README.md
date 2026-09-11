@@ -103,6 +103,17 @@ Pane hoidik roboti külge. Robot joonistab tähe, mida ESP32 näitab.
 
 **KAARDISTA ISE — vastused.** Iga osa kohta: numbrid, ühikud, kus fail on. Tegemata asja kohta üks rida, miks.
 
+**1. Kuup.** Testis Raimo, tulemus jagatud kogu meeskonnaga (üks ühine tulemus, mitte iga liige eraldi). Printimise kiirendamiseks vähendati kuubi kõrgust 50 mm → **20 mm** (alus jäi 50×50 mm). Testiti kaht lõtku:
+- **Lõtk 0.4 mm** — silinder liigub/pöörleb vabalt, ei ole kinni.
+- **Lõtk 0.2 mm** — silinder jäi kinni; tuli terava tööriistaga kaapida, et leida koht, kust see läbi ei mahtunud. Lõpuks õnnestus silinder ikkagi kohale saada, aga detail sai selle käigus kergelt kahjustada.
+- **Tähelepanek:** prinditud silinder ei tulnud täiesti ümmargune — kohati veidi ebatäpne/mitte-ümmargune kuju, mis tõenäoliselt seletab, miks 0.2 mm lõtk osadest kohtadest ei mahtunud, kuigi arvutuslikult oleks pidanud.
+- **Järeldus (esialgne):** selle printeri tegelik "vaba pöörlemise" piir jääb kuskile **0.2 mm ja 0.4 mm vahele**. Täpsema piiri jaoks tuleks proovida vahepealset väärtust (nt 0.3 mm) — **järgmine samm**.
+- **Failid:** minu (Denys) versioon `cube/src/cube-tolerance-v1.f3d` / `cube/stl/cube-tolerance-v1.stl` / `cube/3mf/cube-tolerance-v1.3mf` (50 mm kõrgus, lõtk 0.2 mm). Raimo 20 mm kõrgusega versioonide (lõtk 0.4 mm ja 0.2 mm) failid on veel tema arvutis — **tuleb lisada repos** niipea kui Raimo on GitHubis kaastöötajaks lisatud.
+
+**2. Paindlik tükk.** Tegemata — pole veel alustatud.
+
+**3. Pastakahoidik.** Tegemata — pole veel alustatud, oodatakse kuubi lõpliku lõtke selgumist.
+
 ### Ohutus
 
 * Printeri otsik on 200–230 °C. Detailid spaatliga, kui laud on jahtunud.
@@ -142,6 +153,12 @@ Repos on kaustas `3d-print/lab1/`: lähtefailid, STL ja `.3mf` iga prindi kohta,
 * Juhtus (numbrid): kuup 50×50×50 mm, auk/silinder ⌀40 mm, esimene testitav vahe (gap) = 0.2 mm. Printimise tulemus (kas silinder keerleb või on kinni sulanud) on veel teadmata — selgub pärast printi.
 * Otsustasime, ja miks: alustasime vahega 0.2 mm kesksest väärtusest, et esimese prindi järgi otsustada, kas järgmisena proovida väiksemat või suuremat vahet.
 * Lahti järgmiseks korraks: oodata prindi tulemust, mõõta/katsetada, kas 0.2 mm vahe keerleb vabalt või on kinni; kirjutada tulemus siia juurde; vajadusel teha uus versioon (v2) teise vahega.
+
+**11.09.26 (jätk) — Raimo tegi prindi- ja lõtketesti, tulemus ühine kogu meeskonnale**
+* Tegime: Raimo printis kuubi kiiremini, vähendades kõrgust 50 mm → 20 mm (alus 50×50 mm samaks jäi). Testis kaht lõtku: 0.4 mm ja 0.2 mm. 0.4 mm juures liigub silinder vabalt. 0.2 mm juures jäi silinder kinni — tuli terava tööriistaga kaapida, et leida koht, kust läbi ei mahtunud; lõpuks õnnestus paika saada, aga detail kahjustus kergelt selle käigus.
+* Juhtus (numbrid): kõrgus 20 mm, lõtk 0.4 mm → vaba pöörlemine; lõtk 0.2 mm → kinni, vajas jõudu/kaapimist. Lisaks: prinditud silinder ei tulnud täiesti ümmargune (kohati veidi ebatäpne kuju) — see selgitab osaliselt, miks 0.2 mm kohati üldse kinni kiilus.
+* Otsustasime, ja miks: reaalne lõtke piir jääb 0.2–0.4 mm vahele; järgmisena proovime vahepealset väärtust (nt 0.3 mm), et piiri täpsemalt paika panna.
+* Lahti järgmiseks korraks: printida versioon lõtkuga ~0.3 mm; lisada Raimo failid (f3d/stl/3mf) reposse, kui ta on GitHubis kaastöötajana lisatud; kirjutada lõplik lõtke number "KAARDISTA ISE — vastused" alla.
 
 ### Väljundid ja tulemused
 
