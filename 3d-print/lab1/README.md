@@ -137,11 +137,11 @@ Repos on kaustas `3d-print/lab1/`: lähtefailid, STL ja `.3mf` iga prindi kohta,
 
 **KAARDISTA ISE — päevik.** Üks sissekanne iga töösessiooni kohta, kirjutatud iseendale, nii et inimene, kes seal ei olnud, saab aru. Sissekandeid lisatakse, mitte ei muudeta.
 
-**PP.KK.AA — kes olid kohal**
-* Tegime:
-* Juhtus (numbrid):
-* Otsustasime, ja miks:
-* Lahti järgmiseks korraks:
+**11.09.26 — Denys** *(kui rühmakaaslased olid ka kohal, lisa nende nimed siia)*
+* Tegime: Esimene loeng — tutvusime, õppejõud selgitas, mis aine see on ja mida õpime. Näidati näidisena väikest seadet, mida me selle aasta jooksul ehitada suudame. Anti esimene laboratoorne töö (see, Lab 1). Pärast loengut seadsin üles töökeskkonna: GitHub repo (`3d-printing-course`), meili, Claude (AI) abilise, logisin sisse Fusion 360-sse. Lugesin läbi juhendi — esimesel lugemisel ei saanud kohe aru, mida täpselt teha tuleb. Pärast ettevalmistust alustasin koos AI abilisega Fusionis: eskiis, ekstrusioon, tegin kuubi, siis auk (silinder) kuubi sees — sain aru, kuidas neid samme teha. Tegin kuubi + eraldi silindri (vahega 0.2 mm) samasse auku, salvestasin kõik versioonid (`.f3d`, `.stl`, `.3mf`), kontrollisin PrusaSlicer'is, et kaks keha on eraldi objektid, ja saatsin printima.
+* Juhtus (numbrid): kuup 50×50×50 mm, auk/silinder ⌀40 mm, esimene testitav vahe (gap) = 0.2 mm. Printimise tulemus (kas silinder keerleb või on kinni sulanud) on veel teadmata — selgub pärast printi.
+* Otsustasime, ja miks: alustasime vahega 0.2 mm kesksest väärtusest, et esimese prindi järgi otsustada, kas järgmisena proovida väiksemat või suuremat vahet.
+* Lahti järgmiseks korraks: oodata prindi tulemust, mõõta/katsetada, kas 0.2 mm vahe keerleb vabalt või on kinni; kirjutada tulemus siia juurde; vajadusel teha uus versioon (v2) teise vahega.
 
 ### Väljundid ja tulemused
 
