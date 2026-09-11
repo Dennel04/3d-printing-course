@@ -1,0 +1,12 @@
+# Fusion 360 / CAD temp & backup files
+*.f3d.bak
+~$*
+*.tmp
+
+# PrusaSlicer / OS cruft
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
