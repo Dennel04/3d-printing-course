@@ -105,14 +105,17 @@ Pane hoidik roboti külge. Robot joonistab tähe, mida ESP32 näitab.
 
 **1. Kuup.** Testis Raimo, tulemus jagatud kogu meeskonnaga (üks ühine tulemus, mitte iga liige eraldi). Printimise kiirendamiseks vähendati kuubi kõrgust 50 mm → **20 mm** (alus jäi 50×50 mm). Testiti kaht lõtku:
 - **Lõtk 0.4 mm** — silinder liigub/pöörleb vabalt, ei ole kinni.
-- **Lõtk 0.2 mm** — silinder jäi kinni; tuli terava tööriistaga kaapida, et leida koht, kust see läbi ei mahtunud. Lõpuks õnnestus silinder ikkagi kohale saada, aga detail sai selle käigus kergelt kahjustada.
-- **Tähelepanek:** prinditud silinder ei tulnud täiesti ümmargune — kohati veidi ebatäpne/mitte-ümmargune kuju, mis tõenäoliselt seletab, miks 0.2 mm lõtk osadest kohtadest ei mahtunud, kuigi arvutuslikult oleks pidanud.
+- **Lõtk 0.2 mm** — silinder jäi peale printimist kinni; tuli terava tööriistaga kaapida, et leida koht, kust see läbi ei mahtunud. Lõpuks õnnestus silinder ikkagi liikuma saada (väiksema lõtkuga detaili ümbris muutus peale demonteerimist kasutuskõlbmatuks)
+- **Tähelepanek:** prinditud silinder ei tulnud täiesti ümmargune — kohati veidi ebatäpne/mitte-ümmargune kuju, mis tõenäoliselt seletab, miks 0.2 mm lõtk osadest kohtadest ei mahtunud, kuigi arvutuslikult oleks pidanud.( seam- ehk koht kus 3D printer alustab ja lõpetab kihi printimist jääb pisut rohkem välja ulatuma, kui ülejäänud kihi serv)
 - **Järeldus (lõplik):** meeskond otsustas 0.3 mm versiooni mitte printida ja teema siin sulgeda — selle printeri lõtkeks võtame vahemiku **0.2–0.4 mm** (täpsemat väärtust rohkem ei testita). Hilisemate detailide (paindlik tükk, pastakahoidiku vedrutav osa) puhul arvestame selle vahemikuga.
 - **Failid:** minu (Denys) versioon `cube/src/cube-tolerance-v1.f3d` / `cube/stl/cube-tolerance-v1.stl` / `cube/3mf/cube-tolerance-v1.3mf` (50 mm kõrgus, lõtk 0.2 mm). Raimo 20 mm kõrgusega versioonide (lõtk 0.4 mm ja 0.2 mm) failid on veel tema arvutis — **tuleb lisada repos** niipea kui Raimo on GitHubis kaastöötajaks lisatud.
 
-**2. Paindlik tükk.** Tegemata — pole veel alustatud.
+**2. Paindlik tükk.** Otsustasime paindliku tüki arendamise asemel kasutada pastaka vedru.
 
-**3. Pastakahoidik.** Tegemata — pole veel alustatud, oodatakse kuubi lõpliku lõtke selgumist.
+**3. Pastakahoidik.** Pastaka hoidiku otsustasime teha kahest 3D prinditud detailist, mis on ühendatud keermeliitega omavahel ja kinnitatud 4 M3 kruviga roboti külge. Detaili disanimisel lähtusime sellest, et arendus protsessis on hea kui asjad on reguleeritavad. Me ei tea kui palju jõudu on vaja, et pastakas kirjutaks ja samal ajal pastaka süsi otsas olev kuul kinni ei kiiluks ja auku paberisse ei kraabiks. Keermeliite abil on võimalik lisada eelpinget vedrule, pastaka süsi saab liikuda kuskil 5mm sissepoole. 2 versiooni kokku panemisel vähendasime sisemise keerme paksus 0.15mm et anda rohkem lõtku keerme kokku keermaisel, kuid sellest ei piisanud ja sisemise keerme lühendamisel saime töötava detaili.
+
+Tähelepanek -- 3D printida sisemisi keermeid on oluliselt raskem, kui välimisi( prinditav materjal võib sisemise keerme puhul hüpata ja põhjustada ebaühtlaseid keermeid). Pastaka süsi enda mõõtmed on suhteliselt väiksed, kuid pastaka süsi hoidiku puhul täpsus pole väga kriitiline, seega võiks lõtk suurem olla.
+Järeldus -- pastaka hoidiku disainiimine õnnestus suurepäraselt. Teise versiooniga õnnestus töötav detail kokkupanna. 
 
 ### Ohutus
 
