@@ -108,7 +108,7 @@ Pane hoidik roboti külge. Robot joonistab tähe, mida ESP32 näitab.
 - **Lõtk 0.2 mm** — silinder jäi peale printimist kinni; tuli terava tööriistaga kaapida, et leida koht, kust see läbi ei mahtunud. Lõpuks õnnestus silinder ikkagi liikuma saada (väiksema lõtkuga detaili ümbris muutus peale demonteerimist kasutuskõlbmatuks)
 - **Tähelepanek:** prinditud silinder ei tulnud täiesti ümmargune — kohati veidi ebatäpne/mitte-ümmargune kuju, mis tõenäoliselt seletab, miks 0.2 mm lõtk osadest kohtadest ei mahtunud, kuigi arvutuslikult oleks pidanud.( seam- ehk koht kus 3D printer alustab ja lõpetab kihi printimist jääb pisut rohkem välja ulatuma, kui ülejäänud kihi serv)
 - **Järeldus (lõplik):** meeskond otsustas 0.3 mm versiooni mitte printida ja teema siin sulgeda — selle printeri lõtkeks võtame vahemiku **0.2–0.4 mm** (täpsemat väärtust rohkem ei testita). Hilisemate detailide (paindlik tükk, pastakahoidiku vedrutav osa) puhul arvestame selle vahemikuga.
-- **Failid:** minu (Denys) versioon `cube/src/cube-tolerance-v1.f3d` / `cube/stl/cube-tolerance-v1.stl` / `cube/3mf/cube-tolerance-v1.3mf` (50 mm kõrgus, lõtk 0.2 mm). Raimo 20 mm kõrgusega versioonide (lõtk 0.4 mm ja 0.2 mm) failid on veel tema arvutis — **tuleb lisada repos** niipea kui Raimo on GitHubis kaastöötajaks lisatud.
+- **Failid:** minu (Denys) versioon `cube/src/cube-tolerance-v1.f3d` / `cube/stl/cube-tolerance-v1.stl` / `cube/3mf/cube-tolerance-v1.3mf` (50 mm kõrgus, lõtk 0.2 mm). Raimo 20 mm kõrgusega versioonide ekspordid on repos: `cube/stl/Kuubikud_auguga.stl` ja `cube/3mf/kuubikud.3mf`. Nende versioonide lähte-/F3D-faili repos ei ole: TODO.
 
 **2. Paindlik tükk.** Otsustasime paindliku tüki arendamise asemel kasutada pastaka vedru.
 
