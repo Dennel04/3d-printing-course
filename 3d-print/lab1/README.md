@@ -31,7 +31,7 @@ Esimesel päeval uusi osi ei ole. Ehita sellest, mis riiulil on, ja kirjuta puud
 **Peab olema tehtud**
 
 - [x] Kuup prinditud, lõtk teada (vahemik 0.2–0.4 mm, vt allpool).
-- [х] Paindlik tükk prinditud, murdumise koht ja plastilise paindumise piir teada.
+- [x] Paindlik tükk prinditud, murdumise koht ja plastilise paindumise piir teada.
 - [ ] Pastakahoidik roboti küljes, annab järele. Robot joonistab sellega tähe, mida ESP32 näitab.
 - [ ] Repo ja arenduspäevik täidetud, tag `3d-print-lab1`.
 
