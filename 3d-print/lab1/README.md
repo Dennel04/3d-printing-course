@@ -174,6 +174,28 @@ Repos on kaustas `3d-print/lab1/`: lähtefailid, STL ja `.3mf` iga prindi kohta,
 * Otsustasime, ja miks: kinnitus ja Z-suunaline vedrumehhanism töötavad ettenähtud viisil. Kogu prototüübi kriteeriumi ei märgi veel täidetuks, sest praegu saab robotiga joonistada ainult käsitsi juhituna ehk käsirežiimis; ESP32 näidatava tähe automaatset joonistamist ei ole veel saavutatud.
 * Lahti järgmiseks korraks: ühendada roboti joonistamine ESP32 juhtimisega ja katsetada automaatset tähe joonistamist.
 
+**13.09.26 — paindliku tüki paksusekatse**
+* Tegime: modelleerisime Fusion 360-s parameetrilise paindekatsekeha ning printisime sama geomeetriaga kolm varianti. Ainus muudetud parameeter oli paksus: `1,2 mm`, `1,5 mm` ja `2,0 mm`. Katsekehad prinditi ühe partiina samade printimisseadetega. Katsetamisel fikseeriti üks ots ning vaba otsa painutati järk-järgult; pärast iga sammu kontrolliti, kas detail taastub või jääb püsivalt deformeerunuks.
+* Juhtus (numbrid):
+
+  | Paksus | Suurim kõrvalekalle, mille järel detail taastus | Püsiv deformatsioon algas | Murdumine | Murdumiskoht |
+  |---|---:|---:|---|---|
+  | `1,2 mm` | `50 mm` | `60 mm` | Tavalisel painutamisel ei murdunud; detaili sai täielikult kokku painutada nii, et otsad puutusid kokku, kui painutada mõlemas suunas | keskelt |
+  | `1,5 mm` | `40 mm` | `50 mm` | Tavalisel painutamisel ei murdunud; detaili sai täielikult kokku painutada nii, et otsad puutusid kokku, kui painutada mõlemas suunas | keskelt |
+  | `2,0 mm` | `20 mm` | `25 mm` | Murdus ligikaudu `330°` painutuse juures | keskelt |
+
+* Tähelepanek: õhemad katsekehad talusid suuremat läbipainet enne püsiva deformatsiooni tekkimist. `2,0 mm` variant oli jäigem ning murdus suure painutuse korral. Kõigi variantide suurim deformatsioon või murdumine toimus keskmises kitsamas tsoonis, nagu mudeli geomeetriaga ette nähtud.
+* Otsustasime, ja miks: paindliku tüki ülesande jaoks on nüüd olemas reaalsed paindumise, püsiva deformatsiooni ja murdumise tulemused. Pastakahoidiku lõplikus mehhanismis jääme siiski metallist kuulpastaka vedru juurde, sest see lahendus on MG400-l juba töötanud ja võimaldab Z-suunalist järeleandmist.
+* Failid:
+  - `flex-piece/src/flex-piece-1.2mm.f3d`
+  - `flex-piece/src/flex-piece-1.5mm.f3d`
+  - `flex-piece/src/flex-piece-2.0mm.f3d`
+  - `flex-piece/stl/flex-piece-1.2mm.stl`
+  - `flex-piece/stl/flex-piece-1.5mm.stl`
+  - `flex-piece/stl/flex-piece-2.0mm.stl`
+  - `flex-piece/3mf/flex-piece-thickness-test.3mf`
+* Lahti järgmiseks korraks: jätkata ESP32 ja MG400 automaatse tähe joonistamise ühendamisega ning lisada puuduvad pastakahoidiku ja kuubi tööfailid, kui need on meeskonnakaaslase arvutist kättesaadavad.
+
 ### Väljundid ja tulemused
 
 **Väljundid**
