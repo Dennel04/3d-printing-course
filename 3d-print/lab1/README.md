@@ -168,7 +168,7 @@ Repos on kaustas `3d-print/lab1/`: lähtefailid, STL ja `.3mf` iga prindi kohta,
 * Otsustasime, ja miks: ei prindi 0.3 mm versiooni, sulgeme kuubi teema praeguse tulemusega (lõtk 0.2–0.4 mm vahemikus). Ajapiirang / soov edasi liikuda järgmiste osade juurde.
 * Lahti järgmiseks korraks: alustada paindliku tükiga (osa 2).
 
-**13.09.26 — pastakahoidiku katse MG400-l**
+**12.09.26 — pastakahoidiku katse MG400-l**
 * Tegime: paigaldasime pastakahoidiku MG400 roboti külge ja kontrollisime kinnitust ning vedru tööd.
 * Juhtus (vaatlus): pastakahoidik püsib roboti küljes kindlalt. Hoidiku sisemine vedru töötab Z-suunas korrektselt ja pehmendab kontakti paberiga nii, et pastakas ei suru paberilehte läbi.
 * Otsustasime, ja miks: kinnitus ja Z-suunaline vedrumehhanism töötavad ettenähtud viisil. Kogu prototüübi kriteeriumi ei märgi veel täidetuks, sest praegu saab robotiga joonistada ainult käsitsi juhituna ehk käsirežiimis; ESP32 näidatava tähe automaatset joonistamist ei ole veel saavutatud.
