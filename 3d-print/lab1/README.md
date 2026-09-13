@@ -31,7 +31,7 @@ Esimesel päeval uusi osi ei ole. Ehita sellest, mis riiulil on, ja kirjuta puud
 **Peab olema tehtud**
 
 - [x] Kuup prinditud, lõtk teada (vahemik 0.2–0.4 mm, vt allpool).
-- [ ] Paindlik tükk prinditud, murdumise koht ja plastilise paindumise piir teada.
+- [х] Paindlik tükk prinditud, murdumise koht ja plastilise paindumise piir teada.
 - [ ] Pastakahoidik roboti küljes, annab järele. Robot joonistab sellega tähe, mida ESP32 näitab.
 - [ ] Repo ja arenduspäevik täidetud, tag `3d-print-lab1`.
 
@@ -187,9 +187,6 @@ Repos on kaustas `3d-print/lab1/`: lähtefailid, STL ja `.3mf` iga prindi kohta,
 * Tähelepanek: õhemad katsekehad talusid suuremat läbipainet enne püsiva deformatsiooni tekkimist. `2,0 mm` variant oli jäigem ning murdus suure painutuse korral. Kõigi variantide suurim deformatsioon või murdumine toimus keskmises kitsamas tsoonis, nagu mudeli geomeetriaga ette nähtud.
 * Otsustasime, ja miks: paindliku tüki ülesande jaoks on nüüd olemas reaalsed paindumise, püsiva deformatsiooni ja murdumise tulemused. Pastakahoidiku lõplikus mehhanismis jääme siiski metallist kuulpastaka vedru juurde, sest see lahendus on MG400-l juba töötanud ja võimaldab Z-suunalist järeleandmist.
 * Failid:
-  - `flex-piece/src/flex-piece-1.2mm.f3d`
-  - `flex-piece/src/flex-piece-1.5mm.f3d`
-  - `flex-piece/src/flex-piece-2.0mm.f3d`
   - `flex-piece/stl/flex-piece-1.2mm.stl`
   - `flex-piece/stl/flex-piece-1.5mm.stl`
   - `flex-piece/stl/flex-piece-2.0mm.stl`
