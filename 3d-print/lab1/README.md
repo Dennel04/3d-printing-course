@@ -26,6 +26,12 @@ Esimesel päeval uusi osi ei ole. Ehita sellest, mis riiulil on, ja kirjuta puud
 
 **KAARDISTA ISE — eesmärk nii, nagu ta tegelikult välja tuli.**
 
+Meie jaoks oli see labor eelkõige sissejuhatus:
+1. **Fusion 360:** aru saada, kuidas Fusion töötab, ja teha esimesed sammud modelleerimises (eskiis, ekstrusioon, parameetrid, eraldi kehad).
+2. **Printer:** tutvuda printeriga, õppida mudelit PrusaSliceris ette valmistama ja printima ning kontrollida kuubiga, kui suur lõtk sellel printeril päriselt on.
+3. **Paindlikkus:** esimene tutvus sellega, kuidas prinditud PLA paindub, kust ta jääb püsivalt kõveraks ja kus murdub.
+4. **Lõpptulemus:** ise modelleeritud pastakahoidik MG400 roboti jaoks.
+
 ### Kontrollnimekiri
 
 **Peab olema tehtud**
@@ -109,6 +115,7 @@ Pane hoidik roboti külge. Robot joonistab tähe, mida ESP32 näitab.
 - **Tähelepanek:** prinditud silinder ei tulnud täiesti ümmargune — kohati veidi ebatäpne/mitte-ümmargune kuju, mis tõenäoliselt seletab, miks 0.2 mm lõtk osadest kohtadest ei mahtunud, kuigi arvutuslikult oleks pidanud.( seam- ehk koht kus 3D printer alustab ja lõpetab kihi printimist jääb pisut rohkem välja ulatuma, kui ülejäänud kihi serv)
 - **Järeldus (lõplik):** meeskond otsustas 0.3 mm versiooni mitte printida ja teema siin sulgeda — selle printeri lõtkeks võtame vahemiku **0.2–0.4 mm** (täpsemat väärtust rohkem ei testita). Hilisemate detailide (paindlik tükk, pastakahoidiku vedrutav osa) puhul arvestame selle vahemikuga.
 - **Failid:** minu (Denys) versioon `cube/src/cube-tolerance-v1.f3d` / `cube/stl/cube-tolerance-v1.stl` / `cube/3mf/cube-tolerance-v1.3mf` (50 mm kõrgus, lõtk 0.2 mm). Raimo 20 mm kõrgusega versioonide ekspordid on repos: `cube/stl/Kuubikud_auguga.stl` ja `cube/3mf/kuubikud.3mf`. Nende versioonide lähte-/F3D-faili repos ei ole: TODO.
+  - *Täpsustus (02.10.26):* kõik meeskonnaliikmed modelleerisid sama kuubi, seega jätame lähtefailiks ühe: `cube/src/cube-tolerance-v1.f3d`. Raimo versioonid erinevad ainult kõrguse (20 mm) ja lõtku parameetri poolest; eraldi F3D-faili ei lisata.
 
 **2. Paindlik tükk.** Otsustasime paindliku tüki arendamise asemel kasutada pastaka vedru.
 
