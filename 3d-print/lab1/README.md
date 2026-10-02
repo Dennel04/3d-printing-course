@@ -26,6 +26,12 @@ Esimesel päeval uusi osi ei ole. Ehita sellest, mis riiulil on, ja kirjuta puud
 
 **KAARDISTA ISE — eesmärk nii, nagu ta tegelikult välja tuli.**
 
+Meie jaoks oli see labor eelkõige sissejuhatus:
+1. **Fusion 360:** aru saada, kuidas Fusion töötab, ja teha esimesed sammud modelleerimises (eskiis, ekstrusioon, parameetrid, eraldi kehad).
+2. **Printer:** tutvuda printeriga, õppida mudelit PrusaSliceris ette valmistama ja printima ning kontrollida kuubiga, kui suur lõtk sellel printeril päriselt on.
+3. **Paindlikkus:** esimene tutvus sellega, kuidas prinditud PLA paindub, kust ta jääb püsivalt kõveraks ja kus murdub.
+4. **Lõpptulemus:** ise modelleeritud pastakahoidik MG400 roboti jaoks.
+
 ### Kontrollnimekiri
 
 **Peab olema tehtud**
@@ -109,8 +115,19 @@ Pane hoidik roboti külge. Robot joonistab tähe, mida ESP32 näitab.
 - **Tähelepanek:** prinditud silinder ei tulnud täiesti ümmargune — kohati veidi ebatäpne/mitte-ümmargune kuju, mis tõenäoliselt seletab, miks 0.2 mm lõtk osadest kohtadest ei mahtunud, kuigi arvutuslikult oleks pidanud.( seam- ehk koht kus 3D printer alustab ja lõpetab kihi printimist jääb pisut rohkem välja ulatuma, kui ülejäänud kihi serv)
 - **Järeldus (lõplik):** meeskond otsustas 0.3 mm versiooni mitte printida ja teema siin sulgeda — selle printeri lõtkeks võtame vahemiku **0.2–0.4 mm** (täpsemat väärtust rohkem ei testita). Hilisemate detailide (paindlik tükk, pastakahoidiku vedrutav osa) puhul arvestame selle vahemikuga.
 - **Failid:** minu (Denys) versioon `cube/src/cube-tolerance-v1.f3d` / `cube/stl/cube-tolerance-v1.stl` / `cube/3mf/cube-tolerance-v1.3mf` (50 mm kõrgus, lõtk 0.2 mm). Raimo 20 mm kõrgusega versioonide ekspordid on repos: `cube/stl/Kuubikud_auguga.stl` ja `cube/3mf/kuubikud.3mf`. Nende versioonide lähte-/F3D-faili repos ei ole: TODO.
+  - *Täpsustus (02.10.26):* kõik meeskonnaliikmed modelleerisid sama kuubi, seega jätame lähtefailiks ühe: `cube/src/cube-tolerance-v1.f3d`. Raimo versioonid erinevad ainult kõrguse (20 mm) ja lõtku parameetri poolest; eraldi F3D-faili ei lisata.
 
 **2. Paindlik tükk.** Otsustasime paindliku tüki arendamise asemel kasutada pastaka vedru.
+- *Täpsustus (02.10.26):* paindlikku tükki me siiski uurisime — tutvumise eesmärgil (Nikita, 13.09.26). Fusion 360-s tehti üks parameetriline katsekeha, prinditi kolm paksust ja painutati, kuni detail jäi kõveraks või murdus:
+
+  | Paksus | Taastub kuni | Püsiv deformatsioon alates | Murdumine |
+  |---|---:|---:|---|
+  | 1,2 mm | 50 mm | 60 mm | ei murdunud (otsad said kokku painutada) |
+  | 1,5 mm | 40 mm | 50 mm | ei murdunud (otsad said kokku painutada) |
+  | 2,0 mm | 20 mm | 25 mm | murdus ~330° juures |
+
+  Kõik murdusid/deformeerusid keskelt, kitsas tsoonis. Detailne kirjeldus: arenduspäevik 13.09.26. Failid: `flex-piece/stl/flex-piece-1.2mm.stl`, `flex-piece-1.5mm.stl`, `flex-piece-2.0mm.stl`, `flex-piece/3mf/flex-piece-thickness-test.3mf`.
+- **Miks hoidikus prinditud vedru ei ole:** ülesanne ei nõua, et kogu järeleandev osa oleks prinditud. Pastakahoidikus kasutame kuulpastaka enda südamikku ja metallvedru, mis on paigutatud prinditud korpuse sisse; korpus annab kinnituse ja reguleeritava eelpinge. See lahendus töötas MG400-l kohe (vt 12.09.26). Paindlikkuse katse andis meile numbrid, mida saab kasutada hilisemates detailides (näiteks klambrid ja klõpsud).
 
 **3. Pastakahoidik.** Pastaka hoidiku otsustasime teha kahest 3D prinditud detailist, mis on ühendatud keermeliitega omavahel ja kinnitatud 4 M3 kruviga roboti külge. Detaili disanimisel lähtusime sellest, et arendus protsessis on hea kui asjad on reguleeritavad. Me ei tea kui palju jõudu on vaja, et pastakas kirjutaks ja samal ajal pastaka süsi otsas olev kuul kinni ei kiiluks ja auku paberisse ei kraabiks. Keermeliite abil on võimalik lisada eelpinget vedrule, pastaka süsi saab liikuda kuskil 5mm sissepoole. 2 versiooni kokku panemisel vähendasime sisemise keerme paksus 0.15mm et anda rohkem lõtku keerme kokku keermaisel, kuid sellest ei piisanud ja sisemise keerme lühendamisel saime töötava detaili.
 
