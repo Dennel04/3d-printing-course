@@ -41,7 +41,26 @@ electronics course drives the display.
       src/  stl/  3mf/
     camera-mounts/      <- tool camera mount and overhead camera post
       src/  stl/  3mf/
+  lab3/
+    README.md           <- Lab 3 checklist, known inputs, file index, and devlog
+    assignment-EST.md   <- original assignment text, unmodified
+    docs/               <- tool_layout.md, tool_offsets.md, leak_test.csv,
+                           cycle_test.csv, bom.md, photos/
+    nut-pocket-test/    <- small block for nut pocket + print pause test
+      src/  stl/  3mf/
+    valve-mount/        <- 3/2 solenoid valve mount
+      src/  stl/  3mf/
+    tool/               <- combined tool: suction cup, syringe, UV lamp, camera
+      src/  stl/  3mf/
+    purge-cup-holder/   <- Gridfinity holder for the purge cup
+      src/  stl/  3mf/
+    nozzle-park/        <- dark, covered parking spot for the syringe nozzle
+      src/  stl/  3mf/
 ```
+
+Each lab folder from Lab 2 on also keeps `assignment-EST.md`: the original
+assignment text exactly as issued (never edited). The lab `README.md` holds
+the team's working version.
 
 Each later lab under `3d-print/labN/` should follow the same pattern:
 `README.md` (assignment + filled-in answers/devlog) + one subfolder per

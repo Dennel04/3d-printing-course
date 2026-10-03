@@ -51,6 +51,7 @@ Kõigi nende olek on `TODO — waiting for physical test`.
 
 ## Tööfailid ja katsejuhendid
 
+- [`assignment-EST.md`](assignment-EST.md) — ülesande originaaltekst, muutmata.
 - [`docs/MG 400 rakis.md`](docs/MG%20400%20rakis.md) — ametlik töölaua kirjeldus ja koordinaadid.
 - [`docs/measurements.md`](docs/measurements.md) — riistvara mõõtmissessiooni kontrollnimekiri.
 - [`docs/test-procedure.md`](docs/test-procedure.md) — lühike juhend roboti juures kasutamiseks.
