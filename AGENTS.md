@@ -90,6 +90,10 @@ physical part, each with `src/` `stl/` `3mf/`.
 
 - Check the current lab's `README.md` first — it has the live goals,
   checklist, and devlog; don't duplicate what's already answered there.
+- For Lab 2, also read `3d-print/lab2/docs/MG 400 rakis.md`,
+  `3d-print/lab2/docs/measurements.md`, and
+  `3d-print/lab2/docs/test-procedure.md` before changing CAD, measurements,
+  or test records.
 - Prefer adding new versioned files over overwriting existing STL/3mf/source
   files.
 - If asked to translate assignment text, translate faithfully; don't

@@ -20,8 +20,16 @@ pocket_depth = 8;
 pocket_corner_radius = 1;
 lead_in = 1;
 
-// Lab 1 found a usable clearance between 0.2 and 0.4 mm; verify the chosen fit on the grid.
+// Provisional initial test value only: Lab 1 did not physically test 0.3 mm.
+// Lab 1 showed 0.4 mm moving freely and 0.2 mm binding, so only the
+// 0.2-0.4 mm range is supported by physical evidence.
+// Verify this value on the real rig before reuse.
 foot_clearance = 0.3;
+
+// This foot is an unverified prototype. Before finalizing, compare its full
+// profile with standard Gridfinity geometry from a trusted generator/library
+// and test it on the real table. Successful OpenSCAD compilation alone does
+// not confirm Gridfinity compliance or physical fit.
 
 module rounded_rectangle(width, length, radius) {
     offset(r = radius)

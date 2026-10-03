@@ -1,5 +1,9 @@
 // Lab 2: configurable Gridfinity tray for input, workstation, or output holders.
 // Set pocket dimensions from caliper measurements before exporting a print.
+// DEPRECATED FOOT GEOMETRY: this v1 uses one simplified taper, not the
+// standard Gridfinity 0.8 / 1.8 / 2.15 mm profile. Do not print this tray
+// or reuse its foot until the standard geometry has been adopted and its
+// fit on the real table has been physically tested.
 
 $fn = 48;
 
@@ -10,7 +14,15 @@ foot_top_width = 41.5;
 foot_bottom_width = 35.5;
 foot_corner_radius = 3;
 foot_taper_height = 4.75;
+// Provisional initial test value only: Lab 1 did not physically test 0.3 mm.
+// Physical evidence only bounds the printer clearance: 0.4 mm moved freely,
+// while 0.2 mm bound. Verify this value on the real rig before reuse.
 foot_clearance = 0.3;
+
+// This foot is an unverified prototype. Before finalizing, compare its full
+// profile with standard Gridfinity geometry from a trusted generator/library
+// and test it on the real table. Successful OpenSCAD compilation alone does
+// not confirm Gridfinity compliance or physical fit.
 
 tray_width = units_x * grid_pitch - 0.5;
 tray_length = units_y * grid_pitch - 0.5;
