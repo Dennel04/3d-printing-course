@@ -38,7 +38,8 @@ Meie jaoks oli see labor eelkõige sissejuhatus:
 
 - [x] Kuup prinditud, lõtk teada (vahemik 0.2–0.4 mm, vt allpool).
 - [x] Paindlik tükk prinditud, murdumise koht ja plastilise paindumise piir teada.
-- [ ] Pastakahoidik roboti küljes, annab järele. Robot joonistab sellega tähe, mida ESP32 näitab.
+- [x] Pastakahoidik roboti küljes, annab järele. Robot joonistab sellega tähe, mida ESP32 näitab.
+  * 03.10.26: täidetud — Atomi (ESP32-S3) ekraanil valitud täht joonistati MG400-ga pastakahoidikuga paberile, vt arenduspäevik 03.10.26.
 - [ ] Repo ja arenduspäevik täidetud, tag `3d-print-lab1`.
 
 **KAARDISTA ISE — kuupäevad ja sinu enda sammud.**
@@ -209,6 +210,12 @@ Repos on kaustas `3d-print/lab1/`: lähtefailid, STL ja `.3mf` iga prindi kohta,
   - `flex-piece/stl/flex-piece-2.0mm.stl`
   - `flex-piece/3mf/flex-piece-thickness-test.3mf`
 * Lahti järgmiseks korraks: jätkata ESP32 ja MG400 automaatse tähe joonistamise ühendamisega ning lisada puuduvad pastakahoidiku ja kuubi tööfailid, kui need on meeskonnakaaslase arvutist kättesaadavad.
+
+**03.10.26 — ESP32 näidatud tähe automaatne joonistamine pastakahoidikuga**
+* Tegime: ühendasime AtomS3R (ESP32-S3) MG400 jaamaga ja laadisime Atomile ühendatud püsivara (Andmehõive pumbakast ja Nutikate lahenduste täheleht ühes püsivaras, `smart-solutions-course/smart-solutions/lab1/firmware`). Atomi kasutajanupp on ekraan ise: lühike vajutus valib järgmise tähe (A→Z), pikk vajutus saadab valitud tähe USB kaudu jaama. Jaam teeb tähest MG400 liigutused ja robot joonistab tähe pastakahoidikuga paberile. Kontrollisime tähestiku läbikerimist Atomi ekraanil ja joonistasime mitu erinevat tähte.
+* Juhtus (numbrid): jaama logis staatusega `executed` (edukalt joonistatud): A, A, C, D, D, D, D — 7 tähte (`smart-solutions-course/smart-solutions/lab1/data/letter_events.csv`). Enne seda joonistati testina täht K ja sõna „hello“. Pastaka kontakti Z katsetati vahemikus −109…−111 mm, pastakas üleval −100 mm, kiirus 4 % → 20 %, tähe lahtri suurus 20 mm. Kaks esimest katset (täht N) katkesid jaama 15 s liigutuse ajapiirangu tõttu (pikk sõit 4 % kiirusel); jaam parandati nii, et ajapiirang arvutatakse teekonna pikkusest ja kiirusest.
+* Otsustasime, ja miks: prototüübi kriteerium „robot joonistab tähe, mida ESP32 näitab“ on täidetud, märkisime kontrollnimekirjas 03.10.26.
+* Lahti järgmiseks korraks: joonistatud tähe mõõtmine joonlauaga; paindliku tüki `.f3d` lähtefail kausta `flex-piece/src/`; KAARDISTA ISE osad ja „Väljundid“; tag `3d-print-lab1` viia viimasele commitile.
 
 ### Väljundid ja tulemused
 
