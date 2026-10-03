@@ -29,6 +29,18 @@ electronics course drives the display.
       src/  stl/  3mf/
     pen-holder/         <- the actual tool: spring-loaded pen holder for MG400
       src/  stl/  3mf/
+  lab2/
+    README.md           <- Lab 2 checklist, measured decisions, and devlog
+    docs/               <- layout.md, refit_test.csv, bom.md, and photos
+    src/                <- reusable parametric CAD prototypes, not yet print-verified
+    input-holders/      <- final holders for AtomS3, glass, and battery
+      src/  stl/  3mf/
+    workstation-holder/ <- holder for the assembly step
+      src/  stl/  3mf/
+    output-holders/     <- good-part and reject locations
+      src/  stl/  3mf/
+    camera-mounts/      <- tool camera mount and overhead camera post
+      src/  stl/  3mf/
 ```
 
 Each later lab under `3d-print/labN/` should follow the same pattern:
@@ -46,6 +58,12 @@ physical part, each with `src/` `stl/` `3mf/`.
   overwrite. Name iterations like `pen-holder-v1.f3d`, `pen-holder-v2.f3d`,
   and matching `pen-holder-v1.stl`, `pen-holder-v1.3mf`. Note in the README
   what changed and why for each version.
+- **Lab 2 fit:** Lab 1 only bounded printer clearance to 0.2–0.4 mm. Treat
+  that as a starting range, record whether a CAD value is per-side or total,
+  and verify Gridfinity feet and part pockets with physical test prints.
+- **Lab 2 CAD:** shared parametric OpenSCAD prototypes may live in `lab2/src/`.
+  Once a design is assigned to a physical part and tested, keep its versioned
+  source, STL, and 3MF together under that part's folder.
 - **Nothing gets deleted.** A wrong measurement stays in the doc with its
   date; the correction goes underneath it, not over it.
 - **Devlog entries** live inside each lab's `README.md` under
@@ -56,6 +74,7 @@ physical part, each with `src/` `stl/` `3mf/`.
 
 - Fusion 360 (educational license) for the cube and tolerance parts.
 - Any tool that exports STL for the pen holder (Fusion, Blender, ...).
+- OpenSCAD for the Lab 2 parametric holder prototypes (install locally to render/export).
 - PrusaSlicer for slicing, lab printers, PLA (later maybe PETG).
 - MG400 robot arm + Python base package (from the instructor) for the demo.
 
