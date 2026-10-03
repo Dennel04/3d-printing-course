@@ -40,9 +40,20 @@ Meie jaoks oli see labor eelkõige sissejuhatus:
 - [x] Paindlik tükk prinditud, murdumise koht ja plastilise paindumise piir teada.
 - [x] Pastakahoidik roboti küljes, annab järele. Robot joonistab sellega tähe, mida ESP32 näitab.
   * 03.10.26: täidetud — Atomi (ESP32-S3) ekraanil valitud täht joonistati MG400-ga pastakahoidikuga paberile, vt arenduspäevik 03.10.26.
-- [ ] Repo ja arenduspäevik täidetud, tag `3d-print-lab1`.
+- [x] Repo ja arenduspäevik täidetud, tag `3d-print-lab1`.
+  * 03.10.26: KAARDISTA ISE osad täidetud, tag viidud viimasele commitile. Paindliku tüki `.f3d` puudub (vt vastused, osa 2).
 
 **KAARDISTA ISE — kuupäevad ja sinu enda sammud.**
+
+| Kuupäev | Samm | Kes |
+|---|---|---|
+| 11.09.26 | Fusion 360 algus, kuup ⌀40 mm silindriga, lõtkukatse 0.2 ja 0.4 mm → lõtk 0.2–0.4 mm | kogu meeskond (Raimo printis) |
+| 12.09.26 | Pastakahoidik MG400 küljes, vedru töötab Z-suunas, joonistamine käsirežiimis | Raimo (hoidiku disain), meeskond |
+| 13.09.26 | Paindlik tükk: kolm paksust (1.2 / 1.5 / 2.0 mm) prinditud ja painutatud; hoidiku ja kuubi STL/3MF reposse | Nikita, Raimo |
+| 02.10.26 | Eesmärk ja vastused kirja, hoidiku `.f3d` lähtefailid reposse | Denys, Raimo |
+| 03.10.26 | Robot joonistab hoidikuga tähe, mida Atom (ESP32-S3) näitab | Denys |
+
+Iga sammu üksikasjad: arenduspäevik allpool.
 
 ### Sisendid
 
@@ -62,6 +73,13 @@ Meie jaoks oli see labor eelkõige sissejuhatus:
 *Kui plaan muutub, uuenda ka vahendeid, või tee draw.io skeem, mis näitab, kuidas asjad omavahel töötavad.*
 
 **KAARDISTA ISE — mida sa päriselt kasutasid.**
+
+* Fusion 360 (hariduslitsents): kuup, paindlik tükk ja pastakahoidik, parameetrilised mõõdud.
+* PrusaSlicer ja labori printerid, PLA.
+* Pastakahoidikus: kuulpastaka süsi ja metallvedru, kaks prinditud detaili keermeliitega, 4 × M3 kruvi flantsi külge.
+* MG400 koos baaspaketiga `mg400-base` (veebileht, jog-nupud, Z-piir); joonistamiseks jaam `smart-solutions-course`.
+* AtomS3R (ESP32-S3): ekraanil valitud täht, mille robot joonistab.
+* Git ja GitHub (`Dennel04/3d-printing-course`), AI abiline (Claude) dokumentatsiooni ja koodi juures.
 
 ### Taustainfo
 
@@ -85,6 +103,10 @@ Meie jaoks oli see labor eelkõige sissejuhatus:
 *Lisa siia oma allikaid ja kasulikku infot, mis aitaks sul projektist aru saada ka aastaid hiljem, kui selle uuesti lahti teed.*
 
 **KAARDISTA ISE — sinu allikad.**
+
+* Fusion 360 FDM-mudeldamise video ülesandest: https://www.youtube.com/watch?v=5hComh1hFzY
+* MG400 baaspakett: https://github.com/KKallas/mg400-base
+* AtomS3R dokumentatsioon (nupp = ekraan, külgmine nupp = RESET): https://docs.m5stack.com/en/core/AtomS3R
 
 ### Osad
 
@@ -135,6 +157,8 @@ Pane hoidik roboti külge. Robot joonistab tähe, mida ESP32 näitab.
 
 Tähelepanek -- 3D printida sisemisi keermeid on oluliselt raskem, kui välimisi( prinditav materjal võib sisemise keerme puhul hüpata ja põhjustada ebaühtlaseid keermeid). Pastaka süsi enda mõõtmed on suhteliselt väiksed, kuid pastaka süsi hoidiku puhul täpsus pole väga kriitiline, seega võiks lõtk suurem olla.
 Järeldus -- pastaka hoidiku disainiimine õnnestus suurepäraselt. Teise versiooniga õnnestus töötav detail kokkupanna. 
+
+*Täpsustus (03.10.26, Raimo):* hoidiku disainis Raimo. Versioonis 1 oli keere liiga tihe ja detailid ei keeranud kokku; versioonis 2 õhendati sisemist keeret 0.15 mm ja lõpuks lühendati seda, siis keeras kokku. Fusionis muudatuse tegemise aega ei mõõtnud.
 
 ### Ohutus
 
@@ -225,9 +249,13 @@ Repos on kaustas `3d-print/lab1/`: lähtefailid, STL ja `.3mf` iga prindi kohta,
 * 3D printimine L2, L3, L4: lõtk ja paindumise numbrid iga hilisema detaili jaoks.
 
 **KAARDISTA ISE, lõpus.**
-* Git repo ja tag:
+* Git repo ja tag: https://github.com/Dennel04/3d-printing-course, tag `3d-print-lab1`.
 * Numbrid, mille see labor andis, ühikutega:
-* Mida me teeksime teisiti:
-* Mida järgmine labor peaks enne alustamist teadma:
+  * lõtk sellel printeril: 0.4 mm pöörleb vabalt, 0.2 mm jääb kinni → kasutatav vahemik 0.2–0.4 mm;
+  * paindlik PLA tükk: 1.2 mm taastub kuni 50 mm, püsiv deformatsioon 60 mm; 1.5 mm 40 / 50 mm; 2.0 mm 20 / 25 mm, murdus ~330° juures;
+  * pastakahoidik: pastaka süsi liigub ~5 mm sisse; sisemise keerme õhendamine 0.15 mm ei piisanud, töötas lühendatud sisemise keermega (versioon 2);
+  * joonistamine: pastaka kontakt Z −109…−112 mm, pastakas üleval −100 mm, tähe lahter 20 mm, kiirus 20 %.
+* Mida me teeksime teisiti: vältida printimisvigu (kontrollida mudel ja slicer enne printi läbi); lõtku ja keerme puhul printida kohe mitu varianti korraga (nt 0.2 / 0.3 / 0.4 mm), mitte ükshaaval; `.f3d` lähtefail panna reposse kohe, mitte meeskonnakaaslase arvutisse.
+* Mida järgmine labor peaks enne alustamist teadma: sellel printeril on lõtk 0.2–0.4 mm; sisemine keere prindib halvemini kui välimine, seega keermele rohkem lõtku; mitme variandi korraga printimine säästab aega; AtomS3R kasutajanupp on ekraan ise, külgmine nupp on RESET.
 
 ### Tagasiside
