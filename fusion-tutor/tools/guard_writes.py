@@ -16,9 +16,12 @@ clone path, unlike path rules in settings.json.
 """
 import json
 import os
+import re
 import sys
+import unicodedata
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import sync  # noqa: E402  (odd_segment: one rule for both gates)
 import whoami  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -69,11 +72,27 @@ def main():
                 and not inside(target, os.path.join(COURSE, ".git"))):
             decide("allow", "The tutor may read the course.")
         return
+    # Check the path as given: Windows path normalisation (realpath/abspath) itself
+    # drops trailing dots/spaces, so "CLAUDE.md." would already look like a new
+    # name here while NTFS writes CLAUDE.md. Ambiguous names are denied outright,
+    # with the same rule as sync.py's review gate.
+    segs = [s for s in re.split(r"[\\/]+", path) if s not in ("", ".", "..")]
+    if segs and re.fullmatch(r"[A-Za-z]:", segs[0]):
+        segs = segs[1:]
+    if any(sync.odd_segment(s) for s in segs):
+        deny("Ambiguous file name (trailing dot/space, ':' stream, 8.3 short name, "
+             "control or non-normalised characters): use a plain name.")
+        return
     if inside(target, SHARED) or inside(target, PEOPLE):
-        rel = os.path.relpath(target, norm(ROOT)).split(os.sep)
-        if any(s.startswith(".") for s in rel) or rel[-1].casefold() in INSTRUCTION_FILES:
+        rel = [unicodedata.normalize("NFKC", s).casefold()
+               for s in os.path.relpath(target, norm(ROOT)).split(os.sep)]
+        if any(s.startswith(".") for s in rel) or rel[-1] in INSTRUCTION_FILES:
             deny("No instruction files (CLAUDE.md, AGENTS.md) or dot-files in people/ or "
                  "shared/: they would act as instructions/settings for later sessions.")
+            return
+        if len(rel) == 3 and rel[0] == "people" and rel[2] == "profile.md":
+            deny("profile.md is written only by tools/whoami.py (identity evidence). "
+                 "To change the language: python tools/whoami.py --language <code>.")
             return
     if inside(target, SHARED):
         return

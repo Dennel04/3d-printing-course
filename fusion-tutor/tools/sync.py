@@ -60,6 +60,8 @@ def needs_review(path, modes):
             or any(s.startswith(".") for s in parts)    # .claude, .mcp.json, .whoami, .git*
             or parts[-1] in INSTRUCTION_FILES):         # CLAUDE.md / AGENTS.md anywhere
         return True
+    if parts[:2] == ["fusion-tutor", "people"] and parts[-1] == "profile.md":
+        return True                                     # identity evidence, see whoami.py
     if parts[0] == "fusion-tutor" or not raw[0].isascii():
         return not (len(parts) >= 3 and raw[0].isascii() and raw[1].isascii()
                     and parts[1] in ("people", "shared"))

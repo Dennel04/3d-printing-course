@@ -9,6 +9,14 @@ A guess or conflicting evidence means the tutor MUST ask the student; with
 no evidence at all it asks too. `.whoami` caches a SURE answer for this
 computer + Windows user (not in git).
 
+The repo is public, so profiles store evidence only as salted SHA-256
+fingerprints (`- email: h:...`), never the e-mail, name, Windows user or
+computer itself. The tutor can't edit profile.md (the guard blocks it); only
+this script writes it, and only on a GitHub-account or confirmed identity.
+Fingerprints of guessable values (a known e-mail, a name) can still be
+checked by someone who already knows the value: they hide, they don't
+encrypt.
+
   python tools/whoami.py                 -> one line, see main() for the forms
   python tools/whoami.py --set LOGIN     -> the student confirmed: bind people/LOGIN/
   python tools/whoami.py --language CODE -> set my language (en, ru, et, ...), logged in the profile
@@ -20,6 +28,7 @@ access to the repo.
 """
 import datetime
 import getpass
+import hashlib
 import json
 import os
 import re
@@ -36,7 +45,8 @@ LOGIN_RE = re.compile(r"^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$")
 LANG_RE = re.compile(r"^[a-z]{2,3}(?:-[A-Za-z]{2,4})?$")
 DEFAULT_LANGUAGE = "en"
 SUBDIRS = ("log", "research", "models", "docs")
-FIELDS = ("git_email", "email", "os_user", "name", "computer", "language")
+FIELDS = ("email", "os_user", "name_token", "computer", "language")
+SALT = "fusion-tutor/3d-printing-course"
 SURE_SOURCES = ("cache", "set", "github", "git_email", "email", "os_user")
 # Shared lab/guest accounts identify nobody: no os_user evidence, no cache.
 GENERIC_USERS = {"student", "students", "user", "users", "guest", "admin", "administrator",
@@ -70,6 +80,12 @@ def machine(slow=False):
         m["name"] = sh(["powershell", "-NoProfile", "-Command",
                         '([adsi]"WinNT://$env:USERDOMAIN/$env:USERNAME,user").FullName'], 10)
     return m
+
+
+def fp(kind, value):
+    """Fingerprint stored in a public profile instead of the value itself."""
+    data = f"{SALT}|{kind}|{value.strip().casefold()}".encode("utf-8")
+    return "h:" + hashlib.sha256(data).hexdigest()[:20]
 
 
 def profile_path(login):
@@ -129,14 +145,13 @@ def identify(use_cache=True, network=True, slow=False):
         gh = sh(["gh", "api", "user", "--jq", ".login"])
         if LOGIN_RE.match(gh):
             sure["github"] = canonical(gh)
-    for field, value in (("git_email", m["git_email"]), ("email", m["email"]),
-                         ("os_user", "" if generic_account() else m["os_user"].lower())):
+    for source, kind, value in (("git_email", "email", m["git_email"]), ("email", "email", m["email"]),
+                                ("os_user", "os_user", "" if generic_account() else m["os_user"])):
         if not value:
             continue
-        hits = [l for l, k in profs.items()
-                if value in k[field] or (field.endswith("email") and value in k["git_email"] + k["email"])]
+        hits = [l for l, k in profs.items() if fp(kind, value) in k[kind]]
         if len(hits) == 1:
-            sure[field] = hits[0]
+            sure[source] = hits[0]
     logins = set(sure.values())
     if len(logins) > 1:
         return {"login": None, "source": "conflict", "sure": False, "evidence": sure}
@@ -147,11 +162,12 @@ def identify(use_cache=True, network=True, slow=False):
     guess = {}
     name_tokens = tokens(m["name"]) | tokens(m["git_name"]) | (set() if generic_account() else tokens(m["os_user"]))
     if name_tokens:
+        mine = {fp("name_token", t) for t in name_tokens}
         hits = [l for l, k in profs.items()
-                if name_tokens & (tokens(" ".join(k["name"])) | tokens(l))]
+                if mine & (set(k["name_token"]) | {fp("name_token", t) for t in tokens(l)})]
         if len(hits) == 1:
             guess["name"] = hits[0]
-    hits = [l for l, k in profs.items() if m["computer"].lower() in k["computer"]]
+    hits = [l for l, k in profs.items() if fp("computer", m["computer"]) in k["computer"]]
     if len(hits) == 1:
         guess["computer"] = hits[0]
     logins = set(guess.values())
@@ -204,8 +220,8 @@ def ensure(login, m=None, record=True):
         with open(prof, "w", encoding="utf-8", newline="\n") as f:
             f.write(f"# {login}\n\n"
                     f"Created {datetime.date.today().isoformat()}. The tutor recognises the student by\n"
-                    "these lines (see tools/whoami.py) and speaks `language`. Lines\n"
-                    "`- key: value` can be added.\n\n"
+                    "these fingerprints (see tools/whoami.py) and speaks `language`.\n"
+                    "Written by tools/whoami.py only.\n\n"
                     f"- github: {login}\n"
                     f"- language: {DEFAULT_LANGUAGE}\n")
     if not record:
@@ -213,10 +229,13 @@ def ensure(login, m=None, record=True):
     m = m or machine(slow=True)
     have = profile_fields(login)
     add = []
-    for field, value in (("name", m["name"]), ("email", m["email"]), ("git_email", m["git_email"]),
-                         ("os_user", "" if generic_account() else m["os_user"]), ("computer", m["computer"])):
-        if value and value.lower() not in have[field]:
-            add.append(f"- {field}: {value}\n")
+    evidence = [("email", m["email"]), ("email", m["git_email"]),
+                ("os_user", "" if generic_account() else m["os_user"]), ("computer", m["computer"])]
+    evidence += [("name_token", t) for t in sorted(tokens(m["name"]) | tokens(m["git_name"]))]
+    for field, value in evidence:
+        h = fp(field, value) if value else ""
+        if h and h not in have[field] and f"- {field}: {h}\n" not in add:
+            add.append(f"- {field}: {h}\n")
     if add:
         lines = open(prof, encoding="utf-8").read().splitlines(keepends=True)
         at = max((i for i, l in enumerate(lines) if re.match(r"^- (github|" + "|".join(FIELDS) + "):", l)),
@@ -265,6 +284,9 @@ def main(argv):
         code = argv[1].lower()
         if not LANG_RE.match(code):
             sys.exit(f"Not a language code (en, ru, et, ...): {argv[1]!r}")
+        if language(login) == code:
+            print(f"login {login} language {code} (unchanged)")
+            return
         old = set_language(login, code)
         print(f"login {login} language {old} -> {code}")
         return
