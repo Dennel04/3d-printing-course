@@ -75,6 +75,12 @@ cup holder (not in the model).
 
 - The instructor allowed putting the XIAO camera on this square, not only on
   the suction cup holder as the assignment text says.
+  - **Update 2026-10-04 (Denys's words):** the permission is for the whole
+    team and wider: the camera may be mounted **anywhere** on the robot, not
+    only on the suction cup holder. It is about the camera only; replacing the
+    flange tool holder itself (Lab 2 part 4: "Uut tööriistahoidikut sa ei
+    tee") is a separate question. Not in writing: record it in the lab README
+    devlog with the date.
 - Plus: the cable doesn't twist when J4 turns. To think about: the glass in
   the frame rotates with J4; can the square see the point under the suction
   cup, and in Lab 3 the syringe tip.
