@@ -4,15 +4,20 @@
 папки, лабы и то, что студент сам держит в индексе, не трогает.
 
   python tools/sync.py pull                -> подтянуть команду (rebase, autostash)
-  python tools/sync.py pull --accept       -> то же, когда изменился сам учитель
+  python tools/sync.py pull --accept SHA   -> применить ровно SHA, просмотренный человеком
   python tools/sync.py push "сообщение"    -> commit своих путей + push
 
-Код учителя (.claude/, tools/, CLAUDE.md, AGENTS.md, .mcp.json, templates/)
-выполняется как хуки и инструкции на каждой машине. Если pull его меняет,
-sync ничего не применяет и показывает изменения: человек смотрит их и сам
-запускает `pull --accept` (учителю это без одобрения не разрешено).
+Хуки, настройки и инструкции (tools/, .claude/, CLAUDE.md, …) выполняются
+или читаются агентом на каждой машине. Поэтому без вопросов pull применяет
+только «данные»: обычные файлы в people/ и shared/ учителя и работу в лабах.
+Всё остальное (белый список, а не чёрный; регистр букв не важен — Windows
+его не различает) — только после просмотра: sync показывает файлы и SHA,
+человек смотрит diff и сам запускает `pull --accept SHA` (учителю это без
+одобрения не разрешено). Применяется ровно проверенный SHA, а не то, что
+окажется на GitHub через секунду.
 """
 import os
+import re
 import subprocess
 import sys
 
@@ -20,9 +25,10 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import whoami  # noqa: E402
 
 COURSE = os.path.dirname(whoami.ROOT)
-TUTOR_CODE = [f"fusion-tutor/{p}" for p in
-              (".claude", "tools", "CLAUDE.md", "AGENTS.md", ".mcp.json", "templates")]
-
+DATA_DIRS = ("fusion-tutor/people/", "fusion-tutor/shared/")
+INSTRUCTION_FILES = {"claude.md", "claude.local.md", "agents.md"}
+SPECIAL_MODES = {"120000", "160000"}  # симлинк, submodule
+SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 
 def git(*args, check=True):
     r = subprocess.run(["git", *args], cwd=COURSE, capture_output=True,
@@ -32,16 +38,47 @@ def git(*args, check=True):
     return r
 
 
-def pull(accept=False):
+def needs_review(path, modes):
+    """True, если изменение может исполниться или стать инструкцией агента."""
+    p = path.lower()
+    parts = p.split("/")
+    return (bool(modes & SPECIAL_MODES)
+            or len(parts) == 1                          # файлы в корне курса
+            or any(s.startswith(".") for s in parts)    # .claude, .mcp.json, .whoami, .git*
+            or parts[-1] in INSTRUCTION_FILES           # CLAUDE.md / AGENTS.md где угодно
+            or (p.startswith("fusion-tutor/") and not p.startswith(DATA_DIRS)))
+
+
+def incoming(target):
+    """Пути, которые меняет target относительно общей с HEAD базы, с режимами."""
+    raw = git("diff", "--raw", "-z", "--no-renames", f"HEAD...{target}").stdout.split("\0")
+    out = {}
+    for meta, path in zip(raw[0::2], raw[1::2]):
+        if meta.startswith(":"):
+            old_mode, new_mode = meta[1:].split()[:2]
+            out[path] = {old_mode, new_mode}
+    return out
+
+
+def pull(accept=None):
     git("fetch", "--quiet")
-    upstream = git("rev-parse", "--abbrev-ref", "@{upstream}").stdout.strip()
-    changed = git("diff", "--stat", f"HEAD...{upstream}", "--", *TUTOR_CODE).stdout.strip()
-    if changed and not accept:
+    upstream = git("rev-parse", "@{upstream}").stdout.strip()
+    if accept is None:
+        target = upstream
+    else:
+        if not SHA_RE.match(accept):
+            raise RuntimeError("--accept ждёт полный SHA из сообщения sync.py pull.")
+        if git("merge-base", "--is-ancestor", accept, upstream, check=False).returncode != 0:
+            raise RuntimeError(f"{accept[:7]} нет в истории GitHub — проверь SHA.")
+        target = accept
+    gated = sorted(p for p, m in incoming(target).items() if needs_review(p, m))
+    if gated and accept is None:
         raise RuntimeError(
-            "В GitHub изменился сам учитель (хуки/инструкции) — без просмотра не "
-            "применяю:\n" + changed + f"\n\nПосмотреть: git diff HEAD...{upstream} -- fusion-tutor\n"
-            "Если всё в порядке: python tools/sync.py pull --accept")
-    r = git("pull", "--rebase", "--autostash", check=False)
+            "В GitHub изменились хуки/настройки/инструкции — без просмотра не применяю:\n  "
+            + "\n  ".join(gated)
+            + f"\n\nПосмотреть: git diff HEAD...{target} -- " + " ".join(f'"{p}"' for p in gated)
+            + f"\nЕсли всё в порядке: python tools/sync.py pull --accept {target}")
+    r = git("rebase", "--autostash", target, check=False)  # ровно проверенный коммит
     if r.returncode != 0:
         git("rebase", "--abort", check=False)
         raise RuntimeError("pull не удался (конфликт?), ничего не изменено:\n" + r.stdout + r.stderr)
@@ -79,7 +116,12 @@ def push(message):
 
 def main(argv):
     if argv[:1] == ["pull"]:
-        pull(accept=argv[1:] == ["--accept"])
+        if argv[1:2] == ["--accept"] and len(argv) == 3:
+            pull(accept=argv[2])
+        elif len(argv) == 1:
+            pull()
+        else:
+            sys.exit(__doc__)
         print("Подтянуто.")
     elif argv[:1] == ["push"] and len(argv) >= 2:
         push(" ".join(argv[1:]))
