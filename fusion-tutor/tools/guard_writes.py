@@ -8,8 +8,8 @@ and even there never an instruction file (CLAUDE.md, AGENTS.md) or a
 dot-name, which would plant instructions/settings for later sessions.
 Lab publishing: Edit/Write inside 3d-print/labN/ and the commands
 `tools/lab.py copy|commit` are never allowed silently: the hook answers "ask",
-so the student sees and approves every change (denied in bypass mode, where
-nobody would). Never there: assignment-EST.md, instruction files, dot-names,
+so the student sees and approves every change (denied in any mode where no
+person sees the prompt: bypass, auto, dontAsk). Never there: assignment-EST.md, instruction files, dot-names,
 or Write over an existing file (nothing is overwritten; Edit appends).
 Everything else is denied: the rest of the course, other people's people/<other>/ and
 the tutor itself (.claude/ incl. settings.local.json, or the tutor could
@@ -35,6 +35,7 @@ READ_TOOLS = ("Read", "Glob", "Grep")
 PEOPLE = os.path.join(ROOT, "people")
 SHARED = os.path.join(ROOT, "shared")
 INSTRUCTION_FILES = {"claude.md", "claude.local.md", "agents.md"}
+PROMPT_MODES = {"default", "acceptEdits", "plan"}  # modes where "ask" reaches a person
 
 
 def norm(p):
@@ -66,9 +67,10 @@ def is_course(folder):
 
 def student_approves(call, what):
     """Lab changes: the student sees each one; nobody can in bypass mode."""
-    if call.get("permission_mode") == "bypassPermissions":
-        deny(f"{what} needs the student's approval, and bypass mode shows no prompt. "
-             "Restart the tutor without --dangerously-skip-permissions.")
+    mode = call.get("permission_mode")
+    if mode not in PROMPT_MODES:  # allowlist: bypass, auto (a classifier answers), dontAsk, unknown
+        deny(f"{what} needs the student's own click, and permission mode {mode!r} doesn't "
+             "show them a prompt. Restart the tutor in the default or acceptEdits mode.")
         return
     me, source = whoami.resolve()
     if not me or not whoami.is_sure(source):

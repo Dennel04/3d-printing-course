@@ -118,8 +118,8 @@ rules: source + STL + PrusaSlicer 3MF per printed version, `-vN` names in
 (Estonian, the existing format), nothing overwritten or deleted,
 `assignment-EST.md` never touched. Files only via `tools/lab.py copy`, the
 README only via Edit, the commit only via `tools/lab.py commit`; the hook
-shows each of these to the student for approval and denies them in bypass
-mode. Anything else in the course (other files, `../AGENTS.md`, study-ru/)
+shows each of these to the student for approval and denies them in modes
+without a prompt (bypass, auto, dontAsk). Anything else in the course (other files, `../AGENTS.md`, study-ru/)
 stays read-only.
 
 ## Pre-flight
