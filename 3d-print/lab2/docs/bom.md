@@ -8,3 +8,4 @@ Lisa tellimusse ainult meeskonna kinnitatud kogus. Iga rea põhjendus seostub ko
 | | XIAO ESP32S3 Sense kaamerale sobiv toide ja kaabel | Tööriistal oleva kaamera toitevalik tuleb enne tellimist läbi proovida ning pinge ja vool kinnitada. | katsetada |
 | | USB UHD veebikaamera ja USB-kaabel | Laua kohal olev kaamera peab nägema kogu ruudustikku ja robotit. Kontrollida, kas seade on laboris olemas. | kontrollimata |
 | | Kinnitusvahendid, tüüp ja mõõt pärast prototüüpi | Kaamera kinnitamiseks iminapa tööriistahoidikule ja/või postiosade ühendamiseks; valida pärast liideste mõõtmist. | määramata |
+| 8 | M3 × 6 sisekuuskantpeaga kruvi (DIN 912 / ISO 4762) | Haarats (`gripper-attachment`): 4 tk flantsi külge, 4 tk iminapa külge. Pea all 2 mm prinditud materjali, keermesse ~4 mm. | kontrollida laborist |

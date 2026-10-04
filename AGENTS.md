@@ -41,6 +41,8 @@ electronics course drives the display.
       src/  stl/  3mf/
     camera-mounts/      <- tool camera mount and overhead camera post
       src/  stl/  3mf/
+    gripper-attachment/ <- MG400 gripper: flange boss, AtomS3R/battery fork, suction cup and syringe mounts
+      src/  stl/  3mf/
   lab3/
     README.md           <- Lab 3 checklist, known inputs, file index, and devlog
     assignment-EST.md   <- original assignment text, unmodified
