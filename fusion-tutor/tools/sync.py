@@ -16,10 +16,12 @@
 одобрения не разрешено). Применяется ровно проверенный SHA, а не то, что
 окажется на GitHub через секунду.
 """
+import json
 import os
 import re
 import subprocess
 import sys
+import unicodedata
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import whoami  # noqa: E402
@@ -38,15 +40,28 @@ def git(*args, check=True):
     return r
 
 
+def odd_segment(s):
+    """Имя, которое Windows/NTFS может прочитать не так, как git."""
+    return (s != s.rstrip(". ")                       # NTFS обрезает точки/пробелы в конце
+            or any(ord(c) < 32 or c in ':\\*?"<>|' for c in s)  # потоки ADS, \, управляющие
+            or re.search(r"~\d", s) is not None         # короткие имена 8.3 (FUSION~1)
+            or unicodedata.normalize("NFC", s) != s)
+
+
 def needs_review(path, modes):
     """True, если изменение может исполниться или стать инструкцией агента."""
-    p = path.lower()
-    parts = p.split("/")
-    return (bool(modes & SPECIAL_MODES)
-            or len(parts) == 1                          # файлы в корне курса
+    raw = path.split("/")
+    if modes & SPECIAL_MODES or any(odd_segment(s) for s in raw):
+        return True
+    parts = [unicodedata.normalize("NFKC", s).casefold() for s in raw]
+    if (len(parts) == 1                                 # файлы в корне курса
             or any(s.startswith(".") for s in parts)    # .claude, .mcp.json, .whoami, .git*
-            or parts[-1] in INSTRUCTION_FILES           # CLAUDE.md / AGENTS.md где угодно
-            or (p.startswith("fusion-tutor/") and not p.startswith(DATA_DIRS)))
+            or parts[-1] in INSTRUCTION_FILES):         # CLAUDE.md / AGENTS.md где угодно
+        return True
+    if parts[0] == "fusion-tutor" or not raw[0].isascii():
+        return not (len(parts) >= 3 and raw[0].isascii() and raw[1].isascii()
+                    and parts[1] in ("people", "shared"))
+    return False
 
 
 def incoming(target):
@@ -75,8 +90,9 @@ def pull(accept=None):
     if gated and accept is None:
         raise RuntimeError(
             "В GitHub изменились хуки/настройки/инструкции — без просмотра не применяю:\n  "
-            + "\n  ".join(gated)
-            + f"\n\nПосмотреть: git diff HEAD...{target} -- " + " ".join(f'"{p}"' for p in gated)
+            # имена из чужих коммитов — только экранированными и не в команде
+            + "\n  ".join(json.dumps(p, ensure_ascii=False) for p in gated)
+            + f"\n\nПосмотреть: git diff HEAD...{target}"
             + f"\nЕсли всё в порядке: python tools/sync.py pull --accept {target}")
     r = git("rebase", "--autostash", target, check=False)  # ровно проверенный коммит
     if r.returncode != 0:
