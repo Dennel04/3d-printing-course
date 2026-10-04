@@ -8,15 +8,12 @@
       "Bash(ls *)",
       "PowerShell(Get-ChildItem *)",
       "mcp__fusion"
-    ],
-    "additionalDirectories": [
-      ".."
     ]
   },
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit|Read|Glob|Grep",
         "hooks": [
           {
             "type": "command",
