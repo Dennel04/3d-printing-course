@@ -1,4 +1,4 @@
-# Локальное: кто сидит за этим компьютером, действия до определения участника
+# Local only: who sits at this computer, actions before the student is identified
 /.whoami
 /.unassigned-actions.jsonl
 .claude/settings.local.json

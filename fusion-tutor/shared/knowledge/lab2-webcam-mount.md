@@ -1,60 +1,62 @@
-# Lab 2, часть 5 — крепление вебкамеры над столом
+# Lab 2, part 5: mounting the webcam above the table
 
-Решение от 2026-10-04 (занятие с учителем). Числа — из datasheet, ещё **не
-проверены штангенциркулем**.
+Author: Dennel04 (with the tutor). Decision of 2026-10-04 (lesson with the
+tutor). Numbers are from the datasheet, **not yet checked with calipers**.
 
-## Камера
+## Camera
 
-Verbatim AWC-03, код 49580 ([datasheet](https://cdn-reichelt.de/documents/datenblatt/E910/VERBATIM_49580_DB-EN.pdf)):
+Verbatim AWC-03, code 49580 ([datasheet](https://cdn-reichelt.de/documents/datenblatt/E910/VERBATIM_49580_DB-EN.pdf)):
 
-- габарит 106 × 55 × 42,5 мм (LxWxH, какая цифра какой оси — проверить), 129 г
-- угол обзора 120° **по диагонали**, кадр 3840 × 2160 (16:9)
-- автофокус от 15 см
-- подставка для монитора с шарниром: поворот 360°, наклон 120°
-- резьба под штатив 1/4" (стандарт 1/4"-20 UNC)
-- кабель USB-A 1,5 м
+- envelope 106 x 55 x 42.5 mm (LxWxH; which number is which axis: to check), 129 g
+- 120° field of view **diagonal**, frame 3840 x 2160 (16:9)
+- autofocus from 15 cm
+- monitor stand with a hinge: 360° rotation, 120° tilt
+- 1/4" tripod thread (standard 1/4"-20 UNC)
+- USB-A cable, 1.5 m
 
-Готовой CAD-модели нет ни у Verbatim, ни на GrabCAD/Printables/Thingiverse
-(искали 2026-10-04) → моделируем сами: габаритный блок + то, к чему крепимся.
+No ready CAD model from Verbatim or on GrabCAD/Printables/Thingiverse
+(searched 2026-10-04) -> we model it ourselves: an envelope block + what we
+attach to.
 
-## Решение
+## Decision
 
-1. **Подставку оставляем**, камеру не разбираем — лабораторное имущество,
-   защёлки ломаются, выигрыша нет.
-2. **Держит металлический штативный винт 1/4"-20 UNC** снизу через верхнюю
-   площадку стойки в резьбу подставки. Металл в заводской резьбе, а не
-   печатная резьба в PLA. Винта нет в лабе → строка в `docs/bom.md`.
-3. **Повторяемость — от гнезда, а не от винта.** Карман на площадке точно по
-   ноге подставки; винт только прижимает. Задание: *«kuju, mis lubab ainult
-   ühte asendit, mitte hõõrdumine»*. Зазор кармана — по числам Lab 1
-   (это пункт «lõtk ja kust see tuli» в оценке).
-4. **Шарнир фиксирует упор.** Угол подбираем, держа камеру над столом в руке;
-   потом печатный клин-упор, на который ложится голова камеры.
-5. **Стойка — в угловой клетке Gridfinity (G-5 / G+5)**, основание на
-   несколько клеток, стойка треугольником или с рёбрами: *«Jäikus tuleb
-   kujust, mitte täitest»*. Выше стола принтера → печать частями, стык не
-   должен стать самым слабым и самым люфтящим местом; направление слоёв —
-   по числу излома из Lab 1.
+1. **Keep the stand**, don't take the camera apart: it's lab property, the
+   latches break, nothing to gain.
+2. **A metal 1/4"-20 UNC tripod screw holds it**, from below through the top
+   plate of the post into the stand's thread. Metal in the factory thread, not
+   a printed thread in PLA. The lab has no such screw -> a line in `docs/bom.md`.
+3. **Repeatability comes from the pocket, not the screw.** A pocket on the
+   plate exactly the shape of the stand's foot; the screw only clamps. The
+   assignment: *"kuju, mis lubab ainult ühte asendit, mitte hõõrdumine"*
+   (a shape that allows only one position, not friction). Pocket clearance
+   from the Lab 1 numbers (this is the "lõtk ja kust see tuli" item in grading).
+4. **A stop locks the hinge.** Find the angle by holding the camera above the
+   table by hand; then a printed wedge stop the camera head rests on.
+5. **Post in a corner Gridfinity cell (G-5 / G+5)**, base over several cells,
+   triangular post or with ribs: *"Jäikus tuleb kujust, mitte täitest"*
+   (stiffness comes from shape, not infill). Taller than the printer bed ->
+   print in parts; the joint must not become the weakest and loosest spot;
+   layer direction by the Lab 1 break number.
 
-## Что измерить перед моделью
+## Measure before modelling
 
-| Что | Зачем |
+| What | Why |
 |---|---|
-| Нога подставки: L × W × толщина, форма | Карман |
-| Положение резьбы на ноге (от краёв) | Отверстие под винт |
-| Глубина резьбы | Длина винта, не упереться в дно |
-| Центр объектива: высота над ногой и вынос вперёд при выбранном угле | Высота стойки, расчёт кадра |
-| Самая высокая точка руки MG400 (станцией, линейкой) | Камера и стойка выше неё |
+| Stand foot: L x W x thickness, shape | The pocket |
+| Thread position on the foot (from the edges) | The screw hole |
+| Thread depth | Screw length, not bottoming out |
+| Lens centre: height above the foot and forward offset at the chosen angle | Post height, frame calculation |
+| Highest point of the MG400 arm (station, ruler) | Camera and post above it |
 
-## Почему не иначе
+## Why not otherwise
 
-- **Снять подставку** — риск сломать, теряем шарнир, нужна своя посадка.
-- **Только винт** — камера проворачивается вокруг винта, угол уходит.
-- **Край стола** — вариант из задания, но Gridfinity уже даёт «на то же
-  место» без нового стандарта.
+- **Remove the stand**: risk of breaking it, we lose the hinge, need our own fit.
+- **Screw only**: the camera turns around the screw, the angle drifts.
+- **Table edge**: an option in the assignment, but Gridfinity already gives
+  "the same place every time" without a new standard.
 
-## Модель в Fusion
+## Model in Fusion
 
-`3d-printing / lab2-cameras-reference`: компоненты `XIAO_ESP32S3_Sense`
-(STEP от Seeed) и `Verbatim_AWC03_49580` (габаритный блок, параметры
+`3d-printing / lab2-cameras-reference`: components `XIAO_ESP32S3_Sense`
+(STEP from Seeed) and `Verbatim_AWC03_49580` (envelope block, parameters
 `webcam_L/W/H`, `webcam_fov_diag`, `webcam_offset`).

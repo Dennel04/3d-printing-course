@@ -1,37 +1,36 @@
-# Прогресс
+# Progress
 
-Обновляется в конце каждого занятия. Статусы: `—` не начато, `🟡` пробовал /
-с подсказками, `🟢` делаю сам уверенно. Рядом — дата последней проверки.
+Updated at the end of every lesson. Statuses: `—` not started, `🟡` tried /
+with hints, `🟢` do it confidently on my own. Next to it: date last checked.
 
-## Уже сделано в курсе (до учителя)
+## Already done in the course (before the tutor)
 
-- Lab 1: куб для теста допусков (`cube-tolerance-v1.f3d`), держатель
-  ручки для MG400 v1→v2 (`Pastaka_kinnitus_robotile.f3d`,
-  `Pastaka_sisu_rakis.f3d`). Кто что моделировал сам — уточнить на первом
-  занятии.
-- Вывод Lab 1 по допускам: 0,4 мм — свободно, 0,2 мм — заклинивает.
+- Lab 1: tolerance test cube (`cube-tolerance-v1.f3d`), pen holder for the
+  MG400 v1 -> v2 (`Pastaka_kinnitus_robotile.f3d`, `Pastaka_sisu_rakis.f3d`).
+  Who modelled what themselves: to clarify at the first lesson.
+- Lab 1 tolerance result: 0.4 mm fits freely, 0.2 mm jams.
 
-## Карта навыков
+## Skill map
 
-### Эскиз
-| Навык | Статус | Дата |
+### Sketch
+| Skill | Status | Date |
 |---|---|---|
 | Line / Rectangle / Circle / Arc | — | |
 | Sketch Dimension | — | |
 | Constraints (coincident, horizontal, tangent, symmetry, equal) | — | |
-| Полностью определённый эскиз (всё чёрное) | — | |
+| Fully constrained sketch (all black) | — | |
 | Construction lines, Project / Include | — | |
-| Offset, Trim, Mirror, Pattern в эскизе | — | |
+| Offset, Trim, Mirror, Pattern in a sketch | — | |
 
-### Параметры и design intent
-| Навык | Статус | Дата |
+### Parameters and design intent
+| Skill | Status | Date |
 |---|---|---|
 | User Parameters (Change Parameters) | — | |
-| Размеры через имена параметров и формулы | — | |
-| Модель перестраивается при смене параметра без ошибок | — | |
+| Dimensions through parameter names and formulas | — | |
+| The model rebuilds without errors when a parameter changes | — | |
 
-### Тела и операции
-| Навык | Статус | Дата |
+### Bodies and features
+| Skill | Status | Date |
 |---|---|---|
 | Extrude (New Body / Join / Cut, To Object) | — | |
 | Revolve | — | |
@@ -42,34 +41,52 @@
 | Combine | — | |
 | Sweep / Loft | — | |
 
-### Сборка
-| Навык | Статус | Дата |
+### Assembly
+| Skill | Status | Date |
 |---|---|---|
-| Компоненты вместо тел | — | |
+| Components instead of bodies | — | |
 | Joints / As-built Joints | — | |
 | Interference / Section Analysis | — | |
 
-### Под печать
-| Навык | Статус | Дата |
+### For printing
+| Skill | Status | Date |
 |---|---|---|
-| Допуски посадки в модели (зазор на сторону vs общий) | — | |
-| Экспорт STL / 3MF | — | |
-| Проектирование без поддержек (углы, мосты) | — | |
+| Fit tolerances in the model (per-side vs total clearance) | — | |
+| Export STL / 3MF | — | |
+| Designing without supports (angles, bridges) | — | |
+## Recurring mistakes
 
-## Повторяющиеся ошибки
+_(none has recurred yet; candidates to check in the next lessons)_
 
-_(пока пусто — заполняется по ходу занятий)_
+- 2026-10-04: confusion about "what rotates": thought the clamp on the square
+  "would spin", missing that a non-round fit itself stops rotation. Check on
+  a fit/locking task.
 
-## Исправлено
+## Strengths (observations)
 
-_(сюда переносятся ошибки, которые больше не повторяются)_
+- 2026-10-04: checks the model against reality: found on his own that the
+  screw holes were only on one wall; measured the screw himself and asked
+  about the thread length.
 
-## Текущие цели
+## Fixed
 
-1. Первое занятие: диагностика — посмотреть свои модели Lab 1 вместе с
-   учителем, честно отметить статусы выше.
-2. Lab 2: смоделировать в Fusion самому 1×1 держатель Gridfinity с
-   параметрами (сравнить с OpenSCAD-версией `lab2/src/gridfinity-calibration-v2.scad`).
-3. Lab 3 (выдают 27.10): заранее потренировать то, что там понадобится —
-   компоненты vs тела, Interference, тело-«конус» света, карман под гайку,
-   параметр размера шприца, пружинящий зажим по числам Lab 1.
+_(mistakes that no longer recur move here)_
+
+## Current goals
+
+0. **(2026-10-04, the main thing now)** Lab 2 cameras. The XIAO holder on the
+   MG400 square v1 was made by the tutor (`xiao-square-mount-v1`, write-up in
+   `shared/knowledge/mg400-end-square.md`). Next, the student himself:
+   measurements -> Change Parameters -> v2 improvements (board latch, clip
+   arm ribs, lip chamfers) **with his own hands**, the tutor gives hints.
+   Webcam: decision in `shared/knowledge/lab2-webcam-mount.md`, measurements
+   needed. Skills in the map above did not change on 04.10: the student did
+   not do the modelling.
+1. First lesson: diagnosis: look at my Lab 1 models together with the tutor
+   and honestly mark the statuses above. _(not done: on 04.10 we worked on the
+   Lab 2 cameras; do it when there is a first model of my own)_
+2. Lab 2: model a parametric 1x1 Gridfinity holder in Fusion myself (compare
+   with the OpenSCAD version `lab2/src/gridfinity-calibration-v2.scad`).
+3. Lab 3 (issued 27.10): practise in advance what it will need: components vs
+   bodies, Interference, a light "cone" body, a nut pocket, a syringe size
+   parameter, a spring clamp using the Lab 1 numbers.

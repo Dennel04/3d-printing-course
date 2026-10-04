@@ -1,79 +1,94 @@
-# fusion-tutor — учитель по Fusion для команды
+# fusion-tutor: a Fusion tutor for the team
 
-Наставник по моделированию в Autodesk Fusion на Claude Code: смотрит твою модель
-через Fusion MCP, подсказывает лесенкой (вопрос → инструмент → шаги), помнит
-прошлые занятия — **у каждого участника своя память**. Учит, а не моделирует за
-тебя; по просьбе может сделать сам, с автоматическим чекпоинтом перед каждым
-изменением.
+A mentor for modelling in Autodesk Fusion, running on Claude Code: it looks at
+your model through Fusion MCP, gives hints step by step (question -> tool ->
+steps) and remembers past lessons: **every team member has their own memory**.
+It teaches rather than models for you; on request it can do it itself, with an
+automatic checkpoint before every change. It starts in English and switches
+to your language if you ask (saved in your profile).
 
-## Что нужно
+## What you need
 
-- [Claude Code](https://claude.com/claude-code), Python 3 и git в PATH.
-  Желательно [GitHub CLI](https://cli.github.com/) (`gh auth login`) — по нему
-  учитель узнаёт тебя.
-- Fusion: Preferences → General → API → включить **Fusion MCP Server**
-  (порт 27182, путь `/mcp`).
+- [Claude Code](https://claude.com/claude-code), Python 3 and git on PATH.
+  Preferably [GitHub CLI](https://cli.github.com/) (`gh auth login`): it is
+  the surest way for the tutor to recognise you.
+- Fusion: Preferences > General > API > enable **Fusion MCP Server**
+  (port 27182, path `/mcp`).
 
-## Как пользоваться
+## How to use it
 
-1. `cd 3d-printing-course/fusion-tutor && claude` — запускать **именно из этой
-   папки**, иначе не подхватятся роль, команды и хуки. В первый раз: принять
-   диалог доверия и одобрить MCP-сервер `fusion`.
-2. `/lesson сегодня хочу ...` — учитель подтянет репозиторий, узнает тебя и
-   откроет твою память. В первый раз создаст `people/<твой-логин>/`.
-3. Моделируешь сам, спрашиваешь учителя, он смотрит модель.
-4. «Это для всех» / «готово для лабы» — учитель скопирует материал в `shared/`.
-5. `/rewind [N|last]` — откат документа к версии N (история не теряется) или
-   отмена последнего шага.
-6. `/lesson-end` — запись занятия, обновление прогресса, commit + push твоей
-   папки.
+1. `cd 3d-printing-course/fusion-tutor && claude`: start it **from this
+   folder**, otherwise the role, commands and hooks aren't loaded. The first
+   time: accept the trust dialog and approve the `fusion` MCP server.
+2. `/lesson today I want to ...`: the tutor pulls the repo, recognises you,
+   runs the pre-flight check and opens your memory. The first time it
+   creates `people/<your-login>/`.
+3. You model yourself, ask the tutor, it looks at the model.
+4. "This is for everyone" / "ready for the lab": the tutor copies the material
+   to `shared/`.
+5. `/rewind [N|last]`: roll the document back to version N (history is kept)
+   or undo the last step.
+6. `/lesson-end`: lesson log, progress update, commit + push of your folder.
 
-Документ в Fusion должен быть хоть раз сохранён в проект — иначе хук не даст его
-менять (откатываться было бы некуда).
+Any time: `python tools/preflight.py` (all systems check) and
+`python tools/fusion_status.py` (Fusion state + the tutor's last actions).
+The Fusion document must have been saved to a project at least once, or the
+hook won't let the tutor change it (there would be nothing to roll back to).
 
-## Как учитель узнаёт, кто ты
+## How the tutor knows who you are
 
-`tools/whoami.py`, по порядку: аккаунт GitHub (`gh api user`) → git email →
-имя компьютера (из `people/*/profile.md`). Компьютеры в аудитории общие, поэтому
-если узнал только по компьютеру — переспросит. Не узнал — спросит логин. Ответ
-запоминается для этого компьютера и пользователя Windows в `.whoami` (в git не
-идёт).
+`tools/whoami.py` matches what this computer says against
+`people/*/profile.md`:
+- **sure**: your GitHub account (`gh`), git email, university e-mail, Windows
+  user name: it just greets you;
+- **guess**: a similar name (Windows full name, git `user.name`) or the lab
+  computer you used before (lab PCs are shared): it asks "Are you X?";
+- **conflict or nothing**: it asks for your GitHub login.
+A confirmed answer is cached for this computer + Windows user in `.whoami`
+(not in git). Shared accounts like `student` are never trusted. Your language
+lives in `profile.md` (`- language: en`) with a dated history of changes.
 
-## Структура
+## Layout
 
 ```
-people/<логин>/     — у каждого своё (в git): profile, progress, my-rules,
-                      log/, research/, models/, docs/   → people/README.md
-shared/             — общее, только по слову автора    → shared/README.md
-  knowledge/          приёмы, грабли Fusion, данные деталей
-  lab-ready/labN/     готово для лабы; в 3d-print/ переносит человек
-templates/          — заготовки для новой папки участника
-CLAUDE.md, .claude/, tools/ — сам учитель
+people/<login>/     - each person's own (in git): profile, progress, my-rules,
+                      log/, research/, models/, docs/      -> people/README.md
+shared/             - for everyone, only on the author's word -> shared/README.md
+  knowledge/          techniques, Fusion pitfalls, part data
+  lab-ready/labN/     ready for the lab; a person moves it into 3d-print/
+templates/          - starting files for a new person's folder
+CLAUDE.md, AGENTS.md, .claude/, tools/ - the tutor itself
 ```
 
-## Что важно знать
+## Good to know
 
-- **Полный доступ к Fusion без запросов.** Скрипты учителя — произвольный Python
-  внутри Fusion. Защита: перед каждым изменением хук `tools/fusion_checkpoint.py`
-  сохраняет версию документа («claude checkpoint …») и пишет всё в
-  `people/<логин>/log/fusion-actions.jsonl`; `ui.messageBox` запрещён (вешает Fusion).
-- **Куда учитель пишет.** `tools/guard_writes.py` пускает запись только в твою
-  папку и в `shared/`; курс, чужие папки и сам учитель — только чтение.
-  Shell-команды, которые меняют курс (`sed`, `cp` …), Claude Code спросит у тебя —
-  не одобряй их. Это защита от ошибок, а не песочница: Python-скрипт в Fusion
-  технически может записать что угодно на диск.
-- **Git — только `tools/sync.py`.** Коммитит лишь `people/<ты>/` и `shared/`, твои
-  лабы и то, что у тебя в индексе, не трогает; твои собственные неотправленные
-  коммиты не пушит.
-- **Изменения учителя из GitHub не применяются молча.** Без вопросов `sync.py
-  pull` берёт только данные: файлы в `people/`, `shared/` и работу в лабах. Если
-  поменялось что-то, что исполняется или читается как инструкция (`tools/`,
-  `.claude/`, любой `CLAUDE.md`/`AGENTS.md`, файлы в корне, симлинки …), он
-  остановится и покажет файлы и SHA. Посмотри diff и, если всё в порядке, запусти
-  `python tools/sync.py pull --accept <SHA>` сам — применится ровно то, что ты
-  смотрел (учителю это без твоего одобрения не разрешено).
-- **`whoami.py --set`** — тоже только с твоего одобрения, и он откажет, если
-  GitHub на компьютере называет другой логин. Это защита от путаницы, а не
-  аутентификация: настоящий контроль — права на push в репозиторий.
-- **Другой ИИ-агент** (Codex, Cursor …) читает `AGENTS.md` → `CLAUDE.md`, но хуки
-  там не работают — правила он соблюдает сам.
+- **Full access to Fusion without prompts.** The tutor's scripts are arbitrary
+  Python inside Fusion. Protection: the hook `tools/fusion_checkpoint.py`
+  pings Fusion before every call (a silent Fusion almost always means a dialog
+  is open), closes orbit/pan itself but never your real command, refuses to
+  open documents while others are unsaved, saves a version ("claude
+  checkpoint ...") before every change, and logs everything to
+  `people/<login>/log/fusion-actions.jsonl`. `ui.messageBox` is blocked (it
+  freezes Fusion).
+- **Where the tutor writes.** `tools/guard_writes.py` allows writes only to
+  your folder (once you are confirmed) and to `shared/`, never instruction
+  files or dot-files there; the course, other people's folders and the tutor
+  itself are read-only. Shell commands that change the course (`sed`, `cp` ...)
+  are asked of you by Claude Code: don't approve them. This guards against
+  mistakes, it is not a sandbox: a Python script in Fusion can technically
+  write anything to disk.
+- **Git only via `tools/sync.py`.** It commits just `people/<you>/` and
+  `shared/`, leaves your labs and staged files alone and never pushes your own
+  unpushed commits.
+- **The tutor's own updates from GitHub are never applied silently.** `sync.py
+  pull` takes only data without asking: files in `people/`, `shared/` and lab
+  work. If anything that runs or is read as instructions changed (`tools/`,
+  `.claude/`, any `CLAUDE.md`/`AGENTS.md`, root files, symlinks ...), it stops
+  and shows the files and a SHA. Read the diff and, if it's fine, run
+  `python tools/sync.py pull --accept <SHA>` yourself: exactly what you
+  reviewed is applied (the tutor may not do this without your approval).
+- **`whoami.py --set`** also needs your approval, and refuses if GitHub on the
+  computer names a different login. This prevents mix-ups, it is not
+  authentication: the real control is push access to the repo.
+- **Another AI agent** (Codex, Cursor ...) reads `AGENTS.md` -> `CLAUDE.md`, but
+  the hooks don't run there; it has to follow the rules itself.

@@ -6,11 +6,17 @@
     "defaultMode": "acceptEdits",
     "allow": [
       "Bash(ls *)",
+      "PowerShell(Get-ChildItem *)",
       "Bash(python tools/whoami.py)",
+      "Bash(python tools/whoami.py --language *)",
+      "Bash(python tools/preflight.py)",
+      "Bash(python tools/fusion_status.py)",
       "Bash(python tools/sync.py pull)",
       "Bash(python tools/sync.py push *)",
-      "PowerShell(Get-ChildItem *)",
       "PowerShell(python tools/whoami.py)",
+      "PowerShell(python tools/whoami.py --language *)",
+      "PowerShell(python tools/preflight.py)",
+      "PowerShell(python tools/fusion_status.py)",
       "PowerShell(python tools/sync.py pull)",
       "PowerShell(python tools/sync.py push *)",
       "mcp__fusion"
@@ -29,7 +35,7 @@
         ]
       },
       {
-        "matcher": "mcp__fusion__fusion_mcp_(execute|update)",
+        "matcher": "mcp__fusion__fusion_mcp_(execute|update|read)",
         "hooks": [
           {
             "type": "command",

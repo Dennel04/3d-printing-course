@@ -1,3 +1,3 @@
-# Мои правила моделирования
+# My modelling rules
 
-_Пополняется в конце занятий — своими словами, с датой._
+_Added at the end of lessons, in my own words, with a date._

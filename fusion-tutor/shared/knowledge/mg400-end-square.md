@@ -1,82 +1,81 @@
-# MG400 — квадрат на конце руки (под крепление камеры XIAO)
+# MG400: the square at the end of the arm (for the XIAO camera mount)
 
-Сняты 2026-10-04 с CAD-модели робота, **штангенциркулем ещё не проверены**.
+Author: Dennel04 (with the tutor). Taken on 2026-10-04 from the robot's CAD
+model, **not yet checked with calipers**.
 
-## Откуда модель
+## Where the model comes from
 
-- Официальный файл стола курса: `3d-print/lab2/reference/MG 400 rakis.f3z` (от корня курса).
-  Внутри по XREF лежит сборка робота `mg400-solidworks_asm` (импорт из
-  SolidWorks, похоже, от производителя).
-- Загружена в Fusion: проект `3d-printing` → папка `reference`
-  (`MG 400 rakis` и `mg400-solidworks_asm`). Курсовой файл не менялся.
-- `f3z` через `importManager` не импортируется, только
-  `DataFolder.uploadFile` (так написано в документации API).
+- The course's official table file: `3d-print/lab2/reference/MG 400 rakis.f3z`
+  (from the course root). Inside, the robot assembly `mg400-solidworks_asm` is
+  an XREF (imported from SolidWorks, apparently from the manufacturer).
+- Uploaded to Fusion: project `3d-printing` -> folder `reference`
+  (`MG 400 rakis` and `mg400-solidworks_asm`). The course file was not changed.
+- `f3z` doesn't import through `importManager`, only `DataFolder.uploadFile`
+  (as the API documentation says).
 
-## Размеры (деталь `2206058300-1`, крышка вокруг мотора J4)
+## Dimensions (part `2206058300-1`, the cover around the J4 motor)
 
-| Что | Значение |
+| What | Value |
 |---|---|
-| Сечение | 44 × 44 мм, ось J4 по центру |
-| Высота боковых граней | ~76 мм, сверху фаска до ~81 мм |
-| Низ квадрата → низ фланца J4 | ~13 мм (фланец ниже квадрата) |
-| Внешняя грань (от робота) | ровная, ~40 × 76 мм, отверстий нет |
-| Боковые грани (обе) | 2 отверстия Ø2,7 мм, межосевое 24 мм, симметрично оси J4, 2,5 мм над нижним краем |
-| Грань к роботу | отверстие Ø16 на ~66 мм выше низа (кабель/разъём?) |
+| Cross-section | 44 x 44 mm, J4 axis in the centre |
+| Side face height | ~76 mm, chamfer on top to ~81 mm |
+| Bottom of the square -> bottom of the J4 flange | ~13 mm (the flange is below the square) |
+| Outer face (away from the robot) | flat, ~40 x 76 mm, no holes |
+| Side faces (both) | 2 holes Ø2.7 mm, 24 mm apart, symmetric about J4, 2.5 mm above the bottom edge |
+| Face towards the robot | Ø16 hole ~66 mm above the bottom (cable/connector?) |
 
-Квадрат **не вращается с J4**: корпус мотора неподвижен, вращаются вал и
-фланец. Проверено на живом роботе (Denys) и совпадает с CAD.
+The square **does not rotate with J4**: the motor housing is fixed, the shaft
+and flange rotate. Checked on the real robot (Denys) and matches the CAD.
 
-## Открытые вопросы
+## Open questions
 
-- Сверить всё штангенциркулем на нашем роботе.
-- Отверстия Ø2,7 — скорее всего винты самой крышки. Можно ли поставить
-  через них длиннее и крепить свою деталь — спросить преподавателя.
-- Расстояние от низа квадрата до кончика присоски (зависит от
-  существующего держателя) — измерить.
+- Check everything with calipers on our robot.
+- The Ø2.7 holes are most likely the cover's own screws. Can longer screws go
+  through them to hold our part: ask the instructor.
+- Distance from the bottom of the square to the suction cup tip (depends on
+  the existing holder): measure.
 
-## Крепление v1 (2026-10-04) — `3d-printing / xiao-square-mount-v1`
+## Mount v1 (2026-10-04): `3d-printing / xiao-square-mount-v1`
 
-Робот вставлен по XREF: ось J4 = ось Z, низ квадрата = z 0, робот = +X.
-- U-хомут на 3 грани (снаружи + бока), со стороны робота «губки» `lip`
-  заходят за полосы грани (рука там ±17,5 мм, квадрат ±22). Защёлкивается
-  сбоку; не проворачивается, потому что квадрат не круглый.
-- Высота: отверстия под винты крышки M2.5 (`scr_pitch` 24, `scr_z` 2,5);
-  `skirt` 3 мм ниже квадрата, чтобы под отверстием был материал.
-- Лоток XIAO: плата скользит по рельсам с губками `blip` 0,8 мм в сторону
-  +Y до упора, объектив вниз, USB-C открыт в +Y. Ребро жёсткости.
-- Interference с роботом и XIAO: 0. Объём 12,1 см³ (~15 г сплошным PLA).
-- Все 8 эскизов полностью определены, 24 User Parameters.
+Robot inserted as XREF: J4 axis = Z axis, bottom of the square = z 0, robot = +X.
+- U-clamp around 3 faces (outer + sides); on the robot side the lips `lip`
+  reach behind the face strips (the arm there is ±17.5 mm, the square ±22).
+  Snaps on from the side; doesn't rotate because the square isn't round.
+- Height: holes for the cover's M2.5 screws (`scr_pitch` 24, `scr_z` 2.5);
+  `skirt` 3 mm below the square so there is material under the hole.
+- XIAO tray: the board slides along rails with `blip` 0.8 mm lips towards +Y
+  to the stop, lens down, USB-C open towards +Y. Stiffening rib.
+- Interference with the robot and the XIAO: 0. Volume 12.1 cm³ (~15 g solid PLA).
+- All 8 sketches fully constrained, 24 User Parameters.
 
-Дополнено в тот же день:
-- **Ошибка, найденная Denys:** вырез отверстий сначала прошёл только через
-  одну стенку (симметричный «through all» вырезал одну сторону). Исправлено
-  на два «through all» → 4 отверстия, по 2 с каждой стороны. Урок: после
-  построения проверять геометрию (сколько отверстий, где), а не только
-  Interference.
-- **Винты крышки (измерено):** общая длина с головкой 6,3 мм, головка-«грибок»
-  Ø4,62 мм. Цековка `cb_d` = 4,62 + 0,6 мм, под головкой `cb_floor` 1 мм.
-  Расчёт: резьба в плите ≈ 6,3 − высота головки − стенка крышки ~1,5. С
-  хомутом она уменьшается на `cb_floor`. Для финала винт **на 1 мм длиннее
-  заводского** (M2.5 с полукруглой головкой) → заходит в плиту ровно на ту же
-  глубину, что и заводской, упереться в дно не может. Высоту головки ещё
-  измерить.
-- **Кабель:** консоль от лотка над штекером (`tab_z0` 2 мм, чтобы не задеть
-  корпус штекера), за штекером клипса на кабель (вщёлкивается снизу,
-  `open_k` 0,75), на боковой стенке +Y мостик под стяжку (прорезь 4 × 1,6 мм).
-  Так делают «strain relief»: держать кабель сразу за разъёмом, чтобы рывок
-  шёл в корпус, а не в USB-C. `plug_l` 18 и `cable_d` 4 — **измерить свой
-  кабель**.
-- 14 эскизов, все полностью определены; Interference 0; объём 13,1 см³.
+Added the same day:
+- **A mistake found by Denys:** the hole cut first went through only one wall
+  (the symmetric "through all" cut one side). Fixed with two "through all"
+  extents -> 4 holes, 2 on each side. Lesson: after building, check the
+  geometry (how many holes, where), not just Interference.
+- **Cover screws (measured):** total length with head 6.3 mm, mushroom head
+  Ø4.62 mm. Counterbore `cb_d` = 4.62 + 0.6 mm, `cb_floor` 1 mm under the
+  head. Reasoning: thread in the plate ≈ 6.3 - head height - cover wall ~1.5.
+  The clamp reduces it by `cb_floor`. For the final version, a screw **1 mm
+  longer than stock** (M2.5 pan head) -> goes into the plate exactly as deep as
+  the stock one, can't bottom out. Head height still to measure.
+- **Cable:** an arm from the tray above the plug (`tab_z0` 2 mm, to clear the
+  plug body), a cable clip behind the plug (snaps in from below, `open_k`
+  0.75), a zip-tie bridge on the +Y side wall (slot 4 x 1.6 mm). This is
+  "strain relief": hold the cable right behind the connector so a pull goes
+  into the housing, not the USB-C. `plug_l` 18 and `cable_d` 4: **measure
+  your cable**.
+- 14 sketches, all fully constrained; Interference 0; volume 13.1 cm³.
 
-Не сделано: фиксация платы от выпадания в +Y (частично держит кабель через
-клипсу), фаски-заходы на губках, наклон камеры, проверка с держателем
-присоски (его нет в модели).
+Not done: keeping the board from sliding out towards +Y (the cable clip holds
+it partly), lead-in chamfers on the lips, camera tilt, check with the suction
+cup holder (not in the model).
 
-## Связанное
+## Related
 
-- Преподаватель разрешил ставить камеру XIAO на этот квадрат, а не только
-  на держатель присоски, как в тексте задания.
-- Плюс: кабель не закручивается при повороте J4. Подумать: стекло в кадре
-  поворачивается вместе с J4; видна ли с квадрата точка под присоской,
-  а в Lab 3 — наконечник шприца.
-- Вебкамера над столом: `lab2-webcam-mount.md`.
+- The instructor allowed putting the XIAO camera on this square, not only on
+  the suction cup holder as the assignment text says.
+- Plus: the cable doesn't twist when J4 turns. To think about: the glass in
+  the frame rotates with J4; can the square see the point under the suction
+  cup, and in Lab 3 the syringe tip.
+- Webcam above the table: `lab2-webcam-mount.md`.

@@ -1,29 +1,29 @@
 ---
-description: Закончить занятие — записать лог и обновить progress.md
+description: End the lesson: write the log and update progress.md
 ---
 
-Занятие заканчивается.
+The lesson is ending. Talk to the student in their language; write files in
+English.
 
-1. Если Fusion MCP доступен — ещё раз посмотри итоговую модель (только
-   чтение) и отметь, что в ней хорошо и что поправить.
-2. Создай или допиши `people/<логин>/log/YYYY-MM-DD.md` (сегодняшняя дата) по шаблону:
+1. If Fusion MCP is available, look at the final model once more (read only)
+   and note what is good in it and what to fix.
+2. Create or append `people/<login>/log/YYYY-MM-DD.md` (today's date) using:
 
    ```
-   ## Занятие HH:MM — <тема>
-   - Файл в Fusion: <имя документа / версия>
-   - Что делал сам:
-   - Где застрял и как разобрались:
-   - Ошибки (повторяющиеся — пометь «повтор»):
-   - Что понял (своими словами студента, если он сказал):
-   - Задание на следующий раз:
+   ## Lesson HH:MM - <topic>
+   - Fusion file: <document name / version>
+   - Did on their own:
+   - Got stuck on, and how we solved it:
+   - Mistakes (mark recurring ones "repeat"):
+   - Understood (in the student's own words, if they said it):
+   - Homework:
    ```
-3. Обнови `people/<логин>/progress.md`: статусы навыков с датой, «Повторяющиеся ошибки»,
-   «Исправлено», «Текущие цели». Ничего не удаляй — меняй статус.
-4. Если студент сформулировал полезное правило или приём — добавь его в
-   `people/<логин>/my-rules.md`. Ресерчи занятия — в его `research/`.
-   Если что-то полезно всей команде (данные детали, грабли Fusion) —
-   спроси, положить ли в `shared/`; без его «да» не клади.
-5. `python tools/sync.py push "lesson: <дата> <тема>"` — отправит только
-   его папку и `shared/`. Если push не прошёл — скажи, что коммит остался
-   локально.
-6. Покажи студенту 3–5 строк итога и задание на следующий раз.
+3. Update `people/<login>/progress.md`: skill statuses with dates, "Recurring
+   mistakes", "Fixed", "Current goals". Delete nothing: change the status.
+4. If the student phrased a useful rule or technique, add it to
+   `people/<login>/my-rules.md`. Research from the lesson goes to their
+   `research/`. If something is useful for the whole team (part data, Fusion
+   pitfalls), ask whether to put it into `shared/`; without their "yes", don't.
+5. `python tools/sync.py push "lesson: <date> <topic>"` sends only their
+   folder and `shared/`. If the push fails, say the commit stayed local.
+6. Show the student a 3-5 line summary and the homework.

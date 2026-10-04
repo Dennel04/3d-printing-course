@@ -1,35 +1,35 @@
-# Прогресс
+# Progress
 
-Обновляется в конце каждого занятия. Статусы: `—` не начато, `🟡` пробовал /
-с подсказками, `🟢` делаю сам уверенно. Рядом — дата последней проверки.
+Updated at the end of every lesson. Statuses: `—` not started, `🟡` tried /
+with hints, `🟢` do it confidently on my own. Next to it: date last checked.
 
-Создан из `templates/progress.md`.
+Created from `templates/progress.md`.
 
-## Уже сделано в курсе (до учителя)
+## Already done in the course (before the tutor)
 
-_(заполняется на первом занятии: какие детали из лаб моделировал сам)_
+_(filled in at the first lesson: which lab parts I modelled myself)_
 
-## Карта навыков
+## Skill map
 
-### Эскиз
-| Навык | Статус | Дата |
+### Sketch
+| Skill | Status | Date |
 |---|---|---|
 | Line / Rectangle / Circle / Arc | — | |
 | Sketch Dimension | — | |
 | Constraints (coincident, horizontal, tangent, symmetry, equal) | — | |
-| Полностью определённый эскиз (всё чёрное) | — | |
+| Fully constrained sketch (all black) | — | |
 | Construction lines, Project / Include | — | |
-| Offset, Trim, Mirror, Pattern в эскизе | — | |
+| Offset, Trim, Mirror, Pattern in a sketch | — | |
 
-### Параметры и design intent
-| Навык | Статус | Дата |
+### Parameters and design intent
+| Skill | Status | Date |
 |---|---|---|
 | User Parameters (Change Parameters) | — | |
-| Размеры через имена параметров и формулы | — | |
-| Модель перестраивается при смене параметра без ошибок | — | |
+| Dimensions through parameter names and formulas | — | |
+| The model rebuilds without errors when a parameter changes | — | |
 
-### Тела и операции
-| Навык | Статус | Дата |
+### Bodies and features
+| Skill | Status | Date |
 |---|---|---|
 | Extrude (New Body / Join / Cut, To Object) | — | |
 | Revolve | — | |
@@ -40,29 +40,29 @@ _(заполняется на первом занятии: какие детал
 | Combine | — | |
 | Sweep / Loft | — | |
 
-### Сборка
-| Навык | Статус | Дата |
+### Assembly
+| Skill | Status | Date |
 |---|---|---|
-| Компоненты вместо тел | — | |
+| Components instead of bodies | — | |
 | Joints / As-built Joints | — | |
 | Interference / Section Analysis | — | |
 
-### Под печать
-| Навык | Статус | Дата |
+### For printing
+| Skill | Status | Date |
 |---|---|---|
-| Допуски посадки в модели (зазор на сторону vs общий) | — | |
-| Экспорт STL / 3MF | — | |
-| Проектирование без поддержек (углы, мосты) | — | |
+| Fit tolerances in the model (per-side vs total clearance) | — | |
+| Export STL / 3MF | — | |
+| Designing without supports (angles, bridges) | — | |
 
-## Повторяющиеся ошибки
+## Recurring mistakes
 
-_(пока пусто — заполняется по ходу занятий)_
+_(empty so far: filled in during lessons)_
 
-## Исправлено
+## Fixed
 
-_(сюда переносятся ошибки, которые больше не повторяются)_
+_(mistakes that no longer recur move here)_
 
-## Текущие цели
+## Current goals
 
-1. Первое занятие: диагностика — посмотреть свои модели из лаб вместе с
-   учителем, честно отметить статусы выше.
+1. First lesson: diagnosis: look at my lab models together with the tutor and
+   honestly mark the statuses above.

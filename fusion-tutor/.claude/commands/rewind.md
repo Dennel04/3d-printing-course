@@ -1,29 +1,29 @@
 ---
-description: Откатить модель Fusion к прошлой версии (как /rewind в Claude Code)
-argument-hint: [номер версии или "last" для отмены последнего шага]
+description: Roll the Fusion model back to an earlier version (like /rewind in Claude Code)
+argument-hint: [version number, or "last" to undo the last step]
 ---
 
-Откат активного документа Fusion. Аргумент: $ARGUMENTS
+Roll back the active Fusion document. Argument: $ARGUMENTS
 
-1. Если аргумент `last` — один вызов `fusion_mcp_update` `undo`, покажи
-   скриншот и закончи.
-2. Иначе покажи список версий (read-only скрипт, `readOnly: true`):
+1. If the argument is `last`: one `fusion_mcp_update` `undo` call, show a
+   screenshot and stop.
+2. Otherwise show the list of versions (read-only script, `readOnly: true`):
 
    ```python
    import adsk.core, datetime
    def run(_context: str):
        doc = adsk.core.Application.get().activeDocument
-       print(doc.name, "| несохранённые правки:", doc.isModified)
+       print(doc.name, "| unsaved changes:", doc.isModified)
        for v in doc.dataFile.versions:
            t = datetime.datetime.fromtimestamp(v.dateCreated).strftime("%d.%m %H:%M:%S")
            print(f"v{v.versionNumber}  {t}  {v.description}")
    ```
-   Добавь к каждой версии из `people/<логин>/log/fusion-actions.jsonl` / журнала занятия,
-   что учитель менял после неё. Если номер не дан — спроси, к какой версии
-   вернуться.
-3. Откат к версии N — один вызов `fusion_mcp_execute` script (без readOnly;
-   хук перед этим сам сохранит текущее состояние, так что откат тоже можно
-   отменить):
+   Next to each version, add what the tutor changed after it, from
+   `people/<login>/log/fusion-actions.jsonl` / the lesson log. If no number
+   was given, ask which version to go back to.
+3. Roll back to version N: one `fusion_mcp_execute` script call (without
+   readOnly; the hook saves the current state first, so the rollback can be
+   undone too):
 
    ```python
    import adsk.core, adsk.fusion
@@ -32,14 +32,16 @@ argument-hint: [номер версии или "last" для отмены пос
        doc = app.activeDocument
        df = doc.dataFile
        target = [v for v in df.versions if v.versionNumber == N][0]
-       if not target.promote():          # версия N становится новой последней
+       if not target.promote():          # version N becomes the new latest
            raise RuntimeError("promote() failed")
-       doc.close(False)                  # текущее состояние уже в чекпоинте
+       doc.close(False)                  # the current state is already checkpointed
        newdoc = app.documents.open(df.latestVersion)
        d = adsk.fusion.Design.cast(app.activeProduct)
        print("opened", newdoc.name, "v", newdoc.dataFile.versionNumber,
              [b.name for b in d.rootComponent.bRepBodies])
    ```
-   (Проверено 03.10 на `_tutor-sandbox`: v1→v8 и обратно v7→v9.)
-4. Проверь результат (`inspect_model.py` + скриншот) и скажи студенту, к
-   чему вернулись. Запиши откат в журнал занятия.
+   (Verified 2026-10-03 on `_tutor-sandbox`: v1 -> v8 and back v7 -> v9.)
+   The hook refuses this while other documents have unsaved changes (the
+   reopen would pop up a "save?" dialog): ask the student to save or close them.
+4. Check the result (`inspect_model.py` + screenshot) and tell the student
+   what we went back to. Note the rollback in the lesson log.

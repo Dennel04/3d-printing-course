@@ -1,11 +1,11 @@
-# shared — общее для всей команды
+# shared: for the whole team
 
-Сюда учитель кладёт материал **только когда участник сказал**, что это для
-общего пользования или готово для лабы. Из своей папки `people/<логин>/`
-материал копируется сюда (оригинал остаётся у автора). В начале файла —
-автор и дата.
+The tutor puts material here **only when its author said** it is for
+everyone or ready for the lab. It is copied from their `people/<login>/`
+(the original stays with the author), with author and date at the top.
 
-- `knowledge/` — проверенные приёмы, грабли Fusion, данные по деталям.
-- `lab-ready/labN/<деталь>/` — готово для лабы: модель, мерки, заметки.
-  В саму лабу (`3d-print/labN/<деталь>/src|stl|3mf`) переносит человек по
-  правилам курса (версии `-v1/-v2`, README лабы) — учитель туда не пишет.
+- `knowledge/`: verified techniques, Fusion pitfalls, part data.
+- `lab-ready/labN/<part>/`: ready for the lab: model, measurements, notes.
+  Moving it into the lab (`3d-print/labN/<part>/src|stl|3mf`) is done by a
+  person, following the course rules (versions `-v1/-v2`, the lab README);
+  the tutor doesn't write there.

@@ -1,5 +1,5 @@
-# Read-only осмотр активной модели Fusion для учителя.
-# Запускать через fusion_mcp_execute: featureType "script", readOnly: true.
+# Read-only inspection of the active Fusion model for the tutor.
+# Run via fusion_mcp_execute: featureType "script", readOnly: true.
 import adsk.core, adsk.fusion
 
 
@@ -7,22 +7,22 @@ def run(_context: str):
     app = adsk.core.Application.get()
     doc = app.activeDocument
     if not doc:
-        print("В Fusion не открыт ни один документ.")
+        print("No document is open in Fusion.")
         return
     design = adsk.fusion.Design.cast(app.activeProduct)
-    print(f"Документ: {doc.name}  (изменён: {doc.isModified})")
+    print(f"Document: {doc.name}  (modified: {doc.isModified})")
     if not design:
-        print("Активный продукт — не Design (открыт не 3D-дизайн).")
+        print("The active product is not a Design (not a 3D design).")
         return
     um = design.unitsManager
-    print(f"Единицы: {um.defaultLengthUnits}  |  режим: "
+    print(f"Units: {um.defaultLengthUnits}  |  mode: "
           f"{'parametric' if design.designType == adsk.fusion.DesignTypes.ParametricDesignType else 'direct'}")
 
     print("\n== User Parameters ==")
     if design.userParameters.count == 0:
-        print("(нет — все размеры захардкожены)")
+        print("(none: every dimension is hard-coded)")
     for p in design.userParameters:
-        print(f"  {p.name} = {p.expression}  {('— ' + p.comment) if p.comment else ''}")
+        print(f"  {p.name} = {p.expression}  {('- ' + p.comment) if p.comment else ''}")
 
     print("\n== Timeline ==")
     tl = design.timeline
@@ -34,14 +34,14 @@ def run(_context: str):
         flag = "" if it.healthState == bad else f"  !! {it.errorOrWarningMessage}"
         sup = " (suppressed)" if it.isSuppressed else ""
         print(f"  {i:>3}. {it.name:<28} {kind}{sup}{flag}")
-    print(f"  marker на позиции {tl.markerPosition} из {tl.count}")
+    print(f"  marker at position {tl.markerPosition} of {tl.count}")
 
-    print("\n== Компоненты, эскизы, тела ==")
+    print("\n== Components, sketches, bodies ==")
     for c in design.allComponents:
-        print(f"- {c.name}: тел {c.bRepBodies.count}, эскизов {c.sketches.count}")
+        print(f"- {c.name}: bodies {c.bRepBodies.count}, sketches {c.sketches.count}")
         for s in c.sketches:
-            state = "полностью определён" if s.isFullyConstrained else "НЕ определён"
-            print(f"    эскиз '{s.name}': {state}, размеров {s.sketchDimensions.count}, "
-                  f"ограничений {s.geometricConstraints.count}, профилей {s.profiles.count}")
+            state = "fully constrained" if s.isFullyConstrained else "NOT constrained"
+            print(f"    sketch '{s.name}': {state}, dimensions {s.sketchDimensions.count}, "
+                  f"constraints {s.geometricConstraints.count}, profiles {s.profiles.count}")
         for b in c.bRepBodies:
-            print(f"    тело '{b.name}': solid={b.isSolid}, объём {b.volume:.3f} cm³")
+            print(f"    body '{b.name}': solid={b.isSolid}, volume {b.volume:.3f} cm³")

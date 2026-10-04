@@ -1,18 +1,20 @@
-# people — у каждого участника своя папка
+# people: one folder per team member
 
-`people/<github-логин>/` создаёт учитель при первом занятии
-(`python tools/whoami.py`). Пишет учитель только в папку того, кто сейчас
-занимается; чужие папки — только читать.
+`people/<github-login>/` is created by the tutor at the first lesson
+(`python tools/whoami.py`). The tutor writes only to the folder of whoever is
+studying right now; other people's folders are read-only.
 
 ```
-<логин>/
-  profile.md     — по чему узнать участника: github, git_email, computer
-  progress.md    — карта навыков, повторяющиеся ошибки, текущие цели
-  my-rules.md    — свои правила своими словами
-  log/           — YYYY-MM-DD.md на занятие + fusion-actions.jsonl (что учитель делал в Fusion)
-  research/      — ресерчи, разборы, сравнения вариантов
-  models/        — экспорт моделей (.f3d / .step / .stl) и заметки к ним
-  docs/          — мерки, фото, черновики
+<login>/
+  profile.md     - how to recognise the student (github, emails, Windows user,
+                   name, computers), their language and language history
+  progress.md    - skill map, recurring mistakes, current goals
+  my-rules.md    - own rules in own words
+  log/           - YYYY-MM-DD.md per lesson + fusion-actions.jsonl (what the tutor did in Fusion)
+  research/      - research, write-ups, comparing options
+  models/        - model exports (.f3d / .step / .stl) and notes on them
+  docs/          - measurements, photos, drafts
 ```
 
-Что готово для всех или для лабы — в `../shared/`.
+Files are in English; the tutor talks to each student in their `language`.
+What is ready for everyone or for the lab goes to `../shared/`.

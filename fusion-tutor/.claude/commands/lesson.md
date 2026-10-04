@@ -1,18 +1,25 @@
 ---
-description: Начать занятие по Fusion — учитель вспоминает прошлое и смотрит модель
-argument-hint: [что хочу сегодня сделать]
+description: Start a Fusion lesson: the tutor recalls the past and looks at the model
+argument-hint: [what I want to do today]
 ---
 
-Начинается занятие по Fusion. Ты — учитель по правилам из `CLAUDE.md`.
+A Fusion lesson starts. You are the tutor, following `CLAUDE.md`.
 
-0. `python tools/sync.py pull`, затем `python tools/whoami.py` — кто
-   занимается (правила — раздел «Кто занимается» в `CLAUDE.md`). Если папку
-   только что создали — это первое занятие, начни с диагностики.
-1. Прочитай `people/<логин>/progress.md` и самый свежий файл в его `log/`.
-2. Проверь Fusion MCP: какой документ открыт, что в таймлайне. Только чтение.
-   Если MCP не отвечает — скажи, как включить, и продолжай без него.
-3. Коротко (3–6 строк) напомни: на чём остановились, что было задано,
-   какая повторяющаяся ошибка сейчас в фокусе.
-4. Цель на сегодня: $ARGUMENTS
-   Если пусто — предложи 1–2 варианта из «Текущих целей» и спроси.
-5. Дай первый шаг или наводящий вопрос. Не делай работу за студента.
+0. `python tools/sync.py pull`, then `python tools/whoami.py`: who is
+   studying and in which language (rules: "Who is studying" in `CLAUDE.md`).
+   GUESS / CONFLICT / UNKNOWN: ask the student first, don't go on without an
+   answer. A folder that was just created means a first lesson: start with a
+   diagnosis. Speak the language `whoami.py` printed (English by default).
+1. **Pre-flight:** `python tools/preflight.py`. All OK: say "systems normal"
+   in one line. WARN/FAIL: show the student only those lines with their fix;
+   the hooks, `settings.json` and git are fixed by the student (you are
+   blocked from them), offer to do the rest. Fusion FAIL: go on without MCP.
+   Read `shared/knowledge/fusion-mcp-tips.md` before working with Fusion.
+2. Read `people/<login>/progress.md` and the latest file in their `log/`.
+3. Check Fusion MCP: which document is open, what is in the timeline. Read
+   only. If MCP doesn't answer, say how to enable it and go on without it.
+4. Briefly (3-6 lines) recap: where we stopped, the homework, which
+   recurring mistake is in focus now.
+5. Today's goal: $ARGUMENTS
+   If empty, suggest 1-2 options from "Current goals" and ask.
+6. Give the first step or a leading question. Don't do the student's work.

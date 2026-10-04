@@ -1,50 +1,65 @@
-# Fusion MCP и API — грабли и обходы
+# Fusion MCP and API: pitfalls and workarounds
 
-Собрано 2026-10-04 по проблемам, на которые наткнулись при работе учителя
-через Fusion MCP, и по поиску (форумы Autodesk, справка Autodesk MCP).
+Author: Dennel04 (with the tutor), 2026-10-04. Collected from problems hit
+while the tutor worked through Fusion MCP, plus searching (Autodesk forums,
+Autodesk MCP help).
 
-## Что мешало и почему
+## What got in the way, and why
 
-| Симптом | Причина | Решение |
+| Symptom | Cause | Fix |
 |---|---|---|
-| Хук: «Cannot perform 'script' while a command dialog is open» | В Fusion активна команда: `ConstrainedOrbitCommand` (вращение), `FusionDeleteCommand` (случайный Delete) | Студент жмёт Esc. Смотреть заранее: `fusion_mcp_read` → `activeCommand`. Простой = `SelectCommand` |
-| Модель крутится за мышью и не останавливается | Известный баг Fusion (FUS-82525): отпустил кнопку орбиты над деревом браузера → орбита осталась активной | Потянуть ViewCube за угол к центру экрана (принятое решение на форуме Autodesk). Вращать через Shift+колесо, а не кнопкой Orbit на нижней панели |
-| Fusion не отвечает даже на read-only запросы, хук «timed out» | Открыто модальное окно в Fusion; все вызовы API ждут, пока его закроют. 2026-10-04 это был вопрос «сохранить / не сохранять `_tutor-sandbox`», всплывший, когда учитель создал новый документ. Песочница с несохранёнными правками висела в фоне, хотя `activeDocument` был пуст | Студент закрывает окно. В начале занятия смотреть **все** открытые документы (`fusion_mcp_read` → `document`/`open`), а не только активный; несохранённые — сохранить или закрыть до создания новых. Чтобы не ждать 90 с — сначала быстрый ping |
-| Сохранение/чекпоинт долго висит | Версия грузится в облако; по справке Autodesk — антивирус/файрвол/медленный интернет/большие файлы | Не делать лишних версий; большие сборки (робот) вставлять ссылкой (XREF), а не копией |
+| Hook: "Cannot perform 'script' while a command dialog is open" | A command is active in Fusion: `ConstrainedOrbitCommand` (orbit), `FusionDeleteCommand` (an accidental Delete) | The student presses Esc. Check beforehand: `fusion_mcp_read` -> `activeCommand`. Idle = `SelectCommand`. Hook v2 closes navigation commands itself |
+| The model keeps orbiting with the mouse and won't stop | Known Fusion bug (FUS-82525): releasing the orbit button over the browser tree leaves orbit active | Drag the ViewCube by a corner towards the screen centre (accepted answer on the Autodesk forum). Orbit with Shift+wheel, not the Orbit button on the bottom bar |
+| Fusion doesn't answer even read-only calls, hook "timed out" | A modal dialog is open in Fusion; every API call waits until it is closed. On 2026-10-04 it was "save / don't save `_tutor-sandbox`", popping up when the tutor created a new document. The sandbox with unsaved changes sat in the background although `activeDocument` was empty | The student closes the dialog. At the start of a lesson look at **all** open documents (`fusion_mcp_read` -> `document`/`open`), not just the active one; save or close unsaved ones before creating new ones. Hook v2 pings first (8 s) instead of waiting 90 s, and refuses new documents while others are unsaved |
+| Saving / the checkpoint hangs for a long time | The version is uploading to the cloud; per Autodesk help: antivirus/firewall/slow internet/large files | Don't make needless versions; insert large assemblies (the robot) by reference (XREF), not as a copy |
 
-## API: проверенные обходы
+## API: verified workarounds
 
-- **f3z** не импортируется через `importManager.createFusionArchiveImportOptions`
-  (только f3d) → `DataFolder.uploadFile(path)` в проект, потом открыть.
-- **Вырез «сквозь всё» в обе стороны**: `setAllExtent(SymmetricExtentDirection)` /
-  `setOneSideExtent(ThroughAll, Symmetric)` режет **только в одну сторону**
-  (подтверждено у нас и на форуме «API Extrude 2 sides Through All»).
-  Работает: `setTwoSidesExtent(ThroughAll, ThroughAll)`; при правке готовой
-  фичи нужны и углы: `setTwoSidesExtent(a, b, V('0 deg'), V('0 deg'))`.
-- **Правка готовой фичи** → сначала `feature.timelineObject.rollTo(True)`,
-  потом `design.timeline.moveToEnd()`, иначе «Didn't roll editing feature back».
-- `unitsManager.evaluateExpression(expr, 'mm')` возвращает **см** (внутренние
-  единицы), а не мм.
-- **Эскиз на смещённой конструктивной плоскости**: размеры от `originPoint`
-  не дали «полностью определён». Обход: эскиз на базовой плоскости + у
-  выдавливания `OffsetStartDefinition` с тем же выражением.
-- Эскиз на XZ-плоскости: sketch x = мир X, sketch y = **−**мир Z → точки
-  ставить через `sketch.modelToSketchSpace(Point3D)`.
-- **Скрипт упал — откатился целиком** (одна транзакция): частичных фич не
-  остаётся, можно чинить и запускать заново.
-- `app.data.activeProject` падает (InternalValidationError), когда не открыт
-  ни один документ → искать проект в `app.data.dataProjects` по имени.
-- Покупное изделие (STEP) — в новый компонент с матрицей
-  (`addNewComponent(matrix)` + `importToTarget2(..., comp)`), тогда не нужен
-  snapshot позиции.
-- Чужую большую сборку — `occurrences.addByInsert(dataFile, matrix, True)`
-  (XREF): лёгкая, обновляется, для Interference годится.
-- Read-only скрипт может: двигать камеру вида, читать `ui.activeCommand`,
-  вызвать `ui.terminateActiveCommand()` (проверено, когда активна
-  `SelectCommand`).
+- **f3z** won't import via `importManager.createFusionArchiveImportOptions`
+  (f3d only) -> `DataFolder.uploadFile(path)` into the project, then open it.
+- **Cut "through all" both ways**: `setAllExtent(SymmetricExtentDirection)` /
+  `setOneSideExtent(ThroughAll, Symmetric)` cuts **one way only** (confirmed
+  by us and on the forum "API Extrude 2 sides Through All"). Works:
+  `setTwoSidesExtent(ThroughAll, ThroughAll)`; when editing an existing
+  feature the angles are needed too: `setTwoSidesExtent(a, b, V('0 deg'), V('0 deg'))`.
+- **Editing an existing feature** -> first `feature.timelineObject.rollTo(True)`,
+  then `design.timeline.moveToEnd()`, otherwise "Didn't roll editing feature back".
+- `unitsManager.evaluateExpression(expr, 'mm')` returns **cm** (internal
+  units), not mm.
+- **Sketch on an offset construction plane**: dimensions from `originPoint`
+  didn't make it "fully constrained". Workaround: sketch on the base plane +
+  an `OffsetStartDefinition` on the extrude with the same expression.
+- Sketch on the XZ plane: sketch x = world X, sketch y = **-**world Z -> place
+  points via `sketch.modelToSketchSpace(Point3D)`.
+- **A failed script rolls back entirely** (one transaction): no partial
+  features are left, fix it and run again.
+- `app.data.activeProject` fails (InternalValidationError) when no document
+  is open -> find the project in `app.data.dataProjects` by name.
+- A bought part (STEP): into a new component with a matrix
+  (`addNewComponent(matrix)` + `importToTarget2(..., comp)`), then no position
+  snapshot is needed.
+- Someone else's large assembly: `occurrences.addByInsert(dataFile, matrix, True)`
+  (XREF): light, updates, fine for Interference.
+- A read-only script can: move the view camera, read `ui.activeCommand`,
+  call `ui.terminateActiveCommand()` (verified while `SelectCommand` was active).
+- `ui.activeSelections` is `None` while no document is open (hook v2 handles it).
 
-## Правило для учителя
+## Hook v2 (2026-10-04, `tools/fusion_checkpoint.py`)
 
-После каждого построения проверять **геометрию** (сколько отверстий и где,
-размеры), а не только Interference. Ошибку с отверстиями на одной стенке
-заметил студент, а не проверка.
+Verified on live Fusion on 04.10:
+- `OrbitCommand` (Orbit button on the bottom bar) -> the hook closed it itself
+  (`terminateActiveCommand` from a read-only script), checkpoint, allowed; 0.44 s.
+- Extrude open (`Extrude`) -> the change was denied naming the command; the
+  read was allowed; Extrude stayed open.
+- Wrong port (simulating "Fusion is silent") -> denied at once; `messageBox` -> denied.
+- Not verified live yet: the denial for an unsaved document in the background.
+
+Command ids seen: `SelectCommand` (idle), `OrbitCommand`,
+`ConstrainedOrbitCommand`, `FusionDeleteCommand`, `Extrude`.
+State in one command: `python tools/fusion_status.py`.
+
+## Rule for the tutor
+
+After every build check the **geometry** (how many holes and where,
+dimensions), not only Interference. The holes-on-one-wall mistake was caught
+by the student, not by a check.
