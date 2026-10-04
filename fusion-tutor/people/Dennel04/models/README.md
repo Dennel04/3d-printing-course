@@ -6,8 +6,26 @@ square = z 0, robot = +X. Write-up of v1: `shared/knowledge/mg400-end-square.md`
 | Version | Fusion | Files here | Status |
 |---|---|---|---|
 | v1 | `xiao-square-mount-v1` | (none) | Made by the tutor 2026-10-04. Not printed |
-| v2 | `xiao-square-mount-v2` | `xiao-square-mount-v2.stl/.3mf`, `-sliced.3mf`, `_0.4n_0.2mm_PLA_COREONE.bgcode` | **On the printer 2026-10-04 (fit test)**. CORE One HF0.4, 0.20mm SPEED, Prusament PLA, organic supports on build plate, printed upside down (clamp rim on the bed), 45 min, 15.6 g |
-| v3 | `xiao-square-mount-v3` | `xiao-square-mount-v3.stl/.3mf` (not sliced) | **Next, after the v2 test.** Not printed |
+| v2 | `xiao-square-mount-v2` | `xiao-square-mount-v2.f3d/.stl/.3mf`, `-sliced.3mf`, `_0.4n_0.2mm_PLA_COREONE.bgcode` | **On the printer 2026-10-04 (fit test)**. CORE One HF0.4, 0.20mm SPEED, Prusament PLA, organic supports on build plate, printed upside down (clamp rim on the bed), 45 min, 15.6 g |
+| v3 | `xiao-square-mount-v3` | `xiao-square-mount-v3.f3d/.stl/.3mf` (not sliced) | **Next, after the v2 test.** Not printed |
+
+## Into the lab: one source, STL and 3MF per print
+
+Lab 2 asks for "lähtefailid, STL ja `.3mf` iga prindi kohta" and the README
+checklist "Iga prindi lähtefail, STL ja 3MF on versioonitud". The student
+copies them into `3d-print/lab2/camera-mounts/` (the tutor doesn't write there):
+
+| Lab path | v2 (printed) | v3 (after slicing) |
+|---|---|---|
+| `src/xiao-square-mount-vN.f3d` | `xiao-square-mount-v2.f3d` | `xiao-square-mount-v3.f3d` |
+| `stl/xiao-square-mount-vN.stl` | `xiao-square-mount-v2.stl` | `xiao-square-mount-v3.stl` |
+| `3mf/xiao-square-mount-vN.3mf` | `xiao-square-mount-v2-sliced.3mf` (**rename**) | `xiao-square-mount-v3-sliced.3mf` (after `prusa.py slice`) |
+
+`xiao-square-mount-vN.3mf` in this folder (without `-sliced`) is a mesh
+export from Fusion, **not** the lab 3MF: the lab 3MF is the PrusaSlicer
+project. The `.f3d` files (~3 MB) carry the robot (XREF) inside. The
+`.bgcode` is for the printer only. v1 was never printed, so it needs no files
+in the lab.
 
 ## v2: what changed from v1 (2026-10-04)
 
