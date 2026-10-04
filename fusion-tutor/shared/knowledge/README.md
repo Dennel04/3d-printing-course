@@ -8,6 +8,8 @@ Verified material for the whole team. Each note starts with author and date.
   decision, data, what to measure.
 - `mg400-end-square.md`: the square at the end of the MG400 arm (XIAO camera
   mount): dimensions from CAD, where the robot model lives.
+- `prusaslicer-pipeline.md`: PrusaSlicer CLI pitfalls (model-only 3MF,
+  profiles without a datadir, .bgcode); the tool is `../tools/prusa/`.
 - Personal rules are in `../../people/<login>/my-rules.md`.
 - Course assignments and measurements: `../../../3d-print/` (each lab's
   README and `docs/`).
