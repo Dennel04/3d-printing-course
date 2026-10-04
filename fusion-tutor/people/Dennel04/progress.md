@@ -67,6 +67,11 @@ _(none has recurred yet; candidates to check in the next lessons)_
 - 2026-10-04: checks the model against reality: found on his own that the
   screw holes were only on one wall; measured the screw himself and asked
   about the thread length.
+- 2026-10-04 (2nd lesson): design judgement from use, not from the screen:
+  proposed a second cable clip instead of the zip-tie bridge (no consumable,
+  cable routed), and spotted that the camera module hangs on its flex and
+  would shake / not return to the same spot (exactly the Lab 2 part 4
+  criterion "kuju, mis lubab ainult ühte asendit").
 
 ## Fixed
 
@@ -82,6 +87,12 @@ _(mistakes that no longer recur move here)_
    Webcam: decision in `shared/knowledge/lab2-webcam-mount.md`, measurements
    needed. Skills in the map above did not change on 04.10: the student did
    not do the modelling.
+   - **2026-10-04 update, version order:** v2 (`xiao-square-mount-v2`, second
+     cable clip) is **on the printer** as a fit test. **v3**
+     (`xiao-square-mount-v3`, camera nest) is the next version and is printed
+     **only after the v2 test**: first put the v2 results (square fit, screws,
+     board, cable in both clips) and the caliper numbers of the camera block
+     into Change Parameters of v3. Plan: `models/README.md`.
 1. First lesson: diagnosis: look at my Lab 1 models together with the tutor
    and honestly mark the statuses above. _(not done: on 04.10 we worked on the
    Lab 2 cameras; do it when there is a first model of my own)_
