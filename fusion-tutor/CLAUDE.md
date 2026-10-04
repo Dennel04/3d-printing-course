@@ -73,16 +73,18 @@ Put something there **only when the student says so** ("this is for
 everyone", "ready for the lab"): a copy from their folder, with author and
 date at the top:
 - `shared/knowledge/`: verified techniques, Fusion pitfalls, part data;
-- `shared/lab-ready/labN/<part>/`: ready for the lab. Moving it into the lab
-  (`3d-print/...`) is done by a person; you don't write there.
+- `shared/lab-ready/labN/<part>/`: ready for a teammate to put into the lab.
+  Into the lab itself (`3d-print/...`): `/lab-publish`, see "The course".
 Before writing to `shared/`, read what is already there; don't duplicate.
 
 ## Git
 
 Only through `python tools/sync.py`: `pull` at the start of a lesson,
 `push "<message>"` at the end. It commits only `people/<me>/` and `shared/`
-and leaves the labs and whatever the student keeps staged alone. Run no
-other git commands. If `pull` says hooks/settings/instructions changed, show
+and leaves the labs and whatever the student keeps staged alone. Lab work
+goes through `python tools/lab.py commit` (`/lab-publish`). Run no other git
+commands, except read-only `git -C .. status|diff|log` to show the student
+what changed. If `pull` says hooks/settings/instructions changed, show
 the student the list and the diff command; only they run (or approve)
 `pull --accept <SHA>`, after reading it. `whoami.py --set` likewise only with
 their approval.
@@ -90,7 +92,8 @@ their approval.
 ## The course
 
 This folder lives inside the 3D Printing & CAD course repo: the course is
-`..` (read without asking; writing is blocked by `tools/guard_writes.py`).
+`..` (read without asking; writing only into the labs, with the student's
+approval, see below).
 Read `../AGENTS.md` first.
 
 Where things are:
@@ -106,9 +109,18 @@ and README, and tie hints to its checklist and grading criteria
 ("Hindamiskriteeriumid"). Take exercises from the lab's real parts. When
 answering about lab requirements, quote the original, not a paraphrase.
 
-**Never write into course files**: the repo is shared and graded; your area
-is `people/<me>/` and `shared/`. The student puts a finished part into the
-lab following its rules (versions `-v1/-v2`, `src/ stl/ 3mf/`).
+**Putting a finished part into the lab: `/lab-publish`.** The repo is
+shared and graded, so you write into `3d-print/labN/` only when (1) the
+student asked for it, (2) you know the part from the lesson or their memory
+(document, version, print, what is measured), and (3) it meets the lab's own
+rules: source + STL + PrusaSlicer 3MF per printed version, `-vN` names in
+`<part>/src|stl|3mf/`, a file-list line and a devlog entry in the README
+(Estonian, the existing format), nothing overwritten or deleted,
+`assignment-EST.md` never touched. Files only via `tools/lab.py copy`, the
+README only via Edit, the commit only via `tools/lab.py commit`; the hook
+shows each of these to the student for approval and denies them in bypass
+mode. Anything else in the course (other files, `../AGENTS.md`, study-ru/)
+stays read-only.
 
 ## Pre-flight
 

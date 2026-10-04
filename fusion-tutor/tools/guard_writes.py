@@ -6,7 +6,12 @@ course are allowed without asking (only if the parent really is the course
 clone, and never inside .git). Edit/Write only in people/<me>/ and shared/,
 and even there never an instruction file (CLAUDE.md, AGENTS.md) or a
 dot-name, which would plant instructions/settings for later sessions.
-Everything else is denied: the course, other people's people/<other>/ and
+Lab publishing: Edit/Write inside 3d-print/labN/ and the commands
+`tools/lab.py copy|commit` are never allowed silently: the hook answers "ask",
+so the student sees and approves every change (denied in bypass mode, where
+nobody would). Never there: assignment-EST.md, instruction files, dot-names,
+or Write over an existing file (nothing is overwritten; Edit appends).
+Everything else is denied: the rest of the course, other people's people/<other>/ and
 the tutor itself (.claude/ incl. settings.local.json, or the tutor could
 grant itself permissions; .mcp.json, CLAUDE.md, tools/, templates/). Writes
 to people/ also need a confirmed identity: a guess by name or computer is
@@ -59,10 +64,36 @@ def is_course(folder):
             and os.path.isfile(os.path.join(folder, "AGENTS.md")))
 
 
+def student_approves(call, what):
+    """Lab changes: the student sees each one; nobody can in bypass mode."""
+    if call.get("permission_mode") == "bypassPermissions":
+        deny(f"{what} needs the student's approval, and bypass mode shows no prompt. "
+             "Restart the tutor without --dangerously-skip-permissions.")
+        return
+    me, source = whoami.resolve()
+    if not me or not whoami.is_sure(source):
+        deny("Don't know for sure who is studying: run python tools/whoami.py first.")
+        return
+    decide("ask", f"{what}: the student ({me}) approves it. Lab rules: "
+           "fusion-tutor/.claude/commands/lab-publish.md.")
+
+
+def lab_of(target):
+    labs = norm(os.path.join(COURSE, "3d-print"))
+    if not inside(target, labs):
+        return None
+    lab = os.path.relpath(target, labs).split(os.sep)[0]
+    return lab if re.fullmatch(r"lab\d+", lab) else None
+
+
 def main():
     call = json.loads(sys.stdin.buffer.read().decode("utf-8"))
     args = call.get("tool_input") or {}
     tool = call.get("tool_name", "")
+    if tool in ("Bash", "PowerShell"):
+        if re.search(r"\blab\.py\b[\s\S]*\b(copy|commit)\b", args.get("command") or ""):
+            student_approves(call, "Publishing into the lab")
+        return  # other commands: normal Claude Code rules
     path = args.get("file_path") or args.get("notebook_path") or args.get("path")
     if not path:
         return  # normal Claude Code rules
@@ -82,6 +113,20 @@ def main():
     if any(sync.odd_segment(s) for s in segs):
         deny("Ambiguous file name (trailing dot/space, ':' stream, 8.3 short name, "
              "control or non-normalised characters): use a plain name.")
+        return
+    lab = lab_of(target) if is_course(COURSE) else None
+    if lab:
+        name = unicodedata.normalize("NFKC", os.path.basename(target)).casefold()
+        rel = os.path.relpath(target, norm(COURSE)).split(os.sep)
+        if any(s.startswith(".") for s in rel) or name in INSTRUCTION_FILES:
+            deny("No instruction files or dot-files in the lab.")
+        elif name == "assignment-est.md":
+            deny("assignment-EST.md is the instructor's original: never edited.")
+        elif tool == "Write" and os.path.exists(target):
+            deny("Nothing in the lab is overwritten: Edit to append (devlog, file list), "
+                 "or a new -vN file via tools/lab.py copy.")
+        else:
+            student_approves(call, f"Changing 3d-print/{lab}/")
         return
     if inside(target, SHARED) or inside(target, PEOPLE):
         rel = [unicodedata.normalize("NFKC", s).casefold()
@@ -106,8 +151,8 @@ def main():
         elif not inside(target, os.path.join(PEOPLE, me)):
             deny(f"That is someone else's folder: you write only to people/{me}/ and shared/.")
         return
-    deny("The tutor writes only to people/<own login>/ and shared/. Course files are "
-         "changed by the student, following the lab rules; the tutor itself (.claude/, "
+    deny("The tutor writes only to people/<own login>/, shared/ and, with the student's "
+         "approval, 3d-print/labN/ (see /lab-publish); the tutor itself (.claude/, "
          "tools/, CLAUDE.md, templates/) is not edited during a lesson.")
 
 

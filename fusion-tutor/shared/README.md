@@ -9,6 +9,6 @@ everyone or ready for the lab. It is copied from their `people/<login>/`
   preview, USB for the lab Prusa CORE One). The tutor's own code stays in
   `../tools/`.
 - `lab-ready/labN/<part>/`: ready for the lab: model, measurements, notes.
-  Moving it into the lab (`3d-print/labN/<part>/src|stl|3mf`) is done by a
-  person, following the course rules (versions `-v1/-v2`, the lab README);
-  the tutor doesn't write there.
+  Moving it into the lab (`3d-print/labN/<part>/src|stl|3mf`) follows the
+  course rules (versions `-v1/-v2`, the lab README): `/lab-publish`, with
+  the student approving each step.

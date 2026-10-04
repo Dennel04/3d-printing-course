@@ -26,9 +26,13 @@ to your language if you ask (saved in your profile).
 3. You model yourself, ask the tutor, it looks at the model.
 4. "This is for everyone" / "ready for the lab": the tutor copies the material
    to `shared/`.
-5. `/rewind [N|last]`: roll the document back to version N (history is kept)
+5. `/lab-publish <part> <version>`: put a finished part into `3d-print/labN/`
+   the way the lab asks (source/STL/3MF `-vN`, README file list and devlog in
+   Estonian), check it with `tools/lab.py check`, commit only that lab. You
+   approve every copy, README edit and the commit in a prompt.
+6. `/rewind [N|last]`: roll the document back to version N (history is kept)
    or undo the last step.
-6. `/lesson-end`: lesson log, progress update, commit + push of your folder.
+7. `/lesson-end`: lesson log, progress update, commit + push of your folder.
 
 Any time: `python tools/preflight.py` (all systems check) and
 `python tools/fusion_status.py` (Fusion state + the tutor's last actions).
@@ -55,7 +59,7 @@ people/<login>/     - each person's own (in git): profile, progress, my-rules,
                       log/, research/, models/, docs/      -> people/README.md
 shared/             - for everyone, only on the author's word -> shared/README.md
   knowledge/          techniques, Fusion pitfalls, part data
-  lab-ready/labN/     ready for the lab; a person moves it into 3d-print/
+  lab-ready/labN/     ready for a teammate's lab; /lab-publish moves it into 3d-print/
 templates/          - starting files for a new person's folder
 CLAUDE.md, AGENTS.md, .claude/, tools/ - the tutor itself
 ```
