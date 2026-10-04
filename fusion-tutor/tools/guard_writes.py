@@ -1,10 +1,12 @@
-"""PreToolUse-хук: курс учитель читает, а пишет только в fusion-tutor/.
+"""PreToolUse-хук: курс учитель читает, а пишет только в свою папку
+участника fusion-tutor/people/<я>/ и в общую fusion-tutor/shared/.
 
 Курсовой репозиторий командный и с оцениванием. Read/Glob/Grep внутри
 курса разрешаются без вопросов (только если папка выше — действительно клон
-курса, и не внутри .git); Edit/Write вне fusion-tutor/ запрещены, как и в
-сам учитель: .claude/ (в т.ч. settings.local.json — иначе учитель мог бы
-выдать себе права), .mcp.json, CLAUDE.md, tools/. Курс нарочно НЕ добавлен в
+курса, и не внутри .git); Edit/Write — только в people/<я>/ и shared/.
+Всё остальное запрещено: курс, чужие папки people/<другой>/ и сам учитель
+(.claude/ — в т.ч. settings.local.json, иначе учитель мог бы выдать себе
+права, — .mcp.json, CLAUDE.md, tools/, templates/). Курс нарочно НЕ добавлен в
 additionalDirectories: тогда acceptEdits без вопросов пропускал бы
 sed/cp туда через shell. Работает на любом пути клона, в отличие от
 path-правил в settings.json.
@@ -13,10 +15,14 @@ import json
 import os
 import sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import whoami  # noqa: E402
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 COURSE = os.path.dirname(ROOT)
 READ_TOOLS = ("Read", "Glob", "Grep")
-PROTECTED = [os.path.join(ROOT, p) for p in (".claude", ".mcp.json", "CLAUDE.md", "tools")]
+PEOPLE = os.path.join(ROOT, "people")
+SHARED = os.path.join(ROOT, "shared")
 
 
 def norm(p):
@@ -59,11 +65,19 @@ def main():
                 and not inside(target, os.path.join(COURSE, ".git"))):
             decide("allow", "Чтение курса разрешено учителю.")
         return
-    if not inside(target, ROOT):
-        deny("Учитель пишет только в папку fusion-tutor/. Курсовые файлы "
-             "студент меняет сам, по правилам лабы.")
-    elif any(inside(target, p) for p in PROTECTED):
-        deny("Хуки и настройки учителя не правятся из занятия.")
+    if inside(target, SHARED):
+        return
+    if inside(target, PEOPLE):
+        me, _ = whoami.resolve()
+        if not me:
+            deny("Не знаю, кто занимается: сначала python tools/whoami.py "
+                 "(или --set <логин>).")
+        elif not inside(target, os.path.join(PEOPLE, me)):
+            deny(f"Это чужая папка: ты пишешь только в people/{me}/ и shared/.")
+        return
+    deny("Учитель пишет только в people/<свой логин>/ и shared/. Курсовые "
+         "файлы студент меняет сам, по правилам лабы; сам учитель (.claude/, "
+         "tools/, CLAUDE.md, templates/) не правится из занятия.")
 
 
 if __name__ == "__main__":

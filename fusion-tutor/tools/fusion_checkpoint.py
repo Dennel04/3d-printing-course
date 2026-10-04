@@ -4,7 +4,7 @@
 документе есть несохранённые правки, хук сам сохраняет версию с подписью
 "claude checkpoint" ДО того, как учитель что-то поменяет. Откат — /rewind.
 Read-only скрипты проходят без чекпоинта. Всё пишется в
-log/fusion-actions.jsonl. Студенту ничего не запрашивается.
+people/<я>/log/fusion-actions.jsonl. Студенту ничего не запрашивается.
 """
 import datetime
 import json
@@ -12,9 +12,18 @@ import os
 import sys
 import urllib.request
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import whoami  # noqa: E402
+
 MCP_URL = "http://127.0.0.1:27182/mcp"
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-LOG = os.path.join(ROOT, "log", "fusion-actions.jsonl")
+
+
+def log_path():
+    me, _ = whoami.resolve()
+    if me:
+        return os.path.join(ROOT, "people", me, "log", "fusion-actions.jsonl")
+    return os.path.join(ROOT, ".unassigned-actions.jsonl")  # в git не идёт
 
 CHECKPOINT_SCRIPT = '''import adsk.core
 def run(_context: str):
@@ -110,8 +119,9 @@ def main():
             entry["checkpoint"] = f"ERROR {e}"
 
     entry["decision"] = decision
-    os.makedirs(os.path.dirname(LOG), exist_ok=True)
-    with open(LOG, "a", encoding="utf-8") as f:
+    log = log_path()
+    os.makedirs(os.path.dirname(log), exist_ok=True)
+    with open(log, "a", encoding="utf-8") as f:
         f.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
     out = {"hookEventName": "PreToolUse", "permissionDecision": decision}

@@ -57,7 +57,8 @@ electronics course drives the display.
     nozzle-park/        <- dark, covered parking spot for the syringe nozzle
       src/  stl/  3mf/
 fusion-tutor/            <- Claude Code tutor for learning Fusion (run `claude` inside it);
-                           see fusion-tutor/README.md. Per-student progress is gitignored.
+                           see fusion-tutor/README.md. Per-student memory in
+                           fusion-tutor/people/<github-login>/, team material in shared/.
 ```
 
 Each lab folder from Lab 2 on also keeps `assignment-EST.md`: the original

@@ -4,7 +4,7 @@
 
 ## Откуда модель
 
-- Официальный файл стола курса: `../3d-print/lab2/reference/MG 400 rakis.f3z`.
+- Официальный файл стола курса: `3d-print/lab2/reference/MG 400 rakis.f3z` (от корня курса).
   Внутри по XREF лежит сборка робота `mg400-solidworks_asm` (импорт из
   SolidWorks, похоже, от производителя).
 - Загружена в Fusion: проект `3d-printing` → папка `reference`

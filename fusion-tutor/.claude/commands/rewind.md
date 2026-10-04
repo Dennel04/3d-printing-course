@@ -18,7 +18,7 @@ argument-hint: [номер версии или "last" для отмены пос
            t = datetime.datetime.fromtimestamp(v.dateCreated).strftime("%d.%m %H:%M:%S")
            print(f"v{v.versionNumber}  {t}  {v.description}")
    ```
-   Добавь к каждой версии из `log/fusion-actions.jsonl` / журнала занятия,
+   Добавь к каждой версии из `people/<логин>/log/fusion-actions.jsonl` / журнала занятия,
    что учитель менял после неё. Если номер не дан — спроси, к какой версии
    вернуться.
 3. Откат к версии N — один вызов `fusion_mcp_execute` script (без readOnly;
