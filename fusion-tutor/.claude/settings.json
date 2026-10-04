@@ -1,0 +1,40 @@
+{
+  "enabledMcpjsonServers": [
+    "fusion"
+  ],
+  "permissions": {
+    "defaultMode": "acceptEdits",
+    "allow": [
+      "Bash(ls *)",
+      "PowerShell(Get-ChildItem *)",
+      "mcp__fusion"
+    ],
+    "additionalDirectories": [
+      ".."
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"$CLAUDE_PROJECT_DIR/tools/guard_writes.py\"",
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__fusion__fusion_mcp_(execute|update)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"$CLAUDE_PROJECT_DIR/tools/fusion_checkpoint.py\"",
+            "timeout": 120
+          }
+        ]
+      }
+    ]
+  }
+}

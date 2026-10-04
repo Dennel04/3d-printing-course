@@ -1,0 +1,7 @@
+# Личное у каждого студента — в общий репозиторий не идёт
+/progress.md
+/my-rules.md
+/log/*
+!/log/README.md
+.claude/settings.local.json
+__pycache__/
