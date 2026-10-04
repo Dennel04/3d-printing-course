@@ -7,12 +7,12 @@
     "allow": [
       "Bash(ls *)",
       "Bash(python tools/whoami.py)",
-      "Bash(python tools/whoami.py *)",
-      "Bash(python tools/sync.py *)",
+      "Bash(python tools/sync.py pull)",
+      "Bash(python tools/sync.py push *)",
       "PowerShell(Get-ChildItem *)",
       "PowerShell(python tools/whoami.py)",
-      "PowerShell(python tools/whoami.py *)",
-      "PowerShell(python tools/sync.py *)",
+      "PowerShell(python tools/sync.py pull)",
+      "PowerShell(python tools/sync.py push *)",
       "mcp__fusion"
     ]
   },

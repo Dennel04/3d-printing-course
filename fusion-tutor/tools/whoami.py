@@ -9,6 +9,10 @@
 
   python tools/whoami.py              -> "login <логин> source <откуда>" или "UNKNOWN"
   python tools/whoami.py --set LOGIN  -> создать/привязать папку people/LOGIN/
+
+Это не аутентификация, а защита от путаницы между своими: `--set` не
+разрешён учителю без одобрения человека и отказывает, если GitHub на этом
+компьютере называет другой логин. Настоящий контроль — права на push.
 """
 import datetime
 import getpass
@@ -73,7 +77,7 @@ def resolve(network=True):
     if network:
         login = sh(["gh", "api", "user", "--jq", ".login"])
         if LOGIN_RE.match(login):
-            return login, "github"
+            return canonical(login), "github"
     profs = profiles()
     if m["git_email"]:
         hits = [l for l, k in profs.items() if m["git_email"] in k["git_email"]]
@@ -83,6 +87,15 @@ def resolve(network=True):
     if len(hits) == 1:
         return hits[0], "computer (общий компьютер? переспроси)"
     return None, None
+
+
+def canonical(login):
+    """Логины GitHub без учёта регистра: одна папка на человека."""
+    if os.path.isdir(PEOPLE):
+        for name in os.listdir(PEOPLE):
+            if name.lower() == login.lower():
+                return name
+    return login
 
 
 def remember(login):
@@ -129,6 +142,11 @@ def main(argv):
         login = argv[1]
         if not LOGIN_RE.match(login):
             sys.exit(f"Не похоже на GitHub-логин: {login!r}")
+        gh = sh(["gh", "api", "user", "--jq", ".login"])
+        if LOGIN_RE.match(gh) and gh.lower() != login.lower():
+            sys.exit(f"GitHub на этом компьютере — {gh}, не {login}. "
+                     f"Другой человек — войди своим аккаунтом: gh auth login")
+        login = canonical(gh if LOGIN_RE.match(gh) else login)
         ensure(login)
         remember(login)
         print(f"login {login} source set")
