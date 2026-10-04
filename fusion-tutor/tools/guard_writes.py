@@ -1,8 +1,10 @@
 """PreToolUse-хук: курс учитель читает, а пишет только в fusion-tutor/.
 
 Курсовой репозиторий командный и с оцениванием. Read/Glob/Grep внутри
-курса разрешаются без вопросов; Edit/Write вне fusion-tutor/ (и в сам
-хук/настройки учителя) запрещены. Курс нарочно НЕ добавлен в
+курса разрешаются без вопросов (только если папка выше — действительно клон
+курса, и не внутри .git); Edit/Write вне fusion-tutor/ запрещены, как и в
+сам учитель: .claude/ (в т.ч. settings.local.json — иначе учитель мог бы
+выдать себе права), .mcp.json, CLAUDE.md, tools/. Курс нарочно НЕ добавлен в
 additionalDirectories: тогда acceptEdits без вопросов пропускал бы
 sed/cp туда через shell. Работает на любом пути клона, в отличие от
 path-правил в settings.json.
@@ -14,8 +16,7 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 COURSE = os.path.dirname(ROOT)
 READ_TOOLS = ("Read", "Glob", "Grep")
-PROTECTED = [os.path.join(ROOT, ".claude", "settings.json"),
-             os.path.join(ROOT, "tools")]
+PROTECTED = [os.path.join(ROOT, p) for p in (".claude", ".mcp.json", "CLAUDE.md", "tools")]
 
 
 def norm(p):
@@ -34,7 +35,15 @@ def deny(reason):
 
 def inside(target, folder):
     folder = norm(folder)
-    return os.path.commonpath([target, folder]) == folder
+    try:
+        return os.path.commonpath([target, folder]) == folder
+    except ValueError:  # другой диск
+        return False
+
+
+def is_course(folder):
+    return (os.path.isdir(os.path.join(folder, ".git"))
+            and os.path.isfile(os.path.join(folder, "AGENTS.md")))
 
 
 def main():
@@ -46,13 +55,14 @@ def main():
         return  # обычные правила Claude Code
     target = norm(os.path.join(call.get("cwd") or ROOT, path))
     if tool in READ_TOOLS:
-        if inside(target, COURSE):
+        if (is_course(COURSE) and inside(target, COURSE)
+                and not inside(target, os.path.join(COURSE, ".git"))):
             decide("allow", "Чтение курса разрешено учителю.")
         return
     if not inside(target, ROOT):
         deny("Учитель пишет только в папку fusion-tutor/. Курсовые файлы "
              "студент меняет сам, по правилам лабы.")
-    elif any(target == norm(p) or target.startswith(norm(p) + os.sep) for p in PROTECTED):
+    elif any(inside(target, p) for p in PROTECTED):
         deny("Хуки и настройки учителя не правятся из занятия.")
 
 
