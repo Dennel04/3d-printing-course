@@ -160,6 +160,12 @@ Järeldus -- pastaka hoidiku disainiimine õnnestus suurepäraselt. Teise versio
 
 *Täpsustus (03.10.26, Raimo):* hoidiku disainis Raimo. Versioonis 1 oli keere liiga tihe ja detailid ei keeranud kokku; versioonis 2 õhendati sisemist keeret 0.15 mm ja lõpuks lühendati seda, siis keeras kokku. Fusionis muudatuse tegemise aega ei mõõtnud.
 
+*Fotod (08.10.26):* pastakahoidik MG400 küljes ja robotiga joonistatud tähed.
+
+![Pastakahoidik MG400 küljes, robot joonistab tähti paberile](docs/photos/pen-holder-drawing.jpg)
+
+![Pastakahoidiku keermeliide ja pastaka ots lähedalt](docs/photos/pen-holder-closeup.jpg)
+
 ### Ohutus
 
 * Printeri otsik on 200–230 °C. Detailid spaatliga, kui laud on jahtunud.
