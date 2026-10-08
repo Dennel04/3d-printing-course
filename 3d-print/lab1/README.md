@@ -166,6 +166,10 @@ Järeldus -- pastaka hoidiku disainiimine õnnestus suurepäraselt. Teise versio
 
 ![Pastakahoidiku keermeliide ja pastaka ots lähedalt](docs/photos/pen-holder-closeup.jpg)
 
+*Video (08.10.26, 19 s):* Atomil (ESP32-S3) valitakse täht ja vajutatakse, robot joonistab selle pastakahoidikuga. Pildil klõpsates avaneb video.
+
+[![Video: robot joonistab Atomi näidatud tähe pastakahoidikuga](docs/videos/atom-letter-robot-draws.jpg)](docs/videos/atom-letter-robot-draws.mp4)
+
 ### Ohutus
 
 * Printeri otsik on 200–230 °C. Detailid spaatliga, kui laud on jahtunud.
