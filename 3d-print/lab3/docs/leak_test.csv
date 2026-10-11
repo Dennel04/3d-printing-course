@@ -1,1 +1,1 @@
-test_nr,pressure_start_kPa,pressure_5min_kPa,leak_location,fix,notes
+run_id,date,configuration_version,start_pressure_kPa,end_pressure_kPa,duration_min,joint_or_branch_tested,soap_bubble_result,pass_fail,notes

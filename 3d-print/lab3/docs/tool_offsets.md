@@ -1,17 +1,31 @@
-# Otsikute nihked flantsi suhtes
+# Tööriista nihked flantsi suhtes
 
-Jaam liidab need õpetatud punktile (Nutikad Lahendused L3). Ühik: mm.
+Kõik nihked mõõdetakse valmis füüsiliselt tööriistalt ühe ja sama flantsi
+referentsi suhtes. Ühik on millimeeter. CAD-i väärtust ei märgita mõõdetud
+nihkeks.
 
-| Otsik | X | Y | Z | Mõõdetud (kuupäev, kuidas) |
-|---|---:|---:|---:|---|
-| Napa keskpunkt | | | | |
-| Süstla otsiku tipp | | | | |
-| Lambi laigu keskpunkt | | | | |
+## Koordinaatide kokkulepe ja ühine referents
 
-## Pärast tööriista mahavõtmist ja tagasipanekut
+- Flantsi nullpunkt: TODO — waiting for physical measurement
+- +X suund: TODO — waiting for physical measurement
+- +Y suund: TODO — waiting for physical measurement
+- +Z suund: TODO — waiting for physical measurement
+- Mõõtmismeetod ja kasutatud vahendid: TODO — waiting for physical test
+- Tööriista versioon: TODO — waiting for physical test
+- Mõõtmise kuupäev: TODO — waiting for physical test
 
-| Otsik | X | Y | Z | Erinevus enne/pärast |
-|---|---:|---:|---:|---|
-| Napa keskpunkt | | | | |
-| Süstla otsiku tipp | | | | |
-| Lambi laigu keskpunkt | | | | |
+## Nihked
+
+| Referentspunkt | X (mm) | Y (mm) | Z (mm) | Mõõtmismeetod | Kuupäev | Tööriista versioon | Määramatus / kordustäpsus (mm) |
+|---|---:|---:|---:|---|---|---|---|
+| Iminapa tipu keskpunkt | TODO — waiting for physical measurement | TODO — waiting for physical measurement | TODO — waiting for physical measurement | TODO — waiting for physical test | TODO — waiting for physical test | TODO — waiting for physical test | TODO — waiting for physical test |
+| Süstla otsiku tipp | TODO — waiting for physical measurement | TODO — waiting for physical measurement | TODO — waiting for physical measurement | TODO — waiting for physical test | TODO — waiting for physical test | TODO — waiting for physical test | TODO — waiting for physical test |
+| UV-laigu keskpunkt | TODO — waiting for physical test | TODO — waiting for physical test | TODO — waiting for physical test | TODO — waiting for physical test | TODO — waiting for physical test | TODO — waiting for physical test | TODO — waiting for physical test |
+
+## Pärast tööriista eemaldamist ja tagasipanekut
+
+| Referentspunkt | X (mm) | Y (mm) | Z (mm) | Erinevus enne/pärast (mm) | Märkus |
+|---|---:|---:|---:|---:|---|
+| Iminapa tipu keskpunkt | TODO — waiting for physical measurement | TODO — waiting for physical measurement | TODO — waiting for physical measurement | TODO — waiting for physical test | |
+| Süstla otsiku tipp | TODO — waiting for physical measurement | TODO — waiting for physical measurement | TODO — waiting for physical measurement | TODO — waiting for physical test | |
+| UV-laigu keskpunkt | TODO — waiting for physical test | TODO — waiting for physical test | TODO — waiting for physical test | TODO — waiting for physical test | |

@@ -29,7 +29,7 @@ See on meeskonna tööpäevik ja otsuste register. Täielik ülesanne on failis 
 
 ### Varasematest laboritest
 
-- Lab 1 lõtk: `0,4 mm` liikus vabalt, `0,2 mm` kiilus; lõpptulemus vahemik `0,2–0,4 mm` (vt `../lab1/README.md`).
+- Lab 1 lõtk: `0,4 mm` liikus vabalt, `0,2 mm` kiilus ja `0,3 mm` ei ole füüsiliselt kontrollitud (vt `../lab1/README.md`).
 - Lab 1 paindumise ja murdumise numbrid flex-tükist — vaja süstla klambri jaoks (vt `../lab1/README.md`).
 - Lab 2: hoidikud ruudustikus, paigutus `../lab2/docs/layout.md`, kaamera kinnitus ja toide, olemasolev iminapa tööriistahoidik.
 
@@ -44,6 +44,8 @@ Klapi, liitmike, süstla, otsikute, LED-i koos radiaatoriga, napa ja kaameramood
 
 ## Tööfailid
 
+- [`docs/measurements.md`](docs/measurements.md) — esimese töökorra füüsiliste mõõtmiste leht.
+- [`docs/test-procedure.md`](docs/test-procedure.md) — labori inventuuri, sobitus- ja ohutuskatsete samm-sammuline juhend.
 - [`docs/tool_layout.md`](docs/tool_layout.md) — osade mõõdud ja kaalud, õhu skeem, kaalueelarve, klapi asukoha otsus.
 - [`docs/tool_offsets.md`](docs/tool_offsets.md) — napa, süstla otsiku ja lambi laigu nihked flantsi suhtes.
 - [`docs/leak_test.csv`](docs/leak_test.csv) — lekkekatsed.
@@ -70,3 +72,14 @@ Lisa iga töökorra lõppu uus sissekanne; ära kirjuta varasemaid sissekandeid 
 - Juhtus (numbrid):
 - Otsustasime, ja miks:
 - Lahti järgmiseks korraks:
+
+**11.10.26 — osalejad teadmata**
+- Tegime: koostasime esimese füüsilise töökorra jaoks mõõtmislehe ja samm-sammulise katsejuhendi; täiendasime lekkekatse, 20 tsükli kuivkatse, tööriista paigutuse, nihete ja inventuuri/tellimuse tühje vorme.
+- Probleemid ja ebaõnnestunud katsed: füüsilistele komponentidele, printerile ega robotile puudus selle ettevalmistuse ajal ligipääs; füüsilisi katseid ei tehtud.
+- Parandused: eraldasime ametliku `500 g` koormuspiiri mõõdetavatest massidest ning märkisime kõik mõõtmist või füüsilist kinnitamist nõudvad väljad olekuga `TODO — waiting for physical measurement` või `TODO — waiting for physical test`.
+- Mõõdud ja parameetrid: uusi füüsilisi mõõte ega testitulemusi ei lisatud. Lab 1 kinnitatud lähteinfo jääb muutmata: `0,4 mm` lõtk liikus vabalt, `0,2 mm` kiilus ja `0,3 mm` ei ole füüsiliselt kontrollitud.
+- Oodatav tulemus: esimesel Lab 3 töökorral saab meeskond alustada inventuurist ja nihikuga mõõtmisest ning liikuda väikeste kontrollprintide ja kuivkatseteni ühtse juhendi järgi.
+- Tegelik tulemus: dokumentatsiooni ettevalmistus valmis; `TODO — waiting for physical test`.
+- Otsustasime, ja miks: Lab 3 CAD-i ei alustata enne tegelike komponentide mõõtmist; klapi asukohta tööriistal või laual ei valita ilma massi-, vooliku- ja liikumisandmeteta.
+- Failid: `docs/measurements.md`, `docs/test-procedure.md`, `docs/leak_test.csv`, `docs/cycle_test.csv`, `docs/tool_layout.md`, `docs/tool_offsets.md`, `docs/bom.md`, `README.md`, juurkausta `AGENTS.md`.
+- Lahti järgmiseks korraks: teha inventuur, mõõta päris detailid nihiku ja kaaluga ning dokumenteerida tulemused enne Fusion 360 CAD-i alustamist.

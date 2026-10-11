@@ -118,6 +118,12 @@ physical part, each with `src/` `stl/` `3mf/`.
   `3d-print/lab2/docs/measurements.md`, and
   `3d-print/lab2/docs/test-procedure.md` before changing CAD, measurements,
   or test records.
+- Before Lab 3 CAD work, read `3d-print/lab3/README.md`,
+  `3d-print/lab3/assignment-EST.md`, `3d-print/lab3/docs/measurements.md`,
+  `3d-print/lab3/docs/test-procedure.md`, and
+  `3d-print/lab3/docs/tool_layout.md`. Never substitute datasheet or CAD
+  dimensions for physical measurements without an explicit label, and never
+  close a physical acceptance criterion without the corresponding real test.
 - Prefer adding new versioned files over overwriting existing STL/3mf/source
   files.
 - If asked to translate assignment text, translate faithfully; don't
