@@ -81,16 +81,18 @@ Versioonis v2 on standardne nominaalgeomeetria ja printeri sobitusparandus erald
 
 V2 nominaalprofiili allikas on [kennetek/gridfinity-rebuilt-openscad `src/core/standard.scad`](https://github.com/kennetek/gridfinity-rebuilt-openscad/blob/main/src/core/standard.scad) (MIT-litsents); sama profiil on kirjas ametlikus lauakirjelduses.
 
-## Arenduspäevik
+### Arenduspäevik
 
-Lisa iga töökorra lõppu uus sissekanne; ära kirjuta varasemaid sissekandeid ümber.
+**KAARDISTA ISE — päevik.** Üks sissekanne iga töösessiooni kohta, kirjutatud
+iseendale, nii et inimene, kes seal ei olnud, saab aru. Sissekandeid lisatakse,
+mitte ei muudeta.
 
-**Kuupäev - osalejad**
-- Tegime:
-- Mõõtmised ja tulemused koos ühikutega:
-- Otsused ja põhjendused:
-- Failid ja versioonid:
-- Järgmiseks:
+**PP.KK.AA — kes olid kohal**
+* Tegime:
+* Juhtus (numbrid):
+* Otsustasime, ja miks:
+* Lahti järgmiseks korraks:
+* Failid: (valikuline lisainfo)
 
 **03.10.26 — Codex; meeskonnaliikmete kohalolek teadmata**
 - Tegime: kontrollisime Gridfinity jala profiili ametliku lauakirjelduse ja avatud lähtekoodiga generaatori vastu; koostasime kalibreerimishoidiku v2 keskristiga ning märkisime v1 tray lihtsustatud jala aegunuks.
@@ -100,6 +102,8 @@ Lisa iga töökorra lõppu uus sissekanne; ära kirjuta varasemaid sissekandeid 
 - Otsused ja põhjendused: säilitasime v1 failid ajaloo jaoks; v2 eraldab nominaalprofiili printeri sobitusparandusest. Tray jalga ei kasutata enne füüsilist sobivuskatset.
 - Failid ja versioonid: `src/gridfinity-calibration-v2.scad`, `src/gridfinity-tray-v1.scad`, `docs/measurements.md`, `README.md`.
 - Järgmiseks: kontrollida v2 OpenSCADis, seejärel printida eraldi füüsiline kandidaat ja dokumenteerida sobivus, loks ning eemaldamisjõud.
+
+> Märkus: selles ajaloolises kirjes nimetatud AI oli kasutatud tööriist, mitte füüsiliselt kohal olnud meeskonnaliige. Algset päevikukirjet ei muudeta tagantjärele.
 
 **04.10.26 — r4imps (Raimo) koos Claude'iga (Fusion MCP kaudu)**
 - Tegime: vaatasime üle haaratsi `MG_400_gripper_attachment` ja muutsime seda kaalu ning kruvide järgi. Fusionis on iga samm eraldi versioonina (v1 = algne, v5 = tänane lõpp).
@@ -120,6 +124,8 @@ Lisa iga töökorra lõppu uus sissekanne; ära kirjuta varasemaid sissekandeid 
   - Süstla klamber: Raimo vaatab hiljem üle.
   - Nihikuga üle mõõta: MG400 flantsi keere ja augu samm (`17 × 17 mm`?), napa kinnituse keere, AtomS3R-i ja aku mõõdud.
 
+> Märkus: selles ajaloolises kirjes nimetatud AI oli kasutatud tööriist, mitte füüsiliselt kohal olnud meeskonnaliige. Algset päevikukirjet ei muudeta tagantjärele.
+
 **04.10.26 — Dennel04 (Denys) koos Claude'iga (Fusion MCP kaudu)**
 - Tegime: XIAO ESP32S3 Sense tööriistakaamera kinnitus MG400 J4 mootori nelikandile (robot Fusionis XREF-ina). v1: U-klamber ümber nelikandi kaane, kaane M2,5 kruvide avad süvistustega, plaadi rennid ja otsapiire, kaabliklamber pistiku taga. v1 printimata. v2: tõmbepaela sild eemaldatud, selle asemel teine kaabliklamber +Y seinal; kaabel läheb mööda seina roboti poole.
 - Mõõtmised ja tulemused koos ühikutega: nihikuga mõõdetud ainult kaane kruvi: kogupikkus `6,3 mm`, pea `Ø4,62 mm`. Kõik muud mõõdud on CAD-ist (MG400 mudel: nelikant `44 × 44 mm`, kruvide samm `24 mm`) ja XIAO STEP-ist; neil on Fusionis parameetrid. Lõtk nelikandil `0,3 mm` külje kohta (Lab 1 vahemikust `0,2–0,4 mm`, kinnitamata). Interference robotiga ja XIAO-ga `0`. Print: Prusa CORE One HF0.4, `0.20mm SPEED`, Prusament PLA, orgaanilised toed ainult alusplaadilt, tagurpidi (klambri serv alusel); `45 min`, `15,6 g`. Füüsiline sobivus: `TODO — waiting for physical test`.
@@ -129,3 +135,28 @@ Lisa iga töökorra lõppu uus sissekanne; ära kirjuta varasemaid sissekandeid 
   - Prindil kontrollida: sobivus nelikandil, kas originaalkruvi ulatub läbi süvistuse põhja (`1 mm`) keermesse, plaat rennides, kaabel mõlemas klambris. Kruviavadesse kasvanud toed puhastada.
   - Kaameramoodul ripub oma lindikaablil ega ole fikseeritud. v3-s on kaamerapesa (Fusionis `xiao-square-mount-v3`); prinditakse alles pärast v2 katset ja kaameramooduli nihikuga mõõtmist.
   - Mõõta iminapa otsa kõrgus nelikandi suhtes (kinnitus ei tohi ulatuda napa otsast allapoole) ja valida kaamera toide.
+
+> Märkus: selles ajaloolises kirjes nimetatud AI oli kasutatud tööriist, mitte füüsiliselt kohal olnud meeskonnaliige. Algset päevikukirjet ei muudeta tagantjärele.
+
+### Väljundid ja tulemused
+
+**Väljundid**
+* Gridfinity hoidikute kandidaadid ja töölaua paigutusdokumendid; lõplikud
+  hoidikud ning ruudukohad on TODO — real measurement and physical fit test
+  required.
+* XIAO tööriistakaamera kinnituse CAD-kandidaat on olemas; selle füüsiline
+  sobivus ja USB üldvaatekaamera lõplik kinnitus on TODO — waiting for physical
+  test.
+* Hoidikute eemaldamise/tagasipaneku sobivus ja kordustäpsus: TODO — real
+  measurement required.
+* Smart Solutions Lab 2/3 saab siit pärast füüsilisi katseid kontrollitud
+  hoidikukohad, roboti sihtpunktid ja kaamerate kinnitusgeomeetria: TODO — real
+  measurement required.
+
+**KAARDISTA ISE, lõpus.**
+* Git repo ja tag: TODO — lisada alles esitamisel.
+* Numbrid, mille see labor andis, ühikutega: TODO — real measurement required;
+  CAD-i nominaale ei esitata füüsilise kordustäpsuse tulemusena.
+* Mida me teeksime teisiti: TODO — complete after physical fit and refit tests.
+* Mida järgmine labor peaks enne alustamist teadma: TODO — complete after the
+  holders, camera mounts and robot target points are physically verified.
