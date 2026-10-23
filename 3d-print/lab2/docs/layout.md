@@ -26,7 +26,7 @@ Töökoha sammude arv ja roboti täpsusala tuleb kinnitada tegeliku protsessi p�
 | Sisend 3 | Akumoodul, vähemalt 4 tk | | | |
 | Töökoht | Klaasi tõstmine Atomi mannekeenile | | | |
 | Väljund | Valmis detail | | | |
-| Väljund | Praak | | | |
+| Väljund | Praak (`gridfinity-calibration-v1`, 1 × 1, vt README) | | | |
 
 ## Ruudustiku plaan
 

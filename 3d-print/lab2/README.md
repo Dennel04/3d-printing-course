@@ -14,7 +14,11 @@ Kavandada MG400 töölauale Gridfinity hoidikud sisenditele, töökohtadele ning
 - [ ] 1 x 1 Gridfinity kalibreerimishoidik testitud ruudustikus ja robotiga.
   - 23.10.26 otsus: keskpunkt leitakse iminapaga hoidiku nelja sisenurga kaudu (nelja punkti keskmine); napa raadius taandub sümmeetria tõttu välja ja lisaks saame ruudustiku pöördenurga. Protseduur: [`docs/test-procedure.md`](docs/test-procedure.md) A1, tabel: [`docs/measurements.md`](docs/measurements.md).
 - [ ] Kolm sisendhoidikut, igaühes vähemalt neli mõõdetud pesa.
+  - 23.10.26 prinditud: klaas (`glass-input-holder-v1`, 2 × 2, 4 pesa), AtomS3 (`atoms3-input-holder-v1`, 2 × 2, 4 pesa), akumoodul (`ready-parts-input-holder-v1`, 2 × 2, 4 pesa). Pesade mõõdud nihikuga: TODO.
 - [ ] Töökoha hoidik ja heade ning praakdetailide väljundikohad.
+  - 23.10.26 otsus: `ready-parts-input-holder-v1` (2 × 2) on korraga akumooduli sisend ja töökoht: inimene laeb akumoodulid, robot paneb igaühe peale AtomS3 ja selle peale klaasi. Ülesanne lubab sammul jagada kohta eelmisega.
+  - 23.10.26 otsus: praak = `gridfinity-calibration-v1` (1 × 1 lahtine kast) pärast kalibreerimist. CAD-ist: välismõõt 41,2 × 41,2 mm, kõrgus 20 mm, sisemus ~37,2 × 37,2 mm, sügavus 16 mm. Klaas ja AtomS3 on 24 × 24 mm, varu ~6,6 mm igale poole; kõrgus jääb alla 60 mm piiri. Ülesanne praagi suurust ega pesasid ei nõua ("võib olla lihtsalt kast"). Füüsiline kontroll: TODO.
+  - Heade väljund (4 klaasi, suuremate kaldservadega): TODO — modelleerimata.
 - [ ] Iga pesa mõõt ja roboti sihtpunkt dokumenteeritud ruudu ning nihkega.
 - [ ] Klaasiga tehtud viis korduskatset ja tulemused failis `docs/refit_test.csv`.
 - [ ] XIAO ESP32S3 Sense kaamera kinnitus ning valitud ja katsetatud toide.
