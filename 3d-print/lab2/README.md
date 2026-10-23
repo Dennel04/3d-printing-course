@@ -49,6 +49,9 @@ Kavandada MG400 töölauale Gridfinity hoidikud sisenditele, töökohtadele ning
     ![veebikaamera-post-v2 Fusionis](docs/photos/veebikaamera-post-v2-fusion.png)
 
     ![veebikaamera-post-v2 ülalt](docs/photos/veebikaamera-post-v2-top.png)
+  - 23.10.26 v2 täiendus — kaamera kinnitus: Verbatim AWC-03 klamber koosneb kahest osast, mis on liigendiga (kruvid reguleerivad pingust) ühendatud. Alumine osa mõõdetud nihikuga: **42,04 × 48,5 × 10,88 mm**. Posti otsas on selle jaoks pesa: 42,84 × 49,30 mm (lõtk 0,4 mm külje kohta, Lab 1 vahemik 0,2–0,4 mm), sügavus 7 mm (klamber jääb 3,9 mm välja, et sõrmedega kätte saada), seinad kolmel küljel, liigendi pool lahti ja pööratud laua poole (41°), et kaamera saaks alla kalduda. Põhjas 20 mm pilu ¼" kruvile (keerme täpne koht klambril mõõtmata); kruviga on kaamera jäigalt kinni, ilma kruvita istub klamber lihtsalt pesas. Ülemine tükk nüüd 267 mm (printeri Z 270 mm). Kontroll ümbrise vastu: varu endiselt ≥ 30 mm.
+
+    ![veebikaamera-post-v2 klambri pesa](docs/photos/veebikaamera-post-v2-klamber.png)
 - [ ] `docs/bom.md` sisaldab iga tellitava rea põhjendust.
 - [ ] Iga prindi lähtefail, STL ja 3MF on versioonitud.
 - [ ] Arenduspäevik täidetud; esitamisel lisatud tag `3d-print-lab2`.
