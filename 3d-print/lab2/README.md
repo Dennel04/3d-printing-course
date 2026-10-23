@@ -35,6 +35,20 @@ Kavandada MG400 töölauale Gridfinity hoidikud sisenditele, töökohtadele ning
     - Kontrollimata: käe suurim kõrgus ja kas käsi ulatub kaamerani (kaamera korpus ulatub postist ~50 mm roboti poole); liitekoha loks; pildi värisemine. TODO — waiting for physical test.
 
     ![veebikaamera-post-v1 Fusionis koos MG 400 rakisega](docs/photos/veebikaamera-post-v1-fusion.png)
+  - 23.10.26 parandus: **v1 on vale** — käsi ulatub postini. MG400 Hardware User Guide V1.4 (joonised 2.2 ja 2.3): 440 mm on flantsi (J4 telje) ulatus, mitte kogu käe oma; J2 on 224 mm roboti tallast, J4 mootori korpus ulatub flantsist ~80 mm üles ja ~25 mm külgedele, tööriist ripub all. v1 posti lähim külg oli 422 mm J1-st ja kaamera ~404 mm kõrgusel 425–480 mm, kuhu käsi ulatub. Ülesanne nõuab: *"käsi ei ulatu temani"*, *"Kaamera ja kõik, mis teda hoiab, on sellest väljas"*.
+  - 23.10.26 prototüüp v2 (CAD, printimata): `veebikaamera-post/src/veebikaamera-post-v2.f3d`, `stl/veebikaamera-post-v2-alumine.stl`, `stl/veebikaamera-post-v2-ulemine.stl`.
+    - Käe ümbris (joonisest digitaliseeritud, varuga): flants + J4 korpus (±25 mm, +80 mm) + tööriist (raadius 75 mm, 70 mm allapoole). Suurim horisontaalne ulatus ~515 mm kõrgusel 40–200 mm; käe kõrgeim punkt ~490 mm roboti tallast.
+    - Post on 555 mm kaugusel J1-st ruudustiku nurga (G-5) kaudu mineval kiirel, väljaspool ruudustikku. Kontroll Fusionis (iga võrgu punkt vs ümbris): post ja kaamera on ümbrisest vähemalt **30 mm** väljas. Ümbrisesse jäävad ainult alus ja konsool kuni 37 mm kõrguseni — madalad nagu iga hoidik (reegel: üle 60 mm osad ei ole käe teel).
+    - Alus 2 × 2 Gridfinity ruutudes G-5, G-4, F-5, F-4 (kordustäpsus tuleb jalgadest, samad jalad mis `glass-input-holder-v2`), sealt madal õõnes konsool (30 mm kõrge, all lahti — USB kaabel käib sees) postini.
+    - Kaamera on roboti kohal: plaat 470 mm, kaamera korpus ~495–550 mm, objektiiv ~522 mm (käsi ei tõuse kõrgemale kui ~490 mm). Arvutatud: kogu ruudustik + robot ~93 % kaadris, kaamera pööre ~41° ja kalle ~42° alla.
+    - Jäikus: õõnes 30 × 30 mm toru (sein 3 mm), kaks 100 mm ribi posti välisküljel (roboti poole ribi ega kõrget seina ei ole), lai 2 × 2 alus.
+    - Kaks tükki: alumine 242 mm (210,7 × 170,4 mm), ülemine 260 mm (40 × 40 mm) — printeri Z 270 mm, tükk ≤ 250 × 250 mm. Liide: 35 mm tapp (0,2 mm lõtk) + M3 risttihvt (Ø3,3) loksu vastu. Üle 150 mm tükil brim.
+    - Kaabel: aken ülemise toru välisküljel plaadi all (USB sisse ja käsi ¼" kruvi jaoks), kaabel toru ja konsooli sees alla.
+    - Kontrollimata: kas laud ulatub ruudustiku nurgast välja (konsool on õhus, laud ei pea all olema); pildi värisemine; reaalne kaamera mõõt. Enne esimest jooksu sõita käsi aeglaselt postile kõige lähemale (ohutusreegel). TODO — waiting for physical test.
+
+    ![veebikaamera-post-v2 Fusionis](docs/photos/veebikaamera-post-v2-fusion.png)
+
+    ![veebikaamera-post-v2 ülalt](docs/photos/veebikaamera-post-v2-top.png)
 - [ ] `docs/bom.md` sisaldab iga tellitava rea põhjendust.
 - [ ] Iga prindi lähtefail, STL ja 3MF on versioonitud.
 - [ ] Arenduspäevik täidetud; esitamisel lisatud tag `3d-print-lab2`.
