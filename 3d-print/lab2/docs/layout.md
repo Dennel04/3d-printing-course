@@ -25,8 +25,8 @@ Töökoha sammude arv ja roboti täpsusala tuleb kinnitada tegeliku protsessi p�
 | Sisend 2 | Polükarbonaatklaas, vähemalt 4 tk | | | |
 | Sisend 3 | Akumoodul, vähemalt 4 tk | | | |
 | Töökoht | Klaasi tõstmine Atomi mannekeenile | | | |
-| Väljund | Valmis detail | | | |
-| Väljund | Praak (`gridfinity-calibration-v1`, 1 × 1, vt README) | | | |
+| Väljund | Valmis detail (`glass-output-holder-v1`, 2 × 2 lahtine kast) | | | |
+| Väljund | Praak (23.10.26 parandus: oranž `ready-parts-input-holder-v1`; varem `gridfinity-calibration-v1`) | | | |
 
 ## Ruudustiku plaan
 
