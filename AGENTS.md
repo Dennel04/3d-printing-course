@@ -30,19 +30,21 @@ electronics course drives the display.
     pen-holder/         <- the actual tool: spring-loaded pen holder for MG400
       src/  stl/  3mf/
   lab2/
-    README.md           <- Lab 2 checklist, measured decisions, and devlog
-    docs/               <- layout.md, refit_test.csv, bom.md, and photos
-    src/                <- reusable parametric CAD prototypes, not yet print-verified
-    input-holders/      <- final holders for AtomS3, glass, and battery
-      src/  stl/  3mf/
-    workstation-holder/ <- holder for the assembly step
-      src/  stl/  3mf/
-    output-holders/     <- good-part and reject locations
-      src/  stl/  3mf/
-    camera-mounts/      <- tool camera mount and overhead camera post
-      src/  stl/  3mf/
-    gripper-attachment/ <- MG400 gripper: flange boss, AtomS3R/battery fork, suction cup and syringe mounts
-      src/  stl/  3mf/
+    README.md                <- Lab 2 kontrollnimekiri, otsused ja arenduspäevik
+    assignment-EST.md        <- ülesande kohalik koopia; tehnilised parandused README-s
+    docs/                    <- mõõtmised, paigutus, katsed, komponendid ja fotod
+    reference/               <- töölaua Fusioni referentsfail
+    src/                     <- parameetrilised OpenSCADi prototüübid
+    atoms3-input-holder/     <- AtomS3 sisendhoidik; src/ stl/ 3mf/
+    glass-input-holder/      <- klaasi sisendhoidiku versioonid; src/ stl/ 3mf/
+    ready-parts-input-holder/ <- aku sisend, töökoht ja praagi koht; src/ stl/ 3mf/
+    valjundhoidik/           <- heade detailide väljund; src/ stl/ 3mf/
+    gridfinity-calibration/  <- kalibreerimishoidik; src/ stl/ 3mf/
+    camera-mounts/           <- XIAO tööriistakaamera kinnitus; src/ stl/ 3mf/
+    veebikaamera-post/       <- üldvaatekaamera posti versioonid; src/ stl/
+    tool-camera/            <- USB diagnostika: firmware/ ja capture.py
+    calibration/            <- roboti kalibreerimise abiskript
+    gripper-attachment/     <- peatatud haaratsiarendus; src/ stl/
   lab3/
     README.md           <- Lab 3 checklist, known inputs, file index, and devlog
     assignment-EST.md   <- original assignment text, unmodified
@@ -66,6 +68,11 @@ fusion-tutor/            <- Claude Code tutor for learning Fusion (run `claude` 
 Each lab folder from Lab 2 on also keeps `assignment-EST.md`: the original
 assignment text exactly as issued (never edited). The lab `README.md` holds
 the team's working version.
+
+Lab 2 erand kasutaja juhisel (23.10.2026): kohalikus `assignment-EST.md`
+on ametliku ajakohase allika järgi parandatud esimese kaitsmise kuupäev ja
+repo struktuurile vastavad suhtelised lingid. Muu tekst säilib; paranduste
+päritolu on kirjas Lab 2 README-s. Seda koopiat ei nimetata muutmata koopiaks.
 
 Each later lab under `3d-print/labN/` should follow the same pattern:
 `README.md` (assignment + filled-in answers/devlog) + one subfolder per

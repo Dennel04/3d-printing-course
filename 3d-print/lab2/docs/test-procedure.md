@@ -64,6 +64,8 @@ Edasi samamoodi nagu sammud 4–7: nihe B-2-s, kontroll E+3-s, Z. Hoidiku eemald
 
 ## F. Tööriistakaamera katse
 
+23.10.2026 arhitektuur: XIAO USB Serial diagnostika on kontrollitud COM5 kaudu (OV3660, JPEG 1600 × 1200 px, [`tegelik foto`](photos/tool-camera-first-frame.jpg)). Lõppvariandi Wi-Fi HTTP püsivara asub [Smart Solutionsi repos](https://github.com/Dennel04/smart-solutions-course/tree/main/smart-solutions/lab2/firmware-xiao-camera/); siinset USB-püsivara säilitatakse diagnostikaks. Enne lõppvariandi vastuvõtmist kontrolli Wi-Fi HTTP pilti tegelikult XIAO-lt station PC-sse ning salvesta terav töökoha kaader terve 30 × 30 mm klaasi ja Atomiga. Seejärel kontrolli allolevate sammudega toidet, kaablimarsruuti, tõmbetõket ning MG400 kogu kavandatud liikumisvahemikku ja J4 pööret. Kõik need lõppvariandi füüsilised kontrollid: `TODO — waiting for physical test`.
+
 1. Kinnita kaamera olemasoleva iminapa kõrvale.
 2. Kontrolli, et iminapa vertikaalne tee ja hoidikutesse laskumine on vabad.
 3. Kontrolli, et kaadris on töökoht ning USB-C pesa jääb ligipääsetavaks.
@@ -73,6 +75,8 @@ Edasi samamoodi nagu sammud 4–7: nihe B-2-s, kontroll E+3-s, Z. Hoidiku eemald
 7. Ära ühenda midagi roboti tööriistatoitesse enne pinge mõõtmist ja õppejõu kontrolli.
 
 ## G. Üldvaatekaamera katse
+
+Valitud üldvaatekaamera on Verbatim AWC-03, ühendus USB kaudu station PC-ga. MG400 saab käsud Etherneti kaudu; Atom kasutab USB Serialit ja Wi-Fi-t. Need ühendused ei asenda allolevaid kaamera- ja liikumiskatseid.
 
 1. Paiguta kaamera kõrgemale roboti mõõdetud maksimaalsest trajektoorist.
 2. Kontrolli, et kogu ruudustik ja robot on kaadris.

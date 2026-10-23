@@ -1,6 +1,6 @@
 ## 3D printimine ja CAD: Labor 2 — Sisend, töökoht, väljund
 
-**Töömaht:** 30 tundi | **Hindamine:** 20 punkti | **Meeskond:** 3 tudengit | **Välja antud:** 06.10.26 | **Tellimise kuupäev:** 16.10.26 | **Esimene kaitsmine:** 27.10.26, veebis
+**Töömaht:** 30 tundi | **Hindamine:** 20 punkti | **Meeskond:** 3 tudengit | **Välja antud:** 06.10.26 | **Tellimise kuupäev:** 16.10.26 | **Esimene kaitsmine:** 29.10.26, veebis
 
 ### Kuidas see dokument töötab
 
@@ -9,7 +9,7 @@
 
 ### Eesmärk
 
-Töölaua annab õppejõud ja selle disain on olemas: Fusioni fail [MG 400 rakis.f3z](MG%20400%20rakis.f3z) ja selle kirjeldus [MG 400 rakis.md](MG%20400%20rakis.md). Laud on PLA-st prinditud. Robot seisab oma aluses ja tema ees on **Gridfinity ruudustik**, 7 × 10 ruutu, samm 42 mm. Kõik, mis laua peal elab, on Gridfinity hoidik, mis kukub ruudustikku. See ruudustik on ainus liides, mille vastu sa disainid.
+Töölaua annab õppejõud ja selle disain on olemas: Fusioni fail [MG 400 rakis.f3z](reference/MG%20400%20rakis.f3z) ja selle kirjeldus [MG 400 rakis.md](docs/MG%20400%20rakis.md). Laud on PLA-st prinditud. Robot seisab oma aluses ja tema ees on **Gridfinity ruudustik**, 7 × 10 ruutu, samm 42 mm. Kõik, mis laua peal elab, on Gridfinity hoidik, mis kukub ruudustikku. See ruudustik on ainus liides, mille vastu sa disainid.
 
 Aasta lõpuks paneb MG400 kokku sildi: AtomS3 (ESP32), mille ekraani peale on liimitud polükarbonaatklaas ja mille all on akumoodul. See on väike tootmisliin, ja tootmisliinil on alati sama kuju:
 
@@ -56,7 +56,7 @@ Esimesel päeval uusi osi ei ole. Ehita sellest, mis riiulil on, ja kirjuta puud
 
 ### Sisendid
 
-* Õppejõult: töölaud koos disainiga. Fusioni fail [MG 400 rakis.f3z](MG%20400%20rakis.f3z) ja kirjeldus [MG 400 rakis.md](MG%20400%20rakis.md). Lühikokkuvõte allpool, osas "Töölaud".
+* Õppejõult: töölaud koos disainiga. Fusioni fail [MG 400 rakis.f3z](reference/MG%20400%20rakis.f3z) ja kirjeldus [MG 400 rakis.md](docs/MG%20400%20rakis.md). Lühikokkuvõte allpool, osas "Töölaud".
 * Riiulilt: printerid, PLA, nihik.
 * 3D printimise L1-st: lõtk, paindumise ja murdumise numbrid, pastakahoidik.
 * Nutikate Lahenduste L1-st: jaam, millega punkte õpetada ja üle mängida, ja `data/positions.json`.
@@ -110,9 +110,9 @@ Esimesel päeval uusi osi ei ole. Ehita sellest, mis riiulil on, ja kirjuta puud
 
 ### Töölaud
 
-Siin on see, mida sul hoidiku disainimiseks vaja on. Kõik ülejäänu, ka iga ruudu koordinaadid tabelina, on failis [MG 400 rakis.md](MG%20400%20rakis.md).
+Siin on see, mida sul hoidiku disainimiseks vaja on. Kõik ülejäänu, ka iga ruudu koordinaadid tabelina, on failis [MG 400 rakis.md](docs/MG%20400%20rakis.md).
 
-Seda kirjeldust on hea kasutada oma AI agendile seletamiseks, mis Fusionis praegu juba tehtud on. Agent ei näe Fusioni faili sisse; kirjeldus ütleb talle sõnade ja numbritega sama, mida [MG 400 rakis.f3z](MG%20400%20rakis.f3z) ütleb sulle pildina: kus on robot, kus on ruudustik, mis mõõdud ja mis koordinaadid. Pane see oma repo juurde ja viita sellele `AGENTS.md`-st, siis ei pea sa lauda igas vestluses uuesti kirjeldama.
+Seda kirjeldust on hea kasutada oma AI agendile seletamiseks, mis Fusionis praegu juba tehtud on. Agent ei näe Fusioni faili sisse; kirjeldus ütleb talle sõnade ja numbritega sama, mida [MG 400 rakis.f3z](reference/MG%20400%20rakis.f3z) ütleb sulle pildina: kus on robot, kus on ruudustik, mis mõõdud ja mis koordinaadid. Pane see oma repo juurde ja viita sellele `AGENTS.md`-st, siis ei pea sa lauda igas vestluses uuesti kirjeldama.
 
 **Miks Gridfinity**
 

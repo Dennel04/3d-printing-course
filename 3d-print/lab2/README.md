@@ -4,9 +4,28 @@
 
 See on meeskonna tööpäevik ja otsuste register. Hoia mõõtmised koos ühikutega, lisa iga töökorra kohta uus päevikusissekanne ning jäta varasemad tulemused alles. Täielikku töölehte ei kopeerita.
 
+## Ametlik kuupäev ja kohaliku ülesandekoopia parandused
+
+Esimene kaitsmine on **29.10.2026, veebis**. Kontrollitud 23.10.2026 [ajakohasest ametlikust ülesandest](https://github.com/KKallas/Narva-subjects/blob/main/EST/2026-27/3D%20printing/3D%20Printing%20%5BLab%202%5D%20EST.md) (`KKallas/Narva-subjects`, faili Git blob SHA `26414cd29cd4a1a6e8e377b4ab1b1e31168f7625`). Kohalikus [`assignment-EST.md`](assignment-EST.md) on tehniliselt parandatud ainult vananenud kuupäev 27.10.26 → 29.10.26 ja suhtelised lingid `MG 400 rakis.f3z` → `reference/MG 400 rakis.f3z` ning `MG 400 rakis.md` → `docs/MG 400 rakis.md`. Muu ülesandetekst säilib senisel kujul; kohalik koopia ei ole bait-baidilt muutmata originaal.
+
 ## Eesmärk
 
 Kavandada MG400 töölauale Gridfinity hoidikud sisenditele, töökohtadele ning heade ja praakdetailide väljundile. Hoidik peab pärast ruudustikust eemaldamist ja tagasipanekut jääma roboti suhtes samasse kohta. Kaamerad peavad nägema töökohta ja kogu lauda.
+
+## Kaamerate ja Smart Solutionsi arhitektuur — 23.10.2026
+
+XIAO ESP32S3 Sense on füüsiliselt kontrollitud **USB Serial** diagnostikapüsivaraga: **COM5**, sensor **OV3660**, JPEG **1600 × 1200 px**. Tegelik foto on [`tool-camera-first-frame.jpg`](docs/photos/tool-camera-first-frame.jpg); katse on kirjeldatud allpool 23.10.26 arenduspäevikus. See tõendab USB kaudu pildi saamist, kuid mitte Wi-Fi HTTP tööd ega töökoha lõplikku nähtavust.
+
+Smart Solutions Lab 2 lõppvariandiks valime eraldi [Wi-Fi HTTP püsivara](https://github.com/Dennel04/smart-solutions-course/tree/main/smart-solutions/lab2/firmware-xiao-camera/) (`Dennel04/smart-solutions-course/smart-solutions/lab2/firmware-xiao-camera/`). Siinne [`tool-camera/firmware/`](tool-camera/firmware/) ja [`capture.py`](tool-camera/capture.py) jäävad USB diagnostikaks alles. Käesolev dokumentatsiooniotsus ei tähenda püsivara laadimist ega uut füüsilist katset.
+
+| Seade | Valitud ühendus ja roll | Kinnituse piir |
+|---|---|---|
+| XIAO tööriistakaamera | Wi-Fi HTTP → jaamaarvuti (station PC); USB Serial jääb diagnostikaks | USB kaader kontrollitud; Wi-Fi HTTP füüsiline kontroll: TODO — waiting for physical test |
+| Verbatim AWC-03 üldvaatekaamera | USB → station PC | Mudel tuvastatud; kogu laua vaade, vibratsioon ja korduspaigaldus: TODO — waiting for physical test |
+| MG400 | Ethernet; käsud station PC-st | Ühenduse valik ei tõenda kogu liikumisvahemiku kokkupõrkevabadust |
+| Atom | USB Serial ja Wi-Fi | Arhitektuuri ühendused; selle sissekandega ei kinnitata uut sidetesti |
+
+Wi-Fi füüsiline toimimine ja station PC võrgust ligipääs, kaablite marsruut ja tõmbetõke, lõplik toide koos pinge/voolu kontrolliga, MG400 kogu kavandatud liikumine ja J4 pööre ning terav töökoha kaader koos terve **30 × 30 mm** klaasi ja Atomiga: **TODO — waiting for physical test**. USB-katse ajal kasutati arvuti USB-C toidet; seda ei loeta lõpliku toite ega kogu liikumistee katseks. Katsete järjekord: [`docs/test-procedure.md`](docs/test-procedure.md), osad F–G.
 
 ## Kontrollnimekiri
 
@@ -93,7 +112,7 @@ Kõigi nende olek on `TODO — waiting for physical test`.
 
 ## Tööfailid ja katsejuhendid
 
-- [`assignment-EST.md`](assignment-EST.md) — ülesande originaaltekst, muutmata.
+- [`assignment-EST.md`](assignment-EST.md) — ülesande kohalik koopia; ainult kuupäev ja suhtelised lingid tehniliselt parandatud, vt ülal ametliku allika viidet.
 - [`docs/MG 400 rakis.md`](docs/MG%20400%20rakis.md) — ametlik töölaua kirjeldus ja koordinaadid.
 - [`docs/measurements.md`](docs/measurements.md) — riistvara mõõtmissessiooni kontrollnimekiri.
 - [`docs/cad-measurement-review.md`](docs/cad-measurement-review.md) — 30 mm klaasi mõju olemasolevatele STL-idele, vajalikud Fusioni kontrollid ja MG400 trajektoori lahtised küsimused.
@@ -218,6 +237,16 @@ mitte ei muudeta.
 * Otsused ja põhjused: geomeetriat automaatselt ei muudetud, sest olemasolevad klaasipesad ei ole STL-i järgi 24 mm pesad. Exceli originaali ei avaldatud sisemist võrguteed sisaldavate metaandmete tõttu; kohalik originaal jäi muutmata ja SHA-256 on mõõteregistris.
 * Failid: `README.md`, `docs/measurements.md`, `docs/layout.md`, `docs/cad-measurement-review.md`, `docs/test-procedure.md`.
 * Järgmiseks: tuvastada USB-C lähteserv, mõõta klaaside hajuvus ning prinditud pesad, kontrollida Fusionis sobivust ja kõiki nelja võtu/asetuse punkti. Lõpetada G-1 kalibreerimine ja kontrollruut enne uue trajektoori kasutamist; säilitada iga füüsilise iteratsiooni eraldi CAD/STL/3MF.
+
+**23.10.2026 — kaamerate ja Smart Solutionsi dokumentatsiooni sünkroonimine**
+* Osalejad: kasutaja kinnitas arhitektuuri; dokumentatsiooni töötles Codex. Füüsilist sessiooni ei toimunud ja meeskonnaliikmete kohalolekut ei kinnitata.
+* Tegime: kontrollisime ajakohast ametlikku ülesannet ja `main` seisu `a47896d`; parandasime esimese kaitsmise kuupäeva 29.10.2026 ning ülesandekoopia suhtelised lingid. Täpsustasime tegelikke Lab 2 kaustu, kaamerate ühendusi ja komponentide olemasolu.
+* Probleem ja lahendus: kohalikus ülesandes oli 27.10.26; README nimetas koopiat muutmata originaaliks. Nüüd on tehnilised parandused ja allikas selgelt kirjas. USB-kaamera tõend eristatakse Wi-Fi HTTP lõppvariandi valikust.
+* Parameetrid ja tõend: varasema USB-katse COM5, OV3660 ja 1600 × 1200 px JPEG ning olemasolev foto jäid alles. Uusi mõõtmisi, massi, kaablikoguseid, tellimusi ega katsetulemusi ei lisatud.
+* Otsused ja oodatav tulemus: XIAO lõppvariant kasutab Smart Solutionsi eraldi Wi-Fi HTTP püsivara; USB lähtekood jääb diagnostikaks. Verbatim AWC-03 ühendub USB kaudu station PC-ga, MG400 käsud liiguvad Ethernetis, Atom kasutab USB Serialit ja Wi-Fi-t.
+* Tegelik tulemus: ainult dokumentatsioon uuendatud; Wi-Fi, toite, kaablite, MG400 täieliku liikumisvahemiku ja töökoha kaadri füüsiline kontroll: TODO — waiting for physical test.
+* Failid: `../../AGENTS.md`, `assignment-EST.md`, `README.md`, `docs/test-procedure.md`, `docs/bom.md`.
+* Järgmiseks: kontrollida valitud Wi-Fi püsivara tegelikul seadmel ja station PC võrgus, seejärel toide, kaablimarsruut, liikumisvahemik ja kogu 30 × 30 mm klaasi nähtavus. Ohutusreeglid ja ajaloolised päevikukirjed säilivad.
 
 ### Väljundid ja tulemused
 
