@@ -12,6 +12,7 @@ Kavandada MG400 töölauale Gridfinity hoidikud sisenditele, töökohtadele ning
 
 - [ ] `docs/layout.md`: töövoog, ruutude paigutus ja skeem mõõdetud laua järgi.
 - [ ] 1 x 1 Gridfinity kalibreerimishoidik testitud ruudustikus ja robotiga.
+  - 23.10.26 otsus: keskpunkt leitakse iminapaga hoidiku nelja sisenurga kaudu (nelja punkti keskmine); napa raadius taandub sümmeetria tõttu välja ja lisaks saame ruudustiku pöördenurga. Protseduur: [`docs/test-procedure.md`](docs/test-procedure.md) A1, tabel: [`docs/measurements.md`](docs/measurements.md).
 - [ ] Kolm sisendhoidikut, igaühes vähemalt neli mõõdetud pesa.
 - [ ] Töökoha hoidik ja heade ning praakdetailide väljundikohad.
 - [ ] Iga pesa mõõt ja roboti sihtpunkt dokumenteeritud ruudu ning nihkega.
