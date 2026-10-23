@@ -1,0 +1,7 @@
+date,cell,corner,time,x_mm,y_mm,z_mm,r_deg,status,note
+2026-10-23,G-1,Xmax+Ymin,18:36:52,404.474,18.597,-155.846,35.998,kehtetu,esimene katse; Y-sein ilmselt puudutamata (hiljem 18.80)
+2026-10-23,G-1,Xmin+Ymax,18:39:50,389.475,33.796,-150.846,35.998,tõenäoliselt õige,kasutaja DobotStudio jog; roboti pose kinnitatud pärast taasühendust; Z 5 mm kõrgemal kui teistel
+2026-10-23,G-1,Xmin+Ymin,18:44:27,391.474,19.301,-155.843,36.007,kehtetu,X-sein puudutamata (~2 mm lühike)
+2026-10-23,G-1,Xmax+Ymax,18:48:17,403.976,34.337,-155.842,36.005,kinnitatud,X puudutus kasutaja kinnitatud; Y samas kohas kus varem puudutas
+2026-10-23,G-1,Xmax+Ymin,18:55:46,404.474,18.802,-155.842,36.008,kinnitatud,kasutaja seadis käsitsi ilma kaldeta
+2026-10-23,G-1,Xmin+Ymin,19:00:30,389.50,18.77,-155.84,36.00,kinnitamata,Claude viis teadaolevate seinte järgi; puudutust ei kontrollitud
