@@ -63,3 +63,21 @@ Lisa detaili mõõtmed nihikuga, pesa mõõtmed, kasutatud lõtk ja iga roboti s
 - USB UHD veebikaamera kõrgus ja asukoht:
 - Kogu ruudustik ja robot kaadris:
 - Pildi liikumine roboti liikumise ajal (px või mõõdetud mm):
+
+## 23.10.2026 — Maksimi mõõteandmete täiendus ja klaasi parandus
+
+Allikas: Maksimi `Measurements.xlsx`, leht `Measurements`; täielik lahtrite ja olekute register: [`measurements.md`](measurements.md). Varasemad tühjad väljad säilivad algse plaani ajaloo jaoks. Allolevad mõõdud ei määra veel ruute ega roboti sihtpunkte.
+
+| Detail | Lähteväärtus X/Y/Z | Olek | Orientatsioon ja mõju paigutusele |
+|---|---|---|---|
+| Klaas | 30 × 30 × 2 mm | confirmed; D8:E19 ja meeskond | Varasem 24 × 24 × 2 mm ei kirjelda meie klaasi. Määrata haaramispind ja keskme referents; 30 mm klaasi serv ulatub sama keskme korral 3 mm kaugemale kui varasema vale 24 mm lähteväärtuse puhul. |
+| AtomS3 | 24 × 24 × 12,9 mm | nominal; D2:E4 | Ekraan üles (`planned`, D7:E7); USB-C keskjoon 11,4 mm valitud servast (`measured`, D5:E5). Lähteserv ja mõõtesuund vajavad skeemi. |
+| Akumoodul | 24,04 × 24,01 × 21,97 mm | measured; D21:E23 | Kontaktid üles (`planned`, D25:E25); sisend ja töökoht vastavalt varasemale otsusele `ready-parts-input-holder`. Pistiku asukoht jäeti Excelis vahele, seda ei loeta nulliks. |
+| XIAO põhiplaat | 17,74 × 21,33 × 1,21 mm | measured; D26:E28 | Ei hõlma kaameralaienduse ega kogu koostu gabariite. Kontrollida renne, antenniala ja USB-C ligipääsu. |
+
+- Klaasi sisendi, töökoha, väljundi ja praagi ruudud, pesade mõõdetud lõtk ning keskme X/Y/Z nihked: `TODO — waiting for physical test`.
+- Kesksele 24 mm Atomile asetatud 30 mm klaasi üleulatus on arvutuslikult 3 mm külje kohta. Kontrollida naaberpesasid, seinu ning iminapa ja kaamera laskumisteed; robotiga transpordil arvestada ka klaasi pööratud ümbrist.
+- `valjundhoidik` on üks lahtine kast, mitte neli fikseerivat pesa. Kavandada neli 30 mm klaasi 2 × 2 paigutuses, määrata sihtpunktid ja vahed; mahtumine ja kordustäpsus: `TODO — waiting for physical test`.
+- Tööriistakaamera ligikaudne orientatsioon Excelis on 90° alla (`planned`, D47:E47). Mõõta kõrgus klaasi kohal ja kaugus töökohast (mm); kontrollida, et kogu 30 × 30 mm klaas ja Atom on kaadris. Kaamera USB-C ligipääs on konstruktsiooninõue (`planned`, D52:E52), mitte katsetulemus.
+- Olemasolev USB-kaadri tõend on README 23.10.26 sessioonis. Kaabli pikkus, kinnituspunktid, liikumistee ja J4 kontroll, kaamera mass ning kogu tööriista mass enne/pärast (g) jäävad: `TODO — waiting for physical test`.
+- Konkreetne mudelite ja trajektoori kontrollnimekiri: [`cad-measurement-review.md`](cad-measurement-review.md). Geomeetriat ega õpetatud robotipunkte selles sessioonis ei muudetud.

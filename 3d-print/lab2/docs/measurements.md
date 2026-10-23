@@ -2,6 +2,58 @@
 
 Täida see fail päris detailide, tööriista, roboti ja laua juures. Kõik mõõdud märgitakse millimeetrites, mass grammides, nurgad kraadides ning elektrilised väärtused koos ühikuga. Mõõtmata väljade olek: `TODO — waiting for physical test`.
 
+## 23.10.2026 — Maksimi mõõtetabeli ülekanne
+
+Allikas: Maksim Naprejevi `Measurements.xlsx`, leht `Measurements`, kasutaja edastatud 23.10.2026. Töövihiku metaandmete viimane salvestus on 04.10.2026; see ei tõenda mõõtmise kuupäeva. Mõõtevahendit, mõõtemääramatust ega iga mõõtmise kuupäeva tabelis ei nimetata; väärtusi ei nimetata seetõttu nihikuga mõõdetuks. Meeskond kinnitas vestluses klaasi paranduse ja allolevad põhiväärtused. Allikafaili SHA-256: `946e7466c0eb05d63c17f2222aefe6852a7c1d1670e59d97a939765f6bedd495`.
+
+Algset Excelit ei lisatud avaldamiseks: metaandmetes on isikliku profiiliga seotud ülikooli sisemine võrgutee. Fail säilib kasutaja antud kohalikus asukohas muutmata; allpool on avaldamiseks sobiv eestikeelne ülekanne koos lahtriviidetega.
+
+Olekud: `measured` = allikas nimetab mõõdetuks; `nominal` = nimimõõt, mitte füüsiline mõõtmine; `confirmed` = tabelis või meeskonna poolt kinnitatud; `planned` = kavatsus, nõue või ligikaudne lähteasend, mitte katsetulemus; `TODO` = puuduv mõõtmine või kontroll. Füüsiliselt kontrollimata tulemuse tekst on `TODO — waiting for physical test`. Allpool toodud register täiendab varasemat kontrollnimekirja; varasemad TODO-read säilivad ajaloo jaoks ega tühista uut registrit.
+
+| Detail / omadus | Väärtus | Olek | Allikas ja piirang |
+|---|---|---|---|
+| AtomS3 X × Y × Z | 24 × 24 × 12,9 mm | nominal; meeskond kinnitas nimimõõdu | D2:E4; tegelikud gabariidid: TODO — waiting for physical test |
+| AtomS3 USB-C keskjoon valitud servast | 11,4 mm | measured | D5:E5; serva nimetus ja mõõtesuund puuduvad, vajavad fotot / skeemi; mitte automaatselt roboti nihe |
+| AtomS3 ekraan ja nupp ligipääsetavad | jah | confirmed, tabeli kirjeldus | D6:E6; uue hoidiku kontroll: TODO — waiting for physical test |
+| AtomS3 orientatsioon hoidikus | ekraan üles | planned | D7:E7; fikseeritud orientatsioon korduvaks võtmiseks |
+| Klaas nr 1 X × Y × Z | 30 × 30 × 2 mm | confirmed | D8:E10; mõõtevahend ja mõõtemääramatus puuduvad |
+| Klaas nr 2 X × Y × Z | 30 × 30 × 2 mm | confirmed | D11:E13; mitte eraldi nihikumõõtmise tõend |
+| Klaas nr 3 X × Y × Z | 30 × 30 × 2 mm | confirmed | D14:E16; mitte eraldi nihikumõõtmise tõend |
+| Klaas nr 4 X × Y × Z | 30 × 30 × 2 mm | confirmed | D17:E19; mitte eraldi nihikumõõtmise tõend |
+| Nelja klaasi min–max ja hajuvus | TODO — waiting for physical test | TODO | D20:E20; kinnitatud täisarvudest ei järeldata nullhajuvust |
+| Akumoodul X × Y × Z | 24,04 × 24,01 × 21,97 mm | measured | D21:E23; vahend ja määramatus märkimata |
+| Akumooduli pistiku asukoht | mõõtmine vahele jäetud | planned, lähteallika SKIP | D24:E24: „not needed”; pole mõõdetud ega null; kui pistik mõjutab pesa, siis TODO — waiting for physical test |
+| Akumooduli orientatsioon | kontaktid üles | planned | D25:E25; fikseeritud orientatsioon korduvaks võtmiseks |
+| XIAO ESP32S3 Sense põhiplaat X × Y × Z | 17,74 × 21,33 × 1,21 mm | measured | D26:E28; D26 ujukomaarv esitatud kahe komakohaga; ei kirjelda kaameralaiendust ega kogu koostu |
+| Tööriistakaamera ligikaudne nurk | 90°; vertikaalselt alla | planned | D47:E47; nulltasapind täpsustamata, pole mõõdetud vaatenurk ega lõplik paigaldusnurk |
+| Kaamera USB-C ligipääs | peab jääma vabaks | planned | D52:E52: „yes” on konstruktsiooninõue, mitte läbitud sobivuskatse |
+
+### Exceli lahtised mõõtmised ja kaamera
+
+| Mõõtmine / kontroll | Ühik / sisu | Allika lahtrid | Olek / järgmine tegevus |
+|---|---|---|---|
+| Kaameraplaadi X/Y/Z | mm | D29:E31 | TODO — waiting for physical test |
+| Objektiivi keskme X/Y nihe | mm; määrata esmalt lähteservad | D32:E33 | TODO — waiting for physical test; Z puudub tabelist ja tuleb samuti määrata |
+| XIAO USB-C keskjoone asukoht | mm | D34:E34 | TODO — waiting for physical test |
+| Antenni vaba ala | mm ja kirjeldus; mitte katta | D35:E35 | TODO — waiting for physical test |
+| Iminapa hoidiku vaba kinnituspinna laius/kõrgus/sügavus | mm | D36:E38 | TODO — waiting for physical test |
+| Kinnituspunkti kaugus iminapast | mm; määrata nullpunkt | D39:E39 | TODO — waiting for physical test |
+| Vabaks jäävad alad | voolik, flants, kruvid, liikumistee | D40:E40 | TODO — waiting for physical test |
+| Iminapa füüsiline läbimõõt | mm | D41:E41 | TODO — waiting for physical test; G-1 katsest tuletatud ligikaudne efektiivne läbimõõt ei asenda mõõtmist |
+| Iminapa tööriista kogulaius ja -kõrgus | mm | D42:E43 | TODO — waiting for physical test |
+| Mass enne kaamerat / kaamerakoost / mass pärast kinnitamist | g | D44:E46 | TODO — waiting for physical test |
+| Objektiivi kaugus töökohast / kõrgus klaasi kohal | mm tööasendis | D48:E49 | TODO — waiting for physical test |
+| Kogu 30 × 30 mm klaas kaadris | katsepilt | D50:E50 | TODO — waiting for physical test |
+| Atom ja töökoht kaadris | katsepilt | D51:E51 | TODO — waiting for physical test |
+| Valitud USB-C kaabli pikkus | mm | D53:E53 | TODO — waiting for physical test |
+| Kaabli kinnituspunktid robotil | kirjeldus | B54:E54; pealkiri poolik, väärtus tühi | TODO — waiting for physical test |
+
+Olemasolev tõend eraldi Excelist: README 23.10.26 kaamerasessioon ja commit `9e68690` kirjeldavad arvuti USB-C toidet, USB kaudu JPEG-kaadrit 1600 × 1200 px ning OV3660 sensorit (PID 0x3660). See ei kinnita kogu klaasi nähtavust ega kokkupõrkevabadust. Toite pinge/vool, kaabli marsruut, tõmbetõke ja tööriista mass: `TODO — waiting for physical test`.
+
+### Parandus klaasi mõõdule
+
+23.10.2026: varasem `24 × 24 × 2 mm` on meie füüsilise klaasi kohta vale. Õige kinnitatud lähteväärtus on **30 × 30 × 2 mm** (D8:E19 ja meeskonna kinnitus). `24 × 24 mm` kuulub AtomS3 nimimõõdule ning aku ligikaudsele gabariidile; aku tegelik allikaväärtus on 24,04 × 24,01 mm. Ametliku ülesande originaal ja varasemad kirjed säilivad; need ei ole meie klaasi mõõteallikas. CAD-i ja trajektoori kontroll: [`cad-measurement-review.md`](cad-measurement-review.md).
+
 ## AtomS3
 
 | Väli | Mõõdetud väärtus | Meetod / märkus |

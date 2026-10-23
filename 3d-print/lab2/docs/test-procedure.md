@@ -36,6 +36,8 @@ Edasi samamoodi nagu sammud 4–7: nihe B-2-s, kontroll E+3-s, Z. Hoidiku eemald
 
 ## C. Klaasi teisalduskatse
 
+23.10.2026 lähteandmete parandus: kasuta meie **30 × 30 × 2 mm** klaasi (`confirmed`, Maksimi Excel `Measurements!D8:E19` ja meeskonna kinnitus). Ametliku ülesande 24 × 24 × 2 mm on säilitatud ajalooline nominaal. Enne uue trajektoori kasutamist läbi [`CAD-i kontrollülesanded`](cad-measurement-review.md): kõik neli pesa, klaasi üleulatus ja pöörded, iminapa ligipääs, töökoht, neli väljundpunkti ja praak. Lõpeta pooleli olev G-1 kalibreerimine ning kontrollruut. Uusi sihtpunkte ei tuletata üksnes USB-C 11,4 mm mõõdust. Katsetulemus: `TODO — waiting for physical test`.
+
 1. Lae sisendhoidikusse neli klaasi.
 2. Paigalda töökoha hoidikusse Atomi mannekeen.
    - 23.10.26: mannekeeni asemel kasutame päris AtomS3-t (ekraan üleval).
