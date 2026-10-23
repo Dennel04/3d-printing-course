@@ -26,6 +26,15 @@ Kavandada MG400 töölauale Gridfinity hoidikud sisenditele, töökohtadele ning
 - [ ] Klaasiga tehtud viis korduskatset ja tulemused failis `docs/refit_test.csv`.
 - [ ] XIAO ESP32S3 Sense kaamera kinnitus ning valitud ja katsetatud toide.
 - [ ] USB UHD veebikaamera jäik post; mõõdetud pildikõikumine roboti liikumise ajal.
+  - 23.10.26 prototüüp v1 (CAD, printimata): `veebikaamera-post/src/veebikaamera-post-v1.f3d`, STL-id `veebikaamera-post-v1-alumine.stl` ja `veebikaamera-post-v1-ulemine.stl`.
+    - Kaamera: Verbatim AWC-03 (49580), andmelehelt 106 × 55 × 42,5 mm, 129 g, vaatenurk 120° diagonaalis (≈113° × 81° 16:9 juures), klambris ¼" statiivikeere, kaabel micro-USB → USB-A 1,5 m. Mõõdud nihikuga: TODO.
+    - Koht: 2 × 1 Gridfinity alus ruutudes G-5 + G-4 (ülesanne soovitab nurgaruute); post aluse J1-st kõige kaugemas nurgas, r ≈ 442 mm (MG400 ulatus 440 mm). Jalad samad mis `glass-input-holder-v2`.
+    - Kõrgus arvutatud: objektiiv ~450 mm roboti talla tasapinnast, siis on kogu ruudustik ja robot ~70 % kaadris (arvutuses kaamera pööre ~74° üle laua ja kalle ~62° alla, kaamera enda liigendiga). Minimaalne arvutatud kõrgus 325 mm (kaader täis, varu ei ole). Tuleb kontrollida kaamera käes hoides.
+    - Jäikus kujust: õõnes 30 × 30 mm toru, sein 3 mm, kaks ribi aluse peal (60 mm, kõrgem ei tohi käe teel olla), kaabel saab käia toru sees.
+    - Kaks tükki printeri 270 mm Z jaoks: alumine 207 mm (alus + toru kuni 210 mm), ülemine 220 mm (30 mm tapp 0,2 mm lõtkuga + toru + 40 × 40 mm plaat ¼" avaga Ø6,6 mm). Ülemine prinditakse plaat all.
+    - Kontrollimata: käe suurim kõrgus ja kas käsi ulatub kaamerani (kaamera korpus ulatub postist ~50 mm roboti poole); liitekoha loks; pildi värisemine. TODO — waiting for physical test.
+
+    ![veebikaamera-post-v1 Fusionis koos MG 400 rakisega](docs/photos/veebikaamera-post-v1-fusion.png)
 - [ ] `docs/bom.md` sisaldab iga tellitava rea põhjendust.
 - [ ] Iga prindi lähtefail, STL ja 3MF on versioonitud.
 - [ ] Arenduspäevik täidetud; esitamisel lisatud tag `3d-print-lab2`.
