@@ -14,6 +14,7 @@ Töövoog:
 
 1. AtomS3, klaas ja akumoodul sisendhoidikutest.
 2. Robot paigaldab ainult klaasi Atomi mannekeenile töökoha hoidikus.
+   - 23.10.26: mannekeeni asemel on töökohal päris AtomS3.
 3. Valmis detail liigub heade väljundisse; ebaõnnestunud detail liigub praagi väljundisse.
 
 Töökoha sammude arv ja roboti täpsusala tuleb kinnitada tegeliku protsessi põhjal:

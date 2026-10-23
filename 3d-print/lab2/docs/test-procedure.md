@@ -38,6 +38,7 @@ Edasi samamoodi nagu sammud 4–7: nihe B-2-s, kontroll E+3-s, Z. Hoidiku eemald
 
 1. Lae sisendhoidikusse neli klaasi.
 2. Paigalda töökoha hoidikusse Atomi mannekeen.
+   - 23.10.26: mannekeeni asemel kasutame päris AtomS3-t (ekraan üleval).
 3. Õpeta vajalikud võtmise ja asetamise punktid.
 4. Teisalda iga klaas järjest: `sisend → töökoht → heade väljund`.
 5. Ära sekku käsitsi nelja klaasi vahel.
