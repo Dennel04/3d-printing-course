@@ -105,4 +105,12 @@ Mõõda vajaduse korral mitu klaasi ja säilita kõik üksiktulemused, et hiljem
 | Kauge kontrollruut | TODO — waiting for physical test | Näiteks E+3. |
 | Kauge ruudu viga X/Y/Z (mm) | TODO — waiting for physical test | |
 
+### Nelja sisenurga meetod (vt `test-procedure.md`, A1)
+
+| Ruut | Nurk 1 X/Y | Nurk 2 X/Y | Nurk 3 X/Y | Nurk 4 X/Y | Keskpunkt X/Y | Pööre (°) | Märkus |
+|---|---|---|---|---|---|---|---|
+| B-2 | TODO — waiting for physical test | TODO | TODO | TODO | TODO | TODO | |
+| B-2 (pärast välja/tagasi) | TODO — waiting for physical test | TODO | TODO | TODO | TODO | TODO | kordustäpsus |
+| E+3 | TODO — waiting for physical test | TODO | TODO | TODO | TODO | TODO | kauge ruudu viga |
+
 Kui hiljem leitakse vale mõõt, ära kustuta seda. Lisa kuupäevaga parandus vana väärtuse alla ning selgita mõõtekonteksti.

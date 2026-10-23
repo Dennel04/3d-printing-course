@@ -12,8 +12,16 @@ Kavandada MG400 töölauale Gridfinity hoidikud sisenditele, töökohtadele ning
 
 - [ ] `docs/layout.md`: töövoog, ruutude paigutus ja skeem mõõdetud laua järgi.
 - [ ] 1 x 1 Gridfinity kalibreerimishoidik testitud ruudustikus ja robotiga.
+  - 23.10.26 otsus: keskpunkt leitakse iminapaga hoidiku nelja sisenurga kaudu (nelja punkti keskmine); napa raadius taandub sümmeetria tõttu välja ja lisaks saame ruudustiku pöördenurga. Protseduur: [`docs/test-procedure.md`](docs/test-procedure.md) A1, tabel: [`docs/measurements.md`](docs/measurements.md).
 - [ ] Kolm sisendhoidikut, igaühes vähemalt neli mõõdetud pesa.
+  - 23.10.26 prinditud: klaas (`glass-input-holder-v1`, 2 × 2, 4 pesa), AtomS3 (`atoms3-input-holder-v1`, 2 × 2, 4 pesa), akumoodul (`ready-parts-input-holder-v1`, 2 × 2, 4 pesa). Pesade mõõdud nihikuga: TODO.
 - [ ] Töökoha hoidik ja heade ning praakdetailide väljundikohad.
+  - 23.10.26 otsus: `ready-parts-input-holder-v1` (2 × 2) on korraga akumooduli sisend ja töökoht: inimene laeb akumoodulid, robot paneb igaühe peale AtomS3 ja selle peale klaasi. Ülesanne lubab sammul jagada kohta eelmisega.
+  - 23.10.26 otsus: praak = `gridfinity-calibration-v1` (1 × 1 lahtine kast) pärast kalibreerimist. CAD-ist: välismõõt 41,2 × 41,2 mm, kõrgus 20 mm, sisemus ~37,2 × 37,2 mm, sügavus 16 mm. Klaas ja AtomS3 on 24 × 24 mm, varu ~6,6 mm igale poole; kõrgus jääb alla 60 mm piiri. Ülesanne praagi suurust ega pesasid ei nõua ("võib olla lihtsalt kast"). Füüsiline kontroll: TODO.
+  - Heade väljund (4 klaasi, suuremate kaldservadega): TODO — modelleerimata.
+  - 23.10.26 parandus (meeskonna otsus, lihtsustus): praak läheb samuti oranži `ready-parts-input-holder-v1` hoidikusse; `gridfinity-calibration-v1` jääb ainult kalibreerimiseks.
+  - 23.10.26: heade väljund modelleeritud — `valjundhoidik/src/valjundhoidik-v1.f3d`, `valjundhoidik/stl/valjundhoidik-v1.stl`. Alus on `glass-input-holder-v1` (sama 2 × 2 välismõõt 83,2 × 83,2 mm ja Gridfinity jalad); nelja pesa ja vaheseinte asemel üks lahtine kast. Uued parameetrid: põhi `out_floor_thickness = 2,5 mm`, õõne sügavus `out_cavity_depth = 14 mm`, sein `out_wall_thickness = 2,5 mm`, sisenurga raadius `4 mm`, sissejuhtiv faas ülaservas `out_lead_in = 2 mm`. Kõrgus ilma jalata 16,5 mm, jalaga 24,15 mm (alla 60 mm piiri). Sisemus ~78 × 78 mm, 4 klaasi mahuvad kõrvuti. 3MF ja füüsiline kontroll: TODO.
+  - 23.10.26 print ette valmistatud: `valjundhoidik/3mf/valjundhoidik-v1.3mf` (PrusaSlicer). Prusa CORE One HF0.4, `0.20mm SPEED`, Prusament PLA, täide 15 % grid, 2 perimeetrit, jalad all. Orgaanilised toed ainult alusplaadilt: korpuse alumine serv ulatub jalgadest ~2,9 mm välja ja see pind toetub ruudustikule, nii et ta peab jääma sirge. Ilma tugedeta 46 min / 33,6 g, tugedega **1 h 7 min / 37,7 g** (valitud). Pikim mõõt 83,2 mm < 150 mm, seega brim'i ei ole vaja. Füüsiline kontroll: TODO.
 - [ ] Iga pesa mõõt ja roboti sihtpunkt dokumenteeritud ruudu ning nihkega.
 - [ ] Klaasiga tehtud viis korduskatset ja tulemused failis `docs/refit_test.csv`.
 - [ ] XIAO ESP32S3 Sense kaamera kinnitus ning valitud ja katsetatud toide.
@@ -30,6 +38,7 @@ Kavandada MG400 töölauale Gridfinity hoidikud sisenditele, töökohtadele ning
 - Gridfinity ruudustik on 7 × 10 ruutu, samm `42 mm`, kogumõõt `294 × 420 mm`.
 - Hoidiku välismõõt on `42 × n − 0,5 mm`; ühe ruudu hoidik on `41,5 mm`. Standardse Gridfinity jala ametlik kirjelduskõrgus on `4,75 mm`.
 - Ametliku ülesande nominaalid: polükarbonaatklaas `24 × 24 × 2 mm` ja töökoha prinditud Atomi mannekeen `24 × 24 × 13 mm`. Hoidiku lõplikud mõõdud peavad tuginema päris detailide mõõtmisele.
+- 23.10.26 otsus: töökohal kasutame prinditud mannekeeni asemel **päris AtomS3-t**. Klaas asetatakse päris Atomi peale; mannekeeni ei prindita.
 - Laua ja ametliku ülesande materjal on PLA.
 
 ### Lab 1-st pärinevad tulemused
@@ -79,6 +88,8 @@ Kõigi nende olek on `TODO — waiting for physical test`.
 - `atoms3-input-holder/src/atoms3-input-holder-v1.f3d`, `atoms3-input-holder/stl/atoms3-input-holder-v1.stl`, `atoms3-input-holder/3mf/atoms3-input-holder-v1.3mf` - AtomS3 sisendhoidiku Fusioni fail ja ekspordid; mõõtude ning füüsilise sobivuse kinnitus: `TODO — waiting for physical test`.
 - `ready-parts-input-holder/src/ready-parts-input-holder-v1.f3d`, `ready-parts-input-holder/stl/ready-parts-input-holder-v1.stl`, `ready-parts-input-holder/3mf/ready-parts-input-holder-v1.3mf` - ReadyParts sisendhoidiku Fusioni fail ja ekspordid; mõõtude ning füüsilise sobivuse kinnitus: `TODO — waiting for physical test`.
 - `glass-input-holder/src/glass-input-holder-v1.f3d`, `glass-input-holder/stl/glass-input-holder-v1.stl`, `glass-input-holder/3mf/glass-input-holder-v1.3mf` - klaasi sisendhoidiku Fusioni fail ja ekspordid; mõõtude ning füüsilise sobivuse kinnitus: `TODO — waiting for physical test`.
+- `glass-input-holder/src/glass-input-holder-v2.f3d`, `glass-input-holder/stl/glass-input-holder-v2.stl` - 23.10.26: v1 jalad ei läinud ruudustikku päris lõpuni. Põhjus (mõõdetud Fusionis `MG 400 rakis`, `grid_pos_0`): pesa kitsaim koht on 36,28 mm, nurga raadius **1,14 mm** (z +2,63). v1 jalg 35,98 mm nurgaraadiusega 0,5 mm ulatus diagonaalis 0,05 mm pesast välja, nurgad kiilusid; külgvahe oli ainult 0,15 mm. Lisaks pikendas `Extrude18` jalga 3 mm (kuni z −0,37), see jõuab ±3 ja ±1 ruutude all olevate talade vastu (talade ülaserv z +2,48). v2: `foot_clearance = 0,25 mm` külje kohta (jalg 35,78 mm), `foot_corner_radius = 1,5 mm` (nurga vahe 0,5 mm), 0,5 mm faas jala alumisel serval (sissejuhtimine ja esimese kihi laiendus), `Extrude18` välja lülitatud. Pesad muutmata. 3MF ja füüsiline kontroll: TODO.
+- `valjundhoidik` sai samad jala parandused (v1, printimata, failid üle kirjutatud).
 
 Need lähtefailid ei ole veel füüsiliselt sobivaks kinnitatud. Iga print vajab PrusaSlicerist eksporditud STL-i ja 3MF-i, uue versiooninime ning mõõtmistulemuste dokumenteerimist.
 

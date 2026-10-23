@@ -12,6 +12,20 @@ Kõik mõõtmata tulemused ja katsed on olekus `TODO — waiting for physical te
 6. Kui viga on üle `1 mm`, kontrolli telgede suunda, pöördenurka ja võimalikku telgede vahetust; ära kohanda hoidikut oletuse põhjal.
 7. Määra Z üks kord ruudustiku pealispinna suhtes ja kirjuta mõõteviis üles.
 
+### A1. Meeskonna valitud meetod: neli sisenurka (23.10.26)
+
+Keskristi asemel leiame hoidiku keskpunkti nelja sisenurga kaudu.
+
+1. Vii iminapp väikese jog-sammuga (0,1–0,5 mm) hoidiku iga sisenurka: enne X-suunas vastu seina, siis Y-suunas vastu teist seina. Ära lohista nappi mööda seina.
+2. Kirjuta iga nurga roboti X/Y üles (nurgad 1–4 järjest ümber hoidiku).
+3. Keskpunkt = nelja nurga keskmine: `x = (x1+x2+x3+x4)/4`, `y = (y1+y2+y3+y4)/4`.
+4. Kontroll: vastasküljed (1→2 ja 3→4) ning diagonaalid (1→3 ja 2→4) peavad olema võrdsed. Erinevus näitab ebaühtlast puudutust.
+5. Külje 1→2 nurk roboti X-telje suhtes annab ruudustiku pöörde roboti suhtes (oodatud ~0° või 180°).
+
+Miks see töötab: iminapp on ümar ja pehme ega ulatu päris nurka, vaid peatub mõlema seina vastas napa raadiuse kaugusel. Hoidik on sümmeetriline, seega see nihe on kõigis neljas nurgas sama ja keskmistamisel kaob. Lisaks keskpunktile saame ka ruudustiku pöördenurga, mida keskrist ei anna.
+
+Edasi samamoodi nagu sammud 4–7: nihe B-2-s, kontroll E+3-s, Z. Hoidiku eemaldamine ja tagasipanek ning uus mõõtmine annab Gridfinity kordustäpsuse.
+
 ## B. Hoidiku sobivuskatse
 
 1. Kontrolli, et hoidiku Gridfinity jalg istub täielikult ruudustikus.
@@ -24,6 +38,7 @@ Kõik mõõtmata tulemused ja katsed on olekus `TODO — waiting for physical te
 
 1. Lae sisendhoidikusse neli klaasi.
 2. Paigalda töökoha hoidikusse Atomi mannekeen.
+   - 23.10.26: mannekeeni asemel kasutame päris AtomS3-t (ekraan üleval).
 3. Õpeta vajalikud võtmise ja asetamise punktid.
 4. Teisalda iga klaas järjest: `sisend → töökoht → heade väljund`.
 5. Ära sekku käsitsi nelja klaasi vahel.

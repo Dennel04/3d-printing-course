@@ -14,6 +14,7 @@ Töövoog:
 
 1. AtomS3, klaas ja akumoodul sisendhoidikutest.
 2. Robot paigaldab ainult klaasi Atomi mannekeenile töökoha hoidikus.
+   - 23.10.26: mannekeeni asemel on töökohal päris AtomS3.
 3. Valmis detail liigub heade väljundisse; ebaõnnestunud detail liigub praagi väljundisse.
 
 Töökoha sammude arv ja roboti täpsusala tuleb kinnitada tegeliku protsessi põhjal:
@@ -24,8 +25,8 @@ Töökoha sammude arv ja roboti täpsusala tuleb kinnitada tegeliku protsessi p�
 | Sisend 2 | Polükarbonaatklaas, vähemalt 4 tk | | | |
 | Sisend 3 | Akumoodul, vähemalt 4 tk | | | |
 | Töökoht | Klaasi tõstmine Atomi mannekeenile | | | |
-| Väljund | Valmis detail | | | |
-| Väljund | Praak | | | |
+| Väljund | Valmis detail (`valjundhoidik-v1`, 2 × 2 lahtine kast) | | | |
+| Väljund | Praak (23.10.26 parandus: oranž `ready-parts-input-holder-v1`; varem `gridfinity-calibration-v1`) | | | |
 
 ## Ruudustiku plaan
 
