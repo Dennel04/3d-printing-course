@@ -212,6 +212,14 @@ class Sequencer:
             raise ValueError(f"{cell['name']}: Z {hover_z} out of reach ({reach.get('reason')}), choose a higher hover Z")
         status = self.ready_status()
         cx, cy = status["pose"][0], status["pose"][1]
+        # the straight path at travel_z can pass close to the base and hit the J3-J2 limit
+        for i in range(21):
+            t = i / 20
+            x, y = cx + (cell["x"] - cx) * t, cy + (cell["y"] - cy) * t
+            reach = self.robot.call("/check", {"x": x, "y": y, "z": motion["travel_z"]})
+            if not reach.get("reachable"):
+                raise ValueError(f"path to {cell['name']} at travel Z passes out of reach near "
+                                 f"X {x:.0f} Y {y:.0f} ({reach.get('reason')}); go via a cell further from the robot")
         self._start([("move", "up", cx, cy, motion["travel_z"]),
                      ("move", "across", cell["x"], cell["y"], motion["travel_z"]),
                      ("move", "down", cell["x"], cell["y"], hover_z)], cell=cell["name"])
