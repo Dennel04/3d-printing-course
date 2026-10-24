@@ -88,7 +88,7 @@
       ],
       "status": "proposed",
       "teach": {
-        "dx": -1.5,
+        "dx": -2.0,
         "dy": 2.5,
         "pick_z": -150.5,
         "place_z": null
