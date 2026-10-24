@@ -184,7 +184,7 @@ def latest_frame():
     return frames[-1] if frames else None
 
 
-def make_handler(layout, seq):
+def make_handler(layout, seq, port):
     table = {}  # cells and by_name, rebuilt when the layout editor saves
 
     def rebuild():
@@ -193,6 +193,10 @@ def make_handler(layout, seq):
 
     rebuild()
     camera_lock = threading.Lock()  # one owner of the camera COM port at a time
+    # Only this page may drive the robot: other sites open in the same browser could otherwise
+    # POST here (CSRF), and a foreign Host header means DNS rebinding.
+    hosts = {f"127.0.0.1:{port}", f"localhost:{port}"}
+    origins = {f"http://{h}" for h in hosts}
 
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, *args):
@@ -206,7 +210,19 @@ def make_handler(layout, seq):
             self.end_headers()
             self.wfile.write(body)
 
+        def _foreign(self, post):
+            if self.headers.get("Host") not in hosts:
+                return "bad Host"
+            origin = self.headers.get("Origin")
+            if origin is not None and origin not in origins:
+                return "cross-origin request"
+            if post and self.headers.get("Content-Type", "").split(";")[0].strip() != "application/json":
+                return "Content-Type must be application/json"
+            return None
+
         def do_GET(self):
+            if (why := self._foreign(post=False)):
+                return self._json(403, {"error": why})
             if self.path == "/":
                 body = (HERE / "index.html").read_bytes()
                 self.send_response(200)
@@ -228,8 +244,8 @@ def make_handler(layout, seq):
                 self._json(200, {"name": f.name, "time": time.strftime("%H:%M:%S", time.localtime(f.stat().st_mtime))}
                            if f else {"name": None})
             elif self.path.startswith("/frames/"):
-                f = FRAMES / Path(self.path).name
-                if not f.is_file():
+                f = {p.name: p for p in FRAMES.glob("*.jpg")}.get(self.path[len("/frames/"):])
+                if f is None:
                     return self._json(404, {"error": "no such frame"})
                 body = f.read_bytes()
                 self.send_response(200)
@@ -241,6 +257,8 @@ def make_handler(layout, seq):
                 self._json(404, {"error": "not found"})
 
         def do_POST(self):
+            if (why := self._foreign(post=True)):
+                return self._json(403, {"ok": False, "error": why})
             length = int(self.headers.get("Content-Length") or 0)
             data = json.loads(self.rfile.read(length) or b"{}")
             try:
@@ -292,7 +310,7 @@ def main():
             print(f"{name}: {c['x']:.2f} / {c['y']:.2f}  r {c['radius']}")
         return
     seq = Sequencer(Mg400(layout["mg400_api"]), layout)
-    server = ThreadingHTTPServer(("127.0.0.1", args.port), make_handler(layout, seq))
+    server = ThreadingHTTPServer(("127.0.0.1", args.port), make_handler(layout, seq, args.port))
     print(f"slot picker on http://127.0.0.1:{args.port}  (mg400-base: {layout['mg400_api']})")
     server.serve_forever()
 
