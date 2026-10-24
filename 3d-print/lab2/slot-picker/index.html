@@ -82,6 +82,7 @@
     <label class="drive-only">Hover Z <input type="number" id="hover" step="5"></label>
     <button class="stop" id="stop">STOP</button>
     <button class="view" id="view">View</button>
+    <label><input type="checkbox" id="live"> Live camera</label>
   </div>
   <div class="robot">MG400</div>
   <div class="grid" id="grid"></div>
@@ -506,8 +507,20 @@ $("view").onclick = async () => {
   photo();
 };
 
+$("live").onchange = () => {  // live: MJPEG from the server; off: back to the newest saved frame
+  shown = null;
+  if ($("live").checked) {
+    $("photo").src = "/stream.mjpg";
+    $("photo-name").textContent = "live tool camera";
+  } else {
+    $("photo").removeAttribute("src");  // closes the stream; the server releases the port ~10 s later
+    photo();
+  }
+};
+
 let shown = null;
 async function photo() {  // newest frame in frames/, from View or from Claude
+  if ($("live").checked) return;
   const p = await api("/api/photo");
   if (p.name && p.name !== shown) {
     shown = p.name;
@@ -524,7 +537,10 @@ async function poll() {
     document.querySelectorAll(".cell.target").forEach(e => e.classList.remove("target"));
     if (s.seq.cell) { const el = $("cell-" + s.seq.cell); if (el) el.classList.add("target"); }
     syncResults(s.seq.cycle, s.seq.busy);
+    const cam = s.camera.error ? `<span class="err">${esc(s.camera.error)}</span>`
+      : s.camera.open ? `on, ${s.camera.fps} fps` : "off";
     $("status").innerHTML =
+      `camera ${cam}\n` +
       `robot  ${s.robot.mode_name}  speed ${s.robot.speed_ratio ?? "–"}%  pump ${s.robot.pump_mode ?? "–"}\npose   ${p}  (x / y / z / r)\nmove   ${s.seq.cell || "–"}  ${s.seq.step}` +
       (s.seq.error ? `\n<span class="err">${s.seq.error}</span>` : "") +
       (clickError ? `\n<span class="err">${esc(clickError)}</span>` : "");

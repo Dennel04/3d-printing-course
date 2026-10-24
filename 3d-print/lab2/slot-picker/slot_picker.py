@@ -29,14 +29,78 @@ FRAMES = HERE / "frames"  # tool camera JPEGs: the View button, the cycle and Cl
 sys.path.insert(0, str(HERE.parent / "calibration"))
 sys.path.insert(0, str(HERE.parent / "tool-camera"))
 import cells as calibration  # noqa: E402  single source of the grid fit (G-1, E+3, D-2)
-from capture import capture  # noqa: E402
+from capture import open_port, read_frame  # noqa: E402
 import cycle  # noqa: E402
 
 _, cell_robot = calibration.fit()
 
 CELL_NAMES = [f"{letter}{n:+d}" for letter in LETTERS for n in NUMBERS]
 HOLDER_KEYS = ("name", "type", "cells", "status", "no_go", "teach")
-camera_lock = threading.Lock()  # one owner of the camera COM port at a time
+
+
+class ToolCamera:
+    """The only owner of the XIAO COM port. While someone wants frames (the live view, View,
+    a cycle snapshot) it keeps the port open and asks for a frame every 1/fps s; after idle_s
+    without anyone wanting them it closes the port, so capture.py can use it again."""
+
+    def __init__(self, port, fps=4.0, idle_s=10.0):
+        self.port, self.period, self.idle_s = port, 1 / fps, idle_s
+        self.cond = threading.Condition()
+        self.jpeg, self.seq, self.wanted = None, 0, 0.0
+        self.state = {"open": False, "fps": 0.0, "error": None}
+        threading.Thread(target=self._loop, daemon=True).start()
+
+    def wait_frame(self, after, timeout=8.0):
+        """(jpeg, seq) of the first frame with seq > after, or (None, seq) on timeout."""
+        deadline = time.time() + timeout
+        with self.cond:
+            while self.seq <= after:
+                self.wanted = time.time()
+                self.cond.notify_all()
+                left = deadline - time.time()
+                if left <= 0:
+                    return None, self.seq
+                self.cond.wait(min(left, 1.0))
+            self.wanted = time.time()
+            return self.jpeg, self.seq
+
+    def fresh(self, timeout=8.0):
+        """A frame asked for after this call, not one already on its way (e.g. from before the arm stopped)."""
+        jpeg, _ = self.wait_frame(self.seq + 1, timeout)
+        if jpeg is None:
+            raise RuntimeError(f"camera: {self.state['error'] or 'no frame'}")
+        return jpeg
+
+    def _loop(self):
+        ser, times = None, []
+        while True:
+            with self.cond:
+                if time.time() - self.wanted > self.idle_s:
+                    if ser is not None:
+                        ser.close()
+                        ser, times = None, []
+                        self.state.update(open=False, fps=0.0)
+                    self.cond.wait(1.0)
+                    continue
+            t0 = time.time()
+            try:
+                if ser is None:
+                    ser = open_port(self.port)
+                    self.state["open"] = True
+                jpeg = read_frame(ser)
+            except Exception as exc:
+                if ser is not None:
+                    ser.close()
+                ser, times = None, []
+                self.state.update(open=False, fps=0.0, error=f"{self.port}: {exc}"[:200])
+                time.sleep(2.0)
+                continue
+            with self.cond:
+                self.jpeg, self.seq = jpeg, self.seq + 1
+                self.cond.notify_all()
+            times = [t for t in times if t > t0 - 3] + [t0]
+            self.state.update(error=None, fps=round((len(times) - 1) / (t0 - times[0]), 1) if len(times) > 1 else 0.0)
+            time.sleep(max(0.0, self.period - (time.time() - t0)))
 
 
 def load_layout():
@@ -47,14 +111,11 @@ def save_layout(layout):
     (HERE / "layout.json").write_text(json.dumps(layout, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
-def snapshot(port, prefix):
+def snapshot(camera, prefix):
+    jpeg = camera.fresh()
     FRAMES.mkdir(exist_ok=True)
     out = FRAMES / time.strftime(f"{prefix}-%Y%m%d-%H%M%S.jpg")
-    with camera_lock:
-        try:
-            capture(port, str(out))
-        except SystemExit as exc:  # capture() reports camera errors this way
-            raise RuntimeError(f"camera: {exc}") from None
+    out.write_bytes(jpeg)
     return out.name
 
 
@@ -120,8 +181,8 @@ class Sequencer:
     """Runs one action list at a time (a goto or the glass cycle); Stop cancels it and holds the arm.
     The pump is left as it is on Stop or error: switching it off would drop a carried glass."""
 
-    def __init__(self, robot, layout):
-        self.robot, self.layout = robot, layout
+    def __init__(self, robot, layout, camera):
+        self.robot, self.layout, self.camera = robot, layout, camera
         self.lock = threading.Lock()
         self.cancel = threading.Event()
         self.state = {"busy": False, "cell": None, "step": "idle", "error": None, "cycle": None}
@@ -202,7 +263,7 @@ class Sequencer:
                     cyc["results"][str(act[1])][act[2]] = True
                 elif kind == "snap":
                     try:
-                        cyc["frames"].append(snapshot(self.layout["camera_port"], act[1]))
+                        cyc["frames"].append(snapshot(self.camera, act[1]))
                     except Exception as exc:  # a missing camera must not stop the robot mid-cycle
                         cyc["frames"].append(f"no frame: {exc}")
             self.state["step"] = "done" if cyc else "arrived"
@@ -335,7 +396,25 @@ def make_handler(layout, seq, port):
                                                    "speed_ratio", "pump_mode")}
                 except Exception as exc:
                     robot = {"mode_name": f"mg400-base unreachable ({type(exc).__name__})"}
-                self._json(200, {"robot": robot, "seq": seq.state})
+                self._json(200, {"robot": robot, "seq": seq.state, "camera": seq.camera.state})
+            elif self.path == "/stream.mjpg":
+                # multipart MJPEG: an <img> shows it as video; the camera stays open while it runs
+                self.send_response(200)
+                self.send_header("Content-Type", "multipart/x-mixed-replace; boundary=frame")
+                self.send_header("Cache-Control", "no-store")
+                self.end_headers()
+                last, missed = 0, 0
+                try:
+                    while missed < 6:  # ~1 min without frames: give the port back
+                        jpeg, last = seq.camera.wait_frame(last, timeout=10)
+                        if jpeg is None:
+                            missed += 1
+                            continue
+                        missed = 0
+                        self.wfile.write(b"--frame\r\nContent-Type: image/jpeg\r\nContent-Length: %d\r\n\r\n"
+                                         % len(jpeg) + jpeg + b"\r\n")
+                except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError):
+                    pass  # the page closed the stream
             elif self.path == "/api/photo":
                 f = latest_frame()
                 self._json(200, {"name": f.name, "time": time.strftime("%H:%M:%S", time.localtime(f.stat().st_mtime))}
@@ -375,7 +454,7 @@ def make_handler(layout, seq, port):
                     save_layout(layout)
                     rebuild()
                 elif self.path == "/api/view":
-                    snapshot(layout["camera_port"], "view")
+                    snapshot(seq.camera, "view")
                 elif self.path == "/api/cycle/roles":
                     idle()
                     roles = {r: data.get(r) or None for r in cycle.ROLES}
@@ -453,7 +532,7 @@ def main():
             c = next(c for c in cells if c["name"] == name)
             print(f"{name}: {c['x']:.2f} / {c['y']:.2f}  r {c['radius']}")
         return
-    seq = Sequencer(Mg400(layout["mg400_api"]), layout)
+    seq = Sequencer(Mg400(layout["mg400_api"]), layout, ToolCamera(layout["camera_port"]))
     server = ThreadingHTTPServer(("127.0.0.1", args.port), make_handler(layout, seq, args.port))
     print(f"slot picker on http://127.0.0.1:{args.port}  (mg400-base: {layout['mg400_api']})")
     server.serve_forever()

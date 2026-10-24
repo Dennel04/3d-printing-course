@@ -53,6 +53,8 @@ Ilma rõhuandurita (Atom COM4) haaratakse õpetatud kõrgusel; vaakumi kontrolli
 
 **View** teeb XIAO tööriistakaameraga (`camera_port`, COM5) kaadri kausta `frames/` (gitignore); leht näitab alati kõige uuemat kaadrit sellest kaustast — ka neid, mille sinna salvestab Claude.
 
+**Live camera** näitab otsepilti (MJPEG `/stream.mjpg`, kuni 4 kaadrit/s, 1600 × 1200). COM5 on avatud ainult siis, kui keegi kaadreid tahab (otsepilt, View, tsükli kaader), ja vabaneb ~10 s pärast; alles siis saab `tool-camera/capture.py` porti kasutada. Olekureal `camera on, N fps` või viga. Testitud 24.10.26 simuleeritud kaameraga (4,0 kaadrit/s); päris XIAO kiirus USB kaudu: TODO — waiting for physical test.
+
 ## Seaded — `layout.json`
 
 - `calibration` — ainult `tool_r` (33). Lahtrite X/Y tuleb failist [`../calibration/cells.py`](../calibration/cells.py) (24.10.26 kolme ruudu sobitus, pööre +0,87°); uue kalibreerimise järel muuda seal `MEASURED`.
