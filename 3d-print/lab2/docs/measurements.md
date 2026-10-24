@@ -184,4 +184,12 @@ Mõõda vajaduse korral mitu klaasi ja säilita kõik üksiktulemused, et hiljem
 - Kontroll Z −53 juures: robot viidi arvutatud keskpunktidesse **E+2 339,19 / −59,12** ja **E+4 341,86 / −143,08** — mõlemad kasutaja hinnangul keskel. Kalibreerimine kinnitatud.
 - Veel tegemata: Z puudutus ruudustiku pinnal; kasti välja/tagasi kordustäpsus.
 
+24.10.26 hiljem — parandus (eelmised read jäävad alles):
+
+- D-2 kontroll klaasi sisendhoidiku pesas Z −150 juures (iminapp pesa põhjas, kasutaja seadis keskele): mõõdetud **297,20 / 67,48**, G-1+E+3 teisendus ennustas 293,20 / 65,48 → viga **+4,0 / +2,0 mm**.
+- Kaugused ei klapi jäiga ruudustikuga: G-1–D-2 mõõdetud 129,60, mudelis 132,82 (−3,21 mm). Tõenäoline põhjus: G-1 ja E+3 nurgad võeti Z −85…−87 juures, ~50 mm kasti/ruudustiku kohal, silma järgi (parallaks); D-2 võeti puutes.
+- Uus teisendus: kolme ruudu (G-1, E+3, D-2) jäik vähimruutude sobitus, pööre **+0,87°**, R 33. Jääkvead G-1 −1,80/+0,53, E+3 +0,27/−0,91, D-2 +1,53/+0,38 mm. Skript [`calibration/cells.py`](../calibration/cells.py) (ruut → roboti X/Y).
+- Kontroll ruutudes, mida sobitus ei kasutanud: **B+5 215,52 / −186,15** ja **F-4 378,39 / 152,37** — kasutaja hinnangul keskel (Z −130 / −100, silma järgi). Kalibreerimine praegu kasutatav.
+- Täpsustamiseks: korrata nurkade mõõtmist puutes (kasti põhjas, Z ≈ −155) 3–4 ruudus, eesmärk jääkviga < 0,5 mm.
+
 Kui hiljem leitakse vale mõõt, ära kustuta seda. Lisa kuupäevaga parandus vana väärtuse alla ning selgita mõõtekonteksti.

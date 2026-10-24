@@ -9,3 +9,4 @@ date,cell,corner,time,x_mm,y_mm,z_mm,r_deg,status,note
 2026-10-24,G-1,Xmax+Ymin,10:34:50,437.19,10.20,-87.27,32.76,kasutaja,diagonaal eelmise reaga; keskpunkt 420.50 / 27.55
 2026-10-24,E+3,Xmax+Ymin,10:48:27,357.497,-118.462,-86.999,32.998,kasutaja,kontrollruut; G-1 nihke järgi arvutatud nurk 357.50 / -119.45 (keskpunkt 336.50 / -98.45 ±21)
 2026-10-24,E+3,Xmin+Ymax,10:51:08,323.499,-83.831,-84.998,32.996,kasutaja,diagonaal eelmise reaga; E+3 keskpunkt 340.50 / -101.15
+2026-10-24,D-2,keskpunkt,11:34:12,297.201,67.479,-150.0,33.007,kasutaja,klaasi sisendhoidiku pesa D-2 keskpunkt silma järgi (kasutaja jog); G-1+E+3 kalibreerimine ennustas 293.20 / 65.48
