@@ -117,6 +117,52 @@ Wi-Fi füüsiline toimimine ja station PC võrgust ligipääs, kaablite marsruut
 - [ ] Iga prindi lähtefail, STL ja 3MF on versioonitud.
 - [ ] Arenduspäevik täidetud; esitamisel lisatud tag `3d-print-lab2`.
 
+## Füüsilise töö fototõendid — 24.10.2026
+
+Kasutaja edastatud kaheksa fotot päris laboritööst; originaalfailid kopeeriti kausta `docs/photos/`. Fotod kinnitavad prinditud detailide olemasolu ja nähtavat paiknemist pildistamise hetkel. Neid ei käsitleta [`docs/layout.md`](docs/layout.md) lõpliku paigutuse kinnitusena ega automaatse klaasitsükli tõendina. Meeskonna eraldi dokumenteeritud ringi 1 tulemus ja katsed säilivad arenduspäevikus ning [`docs/refit_test.csv`](docs/refit_test.csv).
+
+### Gridfinity tööala üldvaade
+
+![Gridfinity tööala üldfoto: MG400, prinditud hoidikud, AtomS3 ja joonlaud](docs/photos/gridfinity-workspace-overview-ruler-2026-10-24.jpg)
+
+Põhiline üldfoto: robot, Gridfinity ruudustik, valged ja oranžid prinditud hoidikud ning joonlaud. Näha on pildistamisaegne paigutus; ruudutähiseid ega sihtpunktide nihkeid sellest fotost ei tuletata.
+
+### MG400 vaakumtööriist ja paigaldatud XIAO kinnitus
+
+![MG400 tööriista külgvaade: oranž XIAO kinnitus, ühendatud kaabel, voolik ja iminapp](docs/photos/mg400-tool-mount-side-2026-10-24.jpg)
+
+Tööriista lähivaade küljelt: oranž XIAO kinnitus on robotile paigaldatud, USB-kaabel on ühendatud ning vaakumvoolik ja iminapp on nähtavad. Foto ei kinnita kaabli tõmbetõkke toimimist kogu liikumisvahemikus ega kaamera lõplikku vaadet.
+
+![MG400 vaakumtööriist ja oranž XIAO kinnitus eestvaates](docs/photos/mg400-tool-mount-front-2026-10-24.jpg)
+
+Teine rakurss näitab kinnitust, flantsi all olevat vaakumtööriista ja iminapa paiknemist oranži konteineri kohal. Foto põhjal ei määrata kinnituse CAD-versiooni ega arvulisi vahekaugusi.
+
+### Prinditud hoidikud ja AtomS3
+
+![AtomS3 valge prinditud hoidiku pesas, kõrval joonlaud](docs/photos/atoms3-white-holder-fit-2026-10-24.jpg)
+
+AtomS3 valge hoidiku ühes pesas, ekraan üles; kõrval on joonlaud. Foto toetab detaili pesas paiknemise dokumenteerimist, kuid ei tõenda kõigi pesade põhjani istumist ega täpset lõtku.
+
+![AtomS3 oranži prinditud hoidiku pesas, kõrval joonlaud](docs/photos/atoms3-orange-holder-fit-2026-10-24.jpg)
+
+AtomS3 oranži hoidiku ühes pesas ja joonlaud selle kõrval. Käsitsi kinnitatud sobivust (`physical fit confirmed`) kirjeldab eraldi [`mõõteregistri 24.10 kirje`](docs/measurements.md); fotost uusi nihikumõõte ei lisata.
+
+![Valged prinditud hoidikud Gridfinity ruudustikul koos joonlauaga](docs/photos/white-holders-gridfinity-ruler-2026-10-24.jpg)
+
+Valged prinditud hoidikud ruudustikul, joonlaud kõrval. Pildil nähtavad pesad ja väljalõiked on füüsilised prindid; joonlaud annab konteksti, mitte prinditud pesade arvuliste nihikumõõtude protokolli.
+
+![Oranž ühe ruudu kast ristiga põhjas Gridfinity ruudustikul, kõrval joonlaud](docs/photos/orange-single-bin-gridfinity-ruler-2026-10-24.jpg)
+
+Oranž väike avatud kast ristiga põhjas ruudustikul. Foto kinnitab kasti olemasolu ja asendit pildistamise hetkel, kuid mitte selle eemaldamise/tagasipaneku kordustäpsust.
+
+### Oranž väljundkonteiner, läbipaistev plaat ja iminapp
+
+![Oranž konteiner läbipaistva plaadiga, selle kohal MG400 iminapp, kõrval joonlaud](docs/photos/output-holder-suction-cup-ruler-2026-10-24.jpg)
+
+Lähivaates on läbipaistev plaat oranžis avatud konteineris, iminapp selle kohal ja joonlaud kõrval. See on asendi tõend, mitte foto põhjal kinnitatud vaakumhaare, klaasi automaatne ülekandmine või täpne kõrgusmõõt.
+
+Olemasolevad `measured` mõõtmised, `estimated` massihinnang ja `CAD dimensions` jäävad [`docs/measurements.md`](docs/measurements.md) ning [`docs/cad-measurement-review.md`](docs/cad-measurement-review.md) andmeteks. Fotod ei muuda neid olekuid: puuduvad prinditud pesade arvulised mõõdud, tegelik kaalumine enne/pärast kaamerat, kaamerate ja kaablite täielikud katsed ning ringid 2–5 koos hoidikute välja/tagasi katsega jäävad `TODO — waiting for physical test`.
+
 ## Teadaolevad lähteandmed
 
 ### Ametlikult teadaolevad väärtused
@@ -391,6 +437,15 @@ mitte ei muudeta.
 * `docs/refit_test.csv` ring 1: 4 × 4 yes. Töökoha ja väljundi kaadrid igast klaasist: [`docs/photos/cycle-r1-*.jpg`](docs/photos/).
 * Samad õpetatud punktid töötasid ka pesades, mida eraldi ei õpetatud (D−5 ja E-rida sisendis, D+5 ja E-rida väljundis).
 * Järgmiseks: kõik hoidikud ruudustikust välja ja tagasi, ringid 2–5 (`refit_test.csv`), 42 mm teise ruudu küsimus; kaksiku kõrguste parandus; COM5 short read (tööriistakaamera kaader kaob mõnikord).
+
+**24.10.2026 — füüsilise laboritöö fotode lisamine**
+* Osalejad ja allikas: kasutaja edastas 24.10.2026 laboritöö fotod; fotograafi ja teiste kohalolijate nimesid ei täpsustatud. Codex kontrollis faile ja täiendas dokumentatsiooni.
+* Tegime: avasime kaheksa JPEG-fotot ning kopeerisime need kasutaja lahtipakitud kaustast repo `docs/photos/` kausta. README-sse lisasime eestikeelsed pildiallkirjad, põhiliseks üldfotoks `gridfinity-workspace-overview-ruler-2026-10-24.jpg` ja tööriista lähivaateks `mg400-tool-mount-side-2026-10-24.jpg`.
+* Tegelik tulemus: dokumenteeritud on reaalselt prinditud hoidikud, AtomS3 valges ja oranžis hoidikus koos joonlauaga, Gridfinity üldvaade, tegelikult paigaldatud oranž XIAO kinnitus, MG400 vaakumtööriist, kaabel ja voolik ning iminapa paiknemine oranži konteineri ja läbipaistva plaadi kohal. Fotod on asendi ja olemasolu tõendid; edukat automaatset klaasi ülekannet neist ei järeldata.
+* Piirangud ja parameetrid: uusi mõõtmisi ega robotikatseid ei tehtud; fotodel olevast joonlauast pesamõõte ei arvutatud. `measured`, `estimated`, `CAD dimensions` ja `physical fit confirmed` jäävad eraldi; tööriista umbes 80 g (?) hinnang ei muutunud kaalumistulemuseks. Fotode paigutust ei nimetata lõplikuks kinnitatud konfiguratsiooniks.
+* Otsus ja oodatav tulemus: seostame fotod nähtavate Lab 2 osadega, et füüsilised prindid ja tööriista paigaldus oleksid kontrollitavad. Varasemaid fotosid ei kirjutatud üle ega päevikukirjeid muudetud. Meeskonna uus ringi 1 tulemus (`c72bfb1`, 4 / 4) säilitati eraldi katsetõendina.
+* Failid: `README.md`; `docs/photos/mg400-tool-mount-front-2026-10-24.jpg`, `mg400-tool-mount-side-2026-10-24.jpg`, `atoms3-white-holder-fit-2026-10-24.jpg`, `atoms3-orange-holder-fit-2026-10-24.jpg`, `white-holders-gridfinity-ruler-2026-10-24.jpg`, `orange-single-bin-gridfinity-ruler-2026-10-24.jpg`, `gridfinity-workspace-overview-ruler-2026-10-24.jpg`, `output-holder-suction-cup-ruler-2026-10-24.jpg` (kõik `docs/photos/` kaustas).
+* Järgmiseks: puuduvad pesade arvulised mõõdud, tööriista tegelik kaalumine enne/pärast kaamerat, kaamerate ja kaablite täielikud katsed, hoidikute välja/tagasi kordustäpsus ning ringid 2–5; tulemused on TODO — waiting for physical test. Käesolevas sessioonis CAD-i, programme ega roboti konfiguratsiooni ei muudetud ja MG400 ei käivitatud.
 
 ### Väljundid ja tulemused
 
