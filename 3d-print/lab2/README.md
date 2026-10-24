@@ -49,6 +49,7 @@ Wi-Fi füüsiline toimimine ja station PC võrgust ligipääs, kaablite marsruut
   - 24.10.26: `valjundhoidik-v1` prinditud (2 × 2, üks lahtine kast ilma vaheseinteta). Füüsiline kontroll: hoidik istub ruudustikus hästi (jalad v2 parandusega ei kiilu). Klaasi panek robotiga ja pesade mõõdud nihikuga: TODO.
 - [ ] Iga pesa mõõt ja roboti sihtpunkt dokumenteeritud ruudu ning nihkega.
 - [ ] Klaasiga tehtud viis korduskatset ja tulemused failis `docs/refit_test.csv`.
+  - 24.10.26: **ring 1 tehtud, 4 / 4 klaasi** (sisend D/E −4/−5 → töökoht C+1 AtomS3 peal → väljund D/E +4/+5, 10 %), Denys kinnitas. Kaadrid `docs/photos/cycle-r1-*.jpg`. Järgmiseks: hoidikud välja ja tagasi, ringid 2–5 ilma ümberõpetamiseta.
 - [ ] XIAO ESP32S3 Sense kaamera kinnitus ning valitud ja katsetatud toide.
   - 23.10.26: XIAO istub prinditud kinnituses roboti küljes ja annab pilti. Toide katsetamisel USB-C kaudu arvutist (COM5). Püsivara `tool-camera/firmware/` (JPEG 1600 × 1200 USB kaudu, sest labori arvutil pole WiFi-t), kaader `python tool-camera/capture.py COM5 <fail>.jpg`. Sensor OV3660 (PID 0x3660), PSRAM 8 MB. Esimene kaader: [`docs/photos/tool-camera-first-frame.jpg`](docs/photos/tool-camera-first-frame.jpg) — pildis on iminapp, ruudustik ja oranž hoidik; iminapa voolik läheb diagonaalis üle kaadri.
     - Kontrollimata: kas töökoht koos klaasi ja Atomiga on pildis teravana; kas kinnitus jääb napa laskumisel hoidiku seintest vabaks; kaabli marsruut kogu liikumisel ja J4 pööramisel; tööriista mass enne/pärast. TODO — waiting for physical test.
@@ -384,6 +385,12 @@ mitte ei muudeta.
 * Esimene katse 19:09: Denys vajutas avariinuppu, sest ootas klaasi võtmist D+4-st, robot läks sisendisse D−4 (tsükli suund polnud talle enne starti selgelt öeldud). Kahju pole.
 * 19:15 täistsükkel 10 %: D−4 → C+1 Atomi peale → D+4, 59 s, vigadeta; Denys kinnitas silmaga. `docs/refit_test.csv` ring 1, klaas 1 = 4 × yes. Väljundi kaader [`photos/cycle-r1-g1-output-2026-10-24.jpg`](docs/photos/cycle-r1-g1-output-2026-10-24.jpg); töökoha kaader kadus (COM5 short read).
 * Järgmiseks: klaasid 2–4 (D−5, E−4, E−5 → D+5, E+4, E+5), siis hoidikud välja/tagasi ja ringid 2–5.
+
+**24.10.2026 ~19:20 — ring 1 lõpetatud: 4 / 4**
+* Klaasid 2–4 ühe käivitusega (217 s, 10 %): D−5 → D+5, E−4 → E+4, E−5 → E+5, igaüks läbi töökoha C+1 (AtomS3 aku peal). Vigu ega peatusi polnud; Denys: kõik klaasid jõudsid kohale (sinised klaasid, et pildil näha).
+* `docs/refit_test.csv` ring 1: 4 × 4 yes. Töökoha ja väljundi kaadrid igast klaasist: [`docs/photos/cycle-r1-*.jpg`](docs/photos/).
+* Samad õpetatud punktid töötasid ka pesades, mida eraldi ei õpetatud (D−5 ja E-rida sisendis, D+5 ja E-rida väljundis).
+* Järgmiseks: kõik hoidikud ruudustikust välja ja tagasi, ringid 2–5 (`refit_test.csv`), 42 mm teise ruudu küsimus; kaksiku kõrguste parandus; COM5 short read (tööriistakaamera kaader kaob mõnikord).
 
 ### Väljundid ja tulemused
 
