@@ -76,6 +76,29 @@ Wi-Fi füüsiline toimimine ja station PC võrgust ligipääs, kaablite marsruut
   - 23.10.26 v2 täiendus — kaamera kinnitus: Verbatim AWC-03 klamber koosneb kahest osast, mis on liigendiga (kruvid reguleerivad pingust) ühendatud. Alumine osa mõõdetud nihikuga: **42,04 × 48,5 × 10,88 mm**. Posti otsas on selle jaoks pesa: 42,84 × 49,30 mm (lõtk 0,4 mm külje kohta, Lab 1 vahemik 0,2–0,4 mm), sügavus 7 mm (klamber jääb 3,9 mm välja, et sõrmedega kätte saada), seinad kolmel küljel, liigendi pool lahti ja pööratud laua poole (41°), et kaamera saaks alla kalduda. Põhjas 20 mm pilu ¼" kruvile (keerme täpne koht klambril mõõtmata); kruviga on kaamera jäigalt kinni, ilma kruvita istub klamber lihtsalt pesas. Ülemine tükk nüüd 267 mm (printeri Z 270 mm). Kontroll ümbrise vastu: varu endiselt ≥ 30 mm.
 
     ![veebikaamera-post-v2 klambri pesa](docs/photos/veebikaamera-post-v2-klamber.png)
+  - 24.10.26 v3 (CAD, printimata): `veebikaamera-post/src/veebikaamera-post-v3.f3d` (+ `-standalone.f3d`), STL-id `veebikaamera-post-v3-alumine.stl`, `-ulemine.stl`, `-jalg.stl`.
+    - Probleem v2-s: post ja konsool rippusid ruudustiku nurgast väljas õhus (post ~85 mm X ja ~42 mm Y ruudustiku servast väljas), kogu kaal (kaamera 129 g ~500 mm kõrgusel + toru) koormas ainult 2 × 2 aluse Gridfinity jalgu — kang oleks aluse ruudustikust välja kangutanud. Postit ruudustikule tuua ei saa: ruudustiku kaugeim nurk on J1-st 463 mm, käsi koos tööriistaga ulatub 40–200 mm kõrgusel ~515 mm-ni.
+    - Lahendus: eraldi **jalg** posti all lauani. Laua pind = ruudustiku alumine serv (Denys: ruudustik lõpeb laual), mudelis z −16,7 mm. Jalg on 30 × 30 mm õõnes toru, all 45 × 45 × 3 mm tald, üleval 26,5 mm tapp (lõtk 0,2 mm külje kohta), mis läheb altpoolt posti toru sisse kuni konsooli laeni. Jalg on `leg_gap = 0,3 mm` lühem, et Gridfinity jalad istuksid alati pesas. Jalg on eraldi detail, sest koos alumise tükiga oleks see üle printeri 270 mm Z. Kõrgus 50,2 mm, maht 20,1 cm³.
+    - **Kaabliklambrid** posti −X küljel (robotist eemal), 9 mm keskjoonest ribi ja akna kõrval: sama profiil mis XIAO kinnituse `cable_clip2` (rõngas Ø4 kaablile, sein 1,6 mm, avaus 0,75 × kaabel väljapoole, rõngas 0,6 mm seina sees), aga telg püsti ja üleval/all 45° kalded, et klamber prindiks ilma tugedeta kummaski asendis. Esialgu kuus klambrit (alumisel z 60/130/195 mm, ülemisel 275/345/405 mm); Denysi järgi liiga palju, nüüd üks klamber tüki kohta: alumisel z 130 mm, ülemisel z 380 mm. Kaabel läheb nüüd väljast; aken plaadi all jääb ¼" kruvi jaoks.
+    - Kontroll Fusionis: posti osade omavahelist interferentsi ei ole; klambri lõige kontrollitud punktidega (ava ja pilu tühjad, rõngas täis).
+    - Kontrollimata (TODO — waiting for physical test): laua kõrgus posti nurga all nihikuga (`table_z`); kaabli tegelik läbimõõt (`cam_cable_d` = 4 mm, XIAO kaabli järgi); kas kaabel klõpsab klambrisse; jala tapi istuvus; pildi värisemine. Käe kõrguse kontroll käega enne printimist (vt ülal) jääb.
+
+    ![veebikaamera-post-v3 Fusionis](docs/photos/veebikaamera-post-v3-fusion.png)
+
+    ![veebikaamera-post-v3 jalg ja kaabliklambrid](docs/photos/veebikaamera-post-v3-jalg.png)
+    - 24.10.26 Gridfinity jalad ümber tehtud (enne printimist). Denys: `valjundhoidik-v1` liigub ruudustikus edasi-tagasi ega lähe päris lõpuni. Põhjus CAD-is (mõõdetud `MG 400 rakis` B-Rep pindadest, `grid_pos_0`, lahter A+1): pesa on Gridfinity profiil — 45° 2,15 mm (laius 41,98 → 37,68), vertikaalne 1,8 mm (37,68, R 1,84), 45° 0,7 mm (→ 36,28, R 1,14); kõik nurgakaared ühe keskpunktiga 17 mm lahtri keskelt. Meie jalg oli sirge 35,78 mm prisma (R 1,5), mis puudutas pesa ainult kõige kitsamas kohas; vertikaalosas oli lõtk **0,95 mm külje kohta**, midagi ei tsentreerinud. Uus jalg = pesa profiil, iga pind nihutatud sissepoole `foot_clearance = 0,25 mm` (Gridfinity standard), nurkade keskpunkt sama: 45° 2,15 / 1,8 / 45° 0,7 mm. Kontroll Fusionis: jala poollaius 20,66 / 18,59 / 17,96 mm vs pesa 20,91 / 18,84 / 18,21 mm (täpselt 0,25), interferents 0, alus toetub ruudustiku harjadele z 7,28. Vanad jalad (`Extrude2`, `Chamfer1`) maha surutud, mitte kustutatud. Miks `valjundhoidik-v1` lõpuni ei lähe, ei ole füüsiliselt tõestatud (kontrollida tugede jääke aluse all, esimese kihi laienemist, kus kinni jääb): TODO.
+    - 24.10.26 parandus samal päeval: ülesanne nõuab **standardset** Gridfinity jalga (4,75 mm, „võta generaatorist, ära joonista silma järgi“). Võrdlus generaatoriga gridfinity-rebuilt-openscad (`BASE_PROFILE`: 45° 0,8 / 1,8 / 45° 2,15 mm, 35,6 → 37,2 → 41,5 mm, R 0,8 → 1,6 → 3,75): meie „pesa − 0,25“ jalg erines (alumine faas 0,7, kõrgus 4,65). Posti jalad on nüüd standardsed (`gf_std_foot1–3`, `gf_fit_adjust = 0`; eelmised `gf_foot_step*` maha surutud). 2 × 2 alus toetub oma sisemistele harjadele (z 7,28), külglõtk 0,24 mm nagu standardis; interferents ruudustikuga 0. Jala test = kalibreerimishoidik v3 (`gridfinity-calibration-v3`, vt CAD-failid).
+
+    - 24.10.26 jala parandus: Denys märkas, et posti kolmnurksed ribid (`Extrude6` −X, `Extrude7` −Y; 30 mm välja, 4 mm paksud, z 7,3…107) lõppesid ruudustiku kõrgusel õhus, 24 mm laua kohal, ja jala 45 × 45 mm tald ei ulatunud nende alla — ribid ei kandnud midagi. Nüüd jätkuvad samad ribid jalal (sama tasand ja paksus, 30 mm välja) talla pealt kuni z 7,28; posti ribid toetuvad neile (kaugus 0, interferents 0). Tald kasvas −X/−Y suunas ribide otsteni (67,5 × 67,5 mm, `leg_rib_pad_margin = 0`): see on külg, kuhu post ruudustikust eemale kalduks. Jala maht 20,1 → 32,7 cm³.
+    ![veebikaamera-post-v3 Gridfinity jalad altpoolt](docs/photos/veebikaamera-post-v3-gridfinity-jalad.png)
+
+    - Koostevaade Fusionis (24.10.26): MG 400 rakis + v3 post + hoidikute STL-id `slot-picker/layout.json` **pakutud** lahtrites (klaas D/E −3…−4, AtomS3 D/E −1…−2, oranž töökoht D/E +1…+2, väljund D/E +3…+4, kalibreerimiskast F-2) + XIAO kinnitus v5 J4 all. Hoidikud on mesh-kehad, värvid Fusioni omad, mitte prindi värvid. Paigutus ei ole kinnitatud (`docs/layout.md` TODO).
+
+    ![Töölaud v3: üldvaade](docs/photos/lab2-tooala-v3-iso.png)
+
+    ![Töölaud v3: hoidikud ruudustikus](docs/photos/lab2-tooala-v3-hoidikud.png)
+
+    ![Töölaud v3: ülalt](docs/photos/lab2-tooala-v3-ulalt.png)
 - [ ] `docs/bom.md` sisaldab iga tellitava rea põhjendust.
 - [ ] Iga prindi lähtefail, STL ja 3MF on versioonitud.
 - [ ] Arenduspäevik täidetud; esitamisel lisatud tag `3d-print-lab2`.
@@ -153,6 +176,11 @@ Kõigi nende olek on `TODO — waiting for physical test`.
   ![xiao-square-mount-v5 PrusaSliceris](docs/photos/xiao-square-mount-v5-slicer.png)
 
 - `gridfinity-calibration/src/gridfinity-calibration-v1.f3d`, `gridfinity-calibration/stl/gridfinity-calibration-v1.stl`, `gridfinity-calibration/3mf/gridfinity-calibration-v1.3mf` - lisatud 1 × 1 Gridfinity kalibreerimishoidiku Fusioni fail ja ekspordid; füüsiline sobivus ja roboti kalibreerimine: `TODO — waiting for physical test`.
+- `gridfinity-calibration/src/gridfinity-calibration-v3.f3d`, `gridfinity-calibration/stl/gridfinity-calibration-v3.stl`, `gridfinity-calibration/3mf/gridfinity-calibration-v3.3mf` - 24.10.26 (Claude Fusioni API kaudu; nimi v3, sest `src/gridfinity-calibration-v2.scad` on OpenSCADi kandidaat). 1 × 1, välismõõt 41,5 × 41,5 mm, R 3,75, kõrgus 21 mm (3 × 7), **standardne Gridfinity jalg** (generaatori `BASE_PROFILE`, `gf_fit_adjust = 0`), põhi 7 mm kõrgusel, sisetasku 37 × 37 mm (R 0,5, sügavus 14) nelja sisenurga meetodiks (napa efektiivne läbimõõt ~22 mm → käik ~15 mm), põhjas keskrist 1 × 35 mm, 0,6 mm sügav (ülesanne: „keskel terav tipp või rist“; tipp segaks nappi nurkades, risti näeb ka XIAO kaamera). Kontroll Fusionis ruudus B-2 (`MG 400 rakis`): jalg toetub pesa kaldservadele (profiilid paralleelsed, horisontaalne vahe 0,24 mm), 0,05 mm külgnihe annab juba interferentsi → teoreetiline külglõtk 0; nominaalne ülaserv **16,0 mm** ruudustiku pinnast (füüsiline kontroll: kõrgem = jalg prindib laiemaks). Print: Prusa CORE One HF0.4, `0.20mm SPEED`, Prusament PLA, ilma tugedeta, 21 min, 11,2 g. Füüsiline sobivus: TODO — waiting for physical test.
+
+  ![gridfinity-calibration-v3 ruudus B-2](docs/photos/gridfinity-calibration-v3-ruudustikus.png)
+
+  ![gridfinity-calibration-v3 standardne jalg](docs/photos/gridfinity-calibration-v3-jalg.png)
 - `atoms3-input-holder/src/atoms3-input-holder-v1.f3d`, `atoms3-input-holder/stl/atoms3-input-holder-v1.stl`, `atoms3-input-holder/3mf/atoms3-input-holder-v1.3mf` - AtomS3 sisendhoidiku Fusioni fail ja ekspordid; mõõtude ning füüsilise sobivuse kinnitus: `TODO — waiting for physical test`.
 - `ready-parts-input-holder/src/ready-parts-input-holder-v1.f3d`, `ready-parts-input-holder/stl/ready-parts-input-holder-v1.stl`, `ready-parts-input-holder/3mf/ready-parts-input-holder-v1.3mf` - ReadyParts sisendhoidiku Fusioni fail ja ekspordid; mõõtude ning füüsilise sobivuse kinnitus: `TODO — waiting for physical test`.
 - `glass-input-holder/src/glass-input-holder-v1.f3d`, `glass-input-holder/stl/glass-input-holder-v1.stl`, `glass-input-holder/3mf/glass-input-holder-v1.3mf` - klaasi sisendhoidiku Fusioni fail ja ekspordid; mõõtude ning füüsilise sobivuse kinnitus: `TODO — waiting for physical test`.
@@ -293,6 +321,15 @@ mitte ei muudeta.
 * Kontroll Fusionis: interferents XIAO-ga 0; plaadi väljatõmbamine renni pidi +Y suunas 0–44 mm ilma ühegi kokkupuuteta (v4-s puudutas plaat silda alates 20 mm-st). Imporditud v5.f3d: ajajoon terve, välisviiteid pole.
 * Füüsiliselt kontrollida (TODO — waiting for physical test): USB-C pistik koos kaabliga mahub; kaabel püsib ainult teises klambris ja ei tõmba pistikut lahti J4 pööramisel; kõik v4 kontrollid (kaamera mõõdud, tihvti istuvus, vahe iminapani).
 * Failid: `camera-mounts/src|stl|3mf/xiao-square-mount-v5.*`, `docs/photos/xiao-square-mount-v5-fusion.png`, `docs/photos/xiao-square-mount-v5-slicer.png`. v2–v4 muutmata.
+
+**24.10.2026 — veebikaamera post v3: jalg lauani ja kaabliklambrid**
+* Osalejad: Denys leidis Fusionis, et post ripub ruudustikust väljas õhus ja kaabliklambrid puuduvad; muudatuse tegi Claude Fusioni API kaudu (v2 pilvedokumendile lisatud, pilve ei salvestatud). Füüsilist katset ei tehtud.
+* Esimene katse pani laua rakise jalgade alla (z −46,7); Denys parandas: laud on ruudustiku alumise serva kõrgusel (z −16,7). Jalg tehti ümber, jalal kaabliklambrit ei ole (24 mm toru on klambrile liiga lühike).
+* Kuus kaabliklambrit oli liiga palju (Denys) → üks klamber tüki kohta. Koostevaade kõigi hoidikutega ruudustikus lisatud.
+* Gridfinity pesa mõõdeti täpselt (B-Rep pinnad: tasapinnad, koonused, silindrid) ja posti jalad tehti pesa profiili järgi (lõtk 0,25 mm); sama päeva parandus: jalg standardseks (generaator), test = kalibreerimishoidik v3. Teadmine ja tööriistad meeskonnale: `fusion-tutor/shared/knowledge/gridfinity-socket.md`, `fusion-tutor/shared/tools/fusion-geometry/`. Teised hoidikud (väljund, klaas, AtomS3, oranž, kalibreerimiskast) kasutavad veel sirget jalga — uued versioonid pärast jala testi.
+* Kalibreerimishoidik v3: standardne Gridfinity jalg (generaator + mõõdetud pesa), keskrist, 4 nurga tasku; posti jalad samuti standardseks.
+* Posti ribid rippusid õhus (Denys) → ribid jätkuvad jalal lauani, jala tald laiendatud ribide alla.
+* Tulemus ja TODO: vt kontrollnimekirja punkti „USB UHD veebikaamera jäik post“, v3. v1 ja v2 failid muutmata.
 
 ### Väljundid ja tulemused
 
