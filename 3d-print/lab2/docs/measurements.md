@@ -192,4 +192,15 @@ Mõõda vajaduse korral mitu klaasi ja säilita kõik üksiktulemused, et hiljem
 - Kontroll ruutudes, mida sobitus ei kasutanud: **B+5 215,52 / −186,15** ja **F-4 378,39 / 152,37** — kasutaja hinnangul keskel (Z −130 / −100, silma järgi). Kalibreerimine praegu kasutatav.
 - Täpsustamiseks: korrata nurkade mõõtmist puutes (kasti põhjas, Z ≈ −155) 3–4 ruudus, eesmärk jääkviga < 0,5 mm.
 
+24.10.26 õhtu — kontroll kalibreerimiskastiga v3 ruudus C-2 (toorandmed [`calibration_c-2_v3.csv`](calibration_c-2_v3.csv)):
+
+- Kast `gridfinity-calibration-v3` (standardne Gridfinity jalg, pesa 37 × 37 mm, rist põhjas) ruudus **C-2**; C-2 ei olnud `cells.py` sobituses, seega see on sõltumatu kontroll. R 33, kiirus 2 %, sammud 0,5 mm; puudutust hindas Denys silmaga (napp sirge ja seina vastas, kast ei kaldu).
+- Z puudutus kasti põhjal/ristil lahtri keskel: **Z −155,0** (kaksik ennustas põhja −154,8, risti pealt −154,2) → napa pikkus kaksikus õige ±0,8 mm piires.
+- Neli nurka Z −152 juures (3 mm põhja kohal): +X+Y 260,68 / 75,46; +X−Y 260,68 / 61,46; −X−Y 246,68 / 61,46; −X+Y 247,18 / 75,46. Teise nurga esimene katse Y 60,46 juures surus seina ja kallutas kasti veidi — tagasi 1 mm, kast istus tagasi; arvesse läks 61,46.
+- Kontroll: vastasküljed 14,00 / 14,01 ja 14,00 / 13,50, diagonaalid 19,80 / 19,45 mm (erinevus ≤ 0,5 mm = silmaga puudutuse täpsus).
+- Keskpunkt (nelja nurga keskmine): **253,81 / 68,46**; `cells.py` ennustas 253,68 / 66,46 → viga **+0,12 / +2,00 mm**. Kontroll: napp viidi mõõdetud keskpunkti Z −150 juurde — Denys: keskel risti kohal.
+- Napa käik 37 mm pesas 14 mm → napa efektiivne läbimõõt sellel kõrgusel **≈ 23 mm** (23.10 v1 kastiga ≈ 22; kaksik eeldab 20).
+- Tähelepanek: sama +2 mm Y-suunas õpetati 24.10 klaasi sisendhoidikus D-4 (`teach.dy 2.0`, slot picker). Võimalik põhjus: `cells.py` sobituse D-2 punkt võeti vanade jalgadega klaasihoidikus (jala lõtk ~0,95 mm külje kohta), uus v3 kast istub lõtkuta. Otsus `cells.py` uue sobituse kohta: TODO — meeskond.
+- Kasti välja/tagasi kordustäpsust ei mõõdetud (Denys: keskpunkt sobib, uuesti ei kalibreeri).
+
 Kui hiljem leitakse vale mõõt, ära kustuta seda. Lisa kuupäevaga parandus vana väärtuse alla ning selgita mõõtekonteksti.

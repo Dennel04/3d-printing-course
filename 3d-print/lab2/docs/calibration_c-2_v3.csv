@@ -1,0 +1,7 @@
+time,cell,bin,point,x,y,z,r,note
+17:43:43,C-2,gridfinity-calibration-v3,z_touch_floor,253.68,66.46,-154.96,33.01,"cup on the floor/cross at cell centre from cells.py; user saw touch; twin floor -154.8, cross top -154.2"
+17:46:05,C-2,gridfinity-calibration-v3,corner1_+X+Y,260.68,75.46,-152.00,33.0,user: touches both walls
+17:47:31,C-2,gridfinity-calibration-v3,corner2_+X-Y,260.68,61.46,-152.00,33.0,user: touches both walls; first attempt at Y 60.46 pushed the wall and tilted the bin slightly - backed off
+17:48:23,C-2,gridfinity-calibration-v3,corner3_-X-Y,246.68,61.46,-152.00,33.0,user: touches both walls
+17:49:26,C-2,gridfinity-calibration-v3,corner4_-X+Y,247.18,75.46,-152.00,33.0,user: touches both walls
+17:52:05,C-2,gridfinity-calibration-v3,centre_check,253.81,68.46,-150.02,33.0,mean of 4 corners; user: cup centred over the cross

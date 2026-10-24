@@ -99,6 +99,16 @@ Wi-Fi füüsiline toimimine ja station PC võrgust ligipääs, kaablite marsruut
     ![Töölaud v3: hoidikud ruudustikus](docs/photos/lab2-tooala-v3-hoidikud.png)
 
     ![Töölaud v3: ülalt](docs/photos/lab2-tooala-v3-ulalt.png)
+  - 24.10.26 v4 (CAD, printimata): posti asemel rakise toru. Denys nihutas laual L-nurgad nii, et mõlema pika toru esiots ulatub ~50 mm üle laua serva (mõõdetud silma järgi). Prinditakse ainult kaks osa, vertikaalne toru on sama 16 mm toru: `veebikaamera-post/src/veebikaamera-post-v4.f3d`, `stl/veebikaamera-post-v4-nurk.stl`, `stl/veebikaamera-post-v4-ulemine.stl`.
+    - Nurk: horisontaalne pesa 30 mm toru otsa peale (ava 16,4 mm, tilgakujuline — prinditakse ilma tugedeta), all pilu + M3 kruvi ja mutter (mutripesa 6,5 mm), et nurk toru ümber ei pöörduks; vertikaalne pesa 45 mm. Toru telg J1-st 608 mm (v2 post 555 mm, käe ümbris ~515 mm).
+    - Ülemine: pesa 30 mm toru otsa peale + v2 klambripesa (42,84 × 49,30, sügavus 7, ¼" pilu pesa ees). Pesa on klambripesa tagaosa all, et ¼" kruvi pääseks alt ligi. Pööratakse toru peal käsitsi (arvutuslik suund ruudustiku keskele 18°).
+    - Vertikaalse toru pikkus **490 mm** (pesa põhi z −25,3 kuni plaadi alumine pind z 465; plaat 470 mm nagu v2). Kõrgus tuleb enne lõikamist kaamerat käes hoides kinnitada.
+    - Fusionis interferents torude ja laua servaga 0. Print (Prusa CORE One HF0.4, 0.20mm SPEED, Prusament PLA, 4 perimeetrit, 30 %): nurk püsti ilma tugedeta 50 min / 30,6 g; ülemine tagurpidi (klambripesa all), orgaanilised toed alusplaadilt ainult pesa põhja alla, 1 h 9 min / 27,1 g.
+    - Kontrollimata: toru tegelik välisläbimõõt (rakise kirjelduse 16 mm, nihikuga mõõtmata), toru väljaulatuvus, sobivus. TODO — waiting for physical test.
+
+    ![veebikaamera-post-v4 nurk altpoolt](docs/photos/veebikaamera-post-v4-under.png)
+
+    ![veebikaamera-post-v4 ülemine](docs/photos/veebikaamera-post-v4-top.png)
 - [ ] `docs/bom.md` sisaldab iga tellitava rea põhjendust.
 - [ ] Iga prindi lähtefail, STL ja 3MF on versioonitud.
 - [ ] Arenduspäevik täidetud; esitamisel lisatud tag `3d-print-lab2`.
@@ -339,6 +349,12 @@ mitte ei muudeta.
 * Tulemused: B-2 ei sobi kalibreerimiseks (napp ei mahu kasti v3) → C-2; klaasitsükkel kokkupõrgeteta; väljund talub ainult 3 mm kalibreerimisviga. Üksikasjad ja piirid: [`../sim/README.md`](../sim/README.md). Kaksik viidi samal päeval labori kaustast välja `3d-print/sim/`-i (Denys: see on kõigi laborite jaoks); Lab 2 tulemused jäävad `docs/`-i.
 * TODO — waiting for physical test: napa läbimõõt, nihe J4 teljest ja pikkus nihikuga; kalibreerimine C-2-s.
 * XIAO kaamerakinnitus v5: esimene testprint käivitatud (Nikita).
+
+**24.10.2026 õhtu — kalibreerimiskast v3 päris robotiga, ruut C-2**
+* Osalejad: Denys laboris (paigaldas kasti, hindas puudutusi), Claude juhtis robotit (2 %, 0,5 mm sammud).
+* Kast v3 (rist põhjas, standardne jalg) prinditi ja sobib hästi. Z puudutus põhjal −155,0 (kaksik −154,8). Neli sisenurka → keskpunkt 253,81 / 68,46, `cells.py` viga +0,12 / +2,00 mm; mõõdetud keskpunktis on napp risti kohal. Napa efektiivne läbimõõt ≈ 23 mm. Andmed: [`docs/calibration_c-2_v3.csv`](docs/calibration_c-2_v3.csv), [`docs/measurements.md`](docs/measurements.md).
+* Kaksiku `dry_run.py` kontrollib nüüd `layout.json`-i nii, nagu robot seda praegu käivitaks (ülekandetest), ja `--full` planeeritud täistsüklit; kokkupõrkeid pole kummaski.
+* Lahtine: kas `cells.py` sobitada uuesti C-2-ga (Y +2 mm kordub ka D-4 õpetuses); kasti välja/tagasi kordustäpsus jäi mõõtmata.
 
 ### Väljundid ja tulemused
 

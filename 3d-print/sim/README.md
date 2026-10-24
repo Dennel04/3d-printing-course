@@ -53,8 +53,9 @@ Negatiivtestid (24.10.26), kõik leitud: travel Z −140 → 15 kokkupõrget; t�
 
 Printimise vead (elevandijalg, tugede jäägid, kahanemine) — selleks on füüsiline jala test ja nihik. Pehme napa kaldumine seina vastu. Füüsika (klaasi libisemine) — järgmine samm (MuJoCo). TODO mõõta: napa läbimõõt, napa nihe J4 teljest, napa pikkus J4 mootori alt.
 
-## 25.10.26 kontroll (layout pärast 24.10 17:06 muudatusi)
+## 24.10.26 õhtu: kontroll (layout pärast 17:06 muudatusi)
 
 - Täistsükkel (`--full`): 4 klaasi kokkupõrgeteta, taluvus endine (võtmine 5 mm, väljund 3 mm).
 - Ülekandetest (praegune `layout.json`: kõik rollid = Glass input, D-4/D-5/E-4/E-5): kokkupõrkeid pole; output `place_z` pole õpetatud (slot picker ei lase seda käivitada, kaksik tuletab −147,0).
+- Päris robot 24.10 õhtul C-2-s: kasti v3 põhja puudutus Z −155,0 vs kaksik −154,8 → napa pikkus kinnitatud; napa efektiivne läbimõõt ≈ 23 mm (kaksik eeldab 20).
 - Õpetatud `pick_z −150,5`: kaksiku järgi algab klaasi puudutus Z −147,9 ja tühja pesa põhi −149,9 → klaasiga surub −150,5 napa 2,6 mm (lubatud 1,5). 24.10 17:06 Z-proovi kaadrites on pesad tühjad ja napp surutakse kokku juba alates −151 → tõenäoliselt õpetati tühja põhja peale. **Kontrollida**: kas õpetamisel oli klaas pesas.
