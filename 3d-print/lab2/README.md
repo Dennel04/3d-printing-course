@@ -378,6 +378,13 @@ mitte ei muudeta.
 * Järgmiseks: enne kaitsmist 29.10.2026 tegelik kaalumine enne/pärast kaamerat; puuduvad prinditud pesade mõõdud ja arvuline lõtk (mm); hoidikute välja/tagasi kordustäpsus ning viis ringi nelja klaasiga koos tulemustabeliga. Kaamerate, toite ja kogu liikumisvahemiku veel kinnitamata katsed jäävad avatuks. Nende füüsiliste tulemuste olek: TODO — waiting for physical test. Varasem C−2 kontroll ja ühe klaasi õnnestunud ülekanne säilivad oma piiratud katseulatuses.
 * Failid: `README.md`, `docs/measurements.md`, `docs/cad-measurement-review.md`.
 
+**24.10.2026 ~19:00–19:16 — töökoht ja väljund õpetatud, esimene täistsükkel**
+* Osalejad: Denys laboris (tõstis hoidikud paigutuse B järgi, seadis puudutused), Claude (robot 5 %, kaamera, slot picker).
+* Õpetatud: töökoht C+1 (aku + AtomS3 + klaas) nihe 0 / 0, Z −119,0; väljund D+4 nihe 0 / 0, Z −153,0; klaasi sisend `pick_z` −152 (Denys). Kõik kolm on kaksikust 1,5–4,9 mm madalamal (kaksiku parandus TODO).
+* Esimene katse 19:09: Denys vajutas avariinuppu, sest ootas klaasi võtmist D+4-st, robot läks sisendisse D−4 (tsükli suund polnud talle enne starti selgelt öeldud). Kahju pole.
+* 19:15 täistsükkel 10 %: D−4 → C+1 Atomi peale → D+4, 59 s, vigadeta; Denys kinnitas silmaga. `docs/refit_test.csv` ring 1, klaas 1 = 4 × yes. Väljundi kaader [`photos/cycle-r1-g1-output-2026-10-24.jpg`](docs/photos/cycle-r1-g1-output-2026-10-24.jpg); töökoha kaader kadus (COM5 short read).
+* Järgmiseks: klaasid 2–4 (D−5, E−4, E−5 → D+5, E+4, E+5), siis hoidikud välja/tagasi ja ringid 2–5.
+
 ### Väljundid ja tulemused
 
 **Väljundid**

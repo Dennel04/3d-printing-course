@@ -1,5 +1,5 @@
 round,glass_id,picked_from_input,placed_at_workstation,picked_from_workstation,placed_at_output,notes
-1,1,,,,,
+1,1,yes,yes,yes,yes,"24.10.26 19:15 first full cycle D-4 -> C+1 (on AtomS3) -> D+4, 10 %, 59 s; confirmed by Denys; workstation frame lost (COM5 short read)"
 1,2,,,,,
 1,3,,,,,
 1,4,,,,,

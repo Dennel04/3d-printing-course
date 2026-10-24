@@ -24,7 +24,7 @@
       "output": "Good output"
     },
     "workstation_cell": "C+1",
-    "workstation_step": false,
+    "workstation_step": true,
     "travel_z": -100.0,
     "approach_mm": 5.0,
     "suck_dwell_s": 1.0,
