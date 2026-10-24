@@ -207,6 +207,9 @@ class Sequencer:
             raise ValueError(f"{cell['name']} blocked: {cell['blocked']}")
         if not motion["min_hover_z"] <= hover_z <= motion["travel_z"]:
             raise ValueError(f"hover Z must be {motion['min_hover_z']} … {motion['travel_z']}")
+        reach = self.robot.call("/check", {"x": cell["x"], "y": cell["y"], "z": hover_z})
+        if not reach.get("reachable"):
+            raise ValueError(f"{cell['name']}: Z {hover_z} out of reach ({reach.get('reason')}), choose a higher hover Z")
         status = self.ready_status()
         cx, cy = status["pose"][0], status["pose"][1]
         self._start([("move", "up", cx, cy, motion["travel_z"]),

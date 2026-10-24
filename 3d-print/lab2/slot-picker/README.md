@@ -25,7 +25,7 @@ Pessa ei laskuta: ruudustiku pinna Z puudutus on veel tegemata. R on alati `tool
 - Kiirus mg400-base-s peab olema ≤ `max_speed_ratio` (30 %); esimene jooks 20 %.
 - Lahtrid väljaspool `radius_min`–`radius_max` ja `no_go` hoidikud (veebikaamera post) on hallid.
 - Kui mg400-base piirab sihtpunkti (clamp) või robotil on viga/alarm, liikumine peatub.
-- Hover Z lubatud vahemik on `min_hover_z` … `travel_z`.
+- Hover Z lubatud vahemik on `min_hover_z` … `travel_z` (24.10.26: −70 … −20, vaikimisi −70). Enne liikumist kontrollitakse `/api/check`-iga, kas punkt on käeulatuses; A±1…A±3 ei jõua −70-ni (J3−J2 piir).
 
 ## Paigutuse redaktor (Edit layout)
 
