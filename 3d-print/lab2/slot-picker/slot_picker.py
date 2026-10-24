@@ -1,17 +1,19 @@
-"""slot_picker.py — click a Gridfinity cell, the suction cup goes above it.
+"""slot_picker.py — click a Gridfinity cell, the suction cup goes above it;
+the Edit layout mode adds, names, types, moves and deletes holders (saved to layout.json).
 
 Serves a small page (http://127.0.0.1:8010) next to the mg400-base server
 (http://127.0.0.1:8000), which must already be connected and enabled.
 Each click runs three moves through mg400-base /api/move, waiting for the arm
 to arrive after each: up to travel_z where it is, across at travel_z, then down
 to the hover height. It never descends into a pocket: grid-surface Z is not
-measured yet. Cell X/Y come from the 24.10.26 calibration in layout.json.
+measured yet. Cell X/Y come from the 24.10.26 three-cell fit in ../calibration/cells.py.
 
 Usage: python slot_picker.py [--port 8010] [--check]
 """
 import argparse
 import json
 import math
+import sys
 import threading
 import time
 import urllib.request
@@ -23,47 +25,70 @@ LETTERS = "ABCDEFG"
 NUMBERS = [5, 4, 3, 2, 1, -1, -2, -3, -4, -5]  # operator view, left to right
 
 
-def cell_model(name):
-    """Cell centre in the rig model frame (MG 400 rakis.md §4)."""
-    letter, n = name[0], int(name[1:])
-    x = -139.5 - 42 * LETTERS.index(letter)
-    y = 42 * n - 21 if n > 0 else 42 * n + 21
-    return x, y
+FRAMES = HERE / "frames"  # tool camera JPEGs: the View button and Claude's captures; newest one is shown
+sys.path.insert(0, str(HERE.parent / "calibration"))
+sys.path.insert(0, str(HERE.parent / "tool-camera"))
+import cells as calibration  # noqa: E402  single source of the grid fit (G-1, E+3, D-2)
+from capture import capture  # noqa: E402
+
+_, cell_robot = calibration.fit()
 
 
-def cell_robot(name, cal):
-    """Model -> robot: axes flipped (X = -x, Y = -y), then the measured
-    rotation about the G-1/E+3 pivot and the shift to their measured mean."""
-    x, y = cell_model(name)
-    px, py = cal["pivot_model_robot_axes"]
-    mx, my = cal["pivot_measured"]
-    a = math.radians(cal["rotation_deg"])
-    dx, dy = -x - px, -y - py
-    return (mx + dx * math.cos(a) - dy * math.sin(a),
-            my + dx * math.sin(a) + dy * math.cos(a))
+CELL_NAMES = [f"{letter}{n:+d}" for letter in LETTERS for n in NUMBERS]
 
 
 def load_layout():
     return json.loads((HERE / "layout.json").read_text(encoding="utf-8"))
 
 
+def save_layout(layout):
+    (HERE / "layout.json").write_text(json.dumps(layout, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
+def is_no_go(holder, types):
+    return bool(holder.get("no_go", types.get(holder.get("type"), {}).get("no_go")))
+
+
+def check_holders(holders, types):
+    """Validate holders sent by the layout editor; raises ValueError with the first problem."""
+    names, used = set(), {}
+    for h in holders:
+        name = str(h.get("name", "")).strip()
+        if not name:
+            raise ValueError("every holder needs a name")
+        if name in names:
+            raise ValueError(f"two holders are called {name!r}")
+        names.add(name)
+        if h.get("type") not in types:
+            raise ValueError(f"{name}: unknown type {h.get('type')!r}")
+        if not h.get("cells"):
+            raise ValueError(f"{name}: no cells")
+        for c in h["cells"]:
+            if c not in CELL_NAMES:
+                raise ValueError(f"{name}: no cell {c!r} on the grid")
+            if c in used:
+                raise ValueError(f"{c} is in both {used[c]} and {name}")
+            used[c] = name
+
+
 def build_cells(layout):
-    cal, motion = layout["calibration"], layout["motion"]
+    motion, types = layout["motion"], layout["types"]
     holder_of = {c: h for h in layout["holders"] for c in h["cells"]}
     cells = []
     for letter in LETTERS:
         for n in NUMBERS:
             name = f"{letter}{n:+d}"
-            x, y = cell_robot(name, cal)
+            x, y = cell_robot(name)
             radius = math.hypot(x, y)
             holder = holder_of.get(name)
             reason = None
             if not motion["radius_min"] <= radius <= motion["radius_max"]:
                 reason = f"r {radius:.0f} mm outside {motion['radius_min']:.0f}-{motion['radius_max']:.0f}"
-            elif holder and holder.get("no_go"):
+            elif holder and is_no_go(holder, types):
                 reason = f"{holder['name']}: no-go"
             cells.append({"name": name, "x": round(x, 2), "y": round(y, 2), "radius": round(radius, 1),
-                          "holder": holder["name"] if holder else None, "blocked": reason})
+                          "holder": holder["name"] if holder else None,
+                          "type": holder.get("type") if holder else None, "blocked": reason})
     return cells
 
 
@@ -154,8 +179,20 @@ class Sequencer:
             raise RuntimeError(f"robot not ready: {s.get('mode_name')} {s.get('alarm_ids')} {s.get('fault_label') or ''}")
 
 
-def make_handler(layout, cells, seq):
-    by_name = {c["name"]: c for c in cells}
+def latest_frame():
+    frames = sorted(FRAMES.glob("*.jpg"), key=lambda p: p.stat().st_mtime)
+    return frames[-1] if frames else None
+
+
+def make_handler(layout, seq):
+    table = {}  # cells and by_name, rebuilt when the layout editor saves
+
+    def rebuild():
+        table["cells"] = build_cells(layout)
+        table["by_name"] = {c["name"]: c for c in table["cells"]}
+
+    rebuild()
+    camera_lock = threading.Lock()  # one owner of the camera COM port at a time
 
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, *args):
@@ -177,8 +214,8 @@ def make_handler(layout, cells, seq):
                 self.end_headers()
                 self.wfile.write(body)
             elif self.path == "/api/layout":
-                self._json(200, {"cells": cells, "holders": layout["holders"], "motion": layout["motion"],
-                                 "letters": LETTERS, "numbers": NUMBERS})
+                self._json(200, {"cells": table["cells"], "holders": layout["holders"], "types": layout["types"],
+                                 "motion": layout["motion"], "letters": LETTERS, "numbers": NUMBERS})
             elif self.path == "/api/state":
                 try:
                     s = seq.robot.call("/status")
@@ -186,6 +223,20 @@ def make_handler(layout, cells, seq):
                 except Exception as exc:
                     robot = {"mode_name": f"mg400-base unreachable ({type(exc).__name__})"}
                 self._json(200, {"robot": robot, "seq": seq.state})
+            elif self.path == "/api/photo":
+                f = latest_frame()
+                self._json(200, {"name": f.name, "time": time.strftime("%H:%M:%S", time.localtime(f.stat().st_mtime))}
+                           if f else {"name": None})
+            elif self.path.startswith("/frames/"):
+                f = FRAMES / Path(self.path).name
+                if not f.is_file():
+                    return self._json(404, {"error": "no such frame"})
+                body = f.read_bytes()
+                self.send_response(200)
+                self.send_header("Content-Type", "image/jpeg")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
             else:
                 self._json(404, {"error": "not found"})
 
@@ -194,12 +245,29 @@ def make_handler(layout, cells, seq):
             data = json.loads(self.rfile.read(length) or b"{}")
             try:
                 if self.path == "/api/goto":
-                    cell = by_name.get(data.get("cell"))
+                    cell = table["by_name"].get(data.get("cell"))
                     if cell is None:
                         raise ValueError("unknown cell")
                     seq.goto(cell, float(data.get("hover_z", layout["motion"]["default_hover_z"])))
                 elif self.path == "/api/stop":
                     seq.stop()
+                elif self.path == "/api/holders":
+                    holders = [{k: v for k, v in h.items() if k in ("name", "type", "cells", "status", "no_go")}
+                               for h in data.get("holders", [])]
+                    for h in holders:
+                        h["name"] = str(h["name"]).strip()
+                    check_holders(holders, layout["types"])
+                    layout["holders"] = holders
+                    save_layout(layout)
+                    rebuild()
+                elif self.path == "/api/view":
+                    FRAMES.mkdir(exist_ok=True)
+                    out = FRAMES / time.strftime("view-%Y%m%d-%H%M%S.jpg")
+                    with camera_lock:
+                        try:
+                            capture(layout["camera_port"], str(out))
+                        except SystemExit as exc:  # capture() reports camera errors this way
+                            raise RuntimeError(f"camera: {exc}") from None
                 else:
                     return self._json(404, {"error": "not found"})
                 self._json(200, {"ok": True})
@@ -215,15 +283,16 @@ def main():
     ap.add_argument("--check", action="store_true", help="print the 24.10 check cells and exit")
     args = ap.parse_args()
     layout = load_layout()
+    check_holders(layout["holders"], layout["types"])
     cells = build_cells(layout)
     if args.check:
-        # E+2 / E+4 were driven to 339.19 / -59.12 and 341.86 / -143.08 on 24.10.
-        for name in ("G-1", "E+3", "E+2", "E+4"):
+        # B+5 / F-4 were driven to 215.52 / -186.15 and 378.39 / 152.37 on 24.10 and judged centred.
+        for name in ("G-1", "E+3", "D-2", "B+5", "F-4"):
             c = next(c for c in cells if c["name"] == name)
             print(f"{name}: {c['x']:.2f} / {c['y']:.2f}  r {c['radius']}")
         return
     seq = Sequencer(Mg400(layout["mg400_api"]), layout)
-    server = ThreadingHTTPServer(("127.0.0.1", args.port), make_handler(layout, cells, seq))
+    server = ThreadingHTTPServer(("127.0.0.1", args.port), make_handler(layout, seq))
     print(f"slot picker on http://127.0.0.1:{args.port}  (mg400-base: {layout['mg400_api']})")
     server.serve_forever()
 

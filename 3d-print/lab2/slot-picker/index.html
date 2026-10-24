@@ -6,45 +6,110 @@
 <title>Slot Picker</title>
 <style>
   :root { --bg:#f6f6f4; --fg:#1d1d1b; --muted:#77756f; --cell:#fff; --line:#d4d2cc;
-          --hold:#e8eef8; --hold-line:#7d9bd1; --block:#e9e7e2; --target:#f2a33a; --stop:#c8372d; }
+          --block:#e9e7e2; --target:#f2a33a; --sel:#2f6fd6; --stop:#c8372d; }
   body { margin:0; font:14px system-ui, sans-serif; background:var(--bg); color:var(--fg); }
   main { max-width:860px; margin:0 auto; padding:16px; }
   h1 { font-size:18px; margin:0 0 4px; }
+  h2 { font-size:15px; margin:16px 0 6px; }
   .bar { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin:12px 0; }
   .robot { text-align:center; background:#333; color:#fff; border-radius:6px 6px 0 0; padding:6px; width:45%; margin:0 auto; }
   .grid { display:grid; grid-template-columns:18px repeat(10, minmax(0, 1fr)); gap:3px; }
   .grid .hdr { font-size:12px; color:var(--muted); text-align:center; align-self:center; }
   .cell { aspect-ratio:1; min-width:0; overflow:hidden; border:1px solid var(--line); background:var(--cell); border-radius:4px; cursor:pointer;
           font:clamp(9px, 1.6vw, 12px) system-ui; padding:2px; display:flex; flex-direction:column; justify-content:space-between; }
-  .cell .h { font-size:10px; color:var(--muted); overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
-  .cell.holder { background:var(--hold); border-color:var(--hold-line); }
-  .cell.blocked { background:var(--block); color:var(--muted); cursor:not-allowed; }
+  .cell .h { font-size:10px; color:#4a4842; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+  .cell.blocked { color:var(--muted); cursor:not-allowed; background-image:repeating-linear-gradient(45deg, transparent 0 5px, rgba(0,0,0,.07) 5px 10px); }
+  body.edit .cell.blocked { cursor:pointer; }
+  body.edit .grid { touch-action:none; user-select:none; }
+  body.edit .cell.held { cursor:grab; }
+  body.dragging, body.dragging .cell { cursor:grabbing !important; }
+  .cell.drag { box-shadow:0 0 0 2px var(--fg) inset; }
   .cell.target { outline:3px solid var(--target); }
-  .cell:not(.blocked):hover { border-color:var(--fg); }
-  button.stop { background:var(--stop); color:#fff; border:0; border-radius:6px; padding:10px 22px; font-weight:600; font-size:15px; cursor:pointer; }
+  .cell.sel { outline:3px solid var(--sel); outline-offset:-1px; }
+  .cell:not(.blocked):hover, body.edit .cell:hover { border-color:var(--fg); }
+  button { border:1px solid var(--line); background:#fff; border-radius:6px; padding:6px 12px; font-size:14px; cursor:pointer; color:var(--fg); }
+  button:disabled { opacity:.5; cursor:default; }
+  button.stop { background:var(--stop); color:#fff; border:0; padding:10px 22px; font-weight:600; font-size:15px; }
+  button.view { padding:10px 18px; font-size:15px; }
+  button.primary { background:var(--sel); color:#fff; border-color:var(--sel); }
   .status { font-family:ui-monospace, monospace; font-size:13px; background:#fff; border:1px solid var(--line); border-radius:6px; padding:8px; white-space:pre-wrap; }
   .err { color:var(--stop); }
   .note { color:var(--muted); font-size:12px; }
   input[type=number] { width:70px; }
+  input, select { font:inherit; padding:4px 6px; border:1px solid var(--line); border-radius:4px; background:#fff; color:var(--fg); }
+  .photo { margin-top:12px; }
+  .photo img { width:100%; border-radius:6px; border:1px solid var(--line); display:block; }
+  .modes { display:inline-flex; border:1px solid var(--line); border-radius:6px; overflow:hidden; }
+  .modes label { padding:6px 12px; cursor:pointer; background:#fff; }
+  .modes input { display:none; }
+  .modes label:has(input:checked) { background:var(--fg); color:#fff; }
+  .editor { display:none; background:#fff; border:1px solid var(--line); border-radius:6px; padding:10px; margin-top:12px; }
+  body.edit .editor { display:block; }
+  body.edit .drive-only { display:none; }
+  .holder-row { display:flex; flex-wrap:wrap; gap:6px; align-items:center; padding:6px 0; border-top:1px solid var(--line); }
+  .holder-row:first-child { border-top:0; }
+  .holder-row .swatch { width:14px; height:14px; border-radius:3px; border:1px solid var(--line); }
+  .holder-row input.name { width:170px; }
+  .holder-row .cells { font-family:ui-monospace, monospace; font-size:12px; color:var(--muted); min-width:120px; }
+  .holder-row.active { background:#f0f5fd; }
+  .arrows button { padding:4px 8px; }
+  .dirty { color:var(--target); font-weight:600; }
 </style>
 </head>
 <body>
 <main>
   <h1>Slot picker — suction cup to cell</h1>
-  <div class="note">Operator view: robot at the top, front edge at the bottom. Click a cell: up to travel Z, across, down to hover Z. Never descends into a pocket.</div>
+  <div class="note">Operator view: robot at the top, front edge at the bottom.
+    <b>Drive</b>: click a cell — up to travel Z, across, down to hover Z (never into a pocket).
+    <b>Edit layout</b>: drag a holder to move it; drag over empty cells to select a rectangle (or click cells), then add a holder.</div>
   <div class="bar">
-    <label><input type="checkbox" id="arm"> Motion enabled</label>
-    <label>Hover Z <input type="number" id="hover" step="5"></label>
+    <span class="modes">
+      <label><input type="radio" name="mode" value="drive" checked> Drive</label>
+      <label><input type="radio" name="mode" value="edit"> Edit layout</label>
+    </span>
+    <label class="drive-only"><input type="checkbox" id="arm"> Motion enabled</label>
+    <label class="drive-only">Hover Z <input type="number" id="hover" step="5"></label>
     <button class="stop" id="stop">STOP</button>
+    <button class="view" id="view">View</button>
   </div>
   <div class="robot">MG400</div>
   <div class="grid" id="grid"></div>
   <p class="note" id="legend"></p>
+
+  <div class="editor">
+    <div class="bar" style="margin-top:0">
+      <span>Selected: <b id="sel-list">–</b></span>
+      <button id="sel-clear">Clear selection</button>
+    </div>
+    <div class="bar">
+      <input id="new-name" placeholder="Holder name, e.g. Glass input 1">
+      <select id="new-type"></select>
+      <button id="add" class="primary">Add holder from selection</button>
+    </div>
+    <h2>Holders</h2>
+    <div id="holders"></div>
+    <div class="bar">
+      <button id="save" class="primary">Save layout</button>
+      <button id="revert">Discard changes</button>
+      <span id="dirty"></span>
+    </div>
+    <div class="note">Arrows move a holder by one cell (← → along the numbers, ↑ ↓ along the letters).
+      "Use selection" replaces the holder's cells with the selected ones. Nothing is written until Save layout.</div>
+  </div>
+
+  <h2>Status</h2>
   <div class="status" id="status">connecting…</div>
+  <div class="photo"><div class="note" id="photo-name">no tool camera frame yet — press View</div><img id="photo" alt=""></div>
 </main>
 <script>
 const $ = id => document.getElementById(id);
 let layout = null;
+let clickError = "";  // kept until the next click, the 400 ms poll would erase it otherwise
+let holders = [];     // editor copy of layout.holders, written by Save layout
+let selected = new Set();
+let active = null;    // index of the highlighted holder row
+let dirty = false;
+let drag = null;      // edit-mode press: {kind: "move"|"select", start, h?, orig?, moved}
 
 async function api(path, body) {
   const opts = body === undefined ? {} : { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body) };
@@ -52,38 +117,220 @@ async function api(path, body) {
   return res.json();
 }
 
-function render() {
+const mode = () => document.querySelector("input[name=mode]:checked").value;
+const cellName = (letter, n) => letter + (n > 0 ? "+" : "") + n;
+const holderOf = name => holders.find(h => h.cells.includes(name));
+const typeOf = h => layout.types[h.type] || {label: h.type, color: "#fff"};
+const esc = s => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+
+function buildGrid() {
   const grid = $("grid");
   grid.append(Object.assign(document.createElement("div"), {className: "hdr"}));
   for (const n of layout.numbers) grid.append(Object.assign(document.createElement("div"), {className: "hdr", textContent: (n > 0 ? "+" : "") + n}));
-  const byName = Object.fromEntries(layout.cells.map(c => [c.name, c]));
   for (const letter of layout.letters) {
     grid.append(Object.assign(document.createElement("div"), {className: "hdr", textContent: letter}));
     for (const n of layout.numbers) {
-      const c = byName[letter + (n > 0 ? "+" : "") + n];
       const el = document.createElement("div");
-      el.className = "cell" + (c.holder ? " holder" : "") + (c.blocked ? " blocked" : "");
-      el.id = "cell-" + c.name;
-      el.title = `${c.name}  X ${c.x}  Y ${c.y}  r ${c.radius} mm` + (c.blocked ? `\n${c.blocked}` : "");
-      el.innerHTML = `<span>${c.name}</span><span class="h">${c.holder || ""}</span>`;
-      el.onclick = () => go(c);
+      el.id = "cell-" + cellName(letter, n);
+      el.onclick = () => { if (mode() === "drive") cellClick(cellName(letter, n)); };
+      el.onpointerdown = e => pressStart(e, cellName(letter, n));
       grid.append(el);
     }
   }
   $("hover").value = layout.motion.default_hover_z;
   $("hover").min = layout.motion.min_hover_z;
   $("hover").max = layout.motion.travel_z;
-  $("legend").textContent = `Travel Z ${layout.motion.travel_z} · hover Z ${layout.motion.min_hover_z}…${layout.motion.travel_z} · speed ≤ ${layout.motion.max_speed_ratio}% · reach ${layout.motion.radius_min}–${layout.motion.radius_max} mm · holders from layout.json`;
+  $("legend").textContent = `Travel Z ${layout.motion.travel_z} · hover Z ${layout.motion.min_hover_z}…${layout.motion.travel_z} · speed ≤ ${layout.motion.max_speed_ratio}% · reach ${layout.motion.radius_min}–${layout.motion.radius_max} mm · striped = can't drive there`;
+  $("new-type").innerHTML = Object.entries(layout.types).map(([k, t]) => `<option value="${k}">${esc(t.label)}</option>`).join("");
 }
 
-async function go(c) {
-  if (c.blocked) return;
-  if (!$("arm").checked) { $("status").innerHTML = `<span class="err">Tick "Motion enabled" first.</span>`; return; }
-  const r = await api("/api/goto", {cell: c.name, hover_z: parseFloat($("hover").value)});
-  if (!r.ok) $("status").innerHTML = `<span class="err">${r.error}</span>`;
+function paint() {
+  for (const c of layout.cells) {
+    const el = $("cell-" + c.name);
+    const h = holderOf(c.name);
+    const outOfReach = c.blocked && !c.blocked.endsWith("no-go");
+    const noGo = h && (h.no_go ?? typeOf(h).no_go);
+    el.className = "cell" + (outOfReach || noGo ? " blocked" : "") + (selected.has(c.name) ? " sel" : "") +
+                   (h ? " held" : "") + (drag && drag.h && drag.h === h ? " drag" : "");
+    el.style.background = h ? typeOf(h).color : "";
+    el.title = `${c.name}  X ${c.x}  Y ${c.y}  r ${c.radius} mm` + (h ? `\n${h.name} (${typeOf(h).label})` : "") +
+               (outOfReach ? `\n${c.blocked}` : noGo ? "\nno-go" : "");
+    el.innerHTML = `<span>${c.name}</span><span class="h">${h ? esc(h.name) : ""}</span>`;
+  }
+  $("sel-list").textContent = selected.size ? [...selected].join(" ") : "–";
+  $("dirty").innerHTML = dirty ? `<span class="dirty">unsaved changes</span>` : "";
 }
+
+function renderHolders() {
+  const box = $("holders");
+  box.innerHTML = "";
+  holders.forEach((h, i) => {
+    const row = document.createElement("div");
+    row.className = "holder-row" + (i === active ? " active" : "");
+    row.innerHTML = `<span class="swatch" style="background:${typeOf(h).color}"></span>
+      <input class="name" value="${esc(h.name)}">
+      <select>${Object.entries(layout.types).map(([k, t]) => `<option value="${k}"${k === h.type ? " selected" : ""}>${esc(t.label)}</option>`).join("")}</select>
+      <span class="cells">${h.cells.join(" ")}</span>
+      <span class="arrows"><button data-d="0,-1">←</button><button data-d="-1,0">↑</button><button data-d="1,0">↓</button><button data-d="0,1">→</button></span>
+      <button data-act="use">Use selection</button>
+      <button data-act="del">Delete</button>`;
+    row.querySelector("input").oninput = e => { h.name = e.target.value; changed(false); };
+    row.querySelector("select").onchange = e => { h.type = e.target.value; changed(); };
+    row.querySelectorAll(".arrows button").forEach(b => b.onclick = () => move(i, ...b.dataset.d.split(",").map(Number)));
+    row.querySelector("[data-act=use]").onclick = () => {
+      if (!selected.size) return say("Select cells on the grid first.");
+      if (!claim([...selected], h)) return;
+      h.cells = [...selected]; selected.clear(); active = i; changed();
+    };
+    row.querySelector("[data-act=del]").onclick = () => {
+      if (!confirm(`Delete holder "${h.name}"?`)) return;
+      holders.splice(i, 1); active = null; changed();
+    };
+    row.onclick = e => { if (e.target === row) { active = i; renderHolders(); } };
+    box.append(row);
+  });
+}
+
+function changed(rerender = true) {
+  dirty = true;
+  if (rerender) renderHolders();
+  paint();
+}
+
+function say(msg) { clickError = msg; }
+
+function claim(cells, owner) {  // true if none of the cells belongs to another holder
+  for (const c of cells) {
+    const other = holderOf(c);
+    if (other && other !== owner) { say(`${c} already belongs to ${other.name}`); return false; }
+  }
+  return true;
+}
+
+const pos = name => [layout.letters.indexOf(name[0]), layout.numbers.indexOf(Number(name.slice(1)))];
+
+function shifted(cells, dl, dn) {  // cells moved by dl letters / dn numbers, or null off the grid
+  const out = [];
+  for (const c of cells) {
+    const [li, ni] = pos(c);
+    if (li + dl < 0 || li + dl >= layout.letters.length || ni + dn < 0 || ni + dn >= layout.numbers.length) return null;
+    out.push(cellName(layout.letters[li + dl], layout.numbers[ni + dn]));
+  }
+  return out;
+}
+
+function move(i, dl, dn) {
+  const h = holders[i];
+  const moved = shifted(h.cells, dl, dn);
+  if (!moved) return say(`${h.name} would leave the grid`);
+  if (!claim(moved, h)) return;
+  h.cells = moved; active = i; clickError = ""; changed();
+}
+
+// Edit mode: press on a holder and drag moves it; press on an empty cell and drag selects a rectangle;
+// press and release on the same cell is a click (toggle selection).
+function pressStart(e, name) {
+  if (mode() !== "edit" || e.button > 0) return;
+  e.preventDefault();
+  clickError = "";
+  const h = holderOf(name);
+  drag = h ? {kind: "move", start: name, h, orig: [...h.cells], moved: false}
+           : {kind: "select", start: name, base: new Set(selected), moved: false};
+  if (h) { active = holders.indexOf(h); renderHolders(); }
+  document.body.classList.toggle("dragging", !!h);
+  paint();
+}
+
+function cellUnder(e) {
+  const el = document.elementFromPoint(e.clientX, e.clientY)?.closest(".cell");
+  return el ? el.id.slice(5) : null;
+}
+
+document.addEventListener("pointermove", e => {
+  if (!drag) return;
+  const name = cellUnder(e);
+  if (!name) return;
+  if (name !== drag.start) drag.moved = true;
+  const [l0, n0] = pos(drag.start), [l1, n1] = pos(name);
+  if (drag.kind === "move") {
+    const moved = shifted(drag.orig, l1 - l0, n1 - n0);
+    const clash = moved && moved.find(c => { const o = holderOf(c); return o && o !== drag.h; });
+    if (moved && !clash) { drag.h.cells = moved; clickError = ""; }
+    else say(moved ? `${clash} belongs to ${holderOf(clash).name}` : `${drag.h.name} would leave the grid`);
+  } else if (drag.moved) {
+    selected = new Set(drag.base);
+    for (let l = Math.min(l0, l1); l <= Math.max(l0, l1); l++)
+      for (let n = Math.min(n0, n1); n <= Math.max(n0, n1); n++) selected.add(cellName(layout.letters[l], layout.numbers[n]));
+  }
+  paint();
+});
+
+document.addEventListener("pointerup", () => {
+  if (!drag) return;
+  const d = drag;
+  drag = null;
+  document.body.classList.remove("dragging");
+  if (!d.moved) {  // a plain click
+    selected.has(d.start) ? selected.delete(d.start) : selected.add(d.start);
+    return paint();
+  }
+  if (d.kind === "move" && d.h.cells.join() !== d.orig.join()) return changed();
+  renderHolders();
+  paint();
+});
+
+async function cellClick(name) {
+  clickError = "";
+  const c = layout.cells.find(c => c.name === name);
+  if (c.blocked) return say(`${name}: ${c.blocked}`);
+  if (dirty) return say("Save or discard the layout changes first.");
+  if (!$("arm").checked) return say(`Tick "Motion enabled" first.`);
+  const r = await api("/api/goto", {cell: name, hover_z: parseFloat($("hover").value)});
+  if (!r.ok) say(`${name}: ${r.error}`);
+}
+
+$("add").onclick = () => {
+  const name = $("new-name").value.trim();
+  if (!name) return say("Give the new holder a name.");
+  if (!selected.size) return say("Select its cells on the grid first.");
+  if (!claim([...selected], null)) return;
+  holders.push({name, type: $("new-type").value, cells: [...selected], status: "placed " + new Date().toLocaleDateString("et-EE")});
+  selected.clear(); $("new-name").value = ""; active = holders.length - 1; clickError = ""; changed();
+};
+$("sel-clear").onclick = () => { selected.clear(); paint(); };
+$("save").onclick = async () => {
+  const r = await api("/api/holders", {holders});
+  if (!r.ok) return say(`Save: ${r.error}`);
+  clickError = ""; dirty = false; await load();
+};
+$("revert").onclick = async () => { if (!dirty || confirm("Discard unsaved layout changes?")) { dirty = false; selected.clear(); await load(); } };
+document.querySelectorAll("input[name=mode]").forEach(r => r.onchange = () => {
+  document.body.classList.toggle("edit", mode() === "edit");
+  selected.clear(); paint();
+});
+window.onbeforeunload = e => { if (dirty) e.preventDefault(); };
 
 $("stop").onclick = () => api("/api/stop", {});
+
+$("view").onclick = async () => {
+  clickError = "";
+  $("view").disabled = true;
+  const r = await api("/api/view", {});
+  $("view").disabled = false;
+  if (!r.ok) clickError = `View: ${r.error}`;
+  photo();
+};
+
+let shown = null;
+async function photo() {  // newest frame in frames/, from View or from Claude
+  const p = await api("/api/photo");
+  if (p.name && p.name !== shown) {
+    shown = p.name;
+    $("photo").src = "/frames/" + p.name;
+    $("photo-name").textContent = `${p.name} (${p.time})`;
+  }
+}
+setInterval(photo, 2000);
 
 async function poll() {
   try {
@@ -93,14 +340,23 @@ async function poll() {
     if (s.seq.cell) { const el = $("cell-" + s.seq.cell); if (el) el.classList.add("target"); }
     $("status").innerHTML =
       `robot  ${s.robot.mode_name}  speed ${s.robot.speed_ratio ?? "–"}%\npose   ${p}  (x / y / z / r)\nmove   ${s.seq.cell || "–"}  ${s.seq.step}` +
-      (s.seq.error ? `\n<span class="err">${s.seq.error}</span>` : "");
+      (s.seq.error ? `\n<span class="err">${s.seq.error}</span>` : "") +
+      (clickError ? `\n<span class="err">${esc(clickError)}</span>` : "");
   } catch (e) {
     $("status").innerHTML = `<span class="err">slot picker server not reachable</span>`;
   }
   setTimeout(poll, 400);
 }
 
-api("/api/layout").then(l => { layout = l; render(); poll(); });
+async function load() {
+  layout = await api("/api/layout");
+  holders = JSON.parse(JSON.stringify(layout.holders));
+  active = null;
+  renderHolders();
+  paint();
+}
+
+api("/api/layout").then(l => { layout = l; buildGrid(); load(); poll(); photo(); });
 </script>
 </body>
 </html>

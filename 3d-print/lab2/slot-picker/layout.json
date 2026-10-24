@@ -1,10 +1,8 @@
 {
   "mg400_api": "http://127.0.0.1:8000/api",
+  "camera_port": "COM5",
   "calibration": {
-    "source": "docs/measurements.md, 24.10.26 (G-1 + E+3)",
-    "rotation_deg": 1.82,
-    "pivot_model_robot_axes": [349.5, -42.0],
-    "pivot_measured": [380.5, -36.8],
+    "source": "cell X/Y: ../calibration/cells.py (24.10.26 three-cell fit, docs/measurements.md)",
     "tool_r": 33.0
   },
   "motion": {
@@ -17,12 +15,97 @@
     "arrive_tolerance_mm": 0.5,
     "step_timeout_s": 30.0
   },
+  "types": {
+    "glass": {
+      "label": "Glass",
+      "color": "#cfe8f7"
+    },
+    "atom": {
+      "label": "AtomS3",
+      "color": "#d9d2f2"
+    },
+    "battery": {
+      "label": "Battery",
+      "color": "#f7e3b5"
+    },
+    "workstation": {
+      "label": "Workstation",
+      "color": "#f9c9a8"
+    },
+    "output": {
+      "label": "Good output",
+      "color": "#cdeccf"
+    },
+    "reject": {
+      "label": "Reject",
+      "color": "#f2c4c4"
+    },
+    "calibration": {
+      "label": "Calibration",
+      "color": "#e2e2e2"
+    },
+    "camera_post": {
+      "label": "Camera post (no-go)",
+      "color": "#bdbdbd",
+      "no_go": true
+    },
+    "other": {
+      "label": "Other",
+      "color": "#e8eef8"
+    }
+  },
   "holders": [
-    {"name": "Glass input", "cells": ["D-4", "D-5", "E-4", "E-5"], "status": "proposed"},
-    {"name": "AtomS3 input", "cells": ["B-4", "B-5", "C-4", "C-5"], "status": "proposed"},
-    {"name": "Workstation (orange)", "cells": ["C-1", "C+1", "D-1", "D+1"], "status": "proposed"},
-    {"name": "Good output", "cells": ["C+4", "C+5", "D+4", "D+5"], "status": "proposed"},
-    {"name": "Calibration box", "cells": ["G-1"], "status": "used 24.10"},
-    {"name": "Webcam post", "cells": ["F-4", "F-5", "G-4", "G-5"], "status": "planned", "no_go": true}
+    {
+      "name": "Glass input",
+      "type": "glass",
+      "cells": [
+        "D-3",
+        "D-4",
+        "E-3",
+        "E-4"
+      ],
+      "status": "proposed"
+    },
+    {
+      "name": "AtomS3 input",
+      "type": "atom",
+      "cells": [
+        "D-1",
+        "D-2",
+        "E-1",
+        "E-2"
+      ],
+      "status": "proposed"
+    },
+    {
+      "name": "Workstation (orange)",
+      "type": "workstation",
+      "cells": [
+        "D+1",
+        "D+2",
+        "E+1",
+        "E+2"
+      ],
+      "status": "proposed"
+    },
+    {
+      "name": "Good output",
+      "type": "output",
+      "cells": [
+        "D+3",
+        "D+4",
+        "E+3",
+        "E+4"
+      ],
+      "status": "proposed"
+    },
+    {
+      "name": "Calibration box",
+      "type": "calibration",
+      "cells": [
+        "F-2"
+      ],
+      "status": "used 24.10"
+    }
   ]
 }

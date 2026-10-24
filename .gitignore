@@ -13,3 +13,6 @@ Thumbs.db
 
 # PlatformIO build output
 .pio/
+
+# Python bytecode
+__pycache__/
