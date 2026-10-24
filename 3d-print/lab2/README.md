@@ -144,6 +144,7 @@ Kõigi nende olek on `TODO — waiting for physical test`.
 - [`docs/layout.md`](docs/layout.md) — töövoog, paigutus ja mõõdetavad sihtpunktid.
 - [`docs/refit_test.csv`](docs/refit_test.csv) — 5 × 4 eemaldamise/tagasipaneku katse read.
 - [`docs/bom.md`](docs/bom.md) — kinnitamist vajav komponentide nimekiri.
+- [`../sim/`](../sim/README.md) — töökoha digitaalne kaksik (ühine kõigile laboritele): ulatus- ja min-Z kaart, kalibreerimiskoha kontroll, klaasitsükli kuivkäivitus, kalibreerimisvea taluvus.
 
 ## CAD-failid
 
@@ -330,6 +331,13 @@ mitte ei muudeta.
 * Kalibreerimishoidik v3: standardne Gridfinity jalg (generaator + mõõdetud pesa), keskrist, 4 nurga tasku; posti jalad samuti standardseks.
 * Posti ribid rippusid õhus (Denys) → ribid jätkuvad jalal lauani, jala tald laiendatud ribide alla.
 * Tulemus ja TODO: vt kontrollnimekirja punkti „USB UHD veebikaamera jäik post“, v3. v1 ja v2 failid muutmata.
+
+**24.10.2026 — töökoha digitaalne kaksik (`3d-print/sim/`, ühine kõigile laboritele)**
+* Osalejad: Denys soovis realistlikku simulatsiooni, et päris robotiga vigu mitte teha; ehitas Claude. Füüsilist katset ei tehtud.
+* Tegime: Dobot ametlik MG400 URDF (MIT) + meie `mg400-base` sobitatud liigesemudel ja piirid + rakis, hoidikud `layout.json` järgi, veebikaamera post, XIAO kinnitus, iminapp; täpsed kokkupõrked `python-fcl`-iga. Kaksik kasutab sama `cycle.py` ja `cells.py` mis robot.
+* Kontroll päris andmetega: G-1 liigesepiir −135,8 vs päris −138; B-2 J3 piir −99 vs −98; lahtrikeskmed vs `cells.py` ≤ 0,06 mm; napa pikkus 66,2 mm D-2 puudutusest, 23.10 G-1 nurgad sobivad. Kontrollijat testiti teadlikult vigaste tsüklitega (8 juhtumit, kõik leitud).
+* Tulemused: B-2 ei sobi kalibreerimiseks (napp ei mahu kasti v3) → C-2; klaasitsükkel kokkupõrgeteta; väljund talub ainult 3 mm kalibreerimisviga. Üksikasjad ja piirid: [`../sim/README.md`](../sim/README.md). Kaksik viidi samal päeval labori kaustast välja `3d-print/sim/`-i (Denys: see on kõigi laborite jaoks); Lab 2 tulemused jäävad `docs/`-i.
+* TODO — waiting for physical test: napa läbimõõt, nihe J4 teljest ja pikkus nihikuga; kalibreerimine C-2-s.
 
 ### Väljundid ja tulemused
 
