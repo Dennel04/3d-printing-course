@@ -208,4 +208,37 @@ Mõõda vajaduse korral mitu klaasi ja säilita kõik üksiktulemused, et hiljem
 - 18:16: Denys seadis napa klaasi sisendhoidiku pesa D-4 keskele (Z −150,0): **293.56 / 154.20**. Varasem õpetus (Raimo 17:06) näitas 294.41 / 153.09 → vahe -0.85 / +1.11 mm. Salvestatud hoidiku õpetusena (`teach` dx -1.50, dy +2.50 lahtri D-4 keskpunktist), mitte `cells.py`-sse: hoidik on vanade jalgadega (lõtk ~1 mm), seega pesa keskpunkt sisaldab hoidiku asendit ruudustikus. `pick_z` muutmata (−150,5).
 - 18:19: sama D-5 pesas: **292,10 / 196,19** (lahtri keskpunkt 294,60 / 193,69 → −2,50 / +2,50). D-4 → D-5 mõõdetud −1,46 / +41,99 = 42,02 mm (samm õige), suund −1,99° vs ruudustik −0,63° → hoidik on ruudustikus ~1,4° pööratud (vanad jalad). Slot picker hoiab ühte nihet hoidiku kohta → kahe pesa keskmine **dx −2,00, dy +2,50** (kummaski pesas ≤ 0,5 mm X-viga). E-4 / E-5 mõõtmata.
 
+## 24.10.2026 — iminapa mõõtmised, massihinnang ja sisendhoidikute sobivus
+
+Allikas: kasutaja 24.10.2026 edastatud füüsilised mõõtmised ja käsitsi tehtud sobivuskontroll. Allolev täiendus ei muuda varasemaid Exceli andmeid ega kalibreerimiskirjeid.
+
+### Eraldi kummist iminapp — measured
+
+| Tähis / omadus | Väärtus | Olek | Mõõtemeetod ja ulatus |
+|---|---|---|---|
+| D41 — iminapa välisläbimõõt | 22,25 mm | measured | Kasutaja mõõtis nihikuga 24.10.2026 eraldi kummist iminappa. Täiendab Exceli D41 puuduvat väärtust; algset Excelit ei muudetud. |
+| H1 — iminapa kõrgus | 13,80 mm | measured | Sama eraldi kummist iminapp, nihik, 24.10.2026. H1 on lisamõõdu tähis, mitte Exceli lahtriviide ega Lab 2 eraldi kohustuslik nõue. |
+
+Mõõdetud eksemplari samasus robotile paigaldatud iminapaga pole dokumentaalselt kinnitatud. Seetõttu ei esitata neid arve otse paigaldatud tööriista mõõtudena. H1 ei ole kogu vaakumtööriista kõrgus. Varasemad kalibreerimisest tuletatud efektiivsed läbimõõdud ≈ 22 mm ja ≈ 23 mm jäävad oma katsekontekstis alles; need ei asenda nihikumõõtu ega tõenda eksemplaride samasust.
+
+### Vaakumtööriista mass enne kaamerat — estimated, not measured
+
+Kasutaja esialgne hinnang on **umbes 80 g (?)**, orientiirina **60–110 g**. Olek: **estimated, not measured**. Alus on visuaalne insenerihinnang eeldusel, et korpus on valdavalt alumiiniumist; materjali ega massi pole selle hinnanguga kontrollitud. Vahemik ei ole mõõtemääramatus ega kinnitatud massipiir. Laboris pole kaalu. Teise DOBOT haaratsi massi meie tööriistale üle ei kanta ja hinnang ei kinnita kandevõime nõude täitmist.
+
+- Tegelik mass enne kaamera lisamist (g): `TODO — waiting for physical test`.
+- Tegelik mass koos kaamera ja kinnitusega (g): `TODO — waiting for physical test`.
+- Enne lõplikku kaitsmist tuleb tööriist päriselt kaaluda enne ja pärast kaamera paigaldamist; kohustuslikku massikontrolli ei märgita tehtuks.
+
+### Sisendhoidikud — Physical fit confirmed
+
+| Hoidikutüüp | Kontrollitud detail | Füüsiline sobivus | Prinditud pesa X/Y/Z ja arvuline lõtk (mm) |
+|---|---|---|---|
+| `ready-parts-input-holder` — aku sisend | Akumoodul | confirmed — kasutaja käsitsi tehtud kontroll, 24.10.2026 | TODO — waiting for physical test |
+| `atoms3-input-holder` — Atomi sisend | AtomS3 | confirmed — kasutaja käsitsi tehtud kontroll, 24.10.2026 | TODO — waiting for physical test |
+| `glass-input-holder` — klaasi sisend | Polükarbonaatklaas | confirmed — kasutaja käsitsi tehtud kontroll, 24.10.2026 | TODO — waiting for physical test |
+
+Kõigi kolme hoidikutüübi kohta kinnitas kasutaja: detail läheb vastavasse pesasse ja jõuab põhjani, liigub olemasoleva lõtku piires vabalt, tuleb sõrmedega välja ning kontrollil ei kiilunud. Kontrollitud pesade arvu ja klaasihoidiku prindiversiooni ei täpsustatud; kõigi 12 pesa eraldi nihikuga kontrollimist ei kinnitata. See on detaili sobivus pesas, mitte Gridfinity jala istumise, eemaldamise/tagasipaneku kordustäpsuse ega kogu robotitsükli kinnitus.
+
+Komponentide kokkulepitud lähteväärtused jäävad ülaloleva Maksimi registri järgi: AtomS3 `nominal`, aku `measured`, klaas `confirmed`; uusi komponendi nihikunäite ega varasemate mõõtmiste kuupäevi ei lisata. Olemasolevate `.f3d` ja `.stl` failide kontroll ning digitaalsed pesamõõdud on [`CAD-ülevaate 24.10 täiendusena`](cad-measurement-review.md). **CAD dimensions**, **Physical fit confirmed** ja **Physical pocket dimensions** on eraldi tõendid: CAD-arvud ei täida siinse tabeli puuduvaid füüsilisi mõõte.
+
 Kui hiljem leitakse vale mõõt, ära kustuta seda. Lisa kuupäevaga parandus vana väärtuse alla ning selgita mõõtekonteksti.

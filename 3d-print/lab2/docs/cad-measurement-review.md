@@ -16,6 +16,22 @@ STL-i binaarsete kolmnurkade tipud ja telgedega paralleelsed tasapinnad loeti mi
 
 Kõigi ülaltoodud füüsiliste sobivus- ja trajektoorikontrollide tulemus: `TODO — waiting for physical test`.
 
+## 24.10.2026 — uus füüsiline tõend ja olemasolevate failide kontroll
+
+Eelnev tabel ja allpool olevad kontrollülesanded kirjeldavad 23.10 ülevaadet. **24.10 täiendus:** kasutaja kinnitas aku, AtomS3 ja klaasi sobivuse vastavates prinditud sisendhoidikutes: detailid jõuavad põhjani, liiguvad lõtku piires vabalt, tulevad sõrmedega välja ega kiilunud. See täpsustab varasemat üldist sobivuse TODO-d ainult kontrollitud ulatuses. Täielik tulemus, allikas ja piirangud on [`measurements.md` 24.10 kirjes](measurements.md); kontrollitud pesade arvu ja klaasihoidiku versiooni ei täpsustatud. Prinditud pesade arvulised nihikumõõdud ja lõtk (mm) on endiselt `TODO — waiting for physical test`.
+
+Kontrollitud repo seisus `36d6bc5` olemasolevaid lähtefaile `ready-parts-input-holder/src/ready-parts-input-holder-v1.f3d`, `atoms3-input-holder/src/atoms3-input-holder-v1.f3d` ning `glass-input-holder/src/glass-input-holder-v1.f3d` ja `glass-input-holder-v2.f3d`: failid ja Fusioni arhiivikirjed on olemas. Kasutatud ZIP-lugeja ei toeta nende Zstandard-pakkimist (meetod 93), seega Fusioni parameetrite, lähtegeomeetria ja STL-iga vastavuse täielikku kontrolli ei kinnitata. Uusi mudeleid ei loodud ja olemasolevaid faile ei muudetud.
+
+Vastavate olemasolevate binaarsete STL-ide tipud ja tasapinnad kontrolliti uuesti. **CAD dimensions**, mitte prinditud pesa mõõtmised:
+
+| STL `stl/` alamkaustas | Pesa sirgseinte vahe X × Y | Põhi / ülaserv kohalikus Z-s | Arvutuslik sügavus |
+|---|---|---|---|
+| `ready-parts-input-holder-v1.stl` | 24,6 × 24,6 mm | 3 / 31 mm | 28 mm |
+| `atoms3-input-holder-v1.stl` | 24,6 × 24,6 mm | 3 / 11 mm | 8 mm |
+| `glass-input-holder-v1.stl`, `glass-input-holder-v2.stl` | 30,6 × 30,6 mm | 4 / 5,5 mm | 1,5 mm |
+
+Eraldi kummist iminapa D41 ja H1 on nüüd nihikuga mõõdetud (`measured`), kuid selle samasus robotil oleva eksemplariga pole kinnitatud. Seetõttu jäävad paigaldatud tööriista gabariitide, tihenduspinna ja liikumistee kontrollid avatuks. Kaalu puudumisel antud tööriista massihinnang on `estimated, not measured`; tegelik kaalumine enne/pärast kaamerat jääb TODO-ks. Kvalitatiivne pesasobivus ei kinnita kõigi pesade robotiga ligipääsu, Gridfinity jalgade kordustäpsust ega kogu tsükli tulemust. Varasemad katsed ja ebaõnnestumised jäävad alles.
+
 ## MG400 haaramise ja trajektoori kontroll
 
 - Klaas suureneb varasema vale lähteväärtusega võrreldes 6 mm kummalgi teljel; keskse haarde korral ulatub serv 3 mm kaugemale. Pööratud 30 mm ruudu suurim teljesuunaline ulatus on `30 × √2 ≈ 42,43 mm` ehk poolulatus 21,21 mm; 24 mm ruudu puhul oli see 16,97 mm. Neid arvutuslikke ümbriseid tuleb võrrelda seina, naaberdetaili, kaabli, kaamerakinnituse ja transporditeega.

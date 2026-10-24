@@ -37,6 +37,7 @@ Wi-Fi füüsiline toimimine ja station PC võrgust ligipääs, kaablite marsruut
   - 23.10.26 kalibreerimine alustatud ruudus G-1 (B-2-s ei ulatu käsi kasti põhja, J3 piir). 3 nurka 4-st kinnitatud, eeldatav nihe ≈ +5,3 / +5,4 mm; vt [`docs/measurements.md`](docs/measurements.md). Lõpetamata: 4. nurk, Xmin+Ymax nurk samal Z-l, kontrollruut.
 - [ ] Kolm sisendhoidikut, igaühes vähemalt neli mõõdetud pesa.
   - 23.10.26 prinditud: klaas (`glass-input-holder-v1`, 2 × 2, 4 pesa), AtomS3 (`atoms3-input-holder-v1`, 2 × 2, 4 pesa), akumoodul (`ready-parts-input-holder-v1`, 2 × 2, 4 pesa). Pesade mõõdud nihikuga: TODO.
+  - 24.10.26 kasutaja kinnitas kõigi kolme sisendhoidikutüübi detailide füüsilise sobivuse: põhjani, vabalt lõtku piires, sõrmedega eemaldatavad, kiilumiseta. Täpne kontrollitud pesade arv ja prinditud pesade nihikumõõdud on kinnitamata; kogu punkti ei märgita tehtuks. Üksikasjad: [`docs/measurements.md`](docs/measurements.md), 24.10 kirje.
 - [ ] Töökoha hoidik ja heade ning praakdetailide väljundikohad.
   - 23.10.26 otsus: `ready-parts-input-holder-v1` (2 × 2) on korraga akumooduli sisend ja töökoht: inimene laeb akumoodulid, robot paneb igaühe peale AtomS3 ja selle peale klaasi. Ülesanne lubab sammul jagada kohta eelmisega.
   - 23.10.26 otsus: praak = `gridfinity-calibration-v1` (1 × 1 lahtine kast) pärast kalibreerimist. CAD-ist: välismõõt 41,2 × 41,2 mm, kõrgus 20 mm, sisemus ~37,2 × 37,2 mm, sügavus 16 mm. Klaas ja AtomS3 on 24 × 24 mm, varu ~6,6 mm igale poole; kõrgus jääb alla 60 mm piiri. Ülesanne praagi suurust ega pesasid ei nõua ("võib olla lihtsalt kast"). Füüsiline kontroll: TODO.
@@ -202,6 +203,8 @@ Kõigi nende olek on `TODO — waiting for physical test`.
 
 Need lähtefailid ei ole veel füüsiliselt sobivaks kinnitatud. Iga print vajab PrusaSlicerist eksporditud STL-i ja 3MF-i, uue versiooninime ning mõõtmistulemuste dokumenteerimist.
 
+24.10.26 täpsustus eelnevale üldistusele: kasutaja kinnitas kolme sisendhoidikutüübi detailide käsitsi sobivuse; see ei kinnita kõiki lähtefailiversioone, pesade arvulisi mõõte ega Gridfinity jalgu. Vt [`mõõteregistri 24.10 täiendus`](docs/measurements.md).
+
 Versioonis v2 on standardne nominaalgeomeetria ja printeri sobitusparandus eraldi: `fit_adjustment = 0 mm` tähendab muutmata nominaalprofiili; positiivne väärtus vähendab jala mõõtu selle võrra mõlemalt küljelt. See on esialgne katseparameeter, mitte mõõdetud lõtk. Enne jala korduskasutust teistes hoidikutes tuleb v2 päris laual printida ning mõõta täielikku istumist, loksu ja eemaldamisjõudu. OpenSCADi edukas kompileerimine ei tõesta füüsilist sobivust.
 
 V2 nominaalprofiili allikas on [kennetek/gridfinity-rebuilt-openscad `src/core/standard.scad`](https://github.com/kennetek/gridfinity-rebuilt-openscad/blob/main/src/core/standard.scad) (MIT-litsents); sama profiil on kirjas ametlikus lauakirjelduses.
@@ -364,6 +367,16 @@ mitte ei muudeta.
 * Slot picker: kiiruse valik lehel; liikumiskõrgus −90, hover kuni −110; käeulatuse ja tee kontroll enne liikumist; Test → **Move one glass** (From/To lahter, pick Z, place Z). Klaasi ülekanne õnnestus pick Z −152-ga (Denys).
 * Kalibreerimine: C−2 kast v3 (Denys keskele 253,94 / 68,30) lisatud `cells.py` sobitusse; klaasi sisendi nihe D−4/D−5 keskpunktidest (dx −2,00, dy +2,50).
 * Järgmiseks: hoidikud uutesse ruutudesse, töökoha ja väljundi punktide õpetamine, 5 ringi × 4 klaasi → `docs/refit_test.csv`.
+
+**24.10.2026 — eraldi iminapa nihikumõõdud ja sisendhoidikute käsitsi sobivuskontroll**
+* Osalejad ja allikas: kasutaja mõõtis ja kontrollis füüsilisi detaile ning edastas tulemused; teisi kohalolijaid ei täpsustatud. Dokumentatsiooni täiendas Codex, uusi füüsilisi katseid ise tegemata.
+* Tegime: lisasime eraldi kummist iminapa D41 välisläbimõõdu ja H1 kõrguse, tööriista esialgse massihinnangu ning aku-, AtomS3- ja klaasisisendi sobivuskontrolli. Enne muudatusi sünkroonisime puhta töökoopia `pull --ff-only` abil seisule `36d6bc5` ja lugesime meeskonna uusi kalibreerimis- ning katsekirjeid; neid ei muudetud.
+* Mõõtmised ja parameetrid: D41 **22,25 mm**, H1 **13,80 mm**, mõlemad `measured`, nihik, 24.10.2026. Mõõdeti eraldi kummist iminappa; samasus robotil paigaldatud eksemplariga pole dokumentaalselt kinnitatud. H1 on lisamõõt, mitte Lab 2 eraldi nõue ega kogu tööriista kõrgus. Komponentide senised mõõdud ja olekud säilivad mõõteregistris.
+* Probleem ja piirang: laboris pole kaalu. Enne kaamerat pakutud **umbes 80 g (?)**, orientiir **60–110 g**, on `estimated, not measured`: visuaalne insenerihinnang eeldusel, et korpus on valdavalt alumiiniumist. See pole kaalumine ega teise DOBOT haaratsi mass ning ei sulge massikontrolli.
+* Tegelik tulemus: kasutaja kinnitas `ready-parts-input-holder`, `atoms3-input-holder` ja `glass-input-holder` puhul, et detailid sisenevad, jõuavad põhjani, liiguvad lõtku piires vabalt, tulevad sõrmedega välja ega kiilunud. Prinditud pesade täpseid nihikumõõte, kõigi 12 pesa eraldi mõõtmist ega klaasihoidiku prindiversiooni ei kinnitatud. Olemasolevaid STL-e analüüsiti digitaalselt; F3D puhul kontrolliti arhiivikirjeid, Fusioni parameetreid ei kinnitatud. CAD-arvud ei ole füüsilised pesamõõdud.
+* Otsus ja oodatav tulemus: säilitame mõõtmiste, hinnangu ja kvalitatiivse sobivuse eristuse, et olemasolev tulemus oleks kasutatav ilma ülejäänud laborit lõpetatuks märkimata. CAD-i, STL-i, 3MF-i, programme, kalibreerimist ega fotosid ei muudetud.
+* Järgmiseks: enne kaitsmist 29.10.2026 tegelik kaalumine enne/pärast kaamerat; puuduvad prinditud pesade mõõdud ja arvuline lõtk (mm); hoidikute välja/tagasi kordustäpsus ning viis ringi nelja klaasiga koos tulemustabeliga. Kaamerate, toite ja kogu liikumisvahemiku veel kinnitamata katsed jäävad avatuks. Nende füüsiliste tulemuste olek: TODO — waiting for physical test. Varasem C−2 kontroll ja ühe klaasi õnnestunud ülekanne säilivad oma piiratud katseulatuses.
+* Failid: `README.md`, `docs/measurements.md`, `docs/cad-measurement-review.md`.
 
 ### Väljundid ja tulemused
 
