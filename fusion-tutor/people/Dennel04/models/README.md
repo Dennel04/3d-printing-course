@@ -8,6 +8,7 @@ square = z 0, robot = +X. Write-up of v1: `shared/knowledge/mg400-end-square.md`
 | v1 | `xiao-square-mount-v1` | (none) | Made by the tutor 2026-10-04. Not printed |
 | v2 | `xiao-square-mount-v2` | `xiao-square-mount-v2.f3d/.stl/.3mf`, `-sliced.3mf`, `_0.4n_0.2mm_PLA_COREONE.bgcode` | **On the printer 2026-10-04 (fit test)**. CORE One HF0.4, 0.20mm SPEED, Prusament PLA, organic supports on build plate, printed upside down (clamp rim on the bed), 45 min, 15.6 g. **In the lab** `3d-print/lab2/camera-mounts/src|stl|3mf/xiao-square-mount-v2.*` + README file line and devlog, commit `a72fe47` (2026-10-04) |
 | v3 | `xiao-square-mount-v3` | `xiao-square-mount-v3.f3d/.stl/.3mf` (not sliced) | **Next, after the v2 test.** Not printed |
+| v4 | (no cloud doc; source is the repo file) | lab only: `3d-print/lab2/camera-mounts/*/xiao-square-mount-v4.*` | 2026-10-24: v3 + filament pin (Ø1.75) locking the camera in +Y, `ledge_z` 8.8 (v3 hit the B2B connector). No XREF. Not printed |
 
 ## Into the lab: one source, STL and 3MF per print
 
