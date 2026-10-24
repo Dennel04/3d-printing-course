@@ -31,6 +31,7 @@ sys.path.insert(0, str(HERE.parent / "tool-camera"))
 import cells as calibration  # noqa: E402  single source of the grid fit (G-1, E+3, D-2)
 from capture import open_port, read_frame  # noqa: E402
 import cycle  # noqa: E402
+from pressure import PressureMonitor  # noqa: E402
 
 _, cell_robot = calibration.fit()
 
@@ -181,8 +182,8 @@ class Sequencer:
     """Runs one action list at a time (a goto or the glass cycle); Stop cancels it and holds the arm.
     The pump is left as it is on Stop or error: switching it off would drop a carried glass."""
 
-    def __init__(self, robot, layout, camera):
-        self.robot, self.layout, self.camera = robot, layout, camera
+    def __init__(self, robot, layout, camera, pressure):
+        self.robot, self.layout, self.camera, self.pressure = robot, layout, camera, pressure
         self.lock = threading.Lock()
         self.cancel = threading.Event()
         self.state = {"busy": False, "cell": None, "step": "idle", "error": None, "cycle": None}
@@ -225,7 +226,7 @@ class Sequencer:
         actions.append(("pump", "off"))
         results = {str(g): {f: False for f in cycle.FIELDS} for g in glasses}
         self._start(actions, cycle_state={"id": time.time(), "round": rnd, "glasses": glasses,
-                                          "results": results, "frames": []})
+                                          "results": results, "frames": [], "grips": []})
 
     def stop(self):
         self.cancel.set()
@@ -266,6 +267,10 @@ class Sequencer:
                         cyc["frames"].append(snapshot(self.camera, act[1]))
                     except Exception as exc:  # a missing camera must not stop the robot mid-cycle
                         cyc["frames"].append(f"no frame: {exc}")
+                elif kind == "baseline":
+                    self.pressure.mark_baseline()
+                elif kind == "grip":  # record only: lost pressure data must not stop the cycle
+                    cyc["grips"].append(self._grip(act[1], act[2]))
             self.state["step"] = "done" if cyc else "arrived"
         except Exception as exc:
             self.state["error"] = str(exc)[:200]
@@ -298,6 +303,12 @@ class Sequencer:
                 self.robot.call("/stop", {})
                 raise RuntimeError(f"not arriving, pose {p}")
             time.sleep(0.1)
+
+    def _grip(self, glass, what):
+        vac, need = self.pressure.vacuum(), self.layout["cycle"]["grip_min_vacuum_adc"]
+        if vac is None:
+            return f"g{glass} {what}: no pressure data ({self.pressure.state()['error']})"
+        return f"g{glass} {what}: vacuum {vac:.0f} ADC " + ("ok" if vac >= need else f"LOW (< {need})")
 
     @staticmethod
     def _check(s):
@@ -396,7 +407,8 @@ def make_handler(layout, seq, port):
                                                    "speed_ratio", "pump_mode")}
                 except Exception as exc:
                     robot = {"mode_name": f"mg400-base unreachable ({type(exc).__name__})"}
-                self._json(200, {"robot": robot, "seq": seq.state, "camera": seq.camera.state})
+                self._json(200, {"robot": robot, "seq": seq.state, "camera": seq.camera.state,
+                                 "pressure": seq.pressure.state()})
             elif self.path == "/stream.mjpg":
                 # multipart MJPEG: an <img> shows it as video; the camera stays open while it runs
                 self.send_response(200)
@@ -532,7 +544,8 @@ def main():
             c = next(c for c in cells if c["name"] == name)
             print(f"{name}: {c['x']:.2f} / {c['y']:.2f}  r {c['radius']}")
         return
-    seq = Sequencer(Mg400(layout["mg400_api"]), layout, ToolCamera(layout["camera_port"]))
+    seq = Sequencer(Mg400(layout["mg400_api"]), layout, ToolCamera(layout["camera_port"]),
+                    PressureMonitor(layout.get("pressure_port")))
     server = ThreadingHTTPServer(("127.0.0.1", args.port), make_handler(layout, seq, args.port))
     print(f"slot picker on http://127.0.0.1:{args.port}  (mg400-base: {layout['mg400_api']})")
     server.serve_forever()

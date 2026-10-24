@@ -66,7 +66,8 @@ def check_ready(layout, by_name):
 
 def plan_glass(layout, glass, by_name):
     """Actions for one glass. ("move", label, x, y, z) | ("pump", mode) | ("wait", s) |
-    ("mark", glass, field) | ("snap", label)."""
+    ("mark", glass, field) | ("snap", label) | ("baseline",) | ("grip", glass, label).
+    baseline/grip read the Atom vacuum (pressure.py); they only record, never stop the cycle."""
     cyc = layout["cycle"]
     travel, approach = cyc["travel_z"], cyc["approach_mm"]
 
@@ -74,7 +75,7 @@ def plan_glass(layout, glass, by_name):
         return [("move", f"glass {glass}: above {what}", x, y, travel),
                 ("move", f"glass {glass}: approach {what}", x, y, z + approach),
                 ("move", f"glass {glass}: down to {what}", x, y, z),
-                ("pump", "suck"), ("wait", cyc["suck_dwell_s"]),
+                ("baseline",), ("pump", "suck"), ("wait", cyc["suck_dwell_s"]), ("grip", glass, what),
                 ("move", f"glass {glass}: lift from {what}", x, y, travel)]
 
     def place(x, y, z, what):

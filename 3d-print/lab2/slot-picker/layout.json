@@ -1,6 +1,7 @@
 {
   "mg400_api": "http://127.0.0.1:8000/api",
   "camera_port": "COM5",
+  "pressure_port": "COM4",
   "calibration": {
     "source": "cell X/Y: ../calibration/cells.py (24.10.26 three-cell fit, docs/measurements.md)",
     "tool_r": 33.0
@@ -26,7 +27,8 @@
     "travel_z": -100.0,
     "approach_mm": 5.0,
     "suck_dwell_s": 1.0,
-    "blow_s": 0.3
+    "blow_s": 0.3,
+    "grip_min_vacuum_adc": 100
   },
   "types": {
     "glass": {

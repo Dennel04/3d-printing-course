@@ -479,7 +479,8 @@ function syncResults(cyc, busy) {  // copy the finished steps of the current run
   if (!cyc || !layout.fields || (!busy && syncedRun === cyc.id)) return;
   for (const [g, res] of Object.entries(cyc.results))
     for (const f of layout.fields) if (res[f]) $(`r-${g}-${f}`).checked = true;
-  $("frames").textContent = cyc.frames.length ? "frames: " + cyc.frames.join(", ") : "";
+  $("frames").textContent = (cyc.frames.length ? "frames: " + cyc.frames.join(", ") : "") +
+    (cyc.grips && cyc.grips.length ? " · grip: " + cyc.grips.join("; ") : "");
   if (!busy) syncedRun = cyc.id;
 }
 
@@ -539,8 +540,11 @@ async function poll() {
     syncResults(s.seq.cycle, s.seq.busy);
     const cam = s.camera.error ? `<span class="err">${esc(s.camera.error)}</span>`
       : s.camera.open ? `on, ${s.camera.fps} fps` : "off";
+    const pr = s.pressure;
+    const vac = pr.ok ? `ADC ${pr.adc}, ${pr.rate_hz} Hz` + (pr.vacuum !== null ? `, vacuum ${pr.vacuum}` : "")
+      : `<span class="err">${esc(pr.error)} — running without the vacuum check</span>`;
     $("status").innerHTML =
-      `camera ${cam}\n` +
+      `camera ${cam}\npressure ${vac}\n` +
       `robot  ${s.robot.mode_name}  speed ${s.robot.speed_ratio ?? "–"}%  pump ${s.robot.pump_mode ?? "–"}\npose   ${p}  (x / y / z / r)\nmove   ${s.seq.cell || "–"}  ${s.seq.step}` +
       (s.seq.error ? `\n<span class="err">${s.seq.error}</span>` : "") +
       (clickError ? `\n<span class="err">${esc(clickError)}</span>` : "");

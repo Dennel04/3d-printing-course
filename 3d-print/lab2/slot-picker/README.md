@@ -55,6 +55,16 @@ Ilma rõhuandurita (Atom COM4) haaratakse õpetatud kõrgusel; vaakumi kontrolli
 
 **Live camera** näitab otsepilti (MJPEG `/stream.mjpg`, kuni 4 kaadrit/s, 1600 × 1200). COM5 on avatud ainult siis, kui keegi kaadreid tahab (otsepilt, View, tsükli kaader), ja vabaneb ~10 s pärast; alles siis saab `tool-camera/capture.py` porti kasutada. Olekureal `camera on, N fps` või viga. Testitud 24.10.26 simuleeritud kaameraga (4,0 kaadrit/s); päris XIAO kiirus USB kaudu: TODO — waiting for physical test.
 
+## Rõhk (Atom, COM4)
+
+`pressure.py` loeb vaakumit jagatud AtomS3R-ilt (`pressure_port`, COM4). Uut Atomi püsivara pole: kasutatakse Andmehõive Labor 2 mõõtmis-püsivara `DA2_MEASURE_V1` (`data-acquisition/lab2/src/README.md`), mis pärast `measure_start` käsku saadab G5 ADC toorväärtuse JSON-reana iga 10 ms järel. Väärtus pole kPa-ks kalibreeritud; vaakum = ADC enne imemist (pump väljas) miinus ADC pärast `suck_dwell_s` (MPX5700AP on absoluutandur, vaakumiga ADC langeb). Ära käivita samal ajal Andmehõive logijat — COM4 saab olla ainult ühel programmil.
+
+- Tsüklis enne igat imemist `baseline`, pärast `suck_dwell_s` `grip`: tulemus `vacuum N ADC ok` / `LOW` lehel Test-vahekaardi all ("grip: …"). See ainult märgib, tsüklit ei peata.
+- Kui ridu ei tule üle 1 s (juhe lahti, Atom vaikib, port puudub), näitab olekurida punast viga "running without the vacuum check"; tsükkel jätkab ilma vaakumi kontrollita ja Atomit proovitakse iga sekundi järel uuesti.
+- `cycle.grip_min_vacuum_adc` = 100 on oletus (Labor 1 −60 kPa ≈ 427 koodi, `141 Pa/kood`); päris haarde väärtus: TODO — waiting for physical test.
+
+Testitud 24.10.26 simuleeritud Atomiga (~95 Hz, vaakum, katkestus ja taastumine) ja ühe klaasi tsükliga ilma Atomita (tsükkel lõppes, kõik 4 sammu); päris Atomiga: TODO — waiting for physical test.
+
 ## Seaded — `layout.json`
 
 - `calibration` — ainult `tool_r` (33). Lahtrite X/Y tuleb failist [`../calibration/cells.py`](../calibration/cells.py) (24.10.26 kolme ruudu sobitus, pööre +0,87°); uue kalibreerimise järel muuda seal `MEASURED`.
