@@ -24,6 +24,7 @@
       "output": null
     },
     "workstation_cell": null,
+    "workstation_step": false,
     "travel_z": -100.0,
     "approach_mm": 5.0,
     "suck_dwell_s": 1.0,

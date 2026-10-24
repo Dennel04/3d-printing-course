@@ -7,6 +7,9 @@ that is the 42 mm question of the refit test.
 
 Glass n (1-based) is taken from the n-th input cell and put into the n-th output cell; the
 workstation always uses layout["cycle"]["workstation_cell"].
+
+With layout["cycle"]["workstation_step"] false (the default for now) the workstation is skipped:
+one glass goes straight from the input tray to the output tray (transfer test).
 """
 import csv
 from pathlib import Path
@@ -16,6 +19,20 @@ ROLES = ("input", "workstation", "output")
 NEEDS = {"input": ("pick_z",), "workstation": ("place_z", "pick_z"), "output": ("place_z",)}
 FIELDS = ("picked_from_input", "placed_at_workstation", "picked_from_workstation", "placed_at_output")
 REFIT_HEADER = ["round", "glass_id", *FIELDS, "notes"]
+
+
+def roles(layout):
+    """The roles the current mode uses."""
+    if layout["cycle"].get("workstation_step"):
+        return ROLES
+    return ("input", "output")
+
+
+def fields(layout):
+    """The result ticks the current mode fills."""
+    if layout["cycle"].get("workstation_step"):
+        return FIELDS
+    return (FIELDS[0], FIELDS[3])
 
 
 def holder(layout, role):
@@ -51,16 +68,16 @@ def slot_xy(layout, role, glass, by_name):
     return c["x"] + t["dx"], c["y"] + t["dy"]
 
 
-def check_ready(layout, by_name):
+def check_ready(layout, by_name, glasses=(1, 2, 3, 4)):
     """Raise ValueError naming the first thing missing before a run."""
-    for role in ROLES:
+    for role in roles(layout):
         h = holder(layout, role)
         t = teach(h)
         for z in NEEDS[role]:
             if t[z] is None:
                 raise ValueError(f"{role} ({h['name']}): {z} not taught")
-    for g in range(1, 5):
-        for role in ROLES:
+    for g in glasses:
+        for role in roles(layout):
             slot_xy(layout, role, g, by_name)
 
 
@@ -85,10 +102,15 @@ def plan_glass(layout, glass, by_name):
                 ("pump", "blow"), ("wait", cyc["blow_s"]), ("pump", "off"),
                 ("move", f"glass {glass}: lift from {what}", x, y, travel)]
 
-    ti, tw, to = (teach(holder(layout, r)) for r in ROLES)
+    ti, to = teach(holder(layout, "input")), teach(holder(layout, "output"))
     xi, yi = slot_xy(layout, "input", glass, by_name)
-    xw, yw = slot_xy(layout, "workstation", glass, by_name)
     xo, yo = slot_xy(layout, "output", glass, by_name)
+    if not cyc.get("workstation_step"):
+        return [*pick(xi, yi, ti["pick_z"], "input"), ("mark", glass, FIELDS[0]),
+                *place(xo, yo, to["place_z"], "output"), ("mark", glass, FIELDS[3]),
+                ("snap", f"r-g{glass}-output")]
+    tw = teach(holder(layout, "workstation"))
+    xw, yw = slot_xy(layout, "workstation", glass, by_name)
     return [*pick(xi, yi, ti["pick_z"], "input"), ("mark", glass, FIELDS[0]),
             *place(xw, yw, tw["place_z"], "workstation"), ("mark", glass, FIELDS[1]),
             ("snap", f"r-g{glass}-workstation"),
@@ -103,8 +125,10 @@ def save_refit(path: Path, rnd: int, rows):
     with path.open(newline="", encoding="utf-8") as f:
         table = list(csv.DictReader(f))
     for row in rows:
+        # a step the run's mode does not have (workstation in the transfer test) stays empty, not "no"
         new = {"round": str(rnd), "glass_id": str(row["glass"]),
-               **{k: "yes" if row.get(k) else "no" for k in FIELDS}, "notes": row.get("notes", "").strip()}
+               **{k: ("yes" if row[k] else "no") if k in row else "" for k in FIELDS},
+               "notes": row.get("notes", "").strip()}
         empty = next((r for r in table if r["round"] == new["round"] and r["glass_id"] == new["glass_id"]
                       and not any(r[k] for k in FIELDS)), None)
         if empty is not None:

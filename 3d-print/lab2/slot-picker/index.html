@@ -56,6 +56,7 @@
   .dirty { color:var(--target); font-weight:600; }
   div.test { display:none; background:#fff; border:1px solid var(--line); border-radius:6px; padding:10px; margin-top:12px; }
   body.test div.test { display:block; }
+  body:not(.ws-step) .ws-only { display:none; }
   body.test .drive-only { display:none; }
   table.t { border-collapse:collapse; width:100%; font-size:13px; }
   table.t td, table.t th { border-top:1px solid var(--line); padding:5px 4px; text-align:left; vertical-align:middle; }
@@ -71,7 +72,7 @@
   <div class="note">Operator view: robot at the top, front edge at the bottom.
     <b>Drive</b>: click a cell — up to travel Z, across, down to hover Z (never into a pocket).
     <b>Edit layout</b>: drag a holder to move it; drag over empty cells to select a rectangle (or click cells), then add a holder.
-    <b>Test</b>: the glass cycle input → workstation → output and the refit test.</div>
+    <b>Test</b>: move one glass from the input tray to the output tray (tick Workstation step for the full cycle).</div>
   <div class="bar">
     <span class="modes">
       <label><input type="radio" name="mode" value="drive" checked> Drive</label>
@@ -113,12 +114,14 @@
     <h2 style="margin-top:0">1. Roles</h2>
     <div class="bar" style="margin-top:0">
       <label>Input <select id="role-input"></select></label>
-      <label>Workstation <select id="role-workstation"></select></label>
-      <label>cell <select id="ws-cell"></select></label>
+      <label class="ws-only">Workstation <select id="role-workstation"></select></label>
+      <label class="ws-only">cell <select id="ws-cell"></select></label>
       <label>Output <select id="role-output"></select></label>
+      <label><input type="checkbox" id="ws-step"> Workstation step</label>
       <button id="roles-save" class="primary">Save roles</button>
     </div>
-    <div class="note">Glass n is taken from the n-th input cell and put into the n-th output cell (tags on the grid).</div>
+    <div class="note">Glass n is taken from the n-th input cell and put into the n-th output cell (tags on the grid).
+      Without Workstation step: one glass, input tray → output tray, nothing else.</div>
 
     <h2>2. Teach points</h2>
     <div class="note">Go above a pocket, lower the arm with the jog buttons until the cup sits on the glass (pick)
@@ -154,7 +157,7 @@
       <label>Glass <select id="one-glass"><option>1</option><option>2</option><option>3</option><option>4</option></select></label>
       <button id="run-one">Run one glass</button>
     </div>
-    <div class="bar">
+    <div class="bar ws-only">
       <span>Loaded input pockets:</span>
       <label><input type="checkbox" class="loaded" value="1" checked> 1</label>
       <label><input type="checkbox" class="loaded" value="2" checked> 2</label>
@@ -399,6 +402,8 @@ const LABEL = {picked_from_input: "took from input", placed_at_workstation: "put
 let ran = new Set();   // glasses run in the current round (rows to save)
 let syncedRun = null;  // cycle id whose results were last copied into the ticks
 
+const wsStep = () => !!layout.cycle.workstation_step;
+const activeRoles = () => wsStep() ? ROLES : ["input", "output"];
 const roleHolder = role => layout.holders.find(h => h.name === layout.cycle.roles[role]);
 const teachOf = h => ({dx: 0, dy: 0, pick_z: null, place_z: null, ...(h && h.teach)});
 
@@ -407,7 +412,7 @@ function slotTag(cell) {
     const h = roleHolder(role);
     if (h && h.cells.includes(cell)) return (role === "input" ? "in " : "out ") + (h.cells.indexOf(cell) + 1);
   }
-  const w = roleHolder("workstation");
+  const w = wsStep() && roleHolder("workstation");
   if (w && cell === (layout.cycle.workstation_cell || w.cells[0])) return "ws";
   return "";
 }
@@ -416,10 +421,12 @@ function renderTest() {
   const opts = sel => `<option value="">–</option>` + layout.holders.map(h =>
     `<option${h.name === sel ? " selected" : ""}>${esc(h.name)}</option>`).join("");
   for (const role of ROLES) $("role-" + role).innerHTML = opts(layout.cycle.roles[role]);
+  $("ws-step").checked = wsStep();
+  document.body.classList.toggle("ws-step", wsStep());
   wsCells();
   const t = $("teach");
   t.innerHTML = `<tr><th>Role</th><th>Holder · glass 1 cell</th><th>XY offset</th><th>Pick Z</th><th>Place Z</th><th></th></tr>`;
-  for (const role of ROLES) {
+  for (const role of activeRoles()) {
     const h = roleHolder(role), tv = teachOf(h);
     const cell = !h ? "–" : role === "workstation" ? (layout.cycle.workstation_cell || h.cells[0]) : h.cells[0];
     const z = k => NEEDS[role].includes(k) ? `<span class="mono">${tv[k] ?? "<span class=err>not set</span>"}</span>
@@ -449,10 +456,12 @@ function wsCells() {
   $("ws-cell").innerHTML = (h ? h.cells : []).map(c => `<option${c === layout.cycle.workstation_cell ? " selected" : ""}>${c}</option>`).join("");
 }
 $("role-workstation").onchange = wsCells;
+$("ws-step").onchange = () => document.body.classList.toggle("ws-step", $("ws-step").checked);  // saved by Save roles
 
 $("roles-save").onclick = async () => {
   const body = Object.fromEntries(ROLES.map(r => [r, $("role-" + r).value]));
   body.workstation_cell = $("ws-cell").value;
+  body.workstation_step = $("ws-step").checked;
   const r = await api("/api/cycle/roles", body);
   if (!r.ok) return say(`Roles: ${r.error}`);
   clickError = ""; await load();
@@ -470,7 +479,10 @@ document.querySelectorAll("[data-p]").forEach(b => b.onclick = async () => {
 
 function renderResults() {
   const t = $("results");
-  if (t.rows.length) return;  // built once; the ticks keep the operator's edits
+  const cols = layout.fields.join();
+  if (t.dataset.cols === cols) return;  // built once per mode; the ticks keep the operator's edits
+  t.dataset.cols = cols;
+  ran.clear();
   t.innerHTML = `<tr><th>Glass</th>${layout.fields.map(f => `<th>${LABEL[f]}</th>`).join("")}<th>Notes</th></tr>`;
   for (let g = 1; g <= 4; g++) {
     const tr = document.createElement("tr");

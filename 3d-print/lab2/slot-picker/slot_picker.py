@@ -221,7 +221,9 @@ class Sequencer:
         self._start([("move", "up", cx, cy, max(cz, tz)), ("move", label, x, y, tz)])
 
     def run_cycle(self, glasses, rnd, by_name):
-        cycle.check_ready(self.layout, by_name)
+        if not self.layout["cycle"].get("workstation_step") and len(glasses) != 1:
+            raise ValueError("transfer test: one glass at a time (tick Workstation step for the full round)")
+        cycle.check_ready(self.layout, by_name, glasses)
         status = self.ready_status()
         tz = self.layout["cycle"]["travel_z"]
         cx, cy, cz = status["pose"][:3]
@@ -229,7 +231,7 @@ class Sequencer:
         for g in glasses:
             actions += cycle.plan_glass(self.layout, g, by_name)
         actions.append(("pump", "off"))
-        results = {str(g): {f: False for f in cycle.FIELDS} for g in glasses}
+        results = {str(g): {f: False for f in cycle.fields(self.layout)} for g in glasses}
         self._start(actions, cycle_state={"id": time.time(), "round": rnd, "glasses": glasses,
                                           "results": results, "frames": [], "grips": []})
 
@@ -463,7 +465,7 @@ def make_handler(layout, seq, port):
                 self.wfile.write(body)
             elif self.path == "/api/layout":
                 self._json(200, {"cells": table["cells"], "holders": layout["holders"], "types": layout["types"],
-                                 "motion": layout["motion"], "cycle": layout["cycle"], "fields": cycle.FIELDS,
+                                 "motion": layout["motion"], "cycle": layout["cycle"], "fields": cycle.fields(layout),
                                  "letters": LETTERS, "numbers": NUMBERS})
             elif self.path == "/api/state":
                 try:
@@ -545,6 +547,7 @@ def make_handler(layout, seq, port):
                         raise ValueError(f"workstation cell {ws_cell} is not in {roles['workstation']}")
                     layout["cycle"]["roles"] = roles
                     layout["cycle"]["workstation_cell"] = ws_cell
+                    layout["cycle"]["workstation_step"] = bool(data.get("workstation_step"))
                     save_layout(layout)
                 elif self.path == "/api/cycle/above":
                     idle()
