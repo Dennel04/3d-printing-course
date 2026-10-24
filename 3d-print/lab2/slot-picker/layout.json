@@ -19,11 +19,11 @@
   "cycle": {
     "_note": "glass cycle (cycle.py): roles = holder names; Z/offsets are taught per holder in holders[].teach",
     "roles": {
-      "input": null,
-      "workstation": null,
-      "output": null
+      "input": "Glass input",
+      "workstation": "Glass input",
+      "output": "Glass input"
     },
-    "workstation_cell": null,
+    "workstation_cell": "E-4",
     "workstation_step": false,
     "travel_z": -100.0,
     "approach_mm": 5.0,
@@ -81,21 +81,27 @@
       "name": "Glass input",
       "type": "glass",
       "cells": [
-        "D-3",
         "D-4",
-        "E-3",
-        "E-4"
+        "D-5",
+        "E-4",
+        "E-5"
       ],
-      "status": "proposed"
+      "status": "proposed",
+      "teach": {
+        "dx": 0.0,
+        "dy": 2.0,
+        "pick_z": -150.5,
+        "place_z": null
+      }
     },
     {
       "name": "AtomS3 input",
       "type": "atom",
       "cells": [
-        "D-1",
         "D-2",
-        "E-1",
-        "E-2"
+        "D-3",
+        "E-2",
+        "E-3"
       ],
       "status": "proposed"
     },
@@ -103,10 +109,10 @@
       "name": "Workstation (orange)",
       "type": "workstation",
       "cells": [
+        "D-1",
         "D+1",
-        "D+2",
-        "E+1",
-        "E+2"
+        "E-1",
+        "E+1"
       ],
       "status": "proposed"
     },
@@ -114,10 +120,10 @@
       "name": "Good output",
       "type": "output",
       "cells": [
+        "D+2",
         "D+3",
-        "D+4",
-        "E+3",
-        "E+4"
+        "E+2",
+        "E+3"
       ],
       "status": "proposed"
     },
