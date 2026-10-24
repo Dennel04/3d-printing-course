@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slot Picker</title>
+<style>
+  :root { --bg:#f6f6f4; --fg:#1d1d1b; --muted:#77756f; --cell:#fff; --line:#d4d2cc;
+          --hold:#e8eef8; --hold-line:#7d9bd1; --block:#e9e7e2; --target:#f2a33a; --stop:#c8372d; }
+  body { margin:0; font:14px system-ui, sans-serif; background:var(--bg); color:var(--fg); }
+  main { max-width:860px; margin:0 auto; padding:16px; }
+  h1 { font-size:18px; margin:0 0 4px; }
+  .bar { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin:12px 0; }
+  .robot { text-align:center; background:#333; color:#fff; border-radius:6px 6px 0 0; padding:6px; width:45%; margin:0 auto; }
+  .grid { display:grid; grid-template-columns:18px repeat(10, minmax(0, 1fr)); gap:3px; }
+  .grid .hdr { font-size:12px; color:var(--muted); text-align:center; align-self:center; }
+  .cell { aspect-ratio:1; min-width:0; overflow:hidden; border:1px solid var(--line); background:var(--cell); border-radius:4px; cursor:pointer;
+          font:clamp(9px, 1.6vw, 12px) system-ui; padding:2px; display:flex; flex-direction:column; justify-content:space-between; }
+  .cell .h { font-size:10px; color:var(--muted); overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+  .cell.holder { background:var(--hold); border-color:var(--hold-line); }
+  .cell.blocked { background:var(--block); color:var(--muted); cursor:not-allowed; }
+  .cell.target { outline:3px solid var(--target); }
+  .cell:not(.blocked):hover { border-color:var(--fg); }
+  button.stop { background:var(--stop); color:#fff; border:0; border-radius:6px; padding:10px 22px; font-weight:600; font-size:15px; cursor:pointer; }
+  .status { font-family:ui-monospace, monospace; font-size:13px; background:#fff; border:1px solid var(--line); border-radius:6px; padding:8px; white-space:pre-wrap; }
+  .err { color:var(--stop); }
+  .note { color:var(--muted); font-size:12px; }
+  input[type=number] { width:70px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Slot picker — suction cup to cell</h1>
+  <div class="note">Operator view: robot at the top, front edge at the bottom. Click a cell: up to travel Z, across, down to hover Z. Never descends into a pocket.</div>
+  <div class="bar">
+    <label><input type="checkbox" id="arm"> Motion enabled</label>
+    <label>Hover Z <input type="number" id="hover" step="5"></label>
+    <button class="stop" id="stop">STOP</button>
+  </div>
+  <div class="robot">MG400</div>
+  <div class="grid" id="grid"></div>
+  <p class="note" id="legend"></p>
+  <div class="status" id="status">connecting…</div>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+let layout = null;
+
+async function api(path, body) {
+  const opts = body === undefined ? {} : { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body) };
+  const res = await fetch(path, opts);
+  return res.json();
+}
+
+function render() {
+  const grid = $("grid");
+  grid.append(Object.assign(document.createElement("div"), {className: "hdr"}));
+  for (const n of layout.numbers) grid.append(Object.assign(document.createElement("div"), {className: "hdr", textContent: (n > 0 ? "+" : "") + n}));
+  const byName = Object.fromEntries(layout.cells.map(c => [c.name, c]));
+  for (const letter of layout.letters) {
+    grid.append(Object.assign(document.createElement("div"), {className: "hdr", textContent: letter}));
+    for (const n of layout.numbers) {
+      const c = byName[letter + (n > 0 ? "+" : "") + n];
+      const el = document.createElement("div");
+      el.className = "cell" + (c.holder ? " holder" : "") + (c.blocked ? " blocked" : "");
+      el.id = "cell-" + c.name;
+      el.title = `${c.name}  X ${c.x}  Y ${c.y}  r ${c.radius} mm` + (c.blocked ? `\n${c.blocked}` : "");
+      el.innerHTML = `<span>${c.name}</span><span class="h">${c.holder || ""}</span>`;
+      el.onclick = () => go(c);
+      grid.append(el);
+    }
+  }
+  $("hover").value = layout.motion.default_hover_z;
+  $("hover").min = layout.motion.min_hover_z;
+  $("hover").max = layout.motion.travel_z;
+  $("legend").textContent = `Travel Z ${layout.motion.travel_z} · hover Z ${layout.motion.min_hover_z}…${layout.motion.travel_z} · speed ≤ ${layout.motion.max_speed_ratio}% · reach ${layout.motion.radius_min}–${layout.motion.radius_max} mm · holders from layout.json`;
+}
+
+async function go(c) {
+  if (c.blocked) return;
+  if (!$("arm").checked) { $("status").innerHTML = `<span class="err">Tick "Motion enabled" first.</span>`; return; }
+  const r = await api("/api/goto", {cell: c.name, hover_z: parseFloat($("hover").value)});
+  if (!r.ok) $("status").innerHTML = `<span class="err">${r.error}</span>`;
+}
+
+$("stop").onclick = () => api("/api/stop", {});
+
+async function poll() {
+  try {
+    const s = await api("/api/state");
+    const p = s.robot.pose ? s.robot.pose.map(v => v.toFixed(2)).join(" / ") : "–";
+    document.querySelectorAll(".cell.target").forEach(e => e.classList.remove("target"));
+    if (s.seq.cell) { const el = $("cell-" + s.seq.cell); if (el) el.classList.add("target"); }
+    $("status").innerHTML =
+      `robot  ${s.robot.mode_name}  speed ${s.robot.speed_ratio ?? "–"}%\npose   ${p}  (x / y / z / r)\nmove   ${s.seq.cell || "–"}  ${s.seq.step}` +
+      (s.seq.error ? `\n<span class="err">${s.seq.error}</span>` : "");
+  } catch (e) {
+    $("status").innerHTML = `<span class="err">slot picker server not reachable</span>`;
+  }
+  setTimeout(poll, 400);
+}
+
+api("/api/layout").then(l => { layout = l; render(); poll(); });
+</script>
+</body>
+</html>

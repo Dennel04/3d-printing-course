@@ -1,0 +1,28 @@
+{
+  "mg400_api": "http://127.0.0.1:8000/api",
+  "calibration": {
+    "source": "docs/measurements.md, 24.10.26 (G-1 + E+3)",
+    "rotation_deg": 1.82,
+    "pivot_model_robot_axes": [349.5, -42.0],
+    "pivot_measured": [380.5, -36.8],
+    "tool_r": 33.0
+  },
+  "motion": {
+    "travel_z": -20.0,
+    "default_hover_z": -20.0,
+    "min_hover_z": -50.0,
+    "max_speed_ratio": 30,
+    "radius_min": 150.0,
+    "radius_max": 430.0,
+    "arrive_tolerance_mm": 0.5,
+    "step_timeout_s": 30.0
+  },
+  "holders": [
+    {"name": "Glass input", "cells": ["D-4", "D-5", "E-4", "E-5"], "status": "proposed"},
+    {"name": "AtomS3 input", "cells": ["B-4", "B-5", "C-4", "C-5"], "status": "proposed"},
+    {"name": "Workstation (orange)", "cells": ["C-1", "C+1", "D-1", "D+1"], "status": "proposed"},
+    {"name": "Good output", "cells": ["C+4", "C+5", "D+4", "D+5"], "status": "proposed"},
+    {"name": "Calibration box", "cells": ["G-1"], "status": "used 24.10"},
+    {"name": "Webcam post", "cells": ["F-4", "F-5", "G-4", "G-5"], "status": "planned", "no_go": true}
+  ]
+}
