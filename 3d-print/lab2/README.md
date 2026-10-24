@@ -256,6 +256,11 @@ mitte ei muudeta.
 * Tööriistakaamera kaadrid (USB, COM5): [`tool-camera-2026-10-24.jpg`](docs/photos/tool-camera-2026-10-24.jpg) ja G-1 kohal Z −80 [`tool-camera-2026-10-24-g1.jpg`](docs/photos/tool-camera-2026-10-24-g1.jpg). Töökoha kaader Atomi ja klaasiga: TODO — waiting for physical test.
 * Järgmiseks: Z puudutus ruudustiku pinnal; kasti välja/tagasi kordustäpsus; iga pesa Z = ruudustiku Z + pesa põhja kõrgus CAD-ist + detaili paksus (kontroll üks puudutus hoidikutüübi kohta); `layout.md` ruudud ja sihtpunktid kujul ruut + nihe.
 
+**24.10.2026 — Fusioni failid ei avanenud meeskonnakaaslasel**
+* Probleem: `camera-mounts/src/xiao-square-mount-v2.f3d` ja `veebikaamera-post/src/veebikaamera-post-v2.f3d` sisaldavad välisviiteid (XREF) Denysi Fusioni pilvedokumentidele `mg400-solidworks_asm` ja `MG 400 rakis`. Ilma nende dokumentideta annab Fusion vea `New design cannot be created from a local file containing external references`. Sama kehtib `veebikaamera-post-v1.f3d` kohta.
+* Lahendus: lisatud kõrvale **`xiao-square-mount-v2-standalone.f3d`** ja **`veebikaamera-post-v2-standalone.f3d`** — samad detailid ilma roboti/laua viiteta (robot ja laud olid ainult proovimiseks; detailide geomeetria neist ei sõltu). Kontrollitud: avanevad kohalikust failist, kõik kehad alles; `Extrude4` (`webcam_post_upper`) oli juba originaalis maha surutud. Vanad failid jäävad alles.
+* Katse lisada robot ja laud faili sisse (break link) andis 8–12 MB faili, mille import kukutas Fusioni kokku — seda varianti ei kasutata. Robotiga kontrolliks: laadi laud `reference/MG 400 rakis.f3z` eraldi ja sisesta detail sinna.
+
 ### Väljundid ja tulemused
 
 **Väljundid**
