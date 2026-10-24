@@ -1,12 +1,13 @@
-direction   0 deg: fails at 5 mm: glass 1: pick glass 1: cup 5.1 mm from the glass centre COLLISION-free but the cup is not fully on the glass (> 5 mm): suction may fail
-direction  45 deg: fails at 5 mm: glass 1: pick glass 1: cup 5.0 mm from the glass centre COLLISION-free but the cup is not fully on the glass (> 5 mm): suction may fail
-direction  90 deg: fails at 3 mm: glass 1: glass 1: approach output               COLLISION min clearance    3.2 mm (carried glass - holder:Workstation (orange))
-      !! pushes 6.1 mm into holder:Good output (first touch at Z -140.2, allowed 1.5 mm)
-direction 135 deg: fails at 3 mm: glass 1: glass 1: approach output               COLLISION min clearance    4.0 mm (carried glass - holder:Workstation (orange))
+direction   0 deg: fails at 5 mm: glass 1: pick glass 1: cup 5.4 mm from the glass centre COLLISION-free but the cup is not fully on the glass (> 5 mm): suction may fail
+direction  45 deg: fails at 2 mm: glass 1: glass 1: approach output               COLLISION min clearance    8.9 mm (carried glass - rakis_grid_pos_0)
       !! pushes 6.2 mm into holder:Good output (first touch at Z -140.1, allowed 1.5 mm)
-direction 180 deg: fails at 3 mm: glass 1: glass 1: approach output               COLLISION min clearance    6.2 mm (carried glass - holder:Workstation (orange))
-      !! pushes 6.1 mm into holder:Good output (first touch at Z -140.2, allowed 1.5 mm)
-direction 225 deg: fails at 5 mm: glass 1: glass 1: approach output               COLLISION min clearance    8.7 mm (carried glass - rakis_grid_pos_0)
+direction  90 deg: fails at 2 mm: glass 1: glass 1: approach output               COLLISION min clearance    8.8 mm (carried glass - rakis_grid_pos_0)
+      !! pushes 6.9 mm into holder:Good output (first touch at Z -139.4, allowed 1.5 mm)
+direction 135 deg: fails at 2 mm: glass 1: glass 1: approach output               COLLISION min clearance    8.9 mm (carried glass - rakis_grid_pos_0)
+      !! pushes 6.7 mm into holder:Good output (first touch at Z -139.6, allowed 1.5 mm)
+direction 180 deg: fails at 3 mm: glass 1: glass 1: approach output               COLLISION min clearance    9.0 mm (carried glass - rakis_grid_pos_0)
       !! pushes 6.6 mm into holder:Good output (first touch at Z -139.7, allowed 1.5 mm)
-direction 270 deg: fails at 5 mm: glass 1: pick glass 1: cup 5.0 mm from the glass centre COLLISION-free but the cup is not fully on the glass (> 5 mm): suction may fail
-direction 315 deg: fails at 5 mm: glass 1: pick glass 1: cup 5.1 mm from the glass centre COLLISION-free but the cup is not fully on the glass (> 5 mm): suction may fail
+direction 225 deg: fails at 5 mm: glass 1: glass 1: approach output               COLLISION min clearance    8.8 mm (carried glass - rakis_grid_pos_0)
+      !! pushes 6.6 mm into holder:Good output (first touch at Z -139.7, allowed 1.5 mm)
+direction 270 deg: fails at 7 mm: glass 1: pick glass 1: cup 5.3 mm from the glass centre COLLISION-free but the cup is not fully on the glass (> 5 mm): suction may fail
+direction 315 deg: fails at 7 mm: glass 1: pick glass 1: cup 6.0 mm from the glass centre COLLISION-free but the cup is not fully on the glass (> 5 mm): suction may fail

@@ -2,6 +2,89 @@
 
 Täida pärast päris laua, roboti ja detailide ülevaatust, enne hoidikute lõplikku modelleerimist. Ära märgi ruutu ega nihkeid eelduste põhjal.
 
+## 24.10.26 otsus: paigutus (variant B)
+
+Valis Denys 24.10.26 kahe kaksikus kontrollitud variandi vahelt (A = varasem `layout.json` ettepanek). Hoidikute rollid on meeskonna 23.10.26 otsused (README). Masinloetav sama paigutus: [`../slot-picker/layout.json`](../slot-picker/layout.json). Füüsiliselt on paigas ainult klaasi sisend; ülejäänud hoidikud tuleb laual ümber tõsta — TODO.
+
+![Paigutus ülaltvaates](photos/layout-2026-10-24.png)
+
+Ülaltvaade operaatori poolt (robot üleval, rida A roboti juures):
+
+| | +5 | +4 | +3 | +2 | +1 | −1 | −2 | −3 | −4 | −5 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| **A** | | | | | | | | | | |
+| **B** | | | | | praak | praak | | | | |
+| **C** | | | | | töökoht 2 | töökoht 1 | | | | |
+| **D** | väljund | väljund | | | | | | | klaas | klaas |
+| **E** | väljund | väljund | | | | Atom | Atom | | klaas | klaas |
+| **F** | | | | kalibr. | | Atom | Atom | | post | post |
+| **G** | | | | | | | | | post | post |
+
+### Protsessi sammud (sildi kokkupanek)
+
+1. Inimene laeb akumoodulid oranži hoidiku töökohapesadesse (C−1, C+1), AtomS3-d AtomS3 sisendisse ja klaasid klaasi sisendisse (igas sisendis 4 tk).
+2. Robot: AtomS3 sisendist → akumooduli peale töökohas (ekraan üles).
+3. Robot: klaas klaasi sisendist → Atomi peale töökohas.
+4. Robot: valmis detail → heade väljund; ebaõnnestunud → praak (B−1 / B+1).
+
+Selle labori test (ülesanne osa 3) teeb ainult klaasi teed: sisend → töökoht 1 (päris AtomS3 aku peal) → heade väljund.
+
+### Töökohad ja väljundid
+
+- **Töökohti: üks samm-tüüp** (detailide virnastamine aku peale), sest kõik kolm robotisammu toimuvad samas kohas virna peal; ülesanne lubab sammul kohta eelmisega jagada (meeskonna otsus 23.10.26). Pesasid on kaks: **C−1 = töökoht 1** (tsükli vaikimisi koht, `cycle.workstation_cell`), **C+1 = töökoht 2** (Denys 24.10.26).
+- Töökoht on ruutudes, kus robot on kõige täpsem: kaugus J1 teljest **214–256 mm** (ülesanne: kuni 300 mm, read A–C, numbrid −3 … +3).
+- **Väljundeid kaks:** heade väljund (`valjundhoidik-v1`, 2 × 2 lahtine kast) ja praak (oranži hoidiku robotipoolsed pesad B−1, B+1; Denys 24.10.26).
+- Liikumine käib ühes suunas: sisendid numbritel −1 … −5, töökoht keskel, väljund +4 … +5.
+
+### Hoidikud
+
+| Hoidik | Fail (prinditud) | Suurus | Ruudud | Roll |
+|---|---|---|---|---|
+| Klaasi sisend | `glass-input-holder-v1` | 2 × 2 | D−4, D−5, E−4, E−5 | 4 klaasi; **paigas**, õpetatud (vt allpool) |
+| AtomS3 sisend | `atoms3-input-holder-v1` | 2 × 2 | E−1, E−2, F−1, F−2 | 4 AtomS3-t, ekraan üles |
+| Oranž | `ready-parts-input-holder-v1` | 2 × 2 | B−1, B+1, C−1, C+1 | C±1 aku sisend + töökoht, B±1 praak |
+| Heade väljund | `valjundhoidik-v1` | 2 × 2 | D+4, D+5, E+4, E+5 | valmis detailid |
+| Kalibreerimishoidik | `gridfinity-calibration-v3` | 1 × 1 | F+2 | roboti kalibreerimine (24.10.26 mõõdeti C−2-s) |
+| Veebikaamera post | `veebikaamera-post` v3 kavand | 2 × 2 | F−4, F−5, G−4, G−5 | üldvaatekaamera; robot sinna ei sõida. Lõplik versioon ja asukoht: TODO |
+
+Kasutatud ruute 21 / 70. Järgmiste laborite moodulitele jäävad vabaks näiteks B ja C ±2 … ±5, D −3 … +3, E −3 ja E +1 … +3, F+1, F±3 (rida A on aluse lähedal ulatusega piiratud).
+
+### Detailide mõõdud
+
+Allikas [`measurements.md`](measurements.md) (Maksimi `Measurements.xlsx`, 23.10.26). Mõõtevahend tabelis märkimata, seega nihikuga kinnitamine: TODO.
+
+| Detail | X × Y × Z (mm) | Olek |
+|---|---|---|
+| Polükarbonaatklaas | 30 × 30 × 2 | confirmed (meeskond), 4 tk |
+| AtomS3 | 24 × 24 × 12,9 | nominal — nihikumõõt TODO |
+| Akumoodul | 24,04 × 24,01 × 21,97 | measured |
+
+### Roboti sihtpunktid (ruut + nihe, R 33)
+
+Ruudu keskpunkt robotis = [`../calibration/cells.py`](../calibration/cells.py) (24.10.26 sobitus, sh C−2 kalibreerimiskastiga v3). Nihe = hoidiku `teach` slot pickeris.
+
+| Koht | Ruut | Nihe X / Y (mm) | Z (robot) | Allikas |
+|---|---|---|---|---|
+| Klaas, võtmine | D−4 … E−5 | −2,00 / +2,50 | −150,5 (`pick_z`); 24.10.26 õhtul ülekanne õnnestus Z −152-ga | D−4 ja D−5 pesa keskpunkt, Denys 24.10.26 |
+| Töökoht 1, klaasi asetamine / võtmine | C−1 | TODO | kaksik −114,1 / −115,1 — õpetamata | TODO — waiting for physical test |
+| Heade väljund, asetamine | D+4 … E+5 | TODO | kaksik −151,3 — õpetamata | TODO — waiting for physical test |
+| AtomS3 võtmine / asetamine akule | E−1 … F−2 / C−1 | TODO | TODO | testis ei kasutata |
+
+### Kontroll digitaalses kaksikus ([`../../sim/`](../../sim/README.md), 24.10.26)
+
+- Täistsükkel 4 klaasiga (`dry_run.py --full`): **0 kokkupõrget**, väikseim vahe 5,4 mm (kantav klaas ↔ ruudustik väljundis); klaas jääb väljundi põhjale. Tulemus: [`sim_dry_run_full.txt`](sim_dry_run_full.txt).
+- Ükski tee (klaas → töökoht, Atom → töökoht, töökoht → väljund) ei lähe üle kolmanda hoidiku. Variant A-s läks klaas üle AtomS3 sisendi ja töökoht oli 297–339 mm kaugusel.
+- Ruudud, kuhu napp jõuab klaasi võtmiseks (min Z): [`sim_reach.csv`](sim_reach.csv), [`photos/sim-reach-map.png`](photos/sim-reach-map.png). AtomS3 sisendit ei pandud ritta G: seal ei jõua napp alla −130.
+- Kalibreerimisvea taluvus ([`sim_tolerance.txt`](sim_tolerance.txt)): võtmine 5 mm, **väljund ainult 2–5 mm** (suunast sõltuvalt; 45°, 90°, 135° juures 2 mm) — klaas pannakse lahtri keskele ja tema serv jääb 3 mm kasti seinast. Ettepanek: väljundi kohad kasti keskpunktile lähemale (nt ±16 mm); vajab `cycle.py` muudatust — TODO, kokku leppida Raimoga.
+
+### Lahtised
+
+- Hoidikud füüsiliselt uutesse ruutudesse; seejärel töökoha ja väljundi punktide õpetamine.
+- Veebikaamera posti lõplik versioon ja ruudud.
+- AtomS3 mõõdud nihikuga; nelja klaasi hajuvus.
+
+## Esialgne mall (23.10.26, ajalugu)
+
 ## Koordinaadid ja töövoog
 
 - Ruudustik: 7 x 10 ruutu, samm 42 mm.

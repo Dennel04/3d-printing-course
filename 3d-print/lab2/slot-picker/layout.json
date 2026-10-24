@@ -20,10 +20,10 @@
     "_note": "glass cycle (cycle.py): roles = holder names; Z/offsets are taught per holder in holders[].teach",
     "roles": {
       "input": "Glass input",
-      "workstation": "Glass input",
-      "output": "Glass input"
+      "workstation": "Workstation (orange)",
+      "output": "Good output"
     },
-    "workstation_cell": "E-4",
+    "workstation_cell": "C-1",
     "workstation_step": false,
     "travel_z": -100.0,
     "approach_mm": 5.0,
@@ -86,7 +86,7 @@
         "E-4",
         "E-5"
       ],
-      "status": "proposed",
+      "status": "placed 24.10",
       "teach": {
         "dx": -2.0,
         "dy": 2.5,
@@ -98,42 +98,42 @@
       "name": "AtomS3 input",
       "type": "atom",
       "cells": [
-        "D-2",
-        "D-3",
+        "E-1",
         "E-2",
-        "E-3"
+        "F-1",
+        "F-2"
       ],
-      "status": "proposed"
+      "status": "decided 24.10 (layout.md), not placed yet"
     },
     {
       "name": "Workstation (orange)",
       "type": "workstation",
       "cells": [
-        "D-1",
-        "D+1",
-        "E-1",
-        "E+1"
+        "C-1",
+        "C+1",
+        "B-1",
+        "B+1"
       ],
-      "status": "proposed"
+      "status": "decided 24.10 (layout.md), not placed yet"
     },
     {
       "name": "Good output",
       "type": "output",
       "cells": [
-        "D+2",
-        "D+3",
-        "E+2",
-        "E+3"
+        "D+4",
+        "D+5",
+        "E+4",
+        "E+5"
       ],
-      "status": "proposed"
+      "status": "decided 24.10 (layout.md), not placed yet"
     },
     {
       "name": "Calibration box",
       "type": "calibration",
       "cells": [
-        "F-2"
+        "F+2"
       ],
-      "status": "used 24.10"
+      "status": "decided 24.10 (layout.md), not placed yet"
     }
   ]
 }

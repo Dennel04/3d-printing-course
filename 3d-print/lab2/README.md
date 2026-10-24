@@ -30,7 +30,9 @@ Wi-Fi füüsiline toimimine ja station PC võrgust ligipääs, kaablite marsruut
 ## Kontrollnimekiri
 
 - [ ] `docs/layout.md`: töövoog, ruutude paigutus ja skeem mõõdetud laua järgi.
-- [ ] 1 x 1 Gridfinity kalibreerimishoidik testitud ruudustikus ja robotiga.
+  - 24.10.26: paigutus otsustatud (variant B, kaksikus kontrollitud) ja kirjas [`docs/layout.md`](docs/layout.md) koos skeemiga. Avatud: hoidikud füüsiliselt uutesse ruutudesse, AtomS3 nihikuga, veebikaamera posti lõplik koht.
+- [x] 1 x 1 Gridfinity kalibreerimishoidik testitud ruudustikus ja robotiga.
+  - 24.10.26: `gridfinity-calibration-v3` (standardne jalg, rist) istub ruudustikus hästi; robotiga ruudus C−2: Z puudutus põhjal −155,0, neli sisenurka → keskpunkt 253,81 / 68,46, Denys seadis napa risti keskele 253,94 / 68,30 (kasutusel `calibration/cells.py`). Andmed: [`docs/calibration_c-2_v3.csv`](docs/calibration_c-2_v3.csv), [`docs/measurements.md`](docs/measurements.md). Kasti välja/tagasi kordustäpsust ei mõõdetud.
   - 23.10.26 otsus: keskpunkt leitakse iminapaga hoidiku nelja sisenurga kaudu (nelja punkti keskmine); napa raadius taandub sümmeetria tõttu välja ja lisaks saame ruudustiku pöördenurga. Protseduur: [`docs/test-procedure.md`](docs/test-procedure.md) A1, tabel: [`docs/measurements.md`](docs/measurements.md).
   - 23.10.26 kalibreerimine alustatud ruudus G-1 (B-2-s ei ulatu käsi kasti põhja, J3 piir). 3 nurka 4-st kinnitatud, eeldatav nihe ≈ +5,3 / +5,4 mm; vt [`docs/measurements.md`](docs/measurements.md). Lõpetamata: 4. nurk, Xmin+Ymax nurk samal Z-l, kontrollruut.
 - [ ] Kolm sisendhoidikut, igaühes vähemalt neli mõõdetud pesa.
@@ -355,6 +357,13 @@ mitte ei muudeta.
 * Kast v3 (rist põhjas, standardne jalg) prinditi ja sobib hästi. Z puudutus põhjal −155,0 (kaksik −154,8). Neli sisenurka → keskpunkt 253,81 / 68,46, `cells.py` viga +0,12 / +2,00 mm; mõõdetud keskpunktis on napp risti kohal. Napa efektiivne läbimõõt ≈ 23 mm. Andmed: [`docs/calibration_c-2_v3.csv`](docs/calibration_c-2_v3.csv), [`docs/measurements.md`](docs/measurements.md).
 * Kaksiku `dry_run.py` kontrollib nüüd `layout.json`-i nii, nagu robot seda praegu käivitaks (ülekandetest), ja `--full` planeeritud täistsüklit; kokkupõrkeid pole kummaski.
 * Lahtine: kas `cells.py` sobitada uuesti C-2-ga (Y +2 mm kordub ka D-4 õpetuses); kasti välja/tagasi kordustäpsus jäi mõõtmata.
+
+**24.10.2026 hilisõhtu — paigutus (layout.md) ja slot pickeri täiendused**
+* Osalejad: Denys laboris (valis variandi, seadis C−2, D−4, D−5 keskpunktid, tegi klaasi ülekande), Claude (kaksik, slot picker, dokumendid). Raimo slot pickerit muudeti tema teadmisel ja Denysi palvel.
+* Paigutus: kaksikus võrreldi variante; valiti B — töökoht oranžis C±1 (214–256 mm J1-st), praak B±1, klaas D/E −4/−5 (paigas), AtomS3 E/F −1/−2, väljund D/E +4/+5, kalibreerimiskast F+2. Täistsükkel 4 klaasiga 0 kokkupõrget, ükski tee ei lähe üle kolmanda hoidiku. Väljundi kalibreerimisvea varu ainult 2–5 mm → ettepanek väljundi kohad kasti keskele lähemale (Raimoga kokku leppida).
+* Slot picker: kiiruse valik lehel; liikumiskõrgus −90, hover kuni −110; käeulatuse ja tee kontroll enne liikumist; Test → **Move one glass** (From/To lahter, pick Z, place Z). Klaasi ülekanne õnnestus pick Z −152-ga (Denys).
+* Kalibreerimine: C−2 kast v3 (Denys keskele 253,94 / 68,30) lisatud `cells.py` sobitusse; klaasi sisendi nihe D−4/D−5 keskpunktidest (dx −2,00, dy +2,50).
+* Järgmiseks: hoidikud uutesse ruutudesse, töökoha ja väljundi punktide õpetamine, 5 ringi × 4 klaasi → `docs/refit_test.csv`.
 
 ### Väljundid ja tulemused
 
