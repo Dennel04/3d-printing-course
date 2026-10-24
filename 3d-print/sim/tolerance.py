@@ -1,5 +1,5 @@
-"""tolerance.py — how large a calibration error the glass cycle survives: every holder is shifted by the
-same error (robot frame), 8 directions, 1..7 mm, one glass; first failure per direction.
+"""tolerance.py — how large a calibration error the planned full glass cycle survives: every holder is
+shifted by the same error (robot frame), 8 directions, 1..7 mm, one glass; first failure per direction.
 Writes <lab>/docs/sim_tolerance.txt. Run: .venv/Scripts/python tolerance.py [--lab ../lab2]"""
 import argparse
 import math
@@ -21,7 +21,7 @@ def main():
         a = math.radians(45 * k)
         first = None
         for e in range(1, 8):
-            r = dry_run.Run([1])
+            r = dry_run.Run([1], full=True)
             for role in ("input", "workstation", "output"):
                 dry_run.cycle.holder(r.lay, role)["teach"].update(dx=round(e * math.cos(a), 2), dy=round(e * math.sin(a), 2))
             f = fails(r.run())

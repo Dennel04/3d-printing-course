@@ -30,25 +30,25 @@ C-3,,253.04,108.46,-161.6,-4.8,-206.6,-161.6,touch: cup -> rakis_grid_neg_0
 C-4,,252.4,150.45,-180.8,-24.0,-206.4,-180.8,touch: cup -> table
 C-5,,251.76,192.45,-180.8,-24.0,-203.3,-180.8,touch: cup -> table
 D+5,,299.51,-184.87,-180.8,-24.0,-192.4,-180.8,touch: cup -> table
-D+4,Good output,298.87,-142.87,-154.3,2.5,-199.8,-154.3,touch: cup -> holder:Good output
+D+4,,298.87,-142.87,-180.8,-24.0,-199.8,-180.8,touch: cup -> table
 D+3,Good output,298.23,-100.88,-154.3,2.5,-203.8,-154.3,touch: cup -> holder:Good output
-D+2,Workstation (orange),297.59,-58.88,-150.9,5.9,-205.5,-150.9,touch: cup -> holder:Workstation (orange)
+D+2,Good output,297.59,-58.88,-154.3,2.5,-205.5,-154.3,touch: cup -> holder:Good output
 D+1,Workstation (orange),296.95,-16.89,-150.9,5.9,-206.1,-150.9,touch: cup -> holder:Workstation (orange)
-D-1,AtomS3 input,296.31,25.11,-153.5,3.3,-206.1,-153.5,touch: cup -> holder:AtomS3 input
+D-1,Workstation (orange),296.31,25.11,-150.9,5.9,-206.1,-150.9,touch: cup -> holder:Workstation (orange)
 D-2,AtomS3 input,295.67,67.1,-153.5,3.3,-205.5,-153.5,touch: cup -> holder:AtomS3 input
-D-3,Glass input,295.04,109.1,-149.9,6.9,-203.8,-149.9,touch: cup -> holder:Glass input
+D-3,AtomS3 input,295.04,109.1,-153.5,3.3,-203.8,-153.5,touch: cup -> holder:AtomS3 input
 D-4,Glass input,294.4,151.09,-149.9,6.9,-199.9,-149.9,touch: cup -> holder:Glass input
-D-5,,293.76,193.09,-180.8,-24.0,-192.5,-180.8,touch: cup -> table
+D-5,Glass input,293.76,193.09,-149.9,6.9,-192.5,-149.9,touch: cup -> holder:Glass input
 E+5,,341.5,-184.23,-171.3,-14.5,-171.3,-180.8,joint: J2 83.1 deg at its high limit (85)
-E+4,Good output,340.86,-142.24,-154.3,2.5,-183.7,-154.3,touch: cup -> holder:Good output
+E+4,,340.86,-142.24,-180.8,-24.0,-183.7,-180.8,touch: cup -> table
 E+3,Good output,340.23,-100.24,-154.3,2.5,-191.1,-154.3,touch: cup -> holder:Good output
-E+2,Workstation (orange),339.59,-58.25,-150.9,5.9,-195.4,-150.9,touch: cup -> holder:Workstation (orange)
+E+2,Good output,339.59,-58.25,-154.3,2.5,-195.4,-154.3,touch: cup -> holder:Good output
 E+1,Workstation (orange),338.95,-16.25,-150.9,5.9,-197.3,-150.9,touch: cup -> holder:Workstation (orange)
-E-1,AtomS3 input,338.31,25.74,-153.5,3.3,-197.3,-153.5,touch: cup -> holder:AtomS3 input
+E-1,Workstation (orange),338.31,25.74,-150.9,5.9,-197.3,-150.9,touch: cup -> holder:Workstation (orange)
 E-2,AtomS3 input,337.67,67.74,-153.5,3.3,-195.4,-153.5,touch: cup -> holder:AtomS3 input
-E-3,Glass input,337.03,109.73,-149.9,6.9,-191.3,-149.9,touch: cup -> holder:Glass input
+E-3,AtomS3 input,337.03,109.73,-153.5,3.3,-191.3,-153.5,touch: cup -> holder:AtomS3 input
 E-4,Glass input,336.39,151.73,-149.9,6.9,-183.8,-149.9,touch: cup -> holder:Glass input
-E-5,,335.75,193.73,-171.6,-14.8,-171.6,-180.8,joint: J2 83.0 deg at its high limit (85)
+E-5,Glass input,335.75,193.73,-149.9,6.9,-171.6,-149.9,touch: cup -> holder:Glass input
 F+5,,383.5,-183.59,-133.0,23.8,-133.0,-180.8,joint: J2 83.1 deg at its high limit (85)
 F+4,,382.86,-141.6,-153.5,3.4,-153.5,-180.8,joint: J2 83.1 deg at its high limit (85)
 F+3,,382.22,-99.6,-161.6,-4.8,-165.8,-161.6,touch: cup -> rakis_grid_pos_1

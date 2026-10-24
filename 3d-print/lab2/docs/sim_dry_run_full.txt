@@ -1,0 +1,85 @@
+mode: planned full cycle; input = Glass input, workstation = Workstation (orange), output = Good output
+input pick_z: not taught, derived -149.0
+workstation place_z: not taught, derived -114.1
+workstation pick_z: not taught, derived -115.1
+output place_z: not taught, derived -151.3
+pocket floors z 14.13 / 13.13 / 9.78, Atom top z 48.00
+glass 1: glass 1: approach input                ok        min clearance   12.3 mm (cup - holder:AtomS3 input)
+glass 1: glass 1: down to input                 ok        min clearance   11.4 mm (cup - holder:AtomS3 input)
+glass 1: pick glass 1: cup 0.1 mm from the glass centre ok
+glass 1: glass 1: lift from input               ok        min clearance    6.2 mm (carried glass - holder:AtomS3 input)
+glass 1: glass 1: above workstation             ok        min clearance   14.1 mm (carried glass - AtomS3)
+glass 1: glass 1: approach workstation          ok        min clearance   17.9 mm (carried glass - battery)
+glass 1: glass 1: down to workstation           ok        min clearance   12.9 mm (carried glass - battery)
+glass 1: release -> rests on AtomS3, falls 0.0 mm, ok (edges overhang holder:Workstation (orange))
+glass 1: glass 1: lift from workstation         ok        min clearance   14.9 mm (cup - battery)
+glass 1: glass 1: above workstation             ok        min clearance   14.1 mm (cup - workstation glass 1)
+glass 1: glass 1: approach workstation          ok        min clearance   18.9 mm (cup - battery)
+glass 1: glass 1: down to workstation           ok        min clearance   13.9 mm (cup - battery)
+glass 1: pick workstation glass 1: cup 0.0 mm from the glass centre ok
+glass 1: glass 1: lift from workstation         ok        min clearance   11.9 mm (carried glass - battery)
+glass 1: glass 1: above output                  ok        min clearance   14.1 mm (carried glass - AtomS3)
+glass 1: glass 1: approach output               ok        min clearance    6.2 mm (carried glass - holder:Workstation (orange))
+glass 1: glass 1: down to output                ok        min clearance    6.2 mm (carried glass - holder:Workstation (orange))
+glass 1: release -> rests on holder:Good output, falls 1.0 mm, ok
+glass 1: glass 1: lift from output              ok        min clearance   11.4 mm (cup - holder:Workstation (orange))
+glass 2: glass 2: above input                   ok        min clearance   16.1 mm (cup - AtomS3)
+glass 2: glass 2: approach input                ok        min clearance   16.8 mm (cup - rakis_grid_neg_0)
+glass 2: glass 2: down to input                 ok        min clearance   13.3 mm (cup - rakis_grid_neg_0)
+glass 2: pick glass 2: cup 0.1 mm from the glass centre ok
+glass 2: glass 2: lift from input               ok        min clearance    8.1 mm (carried glass - rakis_grid_neg_0)
+glass 2: glass 2: above workstation             ok        min clearance   14.1 mm (carried glass - AtomS3)
+glass 2: glass 2: approach workstation          ok        min clearance   17.9 mm (carried glass - battery)
+glass 2: glass 2: down to workstation           ok        min clearance   12.9 mm (carried glass - battery)
+glass 2: release -> rests on AtomS3, falls 0.0 mm, ok (edges overhang holder:Workstation (orange))
+glass 2: glass 2: lift from workstation         ok        min clearance   14.9 mm (cup - battery)
+glass 2: glass 2: above workstation             ok        min clearance   14.1 mm (cup - workstation glass 2)
+glass 2: glass 2: approach workstation          ok        min clearance   18.9 mm (cup - battery)
+glass 2: glass 2: down to workstation           ok        min clearance   13.9 mm (cup - battery)
+glass 2: pick workstation glass 2: cup 0.0 mm from the glass centre ok
+glass 2: glass 2: lift from workstation         ok        min clearance   11.9 mm (carried glass - battery)
+glass 2: glass 2: above output                  ok        min clearance   14.1 mm (carried glass - AtomS3)
+glass 2: glass 2: approach output               ok        min clearance   10.3 mm (carried glass - rakis_grid_pos_0)
+glass 2: glass 2: down to output                ok        min clearance    6.5 mm (carried glass - rakis_grid_pos_0)
+glass 2: release -> rests on holder:Good output, falls 1.0 mm, ok
+glass 2: glass 2: lift from output              ok        min clearance   10.3 mm (cup - rakis_grid_pos_0)
+glass 3: glass 3: above input                   ok        min clearance   16.1 mm (cup - AtomS3)
+glass 3: glass 3: approach input                ok        min clearance   12.3 mm (cup - holder:AtomS3 input)
+glass 3: glass 3: down to input                 ok        min clearance   11.4 mm (cup - holder:AtomS3 input)
+glass 3: pick glass 3: cup 0.1 mm from the glass centre ok
+glass 3: glass 3: lift from input               ok        min clearance    6.1 mm (carried glass - webcam post alumine)
+glass 3: glass 3: above workstation             ok        min clearance   14.1 mm (carried glass - AtomS3)
+glass 3: glass 3: approach workstation          ok        min clearance   17.9 mm (carried glass - battery)
+glass 3: glass 3: down to workstation           ok        min clearance   12.9 mm (carried glass - battery)
+glass 3: release -> rests on AtomS3, falls 0.0 mm, ok (edges overhang holder:Workstation (orange))
+glass 3: glass 3: lift from workstation         ok        min clearance   14.9 mm (cup - battery)
+glass 3: glass 3: above workstation             ok        min clearance   14.1 mm (cup - workstation glass 3)
+glass 3: glass 3: approach workstation          ok        min clearance   18.9 mm (cup - battery)
+glass 3: glass 3: down to workstation           ok        min clearance   13.9 mm (cup - battery)
+glass 3: pick workstation glass 3: cup 0.0 mm from the glass centre ok
+glass 3: glass 3: lift from workstation         ok        min clearance   11.9 mm (carried glass - battery)
+glass 3: glass 3: above output                  ok        min clearance   14.1 mm (carried glass - AtomS3)
+glass 3: glass 3: approach output               ok        min clearance    6.2 mm (carried glass - holder:Workstation (orange))
+glass 3: glass 3: down to output                ok        min clearance    6.2 mm (carried glass - holder:Workstation (orange))
+glass 3: release -> rests on holder:Good output, falls 1.0 mm, ok
+glass 3: glass 3: lift from output              ok        min clearance   11.4 mm (cup - holder:Workstation (orange))
+glass 4: glass 4: above input                   ok        min clearance   23.0 mm (cup - holder:Workstation (orange))
+glass 4: glass 4: approach input                ok        min clearance   13.2 mm (cup - webcam post alumine)
+glass 4: glass 4: down to input                 ok        min clearance   11.5 mm (cup - webcam post alumine)
+glass 4: pick glass 4: cup 0.1 mm from the glass centre ok
+glass 4: glass 4: lift from input               ok        min clearance    6.1 mm (carried glass - webcam post alumine)
+glass 4: glass 4: above workstation             ok        min clearance   14.1 mm (carried glass - AtomS3)
+glass 4: glass 4: approach workstation          ok        min clearance   17.9 mm (carried glass - battery)
+glass 4: glass 4: down to workstation           ok        min clearance   12.9 mm (carried glass - battery)
+glass 4: release -> rests on AtomS3, falls 0.0 mm, ok (edges overhang holder:Workstation (orange))
+glass 4: glass 4: lift from workstation         ok        min clearance   14.9 mm (cup - battery)
+glass 4: glass 4: above workstation             ok        min clearance   14.1 mm (cup - workstation glass 4)
+glass 4: glass 4: approach workstation          ok        min clearance   18.9 mm (cup - battery)
+glass 4: glass 4: down to workstation           ok        min clearance   13.9 mm (cup - battery)
+glass 4: pick workstation glass 4: cup 0.0 mm from the glass centre ok
+glass 4: glass 4: lift from workstation         ok        min clearance   11.9 mm (carried glass - battery)
+glass 4: glass 4: above output                  ok        min clearance   14.1 mm (carried glass - AtomS3)
+glass 4: glass 4: approach output               ok        min clearance   10.3 mm (carried glass - rakis_grid_pos_1)
+glass 4: glass 4: down to output                ok        min clearance    6.5 mm (carried glass - rakis_grid_pos_1)
+glass 4: release -> rests on holder:Good output, falls 1.0 mm, ok
+glass 4: glass 4: lift from output              ok        min clearance   10.3 mm (cup - rakis_grid_pos_1)

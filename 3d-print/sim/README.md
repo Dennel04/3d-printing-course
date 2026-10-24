@@ -12,7 +12,8 @@ python -m venv .venv
 .venv/Scripts/python -m pip install -r requirements.txt
 .venv/Scripts/python reach_map.py          # <lab>/docs/sim_reach.csv, <lab>/docs/photos/sim-reach-map.png
 .venv/Scripts/python check_calibration.py  # kus nelja nurga meetod kalibreerimishoidikuga v3 töötab
-.venv/Scripts/python dry_run.py            # klaasitsükkel kuivalt, <lab>/docs/sim_dry_run.txt
+.venv/Scripts/python dry_run.py            # layout.json nii nagu on (režiim, rollid, õpetatud Z), <lab>/docs/sim_dry_run.txt
+.venv/Scripts/python dry_run.py --full     # planeeritud täistsükkel sisend -> töökoht -> väljund, <lab>/docs/sim_dry_run_full.txt
 .venv/Scripts/python tolerance.py          # kalibreerimisvea taluvus, <lab>/docs/sim_tolerance.txt
 .venv/Scripts/python reach_map.py --lab ../lab3   # teine labor (vajab oma calibration/, slot-picker/)
 ```
@@ -32,6 +33,8 @@ python -m venv .venv
 
 ## Mida dry_run kontrollib
 
+Vaikimisi kontrollitakse seda, mida robot praegu teeks: `layout.json` režiim (`workstation_step`), rollid (võivad olla sama hoidik) ja õpetatud dx/dy/Z; õpetamata Z tuletatakse geomeetriast ning õpetatud ja tuletatud väärtus kirjutatakse kõrvuti. `--full` kontrollib planeeritud täistsüklit (rollid ettepanekupaigutusest, kõik Z tuletatud); `tolerance.py` kasutab täistsüklit.
+
 - iga liikumine sirgjoonena iga 2 mm järel (**eeldus**: `mg400-base` liigub sirgelt): liigesepiirid, käe, XIAO kinnituse, napa ja kantava klaasi (30 × 30 × 2) kokkupõrge rakise, hoidikute, posti, pesades olevate klaaside ning aku + Atomi virnaga;
 - oma sihtmärki (klaas, Atom, väljundi põhi) võib napp/klaas puudutada ainult lähenemisel ja **mitte sügavamalt kui 1,5 mm** (õpetatud võtmine surub 1 mm);
 - võtmisel: napa nihe klaasi keskelt ≤ 5 mm (Ø 20 napp 30 mm klaasil);
@@ -49,3 +52,9 @@ Negatiivtestid (24.10.26), kõik leitud: travel Z −140 → 15 kokkupõrget; t�
 ## Piirid (mida kaksik ei näe)
 
 Printimise vead (elevandijalg, tugede jäägid, kahanemine) — selleks on füüsiline jala test ja nihik. Pehme napa kaldumine seina vastu. Füüsika (klaasi libisemine) — järgmine samm (MuJoCo). TODO mõõta: napa läbimõõt, napa nihe J4 teljest, napa pikkus J4 mootori alt.
+
+## 25.10.26 kontroll (layout pärast 24.10 17:06 muudatusi)
+
+- Täistsükkel (`--full`): 4 klaasi kokkupõrgeteta, taluvus endine (võtmine 5 mm, väljund 3 mm).
+- Ülekandetest (praegune `layout.json`: kõik rollid = Glass input, D-4/D-5/E-4/E-5): kokkupõrkeid pole; output `place_z` pole õpetatud (slot picker ei lase seda käivitada, kaksik tuletab −147,0).
+- Õpetatud `pick_z −150,5`: kaksiku järgi algab klaasi puudutus Z −147,9 ja tühja pesa põhi −149,9 → klaasiga surub −150,5 napa 2,6 mm (lubatud 1,5). 24.10 17:06 Z-proovi kaadrites on pesad tühjad ja napp surutakse kokku juba alates −151 → tõenäoliselt õpetati tühja põhja peale. **Kontrollida**: kas õpetamisel oli klaas pesas.

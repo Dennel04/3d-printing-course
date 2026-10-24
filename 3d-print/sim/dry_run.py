@@ -1,14 +1,16 @@
 """dry_run.py — run the real slot-picker glass cycle (slot-picker/cycle.py) in the twin before the robot.
 
-Uses the action list cycle.plan_glass() builds for the robot, the layout from slot-picker/layout.json
-(roles below if none are chosen yet) and taught Z values derived from the twin geometry (pick: cup on
-the glass top pressed 1 mm, place on the workstation: glass on the Atom screen, output: glass 1 mm above
-the floor). Every move is checked as a straight line every 2 mm (assumption: mg400-base streams a
+Uses the action list cycle.plan_glass() builds for the robot and slot-picker/layout.json as it is
+(mode, roles, taught dx/dy/Z), i.e. what the robot would run now. A Z not taught yet is derived from
+the twin geometry (pick: cup on the glass top pressed 1 mm, place on the workstation: glass on the Atom
+screen, output: glass 1 mm above the floor); taught and derived values are both reported.
+--full checks the planned full cycle instead: roles below, workstation step on, all Z derived. Every move is checked as a straight line every 2 mm (assumption: mg400-base streams a
 straight Cartesian path): joint limits, and collisions of the arm, the XIAO mount, the cup and the
 carried glass with the rig, holders, the webcam post, glasses in pockets and the battery+Atom stack.
 The cup and the carried glass may touch only their own target pocket during approach/down/lift.
 
-Writes <lab>/docs/sim_dry_run.txt. Run: .venv/Scripts/python dry_run.py [--lab ../lab2] [--glasses 1,2,3,4]
+Writes <lab>/docs/sim_dry_run.txt (--full: sim_dry_run_full.txt).
+Run: .venv/Scripts/python dry_run.py [--lab ../lab2] [--glasses 1,2,3,4] [--full]
 """
 import argparse
 import copy
@@ -54,8 +56,15 @@ def box(extents, centre):
 
 
 class Run:
-    def __init__(self, glasses):
+    def __init__(self, glasses, full=False):
         lay = copy.deepcopy(twin.json.loads((twin.LAB / "slot-picker" / "layout.json").read_text(encoding="utf-8")))
+        self.full = full
+        if full:
+            lay["cycle"]["roles"] = dict(ROLES)
+            lay["cycle"]["workstation_step"] = True
+            lay["cycle"]["workstation_cell"] = None
+            for h in lay["holders"]:
+                h.pop("teach", None)
         for role, name in ROLES.items():
             lay["cycle"]["roles"][role] = lay["cycle"]["roles"].get(role) or name
         ws_h = cycle.holder(lay, "workstation")
@@ -88,13 +97,30 @@ class Run:
                       "output": self._surface(out["name"], out["cells"][0])}
         self.atom_top = self.floor["workstation"] + BATTERY_H + ATOM_H
         g = GLASS[2]
-        inp["teach"] = {"dx": 0, "dy": 0, "pick_z": round(T.robot_z_for_tip(self.floor["input"] + g - 1), 1)}
-        ws["teach"] = {"dx": 0, "dy": 0, "place_z": round(T.robot_z_for_tip(self.atom_top + g), 1),
-                       "pick_z": round(T.robot_z_for_tip(self.atom_top + g - 1), 1)}
-        out["teach"] = {"dx": 0, "dy": 0, "place_z": round(T.robot_z_for_tip(self.floor["output"] + g + 1), 1)}
-        self.log.append(f"derived teach: input pick {inp['teach']['pick_z']}, workstation place {ws['teach']['place_z']} "
-                        f"/ pick {ws['teach']['pick_z']}, output place {out['teach']['place_z']} (robot Z); "
-                        f"pocket floors z {self.floor['input']:.2f} / {self.floor['workstation']:.2f} / "
+        derived = {"input": {"pick_z": T.robot_z_for_tip(self.floor["input"] + g - 1)},
+                   "workstation": {"place_z": T.robot_z_for_tip(self.atom_top + g),
+                                   "pick_z": T.robot_z_for_tip(self.atom_top + g - 1)},
+                   "output": {"place_z": T.robot_z_for_tip(self.floor["output"] + g + 1)}}
+        used = cycle.roles(lay)
+        self.log.append("mode: " + ("planned full cycle" if self.full else "layout.json as is, "
+                        + ("full cycle" if lay["cycle"].get("workstation_step") else "transfer test (no workstation)"))
+                        + "; " + ", ".join(f"{r} = {cycle.holder(lay, r)['name']}" for r in used))
+        # roles may share one holder (transfer test): fill in only what a used role misses, never overwrite
+        for role, h in (("input", inp), ("workstation", ws), ("output", out)):
+            if role not in used:
+                continue
+            t = h.setdefault("teach", {})
+            t.setdefault("dx", 0)
+            t.setdefault("dy", 0)
+            for k, v in derived[role].items():
+                v = round(v, 1)
+                if t.get(k) is None:
+                    t[k] = v
+                    self.log.append(f"{role} {k}: not taught, derived {v}")
+                else:
+                    self.log.append(f"{role} {k}: taught {t[k]}, twin derives {v} ({t[k] - v:+.1f} mm)"
+                                    + (f"; taught dx {t['dx']} dy {t['dy']}" if t["dx"] or t["dy"] else ""))
+        self.log.append(f"pocket floors z {self.floor['input']:.2f} / {self.floor['workstation']:.2f} / "
                         f"{self.floor['output']:.2f}, Atom top z {self.atom_top:.2f}")
 
     def _world(self, cell):
@@ -106,6 +132,9 @@ class Run:
         for g in self.glasses:
             x, y = self._world(inp["cells"][g - 1])
             self.T.scene[f"glass {g}"] = box(GLASS, (x, y, self.floor["input"] + GLASS[2] / 2))
+        if not lay["cycle"].get("workstation_step"):     # transfer test: no battery + Atom on the table
+            self._refresh()
+            return
         x, y = self._world(lay["cycle"]["workstation_cell"])
         f = self.floor["workstation"]
         self.T.scene["battery"] = box((24.04, 24.01, BATTERY_H), (x, y, f + BATTERY_H / 2))
@@ -182,7 +211,7 @@ class Run:
         report = list(self.log)
         for g in self.glasses:
             target_of = {"input": [f"glass {g}", "holder:" + inp["name"]],
-                         "workstation": ["AtomS3", "holder:" + ROLES["workstation"]],
+                         "workstation": ["AtomS3", "holder:" + cycle.holder(lay, "workstation")["name"]],
                          "output": ["holder:" + out["name"]] + [f"placed glass {k}" for k in self.glasses]}
             for act in cycle.plan_glass(lay, g, self.by_name):
                 if act[0] == "pump":
@@ -279,21 +308,24 @@ class Run:
         return hi, touching(lo)[0]
 
     def _near_ws(self, p):
+        if not self.lay["cycle"].get("workstation_step"):
+            return False
         wx, wy = cycle.slot_xy(self.lay, "workstation", 1, self.by_name)
         return math.hypot(p[0] - wx, p[1] - wy) < 1.0
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--glasses", default="1,2,3,4")
+    ap.add_argument("--full", action="store_true", help="the planned full cycle instead of layout.json as is")
     twin.add_lab_arg(ap)
     a = ap.parse_args()
     twin.use_lab(a.lab)
     load_cycle()
-    run = Run([int(v) for v in a.glasses.split(",")])
+    run = Run([int(v) for v in a.glasses.split(",")], full=a.full)
     rep = run.run()
     text = "\n".join(rep)
     print(text)
-    (twin.LAB / "docs" / "sim_dry_run.txt").write_text(text + "\n", encoding="utf-8")
+    (twin.LAB / "docs" / ("sim_dry_run_full.txt" if a.full else "sim_dry_run.txt")).write_text(text + "\n", encoding="utf-8")
 
 
 if __name__ == "__main__":
