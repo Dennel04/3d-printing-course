@@ -134,6 +134,17 @@
         "F+2"
       ],
       "status": "decided 24.10 (layout.md), not placed yet"
+    },
+    {
+      "name": "Webcam post",
+      "type": "camera_post",
+      "cells": [
+        "F-4",
+        "F-5",
+        "G-4",
+        "G-5"
+      ],
+      "status": "v3 design, final place TODO (layout.md)"
     }
   ]
 }
