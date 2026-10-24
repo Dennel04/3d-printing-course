@@ -338,6 +338,7 @@ mitte ei muudeta.
 * Kontroll päris andmetega: G-1 liigesepiir −135,8 vs päris −138; B-2 J3 piir −99 vs −98; lahtrikeskmed vs `cells.py` ≤ 0,06 mm; napa pikkus 66,2 mm D-2 puudutusest, 23.10 G-1 nurgad sobivad. Kontrollijat testiti teadlikult vigaste tsüklitega (8 juhtumit, kõik leitud).
 * Tulemused: B-2 ei sobi kalibreerimiseks (napp ei mahu kasti v3) → C-2; klaasitsükkel kokkupõrgeteta; väljund talub ainult 3 mm kalibreerimisviga. Üksikasjad ja piirid: [`../sim/README.md`](../sim/README.md). Kaksik viidi samal päeval labori kaustast välja `3d-print/sim/`-i (Denys: see on kõigi laborite jaoks); Lab 2 tulemused jäävad `docs/`-i.
 * TODO — waiting for physical test: napa läbimõõt, nihe J4 teljest ja pikkus nihikuga; kalibreerimine C-2-s.
+* XIAO kaamerakinnitus v5: esimene testprint käivitatud (Nikita).
 
 ### Väljundid ja tulemused
 
