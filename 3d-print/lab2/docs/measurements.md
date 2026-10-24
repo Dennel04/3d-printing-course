@@ -208,6 +208,12 @@ Mõõda vajaduse korral mitu klaasi ja säilita kõik üksiktulemused, et hiljem
 - 18:16: Denys seadis napa klaasi sisendhoidiku pesa D-4 keskele (Z −150,0): **293.56 / 154.20**. Varasem õpetus (Raimo 17:06) näitas 294.41 / 153.09 → vahe -0.85 / +1.11 mm. Salvestatud hoidiku õpetusena (`teach` dx -1.50, dy +2.50 lahtri D-4 keskpunktist), mitte `cells.py`-sse: hoidik on vanade jalgadega (lõtk ~1 mm), seega pesa keskpunkt sisaldab hoidiku asendit ruudustikus. `pick_z` muutmata (−150,5).
 - 18:19: sama D-5 pesas: **292,10 / 196,19** (lahtri keskpunkt 294,60 / 193,69 → −2,50 / +2,50). D-4 → D-5 mõõdetud −1,46 / +41,99 = 42,02 mm (samm õige), suund −1,99° vs ruudustik −0,63° → hoidik on ruudustikus ~1,4° pööratud (vanad jalad). Slot picker hoiab ühte nihet hoidiku kohta → kahe pesa keskmine **dx −2,00, dy +2,50** (kummaski pesas ≤ 0,5 mm X-viga). E-4 / E-5 mõõtmata.
 
+24.10.26 õhtu — töökoha õpetamine (paigutus B, oranž hoidik C±1):
+
+- C+1 pesas akumoodul + AtomS3 (ekraan üles) + klaas peal (Denys). Napp R 33, kiirus 5 %, XIAO kaamera v5 kinnitusel kontrolliks.
+- XY: lahtri C+1 keskpunkt `cells.py` järgi 254,88 / −16,75 — Denys: napp klaasi keskel → oranži hoidiku nihe **0 / 0**.
+- Z: Denys laskis napa klaasi puudutuseni, madalamale ei saa: **Z −119,0** → `place_z` ja `pick_z` = −119,0 (slot picker Test → Set, `cycle.workstation_cell` = C+1).
+- Kaksik ennustas −114,1 → päris virn on 4,9 mm madalamal. Põhjus selgitamata (aku pesa sügavus, oranži hoidiku vanad jalad, AtomS3 nimimõõt 12,9): TODO.
 ## 24.10.2026 — iminapa mõõtmised, massihinnang ja sisendhoidikute sobivus
 
 Allikas: kasutaja 24.10.2026 edastatud füüsilised mõõtmised ja käsitsi tehtud sobivuskontroll. Allolev täiendus ei muuda varasemaid Exceli andmeid ega kalibreerimiskirjeid.
