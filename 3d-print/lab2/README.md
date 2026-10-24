@@ -145,6 +145,12 @@ Kõigi nende olek on `TODO — waiting for physical test`.
 
   ![xiao-square-mount-v4 PrusaSliceris: tagurpidi, orgaanilised toed](docs/photos/xiao-square-mount-v4-slicer.png)
 
+- `camera-mounts/src/xiao-square-mount-v5.f3d` (ilma välisviiteta), `camera-mounts/stl/xiao-square-mount-v5.stl`, `camera-mounts/3mf/xiao-square-mount-v5.3mf` (PrusaSliceri projekt, samad seaded mis v4; 49 min, 16,2 g) - v4 ilma esimese kaabliklambrita: eemaldatud `cable_tab` (sild plaadi kohal Y 7,5…38) ning `cable_clip_body`/`cable_clip_cut` (klamber Y 32…38). Kasutaja: USB-C pistiku korpus ei mahtunud silla alla. Teine klamber (`cable_clip2`, +Y seinal) ja tihvtiga kaamerapesa jäävad. Printimata.
+
+  ![xiao-square-mount-v5 Fusionis: ilma esimese kaabliklambrita](docs/photos/xiao-square-mount-v5-fusion.png)
+
+  ![xiao-square-mount-v5 PrusaSliceris](docs/photos/xiao-square-mount-v5-slicer.png)
+
 - `gridfinity-calibration/src/gridfinity-calibration-v1.f3d`, `gridfinity-calibration/stl/gridfinity-calibration-v1.stl`, `gridfinity-calibration/3mf/gridfinity-calibration-v1.3mf` - lisatud 1 × 1 Gridfinity kalibreerimishoidiku Fusioni fail ja ekspordid; füüsiline sobivus ja roboti kalibreerimine: `TODO — waiting for physical test`.
 - `atoms3-input-holder/src/atoms3-input-holder-v1.f3d`, `atoms3-input-holder/stl/atoms3-input-holder-v1.stl`, `atoms3-input-holder/3mf/atoms3-input-holder-v1.3mf` - AtomS3 sisendhoidiku Fusioni fail ja ekspordid; mõõtude ning füüsilise sobivuse kinnitus: `TODO — waiting for physical test`.
 - `ready-parts-input-holder/src/ready-parts-input-holder-v1.f3d`, `ready-parts-input-holder/stl/ready-parts-input-holder-v1.stl`, `ready-parts-input-holder/3mf/ready-parts-input-holder-v1.3mf` - ReadyParts sisendhoidiku Fusioni fail ja ekspordid; mõõtude ning füüsilise sobivuse kinnitus: `TODO — waiting for physical test`.
@@ -278,6 +284,14 @@ mitte ei muudeta.
 * Kokkupanek: plaat koos kaameraga renni pidi sisse → tihvt läbi seinte. Eemaldamine: tihvt välja lükata teise filamenditükiga, plaat välja.
 * Füüsiliselt kontrollida (TODO — waiting for physical test): kaameramooduli mõõdud nihikuga (`cam_w`, `cam_h`, `cam_y0`) ja tegelik asend lindikaabli otsas; kas 1,75 mm filament läheb Ø1,85 avasse ja püsib hõõrdega (horisontaalne ava võib tulla kitsam — vajadusel puurida 1,8–1,9 mm või muuta `pin_fit`); tugede puudumine tihvti avas; kaamera kordub samasse asendisse (eemaldada/panna tagasi, võrrelda kaadreid); vahe iminapani (tööriistahoidiku mõõdud `measurements.md`-s on TODO); PLA soojenemine mooduli juures.
 * Failid: `camera-mounts/src|stl|3mf/xiao-square-mount-v4.*`, `docs/photos/xiao-square-mount-v4-fusion.png`, `docs/photos/xiao-square-mount-v4-slicer.png`. v2 ja v3 failid muutmata.
+
+**24.10.2026 — XIAO kaamerakinnitus v5: esimene kaabliklamber eemaldatud**
+* Osalejad: Denys vaatas v4 Fusionis üle; muudatuse tegi Claude Fusioni API kaudu. Füüsilist katset ei tehtud.
+* Probleem: esimene kaabliklamber (sild `cable_tab` + klamber `cable_clip_body`/`cable_clip_cut`) on USB-C pesale liiga lähedal; USB-C pistiku korpus on suurem kui silla all olev ruum.
+* Lahendus: kolm fiitšerit ja nende visandid kustutatud. Tõmbetõkkeks jääb teine klamber `cable_clip2` +Y seinal. Maht 14 500,6 → 13 584,8 mm³.
+* Kontroll Fusionis: interferents XIAO-ga 0; plaadi väljatõmbamine renni pidi +Y suunas 0–44 mm ilma ühegi kokkupuuteta (v4-s puudutas plaat silda alates 20 mm-st). Imporditud v5.f3d: ajajoon terve, välisviiteid pole.
+* Füüsiliselt kontrollida (TODO — waiting for physical test): USB-C pistik koos kaabliga mahub; kaabel püsib ainult teises klambris ja ei tõmba pistikut lahti J4 pööramisel; kõik v4 kontrollid (kaamera mõõdud, tihvti istuvus, vahe iminapani).
+* Failid: `camera-mounts/src|stl|3mf/xiao-square-mount-v5.*`, `docs/photos/xiao-square-mount-v5-fusion.png`, `docs/photos/xiao-square-mount-v5-slicer.png`. v2–v4 muutmata.
 
 ### Väljundid ja tulemused
 
