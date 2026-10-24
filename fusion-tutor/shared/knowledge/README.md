@@ -6,6 +6,7 @@ Verified material for the whole team. Each note starts with author and date.
   (freezes, active commands, cuts, f3z, hook v2).
 - `lab2-webcam-mount.md`: mounting the Verbatim AWC-03 webcam above the table:
   decision, data, what to measure.
+- `gridfinity-socket.md`: exact profile of the rig's Gridfinity socket (B-Rep), the STANDARD foot (generator) and how it sits, calibration bin.
 - `mg400-end-square.md`: the square at the end of the MG400 arm (XIAO camera
   mount): dimensions from CAD, where the robot model lives.
 - `prusaslicer-pipeline.md`: PrusaSlicer CLI pitfalls (model-only 3MF,

@@ -58,6 +58,20 @@ Command ids seen: `SelectCommand` (idle), `OrbitCommand`,
 `ConstrainedOrbitCommand`, `FusionDeleteCommand`, `Extrude`.
 State in one command: `python tools/fusion_status.py`.
 
+## Seeing exact geometry (2026-10-24)
+
+- A screenshot shows the shape, not the numbers. For fillets, chamfers and
+  fits read the **B-Rep faces**: `face.geometry` is a `Plane` (normal),
+  `Cylinder` (radius), `Cone` (radius, `halfAngle`) or `Torus`. Script:
+  `../tools/fusion-geometry/brep_faces.py` (read-only). This is how the
+  Gridfinity socket profile was found (`gridfinity-socket.md`).
+- Cross-check numbers with `body.pointContainment(point)` (binary search for
+  a half-width at a given Z) and `app.measureManager.measureMinimumDistance(a, b)`
+  between the part and its mating body; `design.analyzeInterference` for overlaps.
+- Extrude taper: in `setOneSideExtent(extent, direction, taper)` a **negative**
+  taper made the profile shrink along a downward (negative-distance) extrude;
+  the taper offsets fillet arcs concentrically (verified by probing).
+
 ## Rule for the tutor
 
 After every build check the **geometry** (how many holes and where,
