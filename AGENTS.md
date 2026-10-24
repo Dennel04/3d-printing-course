@@ -19,6 +19,7 @@ electronics course drives the display.
 
 ```
 3d-print/
+  models/              <- ühised ostetud komponentide mudelid (AtomS3, aku, XIAO, veebikaamera); vt models/README.md
   lab1/
     README.md          <- the lab assignment, copied here on day 1, filled in as work happens
     cube/               <- tolerance test print (5x5x5 cm cube, r2cm inner cylinder)
