@@ -69,6 +69,13 @@ void setup() {
   camera_ok = camera_init();
   if (camera_ok) {
     sensor_t *s = esp_camera_sensor_get();
+    if (s->id.PID == OV3660_PID) {
+      // Colour correction from the Arduino CameraWebServer example; the first
+      // frame had a green cast. The example's vflip is left out until the
+      // image orientation on the J4 mount is checked.
+      s->set_brightness(s, 1);
+      s->set_saturation(s, -2);
+    }
     Serial.printf("READY sensor PID 0x%x\n", s->id.PID);
   }
 }
