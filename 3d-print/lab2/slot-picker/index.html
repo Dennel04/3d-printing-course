@@ -153,10 +153,19 @@
       <label>Round <input type="number" id="round" min="1" max="99" value="1"></label>
       <label>Glass <select id="one-glass"><option>1</option><option>2</option><option>3</option><option>4</option></select></label>
       <button id="run-one">Run one glass</button>
-      <button id="run-four" class="primary">Run round: 4 glasses</button>
     </div>
-    <div class="note">Speed is set in mg400-base (≤ max). Between rounds take every holder out of the grid and put it back,
-      reload 4 glasses, do not re-teach. STOP leaves the pump as it is (a carried glass does not fall); Pump Off releases it.</div>
+    <div class="bar">
+      <span>Loaded input pockets:</span>
+      <label><input type="checkbox" class="loaded" value="1" checked> 1</label>
+      <label><input type="checkbox" class="loaded" value="2" checked> 2</label>
+      <label><input type="checkbox" class="loaded" value="3" checked> 3</label>
+      <label><input type="checkbox" class="loaded" value="4" checked> 4</label>
+      <button id="run-loaded" class="primary">Run loaded glasses (4)</button>
+    </div>
+    <div class="note">The robot does not see which pockets hold a glass: tick only the pockets you loaded, it takes just those
+      (glass n from input pocket n into output pocket n). Speed is set in mg400-base (≤ max). Between rounds take every holder
+      out of the grid and put it back, reload the glasses, do not re-teach. STOP leaves the pump as it is (a carried glass does
+      not fall); Pump Off releases it.</div>
 
     <h2>4. Result of the round → docs/refit_test.csv</h2>
     <div class="note">Ticks are filled from the steps the robot finished; the robot does not see the glass, so check each one and untick what failed.</div>
@@ -487,7 +496,14 @@ async function run(glasses) {
   glasses.forEach(g => { layout.fields.forEach(f => $(`r-${g}-${f}`).checked = false); ran.add(g); });
 }
 $("run-one").onclick = () => run([Number($("one-glass").value)]);
-$("run-four").onclick = () => run([1, 2, 3, 4]);
+const loaded = () => [...document.querySelectorAll(".loaded:checked")].map(c => Number(c.value));
+function loadedLabel() {
+  const n = loaded().length;
+  $("run-loaded").textContent = `Run loaded glasses (${n})`;
+  $("run-loaded").disabled = !n;
+}
+document.querySelectorAll(".loaded").forEach(c => c.onchange = loadedLabel);
+$("run-loaded").onclick = () => loaded().length ? run(loaded()) : say("Tick at least one loaded pocket.");
 
 function syncResults(cyc, busy) {  // copy the finished steps of the current run into the ticks
   if (!cyc || !layout.fields || (!busy && syncedRun === cyc.id)) return;
