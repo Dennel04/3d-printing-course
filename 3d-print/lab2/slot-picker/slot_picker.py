@@ -212,17 +212,51 @@ class Sequencer:
             raise ValueError(f"{cell['name']}: Z {hover_z} out of reach ({reach.get('reason')}), choose a higher hover Z")
         status = self.ready_status()
         cx, cy = status["pose"][0], status["pose"][1]
-        # the straight path at travel_z can pass close to the base and hit the J3-J2 limit
-        for i in range(21):
-            t = i / 20
-            x, y = cx + (cell["x"] - cx) * t, cy + (cell["y"] - cy) * t
-            reach = self.robot.call("/check", {"x": x, "y": y, "z": motion["travel_z"]})
-            if not reach.get("reachable"):
-                raise ValueError(f"path to {cell['name']} at travel Z passes out of reach near "
-                                 f"X {x:.0f} Y {y:.0f} ({reach.get('reason')}); go via a cell further from the robot")
+        self._check_path(cx, cy, cell["x"], cell["y"], motion["travel_z"], cell["name"])
         self._start([("move", "up", cx, cy, motion["travel_z"]),
                      ("move", "across", cell["x"], cell["y"], motion["travel_z"]),
                      ("move", "down", cell["x"], cell["y"], hover_z)], cell=cell["name"])
+
+    def _check_path(self, x0, y0, x1, y1, z, name):
+        """The straight path at z can pass close to the base and hit the J3-J2 limit."""
+        for i in range(21):
+            t = i / 20
+            x, y = x0 + (x1 - x0) * t, y0 + (y1 - y0) * t
+            reach = self.robot.call("/check", {"x": x, "y": y, "z": z})
+            if not reach.get("reachable"):
+                raise ValueError(f"path to {name} at Z {z} passes out of reach near "
+                                 f"X {x:.0f} Y {y:.0f} ({reach.get('reason')}); go via a cell further from the robot")
+
+    def transfer(self, src, dst, pick_z, place_z):
+        """One glass from cell src to cell dst (Test tab, Move one glass): down to pick_z, suck, carry at
+        travel_z, down to place_z, blow. src/dst are {"name", "x", "y"} with the holder teach offset applied."""
+        motion, cyc = self.layout["motion"], self.layout["cycle"]
+        tz = motion["travel_z"]
+        status = self.ready_status()
+        floor = status.get("z_floor")  # mg400-base --z-floor; it would clamp a lower target silently
+        for z, what in ((pick_z, "pick Z"), (place_z, "place Z")):
+            if not (floor is None or floor <= z) or z > tz:
+                raise ValueError(f"{what} must be {floor} … {tz}")
+        for c, z in ((src, pick_z), (dst, place_z)):
+            reach = self.robot.call("/check", {"x": c["x"], "y": c["y"], "z": z})
+            if not reach.get("reachable"):
+                raise ValueError(f"{c['name']}: Z {z} out of reach ({reach.get('reason')})")
+        cx, cy, cz = status["pose"][:3]
+        self._check_path(cx, cy, src["x"], src["y"], tz, src["name"])
+        self._check_path(src["x"], src["y"], dst["x"], dst["y"], tz, dst["name"])
+        a = cyc["approach_mm"]
+        s, d = src["name"], dst["name"]
+        self._start([("move", "up to travel height", cx, cy, max(cz, tz)),
+                     ("move", f"above {s}", src["x"], src["y"], tz),
+                     ("move", f"approach {s}", src["x"], src["y"], pick_z + a),
+                     ("move", f"down to {s}", src["x"], src["y"], pick_z),
+                     ("pump", "suck"), ("wait", cyc["suck_dwell_s"]),
+                     ("move", f"lift from {s}", src["x"], src["y"], tz),
+                     ("move", f"above {d}", dst["x"], dst["y"], tz),
+                     ("move", f"approach {d}", dst["x"], dst["y"], place_z + a),
+                     ("move", f"down to {d}", dst["x"], dst["y"], place_z),
+                     ("pump", "blow"), ("wait", cyc["blow_s"]), ("pump", "off"),
+                     ("move", f"lift from {d}", dst["x"], dst["y"], tz)], cell=d)
 
     def go_above(self, x, y, label):
         """To x/y at the cycle travel height (lower than the Drive travel_z), for teaching."""
@@ -560,6 +594,21 @@ def make_handler(layout, seq, port):
                     layout["cycle"]["workstation_cell"] = ws_cell
                     layout["cycle"]["workstation_step"] = bool(data.get("workstation_step"))
                     save_layout(layout)
+                elif self.path == "/api/transfer":
+                    idle()
+                    ends = []
+                    for key in ("from", "to"):
+                        c = table["by_name"].get(data.get(key))
+                        if c is None:
+                            raise ValueError(f"{key}: unknown cell")
+                        if c["blocked"]:
+                            raise ValueError(f"{c['name']} blocked: {c['blocked']}")
+                        h = next((h for h in layout["holders"] if h["name"] == c["holder"]), {})
+                        t = cycle.teach(h)  # the holder's taught pocket offset, 0/0 for a bare cell
+                        ends.append({"name": c["name"], "x": c["x"] + t["dx"], "y": c["y"] + t["dy"]})
+                    if ends[0]["name"] == ends[1]["name"]:
+                        raise ValueError("from and to are the same cell")
+                    seq.transfer(*ends, float(data["pick_z"]), float(data["place_z"]))
                 elif self.path == "/api/cycle/above":
                     idle()
                     role, glass = data.get("role"), int(data.get("glass", 1))
