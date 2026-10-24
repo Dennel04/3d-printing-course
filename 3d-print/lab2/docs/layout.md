@@ -68,7 +68,7 @@ Ruudu keskpunkt robotis = [`../calibration/cells.py`](../calibration/cells.py) (
 | Klaas, võtmine | D−4 … E−5 | −2,00 / +2,50 | −150,5 (`pick_z`); 24.10.26 õhtul ülekanne õnnestus Z −152-ga | D−4 ja D−5 pesa keskpunkt, Denys 24.10.26 |
 | Töökoht 2, klaasi asetamine / võtmine (tsükli töökoht) | C+1 | 0 / 0 | −119,0 / −119,0 (klaasi puudutus; kaksik −114,1) | Denys 24.10.26 õhtu, [`measurements.md`](measurements.md) |
 | Töökoht 1 | C−1 | 0 / 0 (sama hoidik) | sama | eraldi kontrollimata |
-| Heade väljund, asetamine | D+4 … E+5 | TODO | kaksik −151,3 — õpetamata | TODO — waiting for physical test |
+| Heade väljund, asetamine | D+4 … E+5 | 0 / 0 | −153,0 (klaasi puudutus põhjal; kaksik −151,3) | Denys 24.10.26 õhtu, [`measurements.md`](measurements.md) |
 | AtomS3 võtmine / asetamine akule | E−1 … F−2 / C−1 | TODO | TODO | testis ei kasutata |
 
 ### Kontroll digitaalses kaksikus ([`../../sim/`](../../sim/README.md), 24.10.26)

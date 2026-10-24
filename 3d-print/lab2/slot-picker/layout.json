@@ -131,7 +131,13 @@
         "E+4",
         "E+5"
       ],
-      "status": "decided 24.10 (layout.md), not placed yet"
+      "status": "decided 24.10 (layout.md), not placed yet",
+      "teach": {
+        "dx": 0.0,
+        "dy": -0.0,
+        "pick_z": null,
+        "place_z": -153.0
+      }
     },
     {
       "name": "Calibration box",

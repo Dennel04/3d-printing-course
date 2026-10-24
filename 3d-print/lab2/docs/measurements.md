@@ -214,6 +214,8 @@ Mõõda vajaduse korral mitu klaasi ja säilita kõik üksiktulemused, et hiljem
 - XY: lahtri C+1 keskpunkt `cells.py` järgi 254,88 / −16,75 — Denys: napp klaasi keskel → oranži hoidiku nihe **0 / 0**.
 - Z: Denys laskis napa klaasi puudutuseni, madalamale ei saa: **Z −119,0** → `place_z` ja `pick_z` = −119,0 (slot picker Test → Set, `cycle.workstation_cell` = C+1).
 - Kaksik ennustas −114,1 → päris virn on 4,9 mm madalamal. Põhjus selgitamata (aku pesa sügavus, oranži hoidiku vanad jalad, AtomS3 nimimõõt 12,9): TODO.
+- Väljund (`valjundhoidik-v1`, D/E +4/+5): klaas D+4 lahtris põhjal, Denys laskis napa klaasi puudutuseni lahtri keskel 298,25 / −142,29: **Z −153,0** → väljundi nihe 0 / 0, `place_z` −153,0 (kaksik −151,3).
+- Kõik kolm päris punkti on kaksikust madalamal: sisend −1,5, väljund −1,7, töökoht −4,9 mm. Sisendi ja väljundi ühine ~1,6 mm viitab kaksiku napa pikkusele (66,2 mm, D-2 puudutusest); töökohal lisaks ~3,3 mm (virn). Kaksiku kõrgused tuleb nende punktide järgi parandada: TODO.
 ## 24.10.2026 — iminapa mõõtmised, massihinnang ja sisendhoidikute sobivus
 
 Allikas: kasutaja 24.10.2026 edastatud füüsilised mõõtmised ja käsitsi tehtud sobivuskontroll. Allolev täiendus ei muuda varasemaid Exceli andmeid ega kalibreerimiskirjeid.
