@@ -565,6 +565,13 @@ def make_handler(layout, seq, port):
                     reply = seq.robot.call("/jog", {"axis": axis, "delta": delta})
                     if not reply.get("ok"):
                         raise RuntimeError(f"jog refused: {reply}")
+                elif self.path == "/api/speed":
+                    ratio = int(data.get("ratio", 0))
+                    if not 1 <= ratio <= layout["motion"]["max_speed_ratio"]:
+                        raise ValueError(f"speed 1-{layout['motion']['max_speed_ratio']} %")
+                    reply = seq.robot.call("/speed", {"ratio": ratio})
+                    if not reply.get("ok"):
+                        raise RuntimeError(f"speed refused: {reply}")
                 elif self.path == "/api/pump":
                     if data.get("mode") not in ("off", "suck", "blow"):
                         raise ValueError("pump mode: off, suck or blow")

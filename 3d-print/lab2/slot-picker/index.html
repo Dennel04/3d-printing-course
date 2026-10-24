@@ -81,6 +81,7 @@
     </span>
     <label class="drive-only"><input type="checkbox" id="arm"> Motion enabled</label>
     <label class="drive-only">Hover Z <input type="number" id="hover" step="5"></label>
+    <label>Speed <select id="speed"></select></label>
     <button class="stop" id="stop">STOP</button>
     <button class="view" id="view">View</button>
     <label><input type="checkbox" id="live"> Live camera</label>
@@ -219,6 +220,8 @@ function buildGrid() {
       grid.append(el);
     }
   }
+  for (const v of [2, 5, 10, 15, 20, 30].filter(v => v <= layout.motion.max_speed_ratio))
+    $("speed").append(new Option(v + " %", v));
   $("hover").value = layout.motion.default_hover_z;
   $("hover").min = layout.motion.min_hover_z;
   $("hover").max = layout.motion.travel_z;
@@ -540,6 +543,10 @@ $("refit-save").onclick = async () => {
 window.onbeforeunload = e => { if (dirty) e.preventDefault(); };
 
 $("stop").onclick = () => api("/api/stop", {});
+$("speed").onchange = async () => {
+  const r = await api("/api/speed", {ratio: Number($("speed").value)});
+  clickError = r.ok ? "" : "speed: " + r.error;
+};
 
 $("probe").onclick = async () => {
   clickError = "";
@@ -593,6 +600,11 @@ async function poll() {
     const p = s.robot.pose ? s.robot.pose.map(v => v.toFixed(2)).join(" / ") : "–";
     document.querySelectorAll(".cell.target").forEach(e => e.classList.remove("target"));
     if (s.seq.cell) { const el = $("cell-" + s.seq.cell); if (el) el.classList.add("target"); }
+    if (document.activeElement !== $("speed") && s.robot.speed_ratio != null) {
+      const v = String(s.robot.speed_ratio);
+      if (![...$("speed").options].some(o => o.value === v)) $("speed").append(new Option(v + " %", v));
+      $("speed").value = v;
+    }
     syncResults(s.seq.cycle, s.seq.busy);
     showProbe(s.seq.probe);
     const cam = s.camera.error ? `<span class="err">${esc(s.camera.error)}</span>`
