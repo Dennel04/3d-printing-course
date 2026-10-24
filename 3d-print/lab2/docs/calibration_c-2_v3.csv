@@ -5,3 +5,4 @@ time,cell,bin,point,x,y,z,r,note
 17:48:23,C-2,gridfinity-calibration-v3,corner3_-X-Y,246.68,61.46,-152.00,33.0,user: touches both walls
 17:49:26,C-2,gridfinity-calibration-v3,corner4_-X+Y,247.18,75.46,-152.00,33.0,user: touches both walls
 17:52:05,C-2,gridfinity-calibration-v3,centre_check,253.81,68.46,-150.02,33.0,mean of 4 corners; user: cup centred over the cross
+18:14:50,C-2,gridfinity-calibration-v3,centre_on_cross_by_user,253.94,68.30,-155.00,33.0,Denys centred the cup on the cross at the floor via the slot picker (started from cells.py 253.94/67.30); used in cells.py

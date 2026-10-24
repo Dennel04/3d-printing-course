@@ -204,5 +204,6 @@ Mõõda vajaduse korral mitu klaasi ja säilita kõik üksiktulemused, et hiljem
 - Kasti välja/tagasi kordustäpsust ei mõõdetud (Denys: keskpunkt sobib, uuesti ei kalibreeri).
 - Samal õhtul (Denys: „поменяй“): C-2 lisati `cells.py` sobitusse (4 ruutu, pööre **+0,61°**). Jääkvead G-1 −1,88/+0,45, E+3 +0,76/−1,35, D-2 +1,26/−0,27, C-2 −0,14/+1,16 mm — jäik sobitus ei mahu 1 mm sisse, nõrgimad on G-1 ja E+3 (silma järgi Z −87, parallaks) ning D-2 (vanade jalgadega hoidik). Täpsustamiseks: 2–3 ruutu (nt E+3, F-3) kastiga v3 puutes ja uus sobitus ainult nende põhjal.
 - Klaasi sisendhoidiku õpetus teisendati nii, et D-4 päris punkt jääb samaks (294,40 / 153,09): dx 0 → −0,64, dy 2,0 → 1,35.
+- 18:14: Denys seadis slot pickeriga napa C-2-s kasti põhjal (Z −155,0) risti keskele: **253,94 / 68,30** (nelja nurga tulemus 253,81 / 68,46, vahe 0,13 / 0,16 mm). `cells.py`-s kasutatakse nüüd seda punkti; sobitus +0,62°, C-2 arvutuslik 253,97 / 67,24 → jääkviga C-2-s endiselt −0,03 / +1,06 mm, sest jäik sobitus kaalub nelja punkti võrdselt ja G-1, E+3, D-2 vead on 1–2 mm. Klaasi sisendhoidiku õpetus uuesti teisendatud (dx −0,65, dy 1,39), D-4 päris punkt sama.
 
 Kui hiljem leitakse vale mõõt, ära kustuta seda. Lisa kuupäevaga parandus vana väärtuse alla ning selgita mõõtekonteksti.
