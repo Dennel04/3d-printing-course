@@ -1,12 +1,12 @@
-"""slot_picker.py — click a Gridfinity cell, the suction cup goes above it;
-the Edit layout mode adds, names, types, moves and deletes holders (saved to layout.json).
+"""slot_picker.py — MG400 + Gridfinity grid in a web page (http://127.0.0.1:8010).
 
-Serves a small page (http://127.0.0.1:8010) next to the mg400-base server
-(http://127.0.0.1:8000), which must already be connected and enabled.
-Each click runs three moves through mg400-base /api/move, waiting for the arm
-to arrive after each: up to travel_z where it is, across at travel_z, then down
-to the hover height. It never descends into a pocket: grid-surface Z is not
-measured yet. Cell X/Y come from the 24.10.26 three-cell fit in ../calibration/cells.py.
+Drive: click a cell, the suction cup goes up to travel_z, across, and down to the hover height
+(never into a pocket). Edit layout: add, name, type, move and delete holders (saved to layout.json).
+Test: choose the input / workstation / output holders, teach their pick and place points, run the
+glass cycle (cycle.py) one glass or four at a time and save each round into docs/refit_test.csv.
+
+Talks to the mg400-base server (http://127.0.0.1:8000), which must already be connected and enabled.
+Cell X/Y come from the 24.10.26 three-cell fit in ../calibration/cells.py.
 
 Usage: python slot_picker.py [--port 8010] [--check]
 """
@@ -23,18 +23,20 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 LETTERS = "ABCDEFG"
 NUMBERS = [5, 4, 3, 2, 1, -1, -2, -3, -4, -5]  # operator view, left to right
+REFIT_CSV = HERE.parent / "docs" / "refit_test.csv"
 
-
-FRAMES = HERE / "frames"  # tool camera JPEGs: the View button and Claude's captures; newest one is shown
+FRAMES = HERE / "frames"  # tool camera JPEGs: the View button, the cycle and Claude's captures; newest one is shown
 sys.path.insert(0, str(HERE.parent / "calibration"))
 sys.path.insert(0, str(HERE.parent / "tool-camera"))
 import cells as calibration  # noqa: E402  single source of the grid fit (G-1, E+3, D-2)
 from capture import capture  # noqa: E402
+import cycle  # noqa: E402
 
 _, cell_robot = calibration.fit()
 
-
 CELL_NAMES = [f"{letter}{n:+d}" for letter in LETTERS for n in NUMBERS]
+HOLDER_KEYS = ("name", "type", "cells", "status", "no_go", "teach")
+camera_lock = threading.Lock()  # one owner of the camera COM port at a time
 
 
 def load_layout():
@@ -43,6 +45,17 @@ def load_layout():
 
 def save_layout(layout):
     (HERE / "layout.json").write_text(json.dumps(layout, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
+def snapshot(port, prefix):
+    FRAMES.mkdir(exist_ok=True)
+    out = FRAMES / time.strftime(f"{prefix}-%Y%m%d-%H%M%S.jpg")
+    with camera_lock:
+        try:
+            capture(port, str(out))
+        except SystemExit as exc:  # capture() reports camera errors this way
+            raise RuntimeError(f"camera: {exc}") from None
+    return out.name
 
 
 def is_no_go(holder, types):
@@ -104,61 +117,113 @@ class Mg400:
 
 
 class Sequencer:
-    """Runs one goto at a time; Stop cancels it and holds the arm."""
+    """Runs one action list at a time (a goto or the glass cycle); Stop cancels it and holds the arm.
+    The pump is left as it is on Stop or error: switching it off would drop a carried glass."""
 
     def __init__(self, robot, layout):
         self.robot, self.layout = robot, layout
         self.lock = threading.Lock()
         self.cancel = threading.Event()
-        self.state = {"busy": False, "cell": None, "step": "idle", "error": None}
+        self.state = {"busy": False, "cell": None, "step": "idle", "error": None, "cycle": None}
 
-    def goto(self, cell, hover_z):
-        motion, cal = self.layout["motion"], self.layout["calibration"]
-        if cell["blocked"]:
-            raise ValueError(f"{cell['name']} blocked: {cell['blocked']}")
-        if not motion["min_hover_z"] <= hover_z <= motion["travel_z"]:
-            raise ValueError(f"hover Z must be {motion['min_hover_z']} … {motion['travel_z']}")
+    def ready_status(self):
+        motion = self.layout["motion"]
         status = self.robot.call("/status")
         self._check(status)
         if status.get("speed_ratio", 100) > motion["max_speed_ratio"]:
             raise ValueError(f"speed {status['speed_ratio']}% > {motion['max_speed_ratio']}%: lower it in mg400-base first")
-        with self.lock:
-            if self.state["busy"]:
-                raise ValueError("already moving")
-            self.cancel.clear()
-            self.state = {"busy": True, "cell": cell["name"], "step": "start", "error": None}
-        x, y, r = cell["x"], cell["y"], cal["tool_r"]
+        return status
+
+    def goto(self, cell, hover_z):
+        motion = self.layout["motion"]
+        if cell["blocked"]:
+            raise ValueError(f"{cell['name']} blocked: {cell['blocked']}")
+        if not motion["min_hover_z"] <= hover_z <= motion["travel_z"]:
+            raise ValueError(f"hover Z must be {motion['min_hover_z']} … {motion['travel_z']}")
+        status = self.ready_status()
         cx, cy = status["pose"][0], status["pose"][1]
-        steps = [("up", cx, cy, motion["travel_z"]),
-                 ("across", x, y, motion["travel_z"]),
-                 ("down", x, y, hover_z)]
-        threading.Thread(target=self._run, args=(steps, r), daemon=True).start()
+        self._start([("move", "up", cx, cy, motion["travel_z"]),
+                     ("move", "across", cell["x"], cell["y"], motion["travel_z"]),
+                     ("move", "down", cell["x"], cell["y"], hover_z)], cell=cell["name"])
+
+    def go_above(self, x, y, label):
+        """To x/y at the cycle travel height (lower than the Drive travel_z), for teaching."""
+        status = self.ready_status()
+        tz = self.layout["cycle"]["travel_z"]
+        cx, cy, cz = status["pose"][:3]
+        self._start([("move", "up", cx, cy, max(cz, tz)), ("move", label, x, y, tz)])
+
+    def run_cycle(self, glasses, rnd, by_name):
+        cycle.check_ready(self.layout, by_name)
+        status = self.ready_status()
+        tz = self.layout["cycle"]["travel_z"]
+        cx, cy, cz = status["pose"][:3]
+        actions = [("move", "up to travel height", cx, cy, max(cz, tz))]
+        for g in glasses:
+            actions += cycle.plan_glass(self.layout, g, by_name)
+        actions.append(("pump", "off"))
+        results = {str(g): {f: False for f in cycle.FIELDS} for g in glasses}
+        self._start(actions, cycle_state={"id": time.time(), "round": rnd, "glasses": glasses,
+                                          "results": results, "frames": []})
 
     def stop(self):
         self.cancel.set()
         self.robot.call("/stop", {})
 
-    def _run(self, steps, r):
-        motion = self.layout["motion"]
+    def _start(self, actions, cell=None, cycle_state=None):
+        with self.lock:
+            if self.state["busy"]:
+                raise ValueError("already moving")
+            self.cancel.clear()
+            self.state = {"busy": True, "cell": cell, "step": "start", "error": None,
+                          "cycle": cycle_state if cycle_state is not None else self.state.get("cycle")}
+        threading.Thread(target=self._run, args=(actions, cycle_state), daemon=True).start()
+
+    def _run(self, actions, cyc):
+        r = self.layout["calibration"]["tool_r"]
         try:
-            for label, x, y, z in steps:
-                self.state["step"] = label
-                reply = self.robot.call("/move", {"x": x, "y": y, "z": z, "r": r})
-                if not reply.get("ok"):
-                    raise RuntimeError(f"move refused: {reply}")
-                c = reply.get("clamped", {})
-                if any(abs(c.get(k, v) - v) > 0.5 for k, v in (("x", x), ("y", y), ("z", z))):
-                    self.robot.call("/stop", {})
-                    raise RuntimeError(f"mg400-base clamped the target to {c}; stopped")
-                self._wait(x, y, z, motion)
-            self.state["step"] = "arrived"
+            for act in actions:
+                if self.cancel.is_set():
+                    raise RuntimeError("stopped by user")
+                kind = act[0]
+                if kind == "move":
+                    _, label, x, y, z = act
+                    self.state["step"] = label
+                    self._move(x, y, z, r)
+                elif kind == "pump":
+                    self.state["step"] = f"pump {act[1]}"
+                    reply = self.robot.call("/pump", {"mode": act[1]})
+                    if not reply.get("ok"):
+                        raise RuntimeError(f"pump refused: {reply}")
+                elif kind == "wait":
+                    if self.cancel.wait(act[1]):
+                        raise RuntimeError("stopped by user")
+                elif kind == "mark":
+                    cyc["results"][str(act[1])][act[2]] = True
+                elif kind == "snap":
+                    try:
+                        cyc["frames"].append(snapshot(self.layout["camera_port"], act[1]))
+                    except Exception as exc:  # a missing camera must not stop the robot mid-cycle
+                        cyc["frames"].append(f"no frame: {exc}")
+            self.state["step"] = "done" if cyc else "arrived"
         except Exception as exc:
             self.state["error"] = str(exc)[:200]
             self.state["step"] = "stopped"
         finally:
             self.state["busy"] = False
 
-    def _wait(self, x, y, z, motion):
+    def _move(self, x, y, z, r):
+        motion = self.layout["motion"]
+        start = self.robot.call("/status")["pose"]
+        reply = self.robot.call("/move", {"x": x, "y": y, "z": z, "r": r})
+        if not reply.get("ok"):
+            raise RuntimeError(f"move refused: {reply}")
+        c = reply.get("clamped", {})
+        if any(abs(c.get(k, v) - v) > 0.5 for k, v in (("x", x), ("y", y), ("z", z))):
+            self.robot.call("/stop", {})
+            raise RuntimeError(f"mg400-base clamped the target to {c}; stopped")
+        # long moves at low speed take a while: allow 2 mm/s on top of the fixed timeout
+        timeout = motion["step_timeout_s"] + math.dist(start[:3], (x, y, z)) / 2
         t0 = time.time()
         while True:
             if self.cancel.is_set():
@@ -166,9 +231,9 @@ class Sequencer:
             s = self.robot.call("/status")
             self._check(s)
             p = s["pose"]
-            if max(abs(p[0] - x), abs(p[1] - y), abs(p[2] - z)) < motion["arrive_tolerance_mm"]:
+            if max(abs(p[0] - x), abs(p[1] - y), abs(p[2] - z)) < motion["arrive_tolerance_mm"] and abs(p[3] - r) < 0.5:
                 return
-            if time.time() - t0 > motion["step_timeout_s"]:
+            if time.time() - t0 > timeout:
                 self.robot.call("/stop", {})
                 raise RuntimeError(f"not arriving, pose {p}")
             time.sleep(0.1)
@@ -192,11 +257,41 @@ def make_handler(layout, seq, port):
         table["by_name"] = {c["name"]: c for c in table["cells"]}
 
     rebuild()
-    camera_lock = threading.Lock()  # one owner of the camera COM port at a time
     # Only this page may drive the robot: other sites open in the same browser could otherwise
     # POST here (CSRF), and a foreign Host header means DNS rebinding.
     hosts = {f"127.0.0.1:{port}", f"localhost:{port}"}
     origins = {f"http://{h}" for h in hosts}
+
+    def idle():
+        if seq.state["busy"]:
+            raise ValueError("the robot is moving; wait or press STOP")
+
+    def teach_point(role, what):
+        """Store the arm's current pose as a taught value of the role's holder."""
+        idle()
+        if role not in cycle.ROLES:
+            raise ValueError(f"unknown role {role!r}")
+        h = cycle.holder(layout, role)
+        s = seq.robot.call("/status")
+        seq._check(s)
+        x, y, z, r = s["pose"]
+        if abs(r - layout["calibration"]["tool_r"]) > 0.5:
+            raise ValueError(f"R is {r:.1f}, teach at R {layout['calibration']['tool_r']}")
+        t = cycle.teach(h)
+        if what in ("pick_z", "place_z"):
+            if what not in cycle.NEEDS[role]:
+                raise ValueError(f"{role} has no {what}")
+            t[what] = round(z, 2)
+        elif what == "xy":
+            c = table["by_name"][cycle.slot_cell(layout, role, 1)]
+            dx, dy = x - c["x"], y - c["y"]
+            if math.hypot(dx, dy) > 15:
+                raise ValueError(f"{dx:+.1f} / {dy:+.1f} mm from {c['name']}: too far, is the arm above the right cell?")
+            t["dx"], t["dy"] = round(dx, 2), round(dy, 2)
+        else:
+            raise ValueError(f"unknown teach value {what!r}")
+        h["teach"] = t
+        save_layout(layout)
 
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, *args):
@@ -231,11 +326,13 @@ def make_handler(layout, seq, port):
                 self.wfile.write(body)
             elif self.path == "/api/layout":
                 self._json(200, {"cells": table["cells"], "holders": layout["holders"], "types": layout["types"],
-                                 "motion": layout["motion"], "letters": LETTERS, "numbers": NUMBERS})
+                                 "motion": layout["motion"], "cycle": layout["cycle"], "fields": cycle.FIELDS,
+                                 "letters": LETTERS, "numbers": NUMBERS})
             elif self.path == "/api/state":
                 try:
                     s = seq.robot.call("/status")
-                    robot = {k: s.get(k) for k in ("mode_name", "enabled", "error", "alarm_ids", "pose", "speed_ratio")}
+                    robot = {k: s.get(k) for k in ("mode_name", "enabled", "error", "alarm_ids", "pose",
+                                                   "speed_ratio", "pump_mode")}
                 except Exception as exc:
                     robot = {"mode_name": f"mg400-base unreachable ({type(exc).__name__})"}
                 self._json(200, {"robot": robot, "seq": seq.state})
@@ -270,8 +367,7 @@ def make_handler(layout, seq, port):
                 elif self.path == "/api/stop":
                     seq.stop()
                 elif self.path == "/api/holders":
-                    holders = [{k: v for k, v in h.items() if k in ("name", "type", "cells", "status", "no_go")}
-                               for h in data.get("holders", [])]
+                    holders = [{k: v for k, v in h.items() if k in HOLDER_KEYS} for h in data.get("holders", [])]
                     for h in holders:
                         h["name"] = str(h["name"]).strip()
                     check_holders(holders, layout["types"])
@@ -279,13 +375,61 @@ def make_handler(layout, seq, port):
                     save_layout(layout)
                     rebuild()
                 elif self.path == "/api/view":
-                    FRAMES.mkdir(exist_ok=True)
-                    out = FRAMES / time.strftime("view-%Y%m%d-%H%M%S.jpg")
-                    with camera_lock:
-                        try:
-                            capture(layout["camera_port"], str(out))
-                        except SystemExit as exc:  # capture() reports camera errors this way
-                            raise RuntimeError(f"camera: {exc}") from None
+                    snapshot(layout["camera_port"], "view")
+                elif self.path == "/api/cycle/roles":
+                    idle()
+                    roles = {r: data.get(r) or None for r in cycle.ROLES}
+                    names = {h["name"] for h in layout["holders"]}
+                    for r, name in roles.items():
+                        if name is not None and name not in names:
+                            raise ValueError(f"{r}: no holder {name!r}")
+                    ws_cell = data.get("workstation_cell") or None
+                    ws = next((h for h in layout["holders"] if h["name"] == roles["workstation"]), None)
+                    if ws_cell and (ws is None or ws_cell not in ws["cells"]):
+                        raise ValueError(f"workstation cell {ws_cell} is not in {roles['workstation']}")
+                    layout["cycle"]["roles"] = roles
+                    layout["cycle"]["workstation_cell"] = ws_cell
+                    save_layout(layout)
+                elif self.path == "/api/cycle/above":
+                    idle()
+                    role, glass = data.get("role"), int(data.get("glass", 1))
+                    x, y = cycle.slot_xy(layout, role, glass, table["by_name"])
+                    seq.go_above(x, y, f"above {role} glass {glass}")
+                elif self.path == "/api/cycle/teach":
+                    teach_point(data.get("role"), data.get("what"))
+                elif self.path == "/api/jog":
+                    idle()
+                    axis, delta = data.get("axis"), float(data.get("delta", 0))
+                    if axis not in ("x", "y", "z") or not 0 < abs(delta) <= 5:
+                        raise ValueError("jog: axis x/y/z, step up to 5 mm")
+                    seq.ready_status()
+                    reply = seq.robot.call("/jog", {"axis": axis, "delta": delta})
+                    if not reply.get("ok"):
+                        raise RuntimeError(f"jog refused: {reply}")
+                elif self.path == "/api/pump":
+                    if data.get("mode") not in ("off", "suck", "blow"):
+                        raise ValueError("pump mode: off, suck or blow")
+                    if data["mode"] != "off":
+                        idle()
+                    reply = seq.robot.call("/pump", {"mode": data["mode"]})
+                    if not reply.get("ok"):
+                        raise RuntimeError(f"pump refused: {reply}")
+                elif self.path == "/api/cycle/run":
+                    idle()
+                    glasses = sorted({int(g) for g in data.get("glasses", [])})
+                    if not glasses or not set(glasses) <= {1, 2, 3, 4}:
+                        raise ValueError("glasses: some of 1-4")
+                    rnd = int(data.get("round", 0))
+                    if not 1 <= rnd <= 99:
+                        raise ValueError("round must be 1-99")
+                    seq.run_cycle(glasses, rnd, table["by_name"])
+                elif self.path == "/api/refit":
+                    idle()
+                    rnd = int(data.get("round", 0))
+                    rows = data.get("rows", [])
+                    if not 1 <= rnd <= 99 or not rows or any(int(r.get("glass", 0)) not in (1, 2, 3, 4) for r in rows):
+                        raise ValueError("refit: round 1-99 and rows for glasses 1-4")
+                    cycle.save_refit(REFIT_CSV, rnd, rows)
                 else:
                     return self._json(404, {"error": "not found"})
                 self._json(200, {"ok": True})

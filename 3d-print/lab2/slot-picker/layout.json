@@ -15,6 +15,19 @@
     "arrive_tolerance_mm": 0.5,
     "step_timeout_s": 30.0
   },
+  "cycle": {
+    "_note": "glass cycle (cycle.py): roles = holder names; Z/offsets are taught per holder in holders[].teach",
+    "roles": {
+      "input": null,
+      "workstation": null,
+      "output": null
+    },
+    "workstation_cell": null,
+    "travel_z": -100.0,
+    "approach_mm": 5.0,
+    "suck_dwell_s": 1.0,
+    "blow_s": 0.3
+  },
   "types": {
     "glass": {
       "label": "Glass",

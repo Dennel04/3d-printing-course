@@ -36,6 +36,19 @@ Pessa ei laskuta: ruudustiku pinna Z puudutus on veel tegemata. R on alati `tool
 - Midagi ei salvestata enne **Save layout**; server kontrollib (nimi olemas ja kordumatu, tüüp tuntud, lahtrid olemas, kattuvusi pole) ja kirjutab `layout.json`-i. Salvestamata muudatustega Drive-režiimis ei liiguta.
 - Tüübid on `layout.json` → `types` (glass, atom, battery, workstation, output, reject, calibration, camera_post, other): nimi ja värv; `no_go: true` (veebikaamera post) teeb lahtrid sõiduks keelatuks. Uue tüübi jaoks lisa sinna rida.
 
+## Test: klaasi tsükkel ja refit-test
+
+Vahekaart **Test** teeb ülesande osa 3 (`assignment-EST.md`): klaas sisendist töökohale, töökohalt väljundisse, neli tükki järjest; tulemused faili `../docs/refit_test.csv`. Loogika failis [`cycle.py`](cycle.py).
+
+1. **Rollid** — vali, milline hoidik on sisend, töökoht (ja mis lahter temas) ning väljund. Klaas n võetakse sisendi n-ndast lahtrist ja pannakse väljundi n-ndasse lahtrisse (lahtri järjekord nagu redaktori loendis; ruudustikul sildid `in 1`…`out 4`, `ws`).
+2. **Punktide õpetamine** — **Go above** viib käe pesa kohale (`cycle.travel_z`, vaikimisi −100), Jog-nuppudega (0,2 / 1 / 5 mm) lastakse alla ja **Set** salvestab praeguse asendi: sisend `pick_z`, töökoht `place_z` + `pick_z`, väljund `place_z`, igale ka XY nihe lahtri keskpunktist. Väärtused on hoidiku juures (`holders[].teach`), mitte lahtri juures: kui hoidik pannakse teise ruutu, kasutatakse sama nihet + 42 mm sammu — see on refit-testi 42 mm küsimus. Õpetada R 33 juures.
+3. **Käivitus** — üks klaas või ring (4 klaasi). Iga klaas: üles → sisendi kohale → `approach_mm` (5 mm) kõrgemale → `pick_z` → imemine, `suck_dwell_s` → üles → töökohale → `place_z` → puhumine `blow_s` → välja → … → väljund. Pärast iga asetamist teeb tööriistakaamera kaadri kausta `frames/` (kaamera viga tsüklit ei peata). Kiirus seatakse mg400-base-s (≤ `max_speed_ratio`).
+4. **Tulemus** — linnukesed täituvad sammudest, mis robot lõpetas; robot klaasi ei näe, seega kontrolli ja võta linnuke ära, kui ei õnnestunud, kirjuta märkus. **Save round** kirjutab read `refit_test.csv`-sse: tühi malli rida (ring, klaas) täidetakse, juba täidetud rida jääb alles ja uus tulemus lisatakse selle alla (midagi ei kustutata).
+
+Ringide vahel võta kõik hoidikud ruudustikust välja ja pane tagasi, ära õpeta punkte uuesti. STOP jätab pumba nagu oli (kantav klaas ei kuku); Pump **Off** vabastab.
+
+Ilma rõhuandurita (Atom COM4) haaratakse õpetatud kõrgusel; vaakumi kontrolli veel pole. Testitud 24.10.26 ainult simuleeritud mg400 API-ga (98 käsku, 4 klaasi, CSV kirjutamine); päris robotiga: TODO — waiting for physical test.
+
 ## Kaamera (View)
 
 **View** teeb XIAO tööriistakaameraga (`camera_port`, COM5) kaadri kausta `frames/` (gitignore); leht näitab alati kõige uuemat kaadrit sellest kaustast — ka neid, mille sinna salvestab Claude.
@@ -43,7 +56,8 @@ Pessa ei laskuta: ruudustiku pinna Z puudutus on veel tegemata. R on alati `tool
 ## Seaded — `layout.json`
 
 - `calibration` — ainult `tool_r` (33). Lahtrite X/Y tuleb failist [`../calibration/cells.py`](../calibration/cells.py) (24.10.26 kolme ruudu sobitus, pööre +0,87°); uue kalibreerimise järel muuda seal `MEASURED`.
-- `motion` — kõrgused, kiiruse piir, ulatus.
+- `motion` — Drive-režiimi kõrgused, kiiruse piir, ulatus.
+- `cycle` — tsükli rollid, töökoha lahter, `travel_z`, `approach_mm`, `suck_dwell_s`, `blow_s`.
 - `types` — hoidikute tüübid (nimi, värv, `no_go`).
 - `holders` — hoidikud: `name`, `type`, `cells`, `status`. Muuda redaktoriga. Praegused read on **ettepanek**, mitte kinnitatud paigutus (`docs/layout.md`); 24.10.26 oli klaas tegelikult B+5 hoidikus.
 

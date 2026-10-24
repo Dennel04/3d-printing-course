@@ -54,6 +54,15 @@
   .holder-row.active { background:#f0f5fd; }
   .arrows button { padding:4px 8px; }
   .dirty { color:var(--target); font-weight:600; }
+  .test { display:none; background:#fff; border:1px solid var(--line); border-radius:6px; padding:10px; margin-top:12px; }
+  body.test .test { display:block; }
+  body.test .drive-only { display:none; }
+  table.t { border-collapse:collapse; width:100%; font-size:13px; }
+  table.t td, table.t th { border-top:1px solid var(--line); padding:5px 4px; text-align:left; vertical-align:middle; }
+  table.t th { color:var(--muted); font-weight:500; }
+  .mono { font-family:ui-monospace, monospace; }
+  .jog button { min-width:44px; }
+  .roleTag { font-size:10px; font-weight:600; color:#fff; background:#333; border-radius:3px; padding:0 3px; }
 </style>
 </head>
 <body>
@@ -61,11 +70,13 @@
   <h1>Slot picker — suction cup to cell</h1>
   <div class="note">Operator view: robot at the top, front edge at the bottom.
     <b>Drive</b>: click a cell — up to travel Z, across, down to hover Z (never into a pocket).
-    <b>Edit layout</b>: drag a holder to move it; drag over empty cells to select a rectangle (or click cells), then add a holder.</div>
+    <b>Edit layout</b>: drag a holder to move it; drag over empty cells to select a rectangle (or click cells), then add a holder.
+    <b>Test</b>: the glass cycle input → workstation → output and the refit test.</div>
   <div class="bar">
     <span class="modes">
       <label><input type="radio" name="mode" value="drive" checked> Drive</label>
       <label><input type="radio" name="mode" value="edit"> Edit layout</label>
+      <label><input type="radio" name="mode" value="test"> Test</label>
     </span>
     <label class="drive-only"><input type="checkbox" id="arm"> Motion enabled</label>
     <label class="drive-only">Hover Z <input type="number" id="hover" step="5"></label>
@@ -95,6 +106,50 @@
     </div>
     <div class="note">Arrows move a holder by one cell (← → along the numbers, ↑ ↓ along the letters).
       "Use selection" replaces the holder's cells with the selected ones. Nothing is written until Save layout.</div>
+  </div>
+
+  <div class="test">
+    <h2 style="margin-top:0">1. Roles</h2>
+    <div class="bar" style="margin-top:0">
+      <label>Input <select id="role-input"></select></label>
+      <label>Workstation <select id="role-workstation"></select></label>
+      <label>cell <select id="ws-cell"></select></label>
+      <label>Output <select id="role-output"></select></label>
+      <button id="roles-save" class="primary">Save roles</button>
+    </div>
+    <div class="note">Glass n is taken from the n-th input cell and put into the n-th output cell (tags on the grid).</div>
+
+    <h2>2. Teach points</h2>
+    <div class="note">Go above a pocket, lower the arm with the jog buttons until the cup sits on the glass (pick)
+      or the carried glass sits in place (place), then press Set. XY offset = where the pocket really is
+      relative to the cell centre; it stays with the holder when the holder moves to another cell. Teach at R 33.</div>
+    <table class="t" id="teach"></table>
+    <div class="bar jog">
+      <span>Jog</span>
+      <select id="jog-step"><option>0.2</option><option selected>1</option><option>5</option></select> mm
+      <button data-j="z,1">Z ↑</button><button data-j="z,-1">Z ↓</button>
+      <button data-j="x,1">X+</button><button data-j="x,-1">X−</button>
+      <button data-j="y,1">Y+</button><button data-j="y,-1">Y−</button>
+      <span>Pump</span><button data-p="suck">Suck</button><button data-p="blow">Blow</button><button data-p="off">Off</button>
+    </div>
+
+    <h2>3. Run</h2>
+    <div class="bar">
+      <label>Round <input type="number" id="round" min="1" max="99" value="1"></label>
+      <label>Glass <select id="one-glass"><option>1</option><option>2</option><option>3</option><option>4</option></select></label>
+      <button id="run-one">Run one glass</button>
+      <button id="run-four" class="primary">Run round: 4 glasses</button>
+    </div>
+    <div class="note">Speed is set in mg400-base (≤ max). Between rounds take every holder out of the grid and put it back,
+      reload 4 glasses, do not re-teach. STOP leaves the pump as it is (a carried glass does not fall); Pump Off releases it.</div>
+
+    <h2>4. Result of the round → docs/refit_test.csv</h2>
+    <div class="note">Ticks are filled from the steps the robot finished; the robot does not see the glass, so check each one and untick what failed.</div>
+    <table class="t" id="results"></table>
+    <div class="bar">
+      <button id="refit-save" class="primary">Save round to refit_test.csv</button>
+      <span class="note" id="frames"></span>
+    </div>
   </div>
 
   <h2>Status</h2>
@@ -155,7 +210,8 @@ function paint() {
     el.style.background = h ? typeOf(h).color : "";
     el.title = `${c.name}  X ${c.x}  Y ${c.y}  r ${c.radius} mm` + (h ? `\n${h.name} (${typeOf(h).label})` : "") +
                (outOfReach ? `\n${c.blocked}` : noGo ? "\nno-go" : "");
-    el.innerHTML = `<span>${c.name}</span><span class="h">${h ? esc(h.name) : ""}</span>`;
+    const tag = mode() === "test" ? slotTag(c.name) : "";
+    el.innerHTML = `<span>${c.name}${tag ? ` <span class="roleTag">${tag}</span>` : ""}</span><span class="h">${h ? esc(h.name) : ""}</span>`;
   }
   $("sel-list").textContent = selected.size ? [...selected].join(" ") : "–";
   $("dirty").innerHTML = dirty ? `<span class="dirty">unsaved changes</span>` : "";
@@ -284,6 +340,7 @@ async function cellClick(name) {
   const c = layout.cells.find(c => c.name === name);
   if (c.blocked) return say(`${name}: ${c.blocked}`);
   if (dirty) return say("Save or discard the layout changes first.");
+  if (mode() === "test") return;
   if (!$("arm").checked) return say(`Tick "Motion enabled" first.`);
   const r = await api("/api/goto", {cell: name, hover_z: parseFloat($("hover").value)});
   if (!r.ok) say(`${name}: ${r.error}`);
@@ -306,8 +363,136 @@ $("save").onclick = async () => {
 $("revert").onclick = async () => { if (!dirty || confirm("Discard unsaved layout changes?")) { dirty = false; selected.clear(); await load(); } };
 document.querySelectorAll("input[name=mode]").forEach(r => r.onchange = () => {
   document.body.classList.toggle("edit", mode() === "edit");
+  document.body.classList.toggle("test", mode() === "test");
   selected.clear(); paint();
 });
+
+// ---- Test: roles, teaching, cycle runs, refit rows ----
+const ROLES = ["input", "workstation", "output"];
+const NEEDS = {input: ["pick_z"], workstation: ["place_z", "pick_z"], output: ["place_z"]};
+const LABEL = {picked_from_input: "took from input", placed_at_workstation: "put on workstation",
+               picked_from_workstation: "took from workstation", placed_at_output: "put into output"};
+let ran = new Set();   // glasses run in the current round (rows to save)
+let syncedRun = null;  // cycle id whose results were last copied into the ticks
+
+const roleHolder = role => layout.holders.find(h => h.name === layout.cycle.roles[role]);
+const teachOf = h => ({dx: 0, dy: 0, pick_z: null, place_z: null, ...(h && h.teach)});
+
+function slotTag(cell) {
+  for (const role of ["input", "output"]) {
+    const h = roleHolder(role);
+    if (h && h.cells.includes(cell)) return (role === "input" ? "in " : "out ") + (h.cells.indexOf(cell) + 1);
+  }
+  const w = roleHolder("workstation");
+  if (w && cell === (layout.cycle.workstation_cell || w.cells[0])) return "ws";
+  return "";
+}
+
+function renderTest() {
+  const opts = sel => `<option value="">–</option>` + layout.holders.map(h =>
+    `<option${h.name === sel ? " selected" : ""}>${esc(h.name)}</option>`).join("");
+  for (const role of ROLES) $("role-" + role).innerHTML = opts(layout.cycle.roles[role]);
+  wsCells();
+  const t = $("teach");
+  t.innerHTML = `<tr><th>Role</th><th>Holder · glass 1 cell</th><th>XY offset</th><th>Pick Z</th><th>Place Z</th><th></th></tr>`;
+  for (const role of ROLES) {
+    const h = roleHolder(role), tv = teachOf(h);
+    const cell = !h ? "–" : role === "workstation" ? (layout.cycle.workstation_cell || h.cells[0]) : h.cells[0];
+    const z = k => NEEDS[role].includes(k) ? `<span class="mono">${tv[k] ?? "<span class=err>not set</span>"}</span>
+      <button data-t="${role},${k}">Set</button>` : "";
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${role}</td><td>${h ? esc(h.name) + " · " + cell : "<span class=err>choose a holder</span>"}</td>
+      <td><span class="mono">${tv.dx.toFixed(1)} / ${tv.dy.toFixed(1)}</span> <button data-t="${role},xy">Set</button></td>
+      <td>${z("pick_z")}</td><td>${z("place_z")}</td>
+      <td><button data-a="${role}">Go above</button></td>`;
+    t.append(tr);
+  }
+  t.querySelectorAll("[data-t]").forEach(b => b.onclick = async () => {
+    const [role, what] = b.dataset.t.split(",");
+    const r = await api("/api/cycle/teach", {role, what});
+    if (!r.ok) return say(`Teach ${role} ${what}: ${r.error}`);
+    clickError = ""; await load();
+  });
+  t.querySelectorAll("[data-a]").forEach(b => b.onclick = async () => {
+    const r = await api("/api/cycle/above", {role: b.dataset.a, glass: Number($("one-glass").value)});
+    if (!r.ok) say(`Go above: ${r.error}`); else clickError = "";
+  });
+  renderResults();
+}
+
+function wsCells() {
+  const name = $("role-workstation").value, h = layout.holders.find(h => h.name === name);
+  $("ws-cell").innerHTML = (h ? h.cells : []).map(c => `<option${c === layout.cycle.workstation_cell ? " selected" : ""}>${c}</option>`).join("");
+}
+$("role-workstation").onchange = wsCells;
+
+$("roles-save").onclick = async () => {
+  const body = Object.fromEntries(ROLES.map(r => [r, $("role-" + r).value]));
+  body.workstation_cell = $("ws-cell").value;
+  const r = await api("/api/cycle/roles", body);
+  if (!r.ok) return say(`Roles: ${r.error}`);
+  clickError = ""; await load();
+};
+
+document.querySelectorAll("[data-j]").forEach(b => b.onclick = async () => {
+  const [axis, sign] = b.dataset.j.split(",");
+  const r = await api("/api/jog", {axis, delta: Number(sign) * Number($("jog-step").value)});
+  if (!r.ok) say(`Jog: ${r.error}`); else clickError = "";
+});
+document.querySelectorAll("[data-p]").forEach(b => b.onclick = async () => {
+  const r = await api("/api/pump", {mode: b.dataset.p});
+  if (!r.ok) say(`Pump: ${r.error}`); else clickError = "";
+});
+
+function renderResults() {
+  const t = $("results");
+  if (t.rows.length) return;  // built once; the ticks keep the operator's edits
+  t.innerHTML = `<tr><th>Glass</th>${layout.fields.map(f => `<th>${LABEL[f]}</th>`).join("")}<th>Notes</th></tr>`;
+  for (let g = 1; g <= 4; g++) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${g}</td>${layout.fields.map(f => `<td><input type="checkbox" id="r-${g}-${f}"></td>`).join("")}
+      <td><input id="r-${g}-notes" style="width:100%"></td>`;
+    t.append(tr);
+  }
+}
+
+function clearResults() {
+  for (let g = 1; g <= 4; g++) {
+    layout.fields.forEach(f => $(`r-${g}-${f}`).checked = false);
+    $(`r-${g}-notes`).value = "";
+  }
+  ran.clear();
+}
+
+async function run(glasses) {
+  clickError = "";
+  if (glasses.some(g => ran.has(g)) && !confirm("These glasses already have unsaved results in this round. Run again and clear their ticks?")) return;
+  const r = await api("/api/cycle/run", {glasses, round: Number($("round").value)});
+  if (!r.ok) return say(`Run: ${r.error}`);
+  glasses.forEach(g => { layout.fields.forEach(f => $(`r-${g}-${f}`).checked = false); ran.add(g); });
+}
+$("run-one").onclick = () => run([Number($("one-glass").value)]);
+$("run-four").onclick = () => run([1, 2, 3, 4]);
+
+function syncResults(cyc, busy) {  // copy the finished steps of the current run into the ticks
+  if (!cyc || !layout.fields || (!busy && syncedRun === cyc.id)) return;
+  for (const [g, res] of Object.entries(cyc.results))
+    for (const f of layout.fields) if (res[f]) $(`r-${g}-${f}`).checked = true;
+  $("frames").textContent = cyc.frames.length ? "frames: " + cyc.frames.join(", ") : "";
+  if (!busy) syncedRun = cyc.id;
+}
+
+$("refit-save").onclick = async () => {
+  if (!ran.size) return say("Nothing run in this round yet.");
+  const rnd = Number($("round").value);
+  const rows = [...ran].sort().map(g => ({glass: g, notes: $(`r-${g}-notes`).value,
+    ...Object.fromEntries(layout.fields.map(f => [f, $(`r-${g}-${f}`).checked]))}));
+  const r = await api("/api/refit", {round: rnd, rows});
+  if (!r.ok) return say(`Save: ${r.error}`);
+  say(`Round ${rnd}: ${rows.length} rows saved to docs/refit_test.csv`);
+  clearResults();
+  $("round").value = rnd + 1;
+};
 window.onbeforeunload = e => { if (dirty) e.preventDefault(); };
 
 $("stop").onclick = () => api("/api/stop", {});
@@ -338,8 +523,9 @@ async function poll() {
     const p = s.robot.pose ? s.robot.pose.map(v => v.toFixed(2)).join(" / ") : "–";
     document.querySelectorAll(".cell.target").forEach(e => e.classList.remove("target"));
     if (s.seq.cell) { const el = $("cell-" + s.seq.cell); if (el) el.classList.add("target"); }
+    syncResults(s.seq.cycle, s.seq.busy);
     $("status").innerHTML =
-      `robot  ${s.robot.mode_name}  speed ${s.robot.speed_ratio ?? "–"}%\npose   ${p}  (x / y / z / r)\nmove   ${s.seq.cell || "–"}  ${s.seq.step}` +
+      `robot  ${s.robot.mode_name}  speed ${s.robot.speed_ratio ?? "–"}%  pump ${s.robot.pump_mode ?? "–"}\npose   ${p}  (x / y / z / r)\nmove   ${s.seq.cell || "–"}  ${s.seq.step}` +
       (s.seq.error ? `\n<span class="err">${s.seq.error}</span>` : "") +
       (clickError ? `\n<span class="err">${esc(clickError)}</span>` : "");
   } catch (e) {
@@ -353,6 +539,7 @@ async function load() {
   holders = JSON.parse(JSON.stringify(layout.holders));
   active = null;
   renderHolders();
+  renderTest();
   paint();
 }
 
