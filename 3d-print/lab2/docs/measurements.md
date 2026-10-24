@@ -165,6 +165,8 @@ Mõõda vajaduse korral mitu klaasi ja säilita kõik üksiktulemused, et hiljem
 | B-2 (pärast välja/tagasi) | TODO — waiting for physical test | TODO | TODO | TODO | TODO | TODO | kordustäpsus |
 | E+3 | TODO — waiting for physical test | TODO | TODO | TODO | TODO | TODO | kauge ruudu viga |
 | G-1 (23.10.26, poolik) | Xmax+Ymin: 404.47 / 18.80 | Xmax+Ymax: 403.98 / 34.34 | Xmin+Ymax: 389.47 / 33.80 (Z −150.85) | Xmin+Ymin: 389.50 / 18.77 — kinnitamata | eeldatav ≈ 396.85 / 26.43 | ≈ −1,8 (ebakindel) | vt allpool |
+| G-1 (24.10.26, diagonaal) | Xmin+Ymax: 403.81 / 44.90 (Z −87.27) | Xmax+Ymin: 437.19 / 10.20 | — | — | **420.50 / 27.55** | vt E+3 | R 32.76; pärast J4 lahtikerimist |
+| E+3 (24.10.26, diagonaal) | Xmax+Ymin: 357.50 / −118.46 (Z −87.00) | Xmin+Ymax: 323.50 / −83.83 (Z −85.00) | — | — | **340.50 / −101.15** | **+1,82** (G-1 ja E+3 vahel) | R 33.00 |
 
 23.10.26 märkused (G-1, nelja sisenurga meetod; toorandmed [`calibration_g-1_corners.csv`](calibration_g-1_corners.csv)):
 
@@ -172,5 +174,14 @@ Mõõda vajaduse korral mitu klaasi ja säilita kõik üksiktulemused, et hiljem
 - Kalibreerimiskast `gridfinity-calibration-v1` (STL-ist): välismõõt 41,2 × 41,2 × 20 mm, sisemus **37,2 × 37,2 mm**, teravad sisenurgad, põhi 4 mm, sisemuse sügavus 16 mm.
 - Iminapa käik kasti sees: X ≈ 14,8 mm, Y ≈ 15,3 mm → napa efektiivne läbimõõt **≈ 22 mm** (37,2 − käik). Pehme napp kaldub seina vastu juba enne, kui robot tegelikult "puudutab"; puudutuse kriteerium = napp sirge ja seina vastas, kalle näitab ülesurumist.
 - G-1 keskpunkt mudelist (`MG 400 rakis.md` §4) roboti raamis eeldusel X_robot = −x, Y_robot = −y: **391,5 / 21,0**. Eeldatav nihe mõõdetud − arvutatud ≈ **+5,3 / +5,4 mm**. Eelinfo: neljas nurk kinnitamata ja Xmin+Ymax nurk teisel Z-l; telgede suund kontrollimata (vaja kontrollruutu lähemal robotile, nt C+2).
+
+24.10.26 kalibreerimine (asendab 23.10 eelinfot; toorandmed samas CSV-s):
+
+- Enne algust oli J4 loendur 814,9° (üle +180° piiri, viga `Joint4 exceeds positive limit`); kaabel ei olnud keerdus. J4 keerati DobotStudio Pro Jog-režiimis tagasi → 26,4°. Tööriista füüsiline suund muutus, seega 23.10 nurgad (R 36) ei ole tänastega võrreldavad. **Kõik punktid võetakse R ≈ 33 juures**, sest napp ei ole päris J4 teljel ja X/Y sõltub R-ist.
+- Keskpunkt = kahe vastasnurga keskmine (diagonaal).
+- Ainult nihkega (G-1 järgi +29,00 / +6,55) andis E+3 vea +4,0 / −2,7 mm → ruudustik on roboti telgede suhtes **pööratud +1,82°**. Mõõdetud kaugus G-1 → E+3 151,54 mm, mudelis 151,43 mm (mastaap 1,0007) → telgede suund (mudel pööratud 180° ümber Z) ja 42 mm samm on õiged.
+- Teisendus: mudeli punkt (X = −x, Y = −y) pööratakse +1,82° ümber G-1 ja E+3 mudelkeskpunktide keskmise (349,5 / −42,0) ja nihutatakse mõõdetud keskmisse (380,50 / −36,80).
+- Kontroll Z −53 juures: robot viidi arvutatud keskpunktidesse **E+2 339,19 / −59,12** ja **E+4 341,86 / −143,08** — mõlemad kasutaja hinnangul keskel. Kalibreerimine kinnitatud.
+- Veel tegemata: Z puudutus ruudustiku pinnal; kasti välja/tagasi kordustäpsus.
 
 Kui hiljem leitakse vale mõõt, ära kustuta seda. Lisa kuupäevaga parandus vana väärtuse alla ning selgita mõõtekonteksti.

@@ -5,3 +5,7 @@ date,cell,corner,time,x_mm,y_mm,z_mm,r_deg,status,note
 2026-10-23,G-1,Xmax+Ymax,18:48:17,403.976,34.337,-155.842,36.005,kinnitatud,X puudutus kasutaja kinnitatud; Y samas kohas kus varem puudutas
 2026-10-23,G-1,Xmax+Ymin,18:55:46,404.474,18.802,-155.842,36.008,kinnitatud,kasutaja seadis käsitsi ilma kaldeta
 2026-10-23,G-1,Xmin+Ymin,19:00:30,389.50,18.77,-155.84,36.00,kinnitamata,Claude viis teadaolevate seinte järgi; puudutust ei kontrollitud
+2026-10-24,G-1,Xmin+Ymax,10:31:39,403.810,44.901,-87.265,32.762,kinnitamata,kasutaja: G-1 nurk X/Y; pärast J4 lahtikerimist (J4 814.9 -> 26.4); Z ja Y erinevad 23.10 andmetest
+2026-10-24,G-1,Xmax+Ymin,10:34:50,437.19,10.20,-87.27,32.76,kasutaja,diagonaal eelmise reaga; keskpunkt 420.50 / 27.55
+2026-10-24,E+3,Xmax+Ymin,10:48:27,357.497,-118.462,-86.999,32.998,kasutaja,kontrollruut; G-1 nihke järgi arvutatud nurk 357.50 / -119.45 (keskpunkt 336.50 / -98.45 ±21)
+2026-10-24,E+3,Xmin+Ymax,10:51:08,323.499,-83.831,-84.998,32.996,kasutaja,diagonaal eelmise reaga; E+3 keskpunkt 340.50 / -101.15
