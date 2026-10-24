@@ -359,7 +359,7 @@ mitte ei muudeta.
 * Lahtine: kas `cells.py` sobitada uuesti C-2-ga (Y +2 mm kordub ka D-4 õpetuses); kasti välja/tagasi kordustäpsus jäi mõõtmata.
 
 **24.10.2026 hilisõhtu — paigutus (layout.md) ja slot pickeri täiendused**
-* Osalejad: Denys laboris (valis variandi, seadis C−2, D−4, D−5 keskpunktid, tegi klaasi ülekande), Claude (kaksik, slot picker, dokumendid). Raimo slot pickerit muudeti tema teadmisel ja Denysi palvel.
+* Osalejad: Denys laboris (valis variandi, seadis C−2, D−4, D−5 keskpunktid, tegi klaasi ülekande), Claude (kaksik, slot picker, dokumendid). Raimo slot pickerit muutis Claude Denysi palvel (Raimot veel ei teavitatud).
 * Paigutus: kaksikus võrreldi variante; valiti B — töökoht oranžis C±1 (214–256 mm J1-st), praak B±1, klaas D/E −4/−5 (paigas), AtomS3 E/F −1/−2, väljund D/E +4/+5, kalibreerimiskast F+2. Täistsükkel 4 klaasiga 0 kokkupõrget, ükski tee ei lähe üle kolmanda hoidiku. Väljundi kalibreerimisvea varu ainult 2–5 mm → ettepanek väljundi kohad kasti keskele lähemale (Raimoga kokku leppida).
 * Slot picker: kiiruse valik lehel; liikumiskõrgus −90, hover kuni −110; käeulatuse ja tee kontroll enne liikumist; Test → **Move one glass** (From/To lahter, pick Z, place Z). Klaasi ülekanne õnnestus pick Z −152-ga (Denys).
 * Kalibreerimine: C−2 kast v3 (Denys keskele 253,94 / 68,30) lisatud `cells.py` sobitusse; klaasi sisendi nihe D−4/D−5 keskpunktidest (dx −2,00, dy +2,50).
