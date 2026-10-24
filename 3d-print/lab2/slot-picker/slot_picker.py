@@ -11,6 +11,7 @@ Cell X/Y come from the 24.10.26 three-cell fit in ../calibration/cells.py.
 Usage: python slot_picker.py [--port 8010] [--check]
 """
 import argparse
+import csv
 import json
 import math
 import sys
@@ -26,6 +27,10 @@ NUMBERS = [5, 4, 3, 2, 1, -1, -2, -3, -4, -5]  # operator view, left to right
 REFIT_CSV = HERE.parent / "docs" / "refit_test.csv"
 
 FRAMES = HERE / "frames"  # tool camera JPEGs: the View button, the cycle and Claude's captures; newest one is shown
+PROBES = HERE / "probes"  # one folder per probe run: probe.csv + a frame per step, data for touch detection
+PROBE_AXES = {"z-": (0, 0, -1), "x+": (1, 0, 0), "x-": (-1, 0, 0), "y+": (0, 1, 0), "y-": (0, -1, 0)}
+PROBE_HEADER = ["time", "step", "target_x", "target_y", "target_z", "x", "y", "z", "r",
+                "adc", "vacuum_adc", "pump", "frame"]
 sys.path.insert(0, str(HERE.parent / "calibration"))
 sys.path.insert(0, str(HERE.parent / "tool-camera"))
 import cells as calibration  # noqa: E402  single source of the grid fit (G-1, E+3, D-2)
@@ -228,17 +233,49 @@ class Sequencer:
         self._start(actions, cycle_state={"id": time.time(), "round": rnd, "glasses": glasses,
                                           "results": results, "frames": [], "grips": []})
 
+    def probe(self, axis, step, distance, suction, label):
+        """Step from the current pose along axis, one step at a time; at each step (and at the start)
+        record pose, Atom ADC/vacuum and a fresh tool camera frame into probes/<run>/. No touch is
+        detected yet: this only collects the data to tune it. Ends back at the start pose."""
+        pr = self.layout["probe"]
+        if axis not in PROBE_AXES:
+            raise ValueError(f"probe axis: {', '.join(PROBE_AXES)}")
+        if not 0.1 <= step <= 2:
+            raise ValueError("probe step 0.1-2 mm")
+        if not step <= distance <= pr["max_distance_mm"]:
+            raise ValueError(f"probe distance {step}-{pr['max_distance_mm']} mm")
+        x0, y0, z0 = self.ready_status()["pose"][:3]
+        safe = "".join(ch if ch.isalnum() or ch in "-_" else "-" for ch in label.strip())[:40] or "probe"
+        run = PROBES / time.strftime(f"%Y%m%d-%H%M%S-{safe}-{axis}")
+        run.mkdir(parents=True)
+        info = {"dir": run.name, "rows": 0, "last": None}
+        dx, dy, dz = PROBE_AXES[axis]
+        n = int(round(distance / step))
+        actions = [("baseline",)]  # pump off: vacuum is measured against this
+        if suction:
+            actions += [("pump", "suck"), ("wait", pr["suck_wait_s"])]
+        actions.append(("probe_sample", run, info, 0, x0, y0, z0))
+        for i in range(1, n + 1):
+            x, y, z = (round(v + d * step * i, 3) for v, d in ((x0, dx), (y0, dy), (z0, dz)))
+            actions += [("move", f"probe {axis} {i}/{n}", x, y, z, min(0.5, step / 2)),
+                        ("probe_sample", run, info, i, x, y, z)]
+        if suction:
+            actions.append(("pump", "off"))  # release at the bottom, not on the way up
+        actions.append(("move", "probe: back to start", x0, y0, z0))
+        self._start(actions, probe_state=info)
+
     def stop(self):
         self.cancel.set()
         self.robot.call("/stop", {})
 
-    def _start(self, actions, cell=None, cycle_state=None):
+    def _start(self, actions, cell=None, cycle_state=None, probe_state=None):
         with self.lock:
             if self.state["busy"]:
                 raise ValueError("already moving")
             self.cancel.clear()
             self.state = {"busy": True, "cell": cell, "step": "start", "error": None,
-                          "cycle": cycle_state if cycle_state is not None else self.state.get("cycle")}
+                          "cycle": cycle_state if cycle_state is not None else self.state.get("cycle"),
+                          "probe": probe_state if probe_state is not None else self.state.get("probe")}
         threading.Thread(target=self._run, args=(actions, cycle_state), daemon=True).start()
 
     def _run(self, actions, cyc):
@@ -249,9 +286,9 @@ class Sequencer:
                     raise RuntimeError("stopped by user")
                 kind = act[0]
                 if kind == "move":
-                    _, label, x, y, z = act
+                    label, x, y, z = act[1:5]
                     self.state["step"] = label
-                    self._move(x, y, z, r)
+                    self._move(x, y, z, r, *act[5:])
                 elif kind == "pump":
                     self.state["step"] = f"pump {act[1]}"
                     reply = self.robot.call("/pump", {"mode": act[1]})
@@ -271,6 +308,8 @@ class Sequencer:
                     self.pressure.mark_baseline()
                 elif kind == "grip":  # record only: lost pressure data must not stop the cycle
                     cyc["grips"].append(self._grip(act[1], act[2]))
+                elif kind == "probe_sample":
+                    self._probe_sample(*act[1:])
             self.state["step"] = "done" if cyc else "arrived"
         except Exception as exc:
             self.state["error"] = str(exc)[:200]
@@ -278,8 +317,9 @@ class Sequencer:
         finally:
             self.state["busy"] = False
 
-    def _move(self, x, y, z, r):
+    def _move(self, x, y, z, r, tolerance=None):
         motion = self.layout["motion"]
+        tolerance = tolerance or motion["arrive_tolerance_mm"]
         start = self.robot.call("/status")["pose"]
         reply = self.robot.call("/move", {"x": x, "y": y, "z": z, "r": r})
         if not reply.get("ok"):
@@ -297,12 +337,37 @@ class Sequencer:
             s = self.robot.call("/status")
             self._check(s)
             p = s["pose"]
-            if max(abs(p[0] - x), abs(p[1] - y), abs(p[2] - z)) < motion["arrive_tolerance_mm"] and abs(p[3] - r) < 0.5:
+            if max(abs(p[0] - x), abs(p[1] - y), abs(p[2] - z)) < tolerance and abs(p[3] - r) < 0.5:
                 return
             if time.time() - t0 > timeout:
                 self.robot.call("/stop", {})
                 raise RuntimeError(f"not arriving, pose {p}")
             time.sleep(0.1)
+
+    def _probe_sample(self, run, info, i, x, y, z):
+        """One probe.csv row; written at once, so a run stopped halfway keeps its rows."""
+        self.state["step"] = f"probe sample {i}"
+        if self.cancel.wait(self.layout["probe"]["settle_s"]):
+            raise RuntimeError("stopped by user")
+        s = self.robot.call("/status")
+        try:
+            frame = f"step-{i:02d}.jpg"
+            (run / frame).write_bytes(self.camera.fresh())
+        except Exception as exc:  # a missing camera still leaves the pose and pressure rows
+            frame = f"no frame: {exc}"
+        adc, vac = self.pressure.mean(), self.pressure.vacuum()
+        row = [time.strftime("%H:%M:%S"), i, x, y, z, *(round(v, 3) for v in s["pose"]),
+               "" if adc is None else round(adc, 1), "" if vac is None else round(vac, 1),
+               s.get("pump_mode") or "", frame]
+        path = run / "probe.csv"
+        new = not path.exists()
+        with path.open("a", newline="", encoding="utf-8") as f:
+            w = csv.writer(f, lineterminator="\n")
+            if new:
+                w.writerow(PROBE_HEADER)
+            w.writerow(row)
+        info["rows"] += 1
+        info["last"] = dict(zip(PROBE_HEADER, row))
 
     def _grip(self, glass, what):
         vac, need = self.pressure.vacuum(), self.layout["cycle"]["grip_min_vacuum_adc"]
@@ -514,6 +579,10 @@ def make_handler(layout, seq, port):
                     if not 1 <= rnd <= 99:
                         raise ValueError("round must be 1-99")
                     seq.run_cycle(glasses, rnd, table["by_name"])
+                elif self.path == "/api/probe":
+                    idle()
+                    seq.probe(data.get("axis"), float(data.get("step", 0)), float(data.get("distance", 0)),
+                              bool(data.get("suction")), str(data.get("label", "")))
                 elif self.path == "/api/refit":
                     idle()
                     rnd = int(data.get("round", 0))

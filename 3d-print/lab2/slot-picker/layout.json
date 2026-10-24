@@ -30,6 +30,12 @@
     "blow_s": 0.3,
     "grip_min_vacuum_adc": 100
   },
+  "probe": {
+    "_note": "Probe button (Test tab): steps from the current pose, records pose + Atom ADC + a frame per step into probes/",
+    "max_distance_mm": 10.0,
+    "settle_s": 0.4,
+    "suck_wait_s": 0.5
+  },
   "types": {
     "glass": {
       "label": "Glass",

@@ -54,8 +54,8 @@
   .holder-row.active { background:#f0f5fd; }
   .arrows button { padding:4px 8px; }
   .dirty { color:var(--target); font-weight:600; }
-  .test { display:none; background:#fff; border:1px solid var(--line); border-radius:6px; padding:10px; margin-top:12px; }
-  body.test .test { display:block; }
+  div.test { display:none; background:#fff; border:1px solid var(--line); border-radius:6px; padding:10px; margin-top:12px; }
+  body.test div.test { display:block; }
   body.test .drive-only { display:none; }
   table.t { border-collapse:collapse; width:100%; font-size:13px; }
   table.t td, table.t th { border-top:1px solid var(--line); padding:5px 4px; text-align:left; vertical-align:middle; }
@@ -133,6 +133,20 @@
       <button data-j="y,1">Y+</button><button data-j="y,-1">Y−</button>
       <span>Pump</span><button data-p="suck">Suck</button><button data-p="blow">Blow</button><button data-p="off">Off</button>
     </div>
+    <div class="bar">
+      <span>Probe</span>
+      <select id="probe-axis"><option value="z-">Z ↓ (surface)</option><option value="x+">X+ (wall)</option>
+        <option value="x-">X− (wall)</option><option value="y+">Y+ (wall)</option><option value="y-">Y− (wall)</option></select>
+      <label>step <select id="probe-step"><option>0.2</option><option selected>0.5</option><option>1</option></select> mm</label>
+      <label>distance <input type="number" id="probe-dist" value="5" min="0.5" max="10" step="0.5"> mm</label>
+      <label><input type="checkbox" id="probe-suck"> suction</label>
+      <input id="probe-label" placeholder="label, e.g. grid-surface" style="width:150px">
+      <button id="probe" class="primary">Probe</button>
+    </div>
+    <div class="note">Start a few mm above the surface (or beside the wall) with the jog buttons. Each step records the pose,
+      the Atom ADC and a camera frame into slot-picker/probes/; then the arm returns to the start. It does not detect
+      the touch yet — this is the data to tune that. STOP ends it, rows so far are kept.</div>
+    <div class="note mono" id="probe-info"></div>
 
     <h2>3. Run</h2>
     <div class="bar">
@@ -499,6 +513,20 @@ window.onbeforeunload = e => { if (dirty) e.preventDefault(); };
 
 $("stop").onclick = () => api("/api/stop", {});
 
+$("probe").onclick = async () => {
+  clickError = "";
+  const r = await api("/api/probe", {axis: $("probe-axis").value, step: Number($("probe-step").value),
+    distance: Number($("probe-dist").value), suction: $("probe-suck").checked, label: $("probe-label").value});
+  if (!r.ok) say(`Probe: ${r.error}`);
+};
+
+function showProbe(p) {
+  if (!p) return;
+  const l = p.last;
+  $("probe-info").textContent = `probes/${p.dir}: ${p.rows} rows` + (l ?
+    ` · last step ${l.step}: z ${l.z}, ADC ${l.adc || "–"}, vacuum ${l.vacuum_adc || "–"}, ${l.frame}` : "");
+}
+
 $("view").onclick = async () => {
   clickError = "";
   $("view").disabled = true;
@@ -538,6 +566,7 @@ async function poll() {
     document.querySelectorAll(".cell.target").forEach(e => e.classList.remove("target"));
     if (s.seq.cell) { const el = $("cell-" + s.seq.cell); if (el) el.classList.add("target"); }
     syncResults(s.seq.cycle, s.seq.busy);
+    showProbe(s.seq.probe);
     const cam = s.camera.error ? `<span class="err">${esc(s.camera.error)}</span>`
       : s.camera.open ? `on, ${s.camera.fps} fps` : "off";
     const pr = s.pressure;

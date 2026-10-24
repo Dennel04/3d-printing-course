@@ -65,6 +65,19 @@ Ilma rõhuandurita (Atom COM4) haaratakse õpetatud kõrgusel; vaakumi kontrolli
 
 Testitud 24.10.26 simuleeritud Atomiga (~95 Hz, vaakum, katkestus ja taastumine) ja ühe klaasi tsükliga ilma Atomita (tsükkel lõppes, kõik 4 sammu); päris Atomiga: TODO — waiting for physical test.
 
+## Probe (puudutuse andmed)
+
+Test-vahekaardil Jog-nuppude all. Kogub andmeid, millega hiljem häälestada puudutuse tuvastus (kaamera + vaakum) ja isekalibreerimine; ise veel midagi ei tuvasta.
+
+1. Jogi käsi mõne mm kõrgusele pinnast (Z ↓) või seina kõrvale kalibreerimiskastis (X±/Y±, roboti teljed).
+2. Vali samm (0,2 / 0,5 / 1 mm), vahemaa (≤ `probe.max_distance_mm`, 10 mm), soovi korral **suction** ja silt, vajuta **Probe**.
+3. Iga sammu järel ootab `probe.settle_s` ja kirjutab rea faili `probes/<aeg>-<silt>-<telg>/probe.csv` (siht ja tegelik asend, Atomi ADC 0,3 s keskmine, vaakum, pump, kaadri nimi) ning kaadri `step-NN.jpg`. Algasend on samm 0.
+4. Lõpus: suction korral pump välja (all, mitte üles tõustes), siis tagasi algasendisse. STOP katkestab, juba kirjutatud read jäävad; käsi jääb sinna, pump nagu oli.
+
+Kaamera või Atomi puudumine ei peata sondeerimist (tühi veerg / `no frame: …`). Ühe jooksu kaadrid ~150 KB tükk; `probes/` ei ole gitignore'is, et head jooksud saaks commitida. Testitud 24.10.26 simuleeritud roboti, kaamera ja Atomiga (sammud, vaakumi hüpe CSV-s, STOP, vigased sisendid); päris robotiga: TODO — waiting for physical test.
+
+Kasulikud esimesed jooksud: Z ↓ ruudustiku pinnale (ilma ja koos imemisega), Z ↓ klaasile sisendhoidikus imemisega, ning G-1 kalibreerimiskastis kõik neli seina 0,5 mm sammuga.
+
 ## Seaded — `layout.json`
 
 - `calibration` — ainult `tool_r` (33). Lahtrite X/Y tuleb failist [`../calibration/cells.py`](../calibration/cells.py) (24.10.26 kolme ruudu sobitus, pööre +0,87°); uue kalibreerimise järel muuda seal `MEASURED`.
