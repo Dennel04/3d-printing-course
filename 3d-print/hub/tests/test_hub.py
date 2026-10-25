@@ -16,6 +16,9 @@ HUB = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(HUB))
 import hub  # noqa: E402
 from sim_robot import SimRobot, Z_FLOOR  # noqa: E402
+from real_robot import RealRobot  # noqa: E402
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from fake_mg400 import FakeMG400  # noqa: E402
 
 
 def wait_idle(robot, timeout=10.0):
@@ -62,14 +65,14 @@ class SimRobotTest(unittest.TestCase):
         self.assertFalse(self.r.call("/move", {"x": 310, "y": 0, "z": -50})["ok"])
 
     def hold(self, axis, sign, secs):
-        """Like the page's Hold key: /jog_hold every 100 ms, poses sampled every 20 ms."""
-        poses, t0, renew = [], time.monotonic(), 0.0
+        """Like the page's Hold key: /jog_hold every 100 ms, poses sampled every 50 ms."""
+        poses, t0, renew = [], time.monotonic(), 0.0      # sampled slower than the 20 ms sim tick
         while time.monotonic() - t0 < secs:
             if time.monotonic() >= renew:
                 self.assertTrue(self.r.call("/jog_hold", {"axis": axis, "dir": sign})["ok"])
                 renew = time.monotonic() + 0.1
             poses.append(self.r.call("/status")["pose"])
-            time.sleep(0.02)
+            time.sleep(0.05)
         return poses
 
     def test_held_jog_moves_without_stopping_between_calls(self):
@@ -225,7 +228,11 @@ class HubApiTest(unittest.TestCase):
         s.bind(("127.0.0.1", 0))
         cls.port = s.getsockname()[1]
         s.close()
-        handler, cls.robots = hub.build(hub.HERE.parent / "lab2", cls.port)
+        # Real = a fake MG400 on localhost: the tests switch to Real and must never reach the lab arm
+        cls.fake = FakeMG400()
+        real = RealRobot(ip="127.0.0.1", command_timeout=0.5, ports=cls.fake.ports,
+                         settings_port=cls.fake.settings_port)
+        handler, cls.robots = hub.build(hub.HERE.parent / "lab2", cls.port, real=real)
         cls.server = ThreadingHTTPServer(("127.0.0.1", cls.port), handler)
         threading.Thread(target=cls.server.serve_forever, daemon=True).start()
         cls.robots.sim.speed_ratio = 30
@@ -233,6 +240,8 @@ class HubApiTest(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         cls.server.shutdown()
+        cls.robots.real.call("/disconnect")
+        cls.fake.close()
 
     def req(self, path, body=None):
         r = urllib.request.Request(f"http://127.0.0.1:{self.port}{path}",

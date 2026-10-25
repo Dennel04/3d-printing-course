@@ -4,9 +4,9 @@
     ../sim/.venv/Scripts/python hub.py            # http://127.0.0.1:8020, starts in Simulation
     ../sim/.venv/Scripts/python hub.py --lab ../lab2 --port 8020
 
-Simulation: an in-process MG400 (sim_robot.py) that answers like mg400-base. Real: the mg400-base
-server from layout.json (`mg400_api`, normally http://127.0.0.1:8000/api), already connected and
-enabled. Switching is allowed only while nothing moves. Everything the slot picker does (drive to a
+Simulation: an in-process MG400 (sim_robot.py). Real: the arm itself over TCP/IP (real_robot.py with the
+driver in mg400/, default 192.168.1.6, --robot-ip / --z-floor); no mg400-base server any more.
+Switching is allowed only while nothing moves. Everything the slot picker does (drive to a
 cell, layout editor, teach points, glass cycle, refit CSV, tool camera) runs unchanged on top of the
 selected robot; the hub adds the DobotStudio-style jog (Cartesian and joint), the live 3D view and
 the twin checks (sim/*.py) behind buttons.
@@ -30,13 +30,14 @@ VIEWER_DATA = SIM / "viewer" / "data"
 sys.path.insert(0, str(SIM))
 import mg400_kin as kin  # noqa: E402
 from sim_robot import SimRobot  # noqa: E402
+from real_robot import RealRobot, DEFAULT_IP, Z_FLOOR  # noqa: E402
 
 CART_AXES = ("x", "y", "z", "r")
 JOINT_AXES = ("j1", "j2", "j3", "j4")
 MAX_STEP = {"cart": 10.0, "joint": 10.0}
 # Hold-to-move in joint space: the goal rides this far ahead of the live joints and is renewed on every
 # call (~10 per second), so the follower cruises instead of braking before each step. If the page dies the
-# arm stops at most this far on (Cartesian holds have a timeout in mg400-base / the simulation instead).
+# arm stops at most this far on (Cartesian holds have a timeout in mg400/driver.py and the simulation instead).
 JOINT_HOLD_LEAD = 6.0    # degrees
 
 # twin checks behind the Tests tab: (title, script, args, what it answers)
@@ -99,7 +100,7 @@ MOTION_PATHS = {"/api/goto", "/api/transfer", "/api/cycle/above", "/api/cycle/ru
 
 
 class Robots:
-    """The robot the slot picker talks to: Simulation (in-process) or Real (mg400-base), and the motion lock."""
+    """The robot the slot picker talks to: Simulation (in-process) or Real (the arm over TCP/IP), and the motion lock."""
 
     def __init__(self, real, sim, mode_file=None):
         # the last selected robot survives a hub restart (mode_file); motion always starts off
@@ -121,7 +122,7 @@ class Robots:
             self.ensure_connected()
 
     def ensure_connected(self):
-        """Real robot: open mg400-base's link to the arm if it is down (no motion; Enable stays a click)."""
+        """Real robot: open the TCP/IP link to the arm if it is down (no motion; Enable stays a click)."""
         try:
             if not self.real.call("/status").get("connected"):
                 self.real.call("/connect", {})
@@ -338,13 +339,14 @@ def scene_stale(lab):
 WEBCAM_MAX_BYTES = 20_000_000   # a 4K JPEG is ~1-3 MB
 
 
-def build(lab, port, mode_file=None):
+def build(lab, port, mode_file=None, real=None):
     sys.path.insert(0, str(lab / "slot-picker"))
     import slot_picker as sp
 
     layout = sp.load_layout()
     sp.check_holders(layout["holders"], layout["types"])
-    robots = Robots(sp.Mg400(layout["mg400_api"]), SimRobot(speed_ratio=min(10, layout["motion"]["max_speed_ratio"])), mode_file)
+    real = real or RealRobot(speed_ratio=min(10, layout["motion"]["max_speed_ratio"]))
+    robots = Robots(real, SimRobot(speed_ratio=min(10, layout["motion"]["max_speed_ratio"])), mode_file)
     if robots.mode == "real":
         threading.Thread(target=robots.ensure_connected, daemon=True).start()
     seq = sp.Sequencer(robots, layout, sp.ToolCamera(layout["camera_port"]), sp.PressureMonitor(layout.get("pressure_port")))
@@ -359,7 +361,7 @@ def build(lab, port, mode_file=None):
             s = robots.call("/status")
             s["reachable"] = True
         except Exception as exc:
-            s = {"reachable": False, "mode_name": f"mg400-base unreachable ({type(exc).__name__})"}
+            s = {"reachable": False, "mode_name": f"robot unreachable ({type(exc).__name__})"}
         return s
 
     class Hub(Picker):
@@ -520,9 +522,12 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--port", type=int, default=8020)
     ap.add_argument("--lab", default=str(HERE.parent / "lab2"))
+    ap.add_argument("--robot-ip", default=DEFAULT_IP, help="MG400 address for Real (default %(default)s)")
+    ap.add_argument("--z-floor", type=float, default=Z_FLOOR, help="lowest Z the Real arm may go (default %(default)s)")
     a = ap.parse_args()
     lab = Path(a.lab).resolve()
-    handler, robots = build(lab, a.port, mode_file=HERE / ".mode")
+    real = RealRobot(ip=a.robot_ip, z_floor=a.z_floor)
+    handler, robots = build(lab, a.port, mode_file=HERE / ".mode", real=real)
     server = ThreadingHTTPServer(("127.0.0.1", a.port), handler)
     print(f"MG400 Station Hub on http://127.0.0.1:{a.port}  (lab {lab.name}, robot: {robots.mode}, motion off)")
     server.serve_forever()

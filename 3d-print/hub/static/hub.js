@@ -111,7 +111,7 @@ function renderState(s) {
   const fault = !offline && (r.error || (r.alarm_ids || []).length);
   $("#btnConnect").hidden = !offline;
   $("#btnClear").hidden = !fault;
-  const idle = r.enabled && r.servo_active === false;     // enabled, but mg400-base is not streaming moves
+  const idle = r.enabled && r.servo_active === false;     // enabled, but the hub is not streaming moves
   $("#btnEnable").hidden = !r.reachable || offline || fault || (r.enabled && !idle);
   $$(".dial").forEach(d => d.classList.toggle("locked", !ui.armed || seq.busy));
   if (s.pose3d) live.target = s.pose3d;

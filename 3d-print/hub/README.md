@@ -7,6 +7,7 @@ DobotStudio-style jog pad and the twin checks.
 cd 3d-print/hub
 ../sim/.venv/Scripts/python -m pip install -r requirements.txt   # once (sim packages + pyserial)
 ../sim/.venv/Scripts/python hub.py                               # http://127.0.0.1:8020
+../sim/.venv/Scripts/python hub.py --robot-ip 192.168.1.6 --z-floor -160              # Real defaults
 ```
 
 The hub always starts in **Simulation**. Do not run the old `slot_picker.py` on the same COM ports at
@@ -16,10 +17,10 @@ the same time (tool camera COM5, pressure COM4).
 
 | | Simulation | Real robot |
 |---|---|---|
-| What answers | `sim_robot.py` in the hub process, same calls and replies as mg400-base | mg400-base server from `layout.json` → `mg400_api` (`http://127.0.0.1:8000/api`) |
-| Limits | joint limits and reach from `sim/mg400_kin.py`, Z floor −160 | the same model inside mg400-base, plus the robot's own |
-| Speed | 300 mm/s × ratio | the robot's |
-| Before use | nothing | mg400-base running, connected and enabled (DobotStudio in TCP/IP mode) |
+| What answers | `sim_robot.py` in the hub process | `real_robot.py` in the hub process: the arm over TCP/IP (`mg400/driver.py`, `--robot-ip`, default 192.168.1.6) |
+| Limits | joint limits and reach from `sim/mg400_kin.py`, Z floor −160 | the same model (`mg400/kinematics.py`), Z floor `--z-floor` (default −160), plus the robot's own |
+| Speed | 300 mm/s × ratio, 0.5 s ramp | 200 mm/s × ratio, 0.5 s ramp |
+| Before use | nothing | robot powered, nothing else driving it (no mg400-base server, DobotStudio not in JOG); API mode is switched on by Connect |
 
 Switching needs a second click on **Real robot** (the button turns red: "Confirm: real arm") and is refused
 while a sequence runs.
@@ -35,19 +36,21 @@ turns the view to a face (TOP, X±, Y± in robot axes); Fit and Tool are the two
 Clear error appear only when they are needed; messages pop up under the top bar.
 
 The hub remembers the last selected robot (`hub/.mode`, not in git) and opens it again after a restart;
-on Real it opens mg400-base's link to the arm by itself. Motion always starts off, Enable stays a click.
-**Enable robot** also shows when the arm says ENABLED but mg400-base has stopped following (after a fault):
+on Real it opens the link to the arm by itself. Motion always starts off, Enable stays a click.
+**Enable robot** also shows when the arm says ENABLED but the hub has stopped following (after a fault):
 the arm ignores moves until it is pressed.
 
 If the robot drops off (power, cable, e-stop, DobotStudio took it) the top bar shows **Connect**: it
-reconnects mg400-base without moving; then **Enable robot** (the arm holds where it is) and **Motion** on in the Jog tab.
+reconnects to the robot without moving; then **Enable robot** (the arm holds where it is) and **Motion** on in the Jog tab.
 
 ## Tabs
 
 - **Jog** — two pads like DobotStudio. Cartesian: X± / Y± and Z± / R±. Joint: J1± / J2± and J3± / J4±; a joint
   step is turned into a Cartesian target through the robot's joint model (R = J1 + J4) and checked against
-  the joint limits before it is sent. Steps 0.2 / 1 / 5 / 10 or **Hold** (1 mm or 1° every 0.2 s while
-  pressed). Keys: arrows X/Y, PgUp/PgDn Z, Q/E R, Esc = STOP. Pump suck / blow / off.
+  the joint limits before it is sent. Steps 0.2 / 1 / 5 / 10 or **Hold**: moves at the set speed while
+  the key is held and brakes smoothly on release (the page renews it every 0.1 s; without a renewal for 0.35 s
+  the arm brakes by itself). R alone turns with the controller's MoveJog(J4±), since the MG400 ignores a ServoP
+  that changes only R. Keys: arrows X/Y, PgUp/PgDn Z, Q/E R, Esc = STOP. Pump suck / blow / off.
 - **Picker** — the slot picker (Drive / Edit layout / Test, teach points, glass cycle, refit CSV) on whichever
   robot is selected. Hub version `static/picker.html` (same API as `lab2/slot-picker/index.html`, which still
   works on its own): status chips for robot, vacuum sensor and camera, and an **Events** log (moves, teach points,
