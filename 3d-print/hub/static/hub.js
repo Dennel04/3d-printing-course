@@ -41,14 +41,14 @@ $$(".mode button").forEach(b => b.onclick = async () => {
   b.classList.remove("confirm"); b.textContent = mode === "real" ? "Real robot" : "Simulation";
   try {
     await api("/hub/mode", { mode });
-    toast(mode === "real" ? "Real robot selected. Motion is locked; mg400-base on :8000 must be connected and enabled." : "Simulation selected. Motion is locked.");
+    toast(mode === "real" ? "Real robot selected. Motion is off; turn it on in the Jog tab." : "Simulation selected. Motion is off; turn it on in the Jog tab.");
   } catch (e) { toast(e.message, "bad"); }
 });
 $("#btnArm").onclick = async () => {
   const on = $("#btnArm").getAttribute("aria-pressed") !== "true";
   try {
     await api("/hub/arm", { armed: on });
-    toast(on ? (ui.mode === "real" ? "Real arm armed. Keep a hand on the e-stop." : "Simulated arm armed.") : "Motion locked.");
+    toast(on ? (ui.mode === "real" ? "Motion on for the real arm. Keep a hand on the e-stop." : "Motion on for the simulated arm.") : "Motion off.");
   } catch (e) { toast(e.message, "bad"); }
 };
 $("#speed").oninput = e => $("#speedOut").textContent = e.target.value + " %";
@@ -92,9 +92,11 @@ function renderState(s) {
   const arm = $("#btnArm");
   arm.setAttribute("aria-pressed", String(ui.armed));
   const mmss = v => `${Math.floor(v / 60)}:${String(v % 60).padStart(2, "0")}`;
-  $("#armText").textContent = !ui.armed ? "Locked" : m.locks_in_s != null ? `Armed ${mmss(m.locks_in_s)}` : "Armed";
+  $("#armText").textContent = !ui.armed ? "Motion off" : m.locks_in_s != null ? `Motion on · ${mmss(m.locks_in_s)}` : "Motion on";
   const ll = $("#lockLine");
-  ll.textContent = ui.armed ? (s.mode === "real" ? "Real arm armed" : "Simulated arm armed") : "Motion locked: press Arm";
+  ll.textContent = ui.armed
+    ? (s.mode === "real" ? "Jog, picker and cycle can move the real arm. Turns off by itself after 2 min without motion." : "Jog, picker and cycle move the simulated arm.")
+    : "Safety switch: while it is off, nothing on this page can move the arm (STOP always works). Click to turn on.";
   ll.classList.toggle("armed", ui.armed);
   // the server is up but has lost the robot (cable, power, e-stop): its old fault flags are stale, offer Connect
   const offline = r.reachable && r.connected === false;
@@ -161,7 +163,11 @@ async function jogOnce(axis, sign, step = ui.step) {
     const t = r.target;
     say(t ? `→ X ${t.x.toFixed(1)}  Y ${t.y.toFixed(1)}  Z ${t.z.toFixed(1)}  R ${t.r.toFixed(1)}` : "", "ok");
     return true;
-  } catch (e) { say(e.message, "bad"); return false; }
+  } catch (e) {
+    say(e.message, "bad");
+    if (!ui.armed) { const sw = $("#motionSwitch"); sw.classList.remove("nudge"); void sw.offsetWidth; sw.classList.add("nudge"); }
+    return false;
+  }
 }
 function press(k) {
   k.classList.add("down");

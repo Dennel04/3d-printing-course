@@ -82,7 +82,12 @@ button.arm .lock::before { content: ""; position: absolute; left: 1px; bottom: 1
 button.arm[aria-pressed="true"] { background: var(--warn); border-color: var(--warn); color: #fff; }
 button.arm[aria-pressed="true"] .lock::before { left: 6px; }
 .mode button.confirm { background: var(--real); color: #fff; box-shadow: none; }
-.lockline { font-size: 12px; color: var(--muted); }
+.motion-switch { display: flex; align-items: center; gap: 12px; padding: 8px 10px; margin-bottom: 10px; border: 1px solid var(--line); border-radius: var(--r); }
+.motion-switch:has(.arm[aria-pressed="true"]) { border-color: var(--warn); }
+.motion-switch .arm { white-space: nowrap; flex: none; }
+.motion-switch.nudge { animation: nudge .5s 2; }
+@keyframes nudge { 50% { box-shadow: 0 0 0 3px var(--warn); } }
+.lockline { margin: 0; font-size: 12px; color: var(--muted); }
 .lockline.armed { color: var(--warn); font-weight: 600; }
 .speed { display: flex; align-items: center; gap: 8px; font: 600 13px var(--display); letter-spacing: .04em; text-transform: uppercase; }
 .speed input { width: 110px; accent-color: var(--accent); }

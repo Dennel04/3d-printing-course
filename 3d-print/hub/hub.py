@@ -337,7 +337,7 @@ def build(lab, port):
         def do_POST(self):
             path = self.path.split("?")[0]
             if path in MOTION_PATHS and not self._foreign(post=True) and not robots.motion_allowed():
-                return self._json(409, {"ok": False, "error": "Motion is locked: press Arm in the top bar first."})
+                return self._json(409, {"ok": False, "error": "Motion is off: turn on the Motion switch in the Jog tab first."})
             if not self.path.startswith("/hub/"):
                 return super().do_POST()
             if (why := self._foreign(post=True)):

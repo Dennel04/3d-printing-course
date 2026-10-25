@@ -610,7 +610,7 @@ async function poll() {
 ${pr.error || ""}`);
     chip("chipCam", s.camera.error ? "warn" : s.camera.open ? "ok" : "", "Camera", s.camera.error ? friendlyPort(s.camera.error) : s.camera.open ? `on · ${s.camera.fps} fps` : "idle", s.camera.error || "");
     const m = parent !== window ? parent.hub?.ui?.state?.motion : null;
-    if (m) chip("chipMotion", m.armed ? "warn" : "", "Motion", m.armed ? "armed" : "locked · Arm in the top bar");
+    if (m) chip("chipMotion", m.armed ? "warn" : "", "Motion", m.armed ? "armed" : "off · switch in the Jog tab");
     else $("chipMotion").hidden = true;
     seqCell = s.seq.cell;
     const step = s.seq.busy || s.seq.step !== "idle" ? `${s.seq.cell || ""} ${s.seq.step}`.trim() : "";

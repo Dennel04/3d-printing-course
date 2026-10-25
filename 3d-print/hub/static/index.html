@@ -33,8 +33,6 @@
     <button class="ghost" id="btnConnect" hidden title="Reconnect mg400-base to the robot (no motion)">Connect</button>
     <button class="ghost" id="btnEnable" hidden>Enable robot</button>
     <button class="ghost" id="btnClear" hidden>Clear error</button>
-    <button class="arm" id="btnArm" aria-pressed="false" title="Allow motion from this page (jog, picker, cycle). Real robot: locks itself after 2 min without motion.">
-      <span class="lock" aria-hidden="true"></span><span id="armText">Locked</span></button>
     <button class="stop" id="btnStop" title="Stop the arm and cancel the running sequence (Esc)">STOP</button>
   </div>
   <div class="toast" id="toast" role="status" hidden></div>
@@ -96,12 +94,16 @@
     </nav>
 
     <div class="tab" id="tab-jog">
+      <div class="motion-switch" id="motionSwitch">
+        <button class="arm" id="btnArm" aria-pressed="false">
+          <span class="lock" aria-hidden="true"></span><span id="armText">Motion off</span></button>
+        <p class="lockline" id="lockLine"></p>
+      </div>
       <div class="row between">
         <div class="seg small" role="radiogroup" aria-label="Jog space">
           <button id="spaceCart" data-space="cart">Cartesian</button>
           <button id="spaceJoint" data-space="joint">Joint</button>
         </div>
-        <span class="lockline" id="lockLine">Motion locked: press Arm</span>
       </div>
       <div class="steps" role="radiogroup" aria-label="Step">
         <span class="label">Step</span>

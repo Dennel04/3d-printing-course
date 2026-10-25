@@ -171,7 +171,7 @@ class HubApiTest(unittest.TestCase):
         self.req("/hub/arm", {"armed": False})
         r = self.req("/hub/jog", {"space": "cart", "axis": "z", "delta": -1})
         self.assertFalse(r["ok"])
-        self.assertIn("locked", r["error"])
+        self.assertIn("Motion is off", r["error"])
         self.assertFalse(self.req("/api/goto", {"cell": "D+2", "hover_z": -110})["ok"])
         self.assertTrue(self.req("/hub/arm", {"armed": True})["armed"])
         self.assertTrue(self.req("/hub/state")["motion"]["armed"])

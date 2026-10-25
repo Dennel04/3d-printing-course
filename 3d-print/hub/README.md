@@ -25,9 +25,9 @@ Switching needs a second click on **Real robot** (the button turns red: "Confirm
 while a sequence runs.
 
 **One motion lock for the whole hub.** Every request that can move the arm (jog, picker drive, go above, move
-glass, cycle, probe) is refused by the server until **Arm** in the top bar is pressed. Switching robots locks
-again; on the real robot the lock comes back by itself after 2 minutes without a motion request (the button
-shows the countdown). STOP / Esc always works.
+glass, cycle, probe) is refused by the server until the **Motion** switch at the top of the Jog tab is on.
+Switching robots turns it off; on the real robot it turns off by itself after 2 minutes without a motion request
+(the switch shows the countdown). A jog pressed while it is off makes the switch blink. STOP / Esc always works.
 
 **Layout.** Drag the bar between the 3D view and the panel to resize it (double-click resets, arrow keys
 nudge, the arrow collapses the panel; the size is remembered in this browser). The view cube in the 3D corner
@@ -35,7 +35,7 @@ turns the view to a face (TOP, X±, Y± in robot axes); Fit and Tool are the two
 Clear error appear only when they are needed; messages pop up under the top bar.
 
 If the robot drops off (power, cable, e-stop, DobotStudio took it) the top bar shows **Connect**: it
-reconnects mg400-base without moving; then **Enable robot** (the arm holds where it is) and **Arm**.
+reconnects mg400-base without moving; then **Enable robot** (the arm holds where it is) and **Motion** on in the Jog tab.
 
 ## Tabs
 
