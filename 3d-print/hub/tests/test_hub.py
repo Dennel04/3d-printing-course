@@ -126,6 +126,62 @@ class GlassTrackingTest(unittest.TestCase):
         self.assertEqual(live.glasses["glass 2"], [300.0, -40.0, 10.0])
 
 
+class WorkstationCellTest(unittest.TestCase):
+    """A moved workstation holder takes its chosen cell along (the real cycle goes to that cell)."""
+    L, N = "ABCDEFG", [5, 4, 3, 2, 1, -1, -2, -3, -4, -5]
+
+    def layout(self, cells, ws_cell):
+        return {"holders": [{"name": "WS", "cells": cells}], "cycle": {"roles": {"workstation": "WS"}, "workstation_cell": ws_cell}}
+
+    def follow(self, lay, before):
+        saved = []
+        new = hub.follow_workstation_cell(lay, before, saved.append, self.L, self.N)
+        return new, saved
+
+    def test_cell_moves_with_the_holder(self):
+        lay = self.layout(["C+4", "C+5", "B+4", "B+5"], "C+1")
+        new, saved = self.follow(lay, {"WS": ["C-1", "C+1", "B-1", "B+1"]})
+        self.assertEqual(new, "C+5")                       # C+1 was the column next to the robot's X axis: shift 4 left
+        self.assertEqual(lay["cycle"]["workstation_cell"], "C+5")
+        self.assertEqual(len(saved), 1)
+
+    def test_cell_inside_the_holder_is_left_alone(self):
+        lay = self.layout(["C-1", "C+1", "B-1", "B+1"], "C+1")
+        new, saved = self.follow(lay, {"WS": ["C-1", "C+1", "B-1", "B+1"]})
+        self.assertIsNone(new)
+        self.assertEqual(lay["cycle"]["workstation_cell"], "C+1")
+        self.assertEqual(saved, [])
+
+    def test_reshaped_holder_falls_back_to_its_first_cell(self):
+        lay = self.layout(["D+2", "D+3"], "C+1")
+        self.follow(lay, {"WS": ["C-1", "C+1", "B-1", "B+1"]})
+        self.assertIsNone(lay["cycle"]["workstation_cell"])  # cycle.py then uses cells[0]
+
+
+class SceneStaleTest(unittest.TestCase):
+    def test_older_scene_is_stale(self):
+        import os
+        import tempfile
+        with tempfile.TemporaryDirectory() as d:
+            lab, data = Path(d) / "lab", Path(d) / "data"
+            (lab / "slot-picker").mkdir(parents=True)
+            data.mkdir()
+            layout, scene = lab / "slot-picker" / "layout.json", data / "scene.glb"
+            old = hub.VIEWER_DATA
+            hub.VIEWER_DATA = data
+            try:
+                layout.write_text("{}")
+                self.assertTrue(hub.scene_stale(lab))          # no scene yet
+                scene.write_bytes(b"glb")
+                os.utime(layout, (1, 1))
+                self.assertFalse(hub.scene_stale(lab))
+                os.utime(layout, None)
+                os.utime(scene, (1, 1))
+                self.assertTrue(hub.scene_stale(lab))          # layout saved after the last rebuild
+            finally:
+                hub.VIEWER_DATA = old
+
+
 class HubApiTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

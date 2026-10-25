@@ -127,6 +127,9 @@ class Run:
         mesh = self.T.scene["holder:" + holder_name]
         p = twin.grid_to_world((*twin.cell_model(cell), 0))
         loc, _, _ = mesh.ray.intersects_location([[p[0], p[1], 300.0]], [[0, 0, -1.0]])
+        if not len(loc):
+            raise SystemExit(f"layout.json: cell {cell} is not on holder {holder_name!r} "
+                             "(moved holder? set the workstation cell in the picker's Test tab)")
         return float(loc[:, 2].max())
 
     def _teach(self):

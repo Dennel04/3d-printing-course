@@ -200,6 +200,7 @@ class LivePose:
         self.twin = None
         self.error = None
         self.glasses = {}         # name -> [x, y, z] glass centre, world frame
+        self.home = {}            # where reset_glasses put them
         self.carried = None
         self.lock = threading.Lock()
         threading.Thread(target=self._load, daemon=True).start()
@@ -213,6 +214,13 @@ class LivePose:
                 self.glasses = {n: list(v[:3]) for n, v in f0.items() if n.startswith("glass ")}
             except (OSError, ValueError, KeyError, IndexError):
                 self.glasses = {}
+            self.home = {n: list(v) for n, v in self.glasses.items()}
+
+    @property
+    def glasses_moved(self):
+        """Some 3D glass is away from its input pocket (the stage then offers to put them back)."""
+        with self.lock:
+            return any(math.dist(v, self.home.get(n, v)) > 1.0 for n, v in self.glasses.items())
 
     def _load(self):
         try:
@@ -281,6 +289,36 @@ def joint_target(status, axis, delta):
     return {"x": round(nx, 3), "y": round(ny, 3), "z": round(nz, 3), "r": round(vals[0] + vals[3], 3)}
 
 
+def follow_workstation_cell(layout, before, save, letters, numbers):
+    """After a layout save: if the workstation holder moved, its chosen cell moves with it (same offset);
+    if that is impossible the cell falls back to the holder's first cell. The picker itself does not do this,
+    and a cell left behind sends the real cycle to an empty spot."""
+    cyc = layout["cycle"]
+    name, cell = cyc["roles"].get("workstation"), cyc.get("workstation_cell")
+    h = next((h for h in layout["holders"] if h["name"] == name), None)
+    if not cell or h is None or cell in h["cells"]:
+        return None
+    new = None
+    old = before.get(name)
+    if old and len(old) == len(h["cells"]) and cell in old:
+        L, N = list(letters), list(numbers)
+        pos = lambda c: (L.index(c[0]), N.index(int(c[1:])))
+        shifts = {(pos(b)[0] - pos(a)[0], pos(b)[1] - pos(a)[1]) for a, b in zip(sorted(old, key=pos), sorted(h["cells"], key=pos))}
+        if len(shifts) == 1:
+            (dl, dn), (l0, n0) = shifts.pop(), pos(cell)
+            moved = f"{L[l0 + dl]}{N[n0 + dn]:+d}"
+            new = moved if moved in h["cells"] else None
+    cyc["workstation_cell"] = new
+    save(layout)
+    return new
+
+
+def scene_stale(lab):
+    """The 3D scene is missing or older than the picker's layout.json."""
+    scene, layout = VIEWER_DATA / "scene.glb", lab / "slot-picker" / "layout.json"
+    return not scene.exists() or (layout.exists() and layout.stat().st_mtime > scene.stat().st_mtime)
+
+
 WEBCAM_MAX_BYTES = 20_000_000   # a 4K JPEG is ~1-3 MB
 
 
@@ -297,7 +335,7 @@ def build(lab, port, mode_file=None):
     live = LivePose()
     tests = Tests(lab, on_export=lambda: live.reset_glasses() if live.twin else None)
     Picker = sp.make_handler(layout, seq, port)
-    if not (VIEWER_DATA / "scene.glb").exists():
+    if scene_stale(lab):          # also after a hub restart that cut a rebuild short
         tests.start("export")
 
     def robot_status():
@@ -341,7 +379,7 @@ def build(lab, port, mode_file=None):
                 return self._json(200, {"mode": robots.mode, "robot": s, "seq": seq.state, "motion": robots.arm_state(),
                                         "limits": {"max_speed_ratio": layout["motion"]["max_speed_ratio"],
                                                    "tool_r": layout["calibration"]["tool_r"]},
-                                        "pose3d": three, "pose3d_error": live.error,
+                                        "pose3d": three, "pose3d_error": live.error, "glasses_moved": live.glasses_moved,
                                         "camera": seq.camera.state})
             if path == "/hub/tests":
                 return self._json(200, {"tests": tests.state})
@@ -349,6 +387,11 @@ def build(lab, port, mode_file=None):
 
         def do_POST(self):
             path = self.path.split("?")[0]
+            if path == "/api/holders" and not self._foreign(post=True):
+                before = {h["name"]: list(h["cells"]) for h in layout["holders"]}
+                super().do_POST()
+                follow_workstation_cell(layout, before, sp.save_layout, sp.LETTERS, sp.NUMBERS)
+                return
             if path in MOTION_PATHS and not self._foreign(post=True) and not robots.motion_allowed():
                 return self._json(409, {"ok": False, "error": "Motion is off: turn on the Motion switch in the Jog tab first."})
             if not self.path.startswith("/hub/"):

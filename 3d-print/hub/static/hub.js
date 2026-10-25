@@ -115,6 +115,7 @@ function renderState(s) {
   $("#btnEnable").hidden = !r.reachable || offline || fault || (r.enabled && !idle);
   $$(".dial").forEach(d => d.classList.toggle("locked", !ui.armed || seq.busy));
   if (s.pose3d) live.target = s.pose3d;
+  $("#btnGlasses").hidden = !s.glasses_moved;
 }
 
 async function poll() {
@@ -563,8 +564,7 @@ let syncing = false;
 async function layoutTo3d() {
   if (syncing) return;
   syncing = true;
-  $("#btnLayout3d").disabled = true;
-  $("#layout3dState").textContent = "Updating 3D from layout.json…";
+  $("#layout3dState").textContent = "Updating 3D from the saved layout…";
   try {
     await api("/hub/layout3d", {});
     for (;;) {
@@ -579,11 +579,9 @@ async function layoutTo3d() {
         break;
       }
     }
-  } catch (err) { $("#layout3dState").textContent = "3D update failed: " + err.message; }
+  } catch (err) { $("#layout3dState").textContent = "3D not updated: " + err.message; }
   syncing = false;
-  $("#btnLayout3d").disabled = false;
 }
-$("#btnLayout3d").onclick = layoutTo3d;
 $("#btnGlasses").onclick = () => api("/hub/glasses/reset", {}).catch(e => $("#layout3dState").textContent = e.message);
 addEventListener("message", ev => {
   if (ev.origin !== location.origin) return;

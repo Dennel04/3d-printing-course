@@ -58,7 +58,9 @@ reconnects mg400-base without moving; then **Enable robot** (the arm holds where
 - **Camera** — the XIAO tool camera stream.
 
 The 3D stage follows the selected robot live (**Live arm**) or plays the planned cycle with the
-dry-run verdict on the timeline (**Cycle replay**). Scene: `sim/viewer/data`, made by **Rebuild 3D scene**.
+dry-run verdict on the timeline (**Cycle replay**). Scene: `sim/viewer/data`; it is rebuilt by itself after
+**Save layout** in the picker and when the hub starts with a layout newer than the scene. **Put glasses back**
+shows only while a 3D glass is away from the input holder.
 **Webcam** shows the table webcam on the post (Verbatim 49580 UHD, picked by name, any other camera from the
 list) in the same area, 3840×2160 when the camera gives it. The browser opens the camera itself, so the
 Windows Camera app or a video call must not hold it. **Save frame** stores a full-size JPEG in
@@ -66,9 +68,10 @@ Windows Camera app or a video call must not hold it. **Save frame** stores a ful
 
 - **Glasses follow the pump** in Live arm: when the pump starts sucking with the cup on a glass (within 12 mm),
   the glass rides with the cup; on blow / off it stays where it was released. Picture only, the robot cannot
-  see a glass. **Reset glasses** puts them back into the input holder.
-- **Layout → 3D** rebuilds the scene from the picker's saved `layout.json` (~20 s); **Save layout** in the
-  picker does the same automatically, and Edit layout has **Show in 3D**.
+  see a glass.
+- **Picker → Edit layout:** each holder is one block with its full name. Drag it, or click it and use the arrow
+  keys / the arrow pad (Delete removes, Esc lets go). Drag over empty cells to add a holder. The workstation
+  cell of the cycle moves with its holder when the layout is saved (the picker alone left it behind).
 
 ## Tests
 
