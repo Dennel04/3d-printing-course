@@ -42,6 +42,12 @@ switch **Motion enabled** is cleared.
 The 3D stage follows the selected robot live (**Live arm**) or plays the planned cycle with the
 dry-run verdict on the timeline (**Cycle replay**). Scene: `sim/viewer/data`, made by **Rebuild 3D scene**.
 
+- **Glasses follow the pump** in Live arm: when the pump starts sucking with the cup on a glass (within 12 mm),
+  the glass rides with the cup; on blow / off it stays where it was released. Picture only, the robot cannot
+  see a glass. **Reset glasses** puts them back into the input holder.
+- **Layout → 3D** rebuilds the scene from the picker's saved `layout.json` (~20 s); **Save layout** in the
+  picker does the same automatically, and Edit layout has **Show in 3D**.
+
 ## Tests
 
 ```

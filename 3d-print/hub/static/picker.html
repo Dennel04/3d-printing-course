@@ -146,6 +146,7 @@
     <div class="row">
       <button id="save" class="primary">Save layout</button>
       <button id="revert">Discard changes</button>
+      <button id="to3d" title="Show the saved layout in the hub's 3D view">Show in 3D</button>
       <span id="dirty"></span>
     </div>
     <p class="note">Arrows move a holder by one cell. “Use selection” gives the holder the selected cells. Nothing is written until Save layout.</p>
@@ -440,10 +441,16 @@ $("add").onclick = () => {
   selected.clear(); $("new-name").value = ""; active = holders.length - 1; changed();
 };
 $("sel-clear").onclick = () => { selected.clear(); paint(); };
+$("to3d").onclick = () => {
+  if (dirty) return say("Save the layout first: the 3D view is built from layout.json.");
+  if (parent === window) return say("Open the picker inside the hub to see the 3D view.");
+  parent.postMessage({type: "layout-3d"}, location.origin); log("Updating the 3D view from layout.json");
+};
 $("save").onclick = async () => {
   const r = await api("/api/holders", {holders});
   if (!r.ok) return say(`Save layout: ${r.error}`);
-  dirty = false; log("Layout saved to layout.json", "ok"); await load();
+  dirty = false; log("Layout saved to layout.json; updating the 3D view", "ok"); await load();
+  if (parent !== window) parent.postMessage({type: "layout-saved"}, location.origin);
 };
 $("revert").onclick = async () => { if (!dirty || confirm("Discard unsaved layout changes?")) { dirty = false; selected.clear(); await load(); log("Layout changes discarded"); } };
 document.querySelectorAll("input[name=mode]").forEach(r => r.onchange = () => {

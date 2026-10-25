@@ -103,8 +103,9 @@ class Robots:
 
 
 class Tests:
-    def __init__(self, lab):
+    def __init__(self, lab, on_export=None):
         self.lab = lab
+        self.on_export = on_export
         self.lock = threading.Lock()
         self.state = {k: {"title": v[0], "about": v[3], "status": "idle", "summary": "", "output": "",
                           "seconds": None, "finished": None} for k, v in TESTS.items()}
@@ -137,15 +138,33 @@ class Tests:
         with self.lock:
             self.state[name].update(status=status, summary=summary, output=out[-20000:],
                                     seconds=round(time.time() - t0, 1), finished=time.strftime("%H:%M:%S"))
+        if name == "export" and self.on_export:
+            self.on_export()
 
 
 class LivePose:
     """Poses of every moving part of the twin for the 3D view (same frames as export_viewer.py)."""
 
+    GRAB_XY = 12.0     # mm: cup centre within this of a glass centre
+    GRAB_Z = (-3.0, 6.0)  # mm: glass top this far below / above the cup tip when the pump starts sucking
+
     def __init__(self):
         self.twin = None
         self.error = None
+        self.glasses = {}         # name -> [x, y, z] glass centre, world frame
+        self.carried = None
+        self.lock = threading.Lock()
         threading.Thread(target=self._load, daemon=True).start()
+
+    def reset_glasses(self):
+        """Glasses back where the cycle starts (anim.json frame 0, i.e. the current layout's input pockets)."""
+        with self.lock:
+            self.carried = None
+            try:
+                f0 = json.loads((VIEWER_DATA / "anim.json").read_text(encoding="utf-8"))["frames"][0]["s"]
+                self.glasses = {n: list(v[:3]) for n, v in f0.items() if n.startswith("glass ")}
+            except (OSError, ValueError, KeyError, IndexError):
+                self.glasses = {}
 
     def _load(self):
         try:
@@ -154,10 +173,31 @@ class LivePose:
             import export_viewer as ev
             self._np, self._ev, self._twin_mod = np, ev, twin
             self.twin = twin.Twin(with_post=False, layout={"holders": []})
+            self.reset_glasses()
         except Exception as exc:  # the hub still runs without the 3D view
             self.error = f"{type(exc).__name__}: {exc}"
 
-    def poses(self, x, y, z, r, press=0.0):
+    def _glasses(self, x, y, z, pump):
+        """Pick a glass up when the pump starts sucking on it, carry it, leave it where blow/off happens.
+        The picture of the cycle only: the robot itself cannot see a glass."""
+        ox, oy = self._twin_mod.cup_offset(self._twin_mod.TOOL_R)
+        cx, cy, tip = x + ox, y + oy, self.twin.cup_tip_z(z)
+        with self.lock:
+            if pump == "suck" and self.carried is None:
+                best = None
+                for n, (gx, gy, gz) in self.glasses.items():
+                    d = math.hypot(gx - cx, gy - cy)
+                    if d <= self.GRAB_XY and self.GRAB_Z[0] <= gz + 1 - tip <= self.GRAB_Z[1] and (best is None or d < best[0]):
+                        best = (d, n)
+                if best:
+                    self.carried = best[1]
+            elif pump != "suck":
+                self.carried = None
+            if self.carried:
+                self.glasses[self.carried] = [cx, cy, tip - 1.0]
+            return {n: [round(v[0], 2), round(v[1], 2), round(v[2], 2), 0.0, 0.0, 0.0, 1.0] for n, v in self.glasses.items()}
+
+    def poses(self, x, y, z, r, pump="off"):
         if self.twin is None:
             return None
         np, ev, tw = self._np, self._ev, self._twin_mod
@@ -170,6 +210,7 @@ class LivePose:
                for n, (_, tf) in parts.items()}
         for n in ("cup metal", "cup fitting", "cup flange", "cup collet", "cup oring", "cup rubber"):
             out[n] = out["cup"]
+        out.update(self._glasses(x, y, z, pump))
         return out
 
 
@@ -200,8 +241,8 @@ def build(lab, port):
     sp.check_holders(layout["holders"], layout["types"])
     robots = Robots(sp.Mg400(layout["mg400_api"]), SimRobot(speed_ratio=min(10, layout["motion"]["max_speed_ratio"])))
     seq = sp.Sequencer(robots, layout, sp.ToolCamera(layout["camera_port"]), sp.PressureMonitor(layout.get("pressure_port")))
-    tests = Tests(lab)
     live = LivePose()
+    tests = Tests(lab, on_export=lambda: live.reset_glasses() if live.twin else None)
     Picker = sp.make_handler(layout, seq, port)
     if not (VIEWER_DATA / "scene.glb").exists():
         tests.start("export")
@@ -243,7 +284,7 @@ def build(lab, port):
             if path == "/hub/state":
                 s = robot_status()
                 pose = s.get("pose")
-                three = live.poses(*pose) if pose and s.get("reachable") else None
+                three = live.poses(*pose, pump=s.get("pump_mode") or "off") if pose and s.get("reachable") else None
                 return self._json(200, {"mode": robots.mode, "robot": s, "seq": seq.state,
                                         "limits": {"max_speed_ratio": layout["motion"]["max_speed_ratio"],
                                                    "tool_r": layout["calibration"]["tool_r"]},
@@ -306,6 +347,14 @@ def build(lab, port):
                 return robots.call("/connect", {"ip": data.get("ip")} if data.get("ip") else {})
             if path == "/hub/tests/run":
                 tests.start(data.get("name"))
+                return {}
+            if path == "/hub/layout3d":
+                # the picker's layout.json -> 3D scene (holders, glasses, cycle replay); glasses go home when done
+                if tests.state["export"]["status"] != "running":
+                    tests.start("export")
+                return {}
+            if path == "/hub/glasses/reset":
+                live.reset_glasses()
                 return {}
             raise KeyError(f"no route {path}")
 

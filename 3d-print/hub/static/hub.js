@@ -388,6 +388,38 @@ renderer.setAnimationLoop(now => {
 });
 window.hub = { snap: () => { renderer.render(scene3, camera); return renderer.domElement.toDataURL("image/png"); }, setCam, replay };
 
+/* ---------------- picker layout -> 3D ---------------- */
+let syncing = false;
+async function layoutTo3d() {
+  if (syncing) return;
+  syncing = true;
+  $("#btnLayout3d").disabled = true;
+  $("#layout3dState").textContent = "Updating 3D from layout.json…";
+  try {
+    await api("/hub/layout3d", {});
+    for (;;) {
+      await new Promise(r => setTimeout(r, 1500));
+      const e = (await api("/hub/tests")).tests.export;
+      if (e.status !== "running") {
+        if (e.status === "fail") throw new Error(e.summary);
+        scene.builtAt = e.finished;
+        await loadScene();
+        $("#layout3dState").textContent = `3D matches layout.json (${e.finished})`;
+        setTimeout(() => $("#layout3dState").textContent = "", 6000);
+        break;
+      }
+    }
+  } catch (err) { $("#layout3dState").textContent = "3D update failed: " + err.message; }
+  syncing = false;
+  $("#btnLayout3d").disabled = false;
+}
+$("#btnLayout3d").onclick = layoutTo3d;
+$("#btnGlasses").onclick = () => api("/hub/glasses/reset", {}).catch(e => $("#layout3dState").textContent = e.message);
+addEventListener("message", ev => {
+  if (ev.origin !== location.origin) return;
+  if (ev.data?.type === "layout-saved" || ev.data?.type === "layout-3d") layoutTo3d();
+});
+
 /* ---------------- start ---------------- */
 setChecked($$("[data-space]"), b => b.dataset.space === "cart");
 setChecked($$("[data-step]"), b => b.dataset.step === "1");

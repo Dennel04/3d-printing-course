@@ -90,6 +90,41 @@ class JointJogTest(unittest.TestCase):
             hub.joint_target(self.status, "j3", 200)
 
 
+class GlassTrackingTest(unittest.TestCase):
+    """The 3D view picks a glass up when the pump sucks on it and leaves it where the pump stops."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.live = hub.LivePose()
+        t0 = time.time()
+        while cls.live.twin is None and cls.live.error is None and time.time() - t0 < 120:
+            time.sleep(0.2)
+        if cls.live.twin is None:
+            raise unittest.SkipTest(f"twin not loaded: {cls.live.error}")
+
+    def pose_over(self, gx, gy, gz):
+        tw = self.live._twin_mod
+        ox, oy = tw.cup_offset(tw.TOOL_R)
+        return gx - ox, gy - oy, self.live.twin.robot_z_for_tip(gz + 1.0)
+
+    def test_pick_carry_place(self):
+        live = self.live
+        live.glasses = {"glass 1": [300.0, 40.0, 10.0], "glass 2": [300.0, -40.0, 10.0]}
+        live.carried = None
+        x, y, z = self.pose_over(300.0, 40.0, 10.0)
+        live.poses(x, y, z + 30, 33, pump="suck")          # sucking in the air picks nothing
+        self.assertIsNone(live.carried)
+        live.poses(x, y, z, 33, pump="suck")
+        self.assertEqual(live.carried, "glass 1")
+        live.poses(x + 20, y, z + 50, 33, pump="suck")
+        self.assertAlmostEqual(live.glasses["glass 1"][0], 320.0, places=1)
+        live.poses(x + 20, y, z + 50, 33, pump="blow")
+        self.assertIsNone(live.carried)
+        live.poses(x, y, z + 50, 33, pump="off")
+        self.assertAlmostEqual(live.glasses["glass 1"][0], 320.0, places=1)   # stays where it was released
+        self.assertEqual(live.glasses["glass 2"], [300.0, -40.0, 10.0])
+
+
 class HubApiTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
