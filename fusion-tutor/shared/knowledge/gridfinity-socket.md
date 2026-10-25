@@ -85,7 +85,7 @@ Checks after building:
   support remnants under the base, elephant foot on the first layer (caliper:
   the foot bottom should be ~35.8 mm), where it stops.
 
-## Converting an existing holder to the standard foot (done 25.10 on glass-input-holder-v3)
+## Converting an existing holder to the standard foot (done 25.10 on glass-input-holder)
 
 Author: Dennel04 (with Claude), 2026-10-25.
 1. Suppress the old foot features (sketches, extrudes, fillets, chamfers): don't delete, keep the history.

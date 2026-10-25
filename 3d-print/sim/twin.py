@@ -65,7 +65,7 @@ MOTOR_LEN = 85.0         # link5 (J4 motor) hangs this far below its frame origi
 
 # ---- holder STL per layout type, and how the part sits (z of its local 0 above the grid top) ----
 HOLDER_STL = {
-    "glass": "glass-input-holder/stl/glass-input-holder-v1.stl",
+    "glass": "glass-input-holder/stl/glass-input-holder.stl",
     "atom": "atoms3-input-holder/stl/atoms3-input-holder-v1.stl",
     "workstation": "ready-parts-input-holder/stl/ready-parts-input-holder-v1.stl",
     "output": "valjundhoidik/stl/valjundhoidik-v1.stl",

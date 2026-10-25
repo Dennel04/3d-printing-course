@@ -40,7 +40,7 @@ Selle labori test (ülesanne osa 3) teeb ainult klaasi teed: sisend → töökoh
 
 | Hoidik | Fail (prinditud) | Suurus | Ruudud | Roll |
 |---|---|---|---|---|
-| Klaasi sisend | `glass-input-holder-v1` | 2 × 2 | D−4, D−5, E−4, E−5 | 4 klaasi; **paigas**, õpetatud (vt allpool) |
+| Klaasi sisend | `glass-input-holder` | 2 × 2 | D−4, D−5, E−4, E−5 | 4 klaasi; **paigas**, õpetatud (vt allpool) |
 | AtomS3 sisend | `atoms3-input-holder-v1` | 2 × 2 | E−1, E−2, F−1, F−2 | 4 AtomS3-t, ekraan üles |
 | Oranž | `ready-parts-input-holder-v1` | 2 × 2 | B−1, B+1, C−1, C+1 | C±1 aku sisend + töökoht, B±1 praak |
 | Heade väljund | `valjundhoidik-v1` | 2 × 2 | D+4, D+5, E+4, E+5 | valmis detailid |

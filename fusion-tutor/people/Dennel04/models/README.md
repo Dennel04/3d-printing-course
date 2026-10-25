@@ -73,7 +73,7 @@ board, nothing holds it: it shakes and doesn't come back to the same spot
 
 Slicing: `python shared/tools/prusa/prusa.py slice people/Dennel04/models/xiao-square-mount-v3.stl --supports buildplate --style organic --rotate-x 180`.
 
-## glass-input-holder-v3 (2026-10-25)
+## glass-input-holder (2026-10-25, printed: fits the grid exactly)
 
 `glass-input-holder-v2` from the lab + standard Gridfinity feet
 (`shared/tools/fusion-geometry/gf_std_foot.py`, `gf_fit_adjust` 0; v2 straight
@@ -81,4 +81,4 @@ feet suppressed) and the standard outer size 83.5 mm (v2: 83.2, it also
 subtracted `grid_clearance`). The v2 outer sketch was not tied to the origin
 (it grew to one side); now a construction diagonal has its midpoint on the
 origin. Feet and pockets at +-21 mm. Sliced: no supports, 42 min, 28.2 g.
-In the lab: `3d-print/lab2/glass-input-holder/` v3. Not printed yet.
+In the lab as `3d-print/lab2/glass-input-holder/glass-input-holder.*` (old v1/v2 removed).

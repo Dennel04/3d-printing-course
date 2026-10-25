@@ -38,7 +38,7 @@ electronics course drives the display.
     reference/               <- töölaua Fusioni referentsfail
     src/                     <- parameetrilised OpenSCADi prototüübid
     atoms3-input-holder/     <- AtomS3 sisendhoidik; src/ stl/ 3mf/
-    glass-input-holder/      <- klaasi sisendhoidiku versioonid; src/ stl/ 3mf/
+    glass-input-holder/      <- klaasi sisendhoidik; src/ stl/ 3mf/
     ready-parts-input-holder/ <- aku sisend, töökoht ja praagi koht; src/ stl/ 3mf/
     valjundhoidik/           <- heade detailide väljund; src/ stl/ 3mf/
     gridfinity-calibration/  <- kalibreerimishoidik; src/ stl/ 3mf/
