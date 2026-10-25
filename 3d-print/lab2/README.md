@@ -49,6 +49,7 @@ Wi-Fi füüsiline toimimine ja station PC võrgust ligipääs, kaablite marsruut
 - [ ] Klaasiga tehtud viis korduskatset ja tulemused failis `docs/refit_test.csv`.
   - 24.10.26: **ring 1 tehtud, 4 / 4 klaasi** (sisend D/E −4/−5 → töökoht C+1 AtomS3 peal → väljund D/E +4/+5, 10 %), Denys kinnitas. Kaadrid `docs/photos/cycle-r1-*.jpg`. Järgmiseks: hoidikud välja ja tagasi, ringid 2–5 ilma ümberõpetamiseta.
 - [ ] XIAO ESP32S3 Sense kaamera kinnitus ning valitud ja katsetatud toide.
+  - 24.10.26: kinnitus `xiao-square-mount-v2` (kaamerapesa objektiivi aknaga, tihvt) prinditud ja paigaldatud, töötab.
   - 23.10.26: XIAO istub prinditud kinnituses roboti küljes ja annab pilti. Toide katsetamisel USB-C kaudu arvutist (COM5). Püsivara `tool-camera/firmware/` (JPEG 1600 × 1200 USB kaudu, sest labori arvutil pole WiFi-t), kaader `python tool-camera/capture.py COM5 <fail>.jpg`. Sensor OV3660 (PID 0x3660), PSRAM 8 MB. Esimene kaader: [`docs/photos/tool-camera-first-frame.jpg`](docs/photos/tool-camera-first-frame.jpg) — pildis on iminapp, ruudustik ja oranž hoidik; iminapa voolik läheb diagonaalis üle kaadri.
     - Kontrollimata: kas töökoht koos klaasi ja Atomiga on pildis teravana; kas kinnitus jääb napa laskumisel hoidiku seintest vabaks; kaabli marsruut kogu liikumisel ja J4 pööramisel; tööriista mass enne/pärast. TODO — waiting for physical test.
 - [ ] USB UHD veebikaamera jäik post; mõõdetud pildikõikumine roboti liikumise ajal.
@@ -94,7 +95,7 @@ Wi-Fi füüsiline toimimine ja station PC võrgust ligipääs, kaablite marsruut
     - 24.10.26 jala parandus: Denys märkas, et posti kolmnurksed ribid (`Extrude6` −X, `Extrude7` −Y; 30 mm välja, 4 mm paksud, z 7,3…107) lõppesid ruudustiku kõrgusel õhus, 24 mm laua kohal, ja jala 45 × 45 mm tald ei ulatunud nende alla — ribid ei kandnud midagi. Nüüd jätkuvad samad ribid jalal (sama tasand ja paksus, 30 mm välja) talla pealt kuni z 7,28; posti ribid toetuvad neile (kaugus 0, interferents 0). Tald kasvas −X/−Y suunas ribide otsteni (67,5 × 67,5 mm, `leg_rib_pad_margin = 0`): see on külg, kuhu post ruudustikust eemale kalduks. Jala maht 20,1 → 32,7 cm³.
     ![veebikaamera-post-v3 Gridfinity jalad altpoolt](docs/photos/veebikaamera-post-v3-gridfinity-jalad.png)
 
-    - Koostevaade Fusionis (24.10.26): MG 400 rakis + v3 post + hoidikute STL-id `slot-picker/layout.json` **pakutud** lahtrites (klaas D/E −3…−4, AtomS3 D/E −1…−2, oranž töökoht D/E +1…+2, väljund D/E +3…+4, kalibreerimiskast F-2) + XIAO kinnitus v5 J4 all. Hoidikud on mesh-kehad, värvid Fusioni omad, mitte prindi värvid. Paigutus ei ole kinnitatud (`docs/layout.md` TODO).
+    - Koostevaade Fusionis (24.10.26): MG 400 rakis + v3 post + hoidikute STL-id `slot-picker/layout.json` **pakutud** lahtrites (klaas D/E −3…−4, AtomS3 D/E −1…−2, oranž töökoht D/E +1…+2, väljund D/E +3…+4, kalibreerimiskast F-2) + XIAO kinnitus v2 J4 all. Hoidikud on mesh-kehad, värvid Fusioni omad, mitte prindi värvid. Paigutus ei ole kinnitatud (`docs/layout.md` TODO).
 
     ![Töölaud v3: üldvaade](docs/photos/lab2-tooala-v3-iso.png)
 
@@ -212,25 +213,17 @@ Kõigi nende olek on `TODO — waiting for physical test`.
 
   ![MG_400_gripper_attachment Fusionis](docs/photos/gripper-attachment-fusion.jpg)
 
-- `camera-mounts/src/xiao-square-mount-v2.f3d`, `camera-mounts/stl/xiao-square-mount-v2.stl`, `camera-mounts/3mf/xiao-square-mount-v2.3mf` - XIAO ESP32S3 Sense tööriistakaamera kinnitus MG400 J4 mootori nelikandile (Fusioni dokument `xiao-square-mount-v2`, projekt `3d-printing`). U-klamber ümber nelikandi kaane M2,5 kruvidega, plaadi rennid, kaks prinditud kaabliklambrit (tõmbetõke). Prinditud 04.10.26 sobivuskatseks; füüsiline sobivus: `TODO — waiting for physical test`.
+- `camera-mounts/src/xiao-square-mount-v1.f3d`, `camera-mounts/stl/xiao-square-mount-v1.stl`, `camera-mounts/3mf/xiao-square-mount-v1.3mf` - XIAO ESP32S3 Sense tööriistakaamera esimene kinnitus MG400 J4 mootori nelikandile: U-klamber ümber nelikandi kaane M2,5 kruvidega, plaadi rennid, kaks prinditud kaabliklambrit (tõmbetõke). Prinditud 04.10.26.
 
-  ![xiao-square-mount-v2 Fusionis: kinnitus J4 nelikandil, XIAO plaat rennides](docs/photos/xiao-square-mount-v2-fusion.jpg)
+  ![xiao-square-mount-v1 Fusionis: kinnitus J4 nelikandil, XIAO plaat rennides](docs/photos/xiao-square-mount-v1-fusion.jpg)
 
-  ![xiao-square-mount-v2 PrusaSliceris: tagurpidi, orgaanilised toed alusplaadilt](docs/photos/xiao-square-mount-v2-slicer.jpg)
+  ![xiao-square-mount-v1 PrusaSliceris: tagurpidi, orgaanilised toed alusplaadilt](docs/photos/xiao-square-mount-v1-slicer.jpg)
 
-- `camera-mounts/src/xiao-square-mount-v3.f3d` (+ `xiao-square-mount-v3-standalone.f3d` ilma roboti välisviiteta, avaneb ka teistel), `camera-mounts/stl/xiao-square-mount-v3.stl`, `camera-mounts/3mf/xiao-square-mount-v3.3mf` (ainult võrk, slaiseri seadeid pole) - v2 + kaameramooduli pesa (`camera_nest`), piiraja (`camera_stop`) ja objektiivi aken (`lens_window`, Ø6,5 mm); kõrgus 35,4 mm (v2: 25,6 mm). Kaamera mõõdud Seeedi mudelist (`cam_w 8`, `cam_h 5,8` mm), nihikuga mõõtmata. Kopeeritud 24.10.26 kaustast `fusion-tutor/people/Dennel04/models/` (Fusioni dokument `xiao-square-mount-v3`, 04.10.26). Printimata: prinditakse pärast v2 katset ja kaameramooduli mõõtmist.
+- `camera-mounts/src/xiao-square-mount-v2.f3d`, `camera-mounts/stl/xiao-square-mount-v2.stl`, `camera-mounts/3mf/xiao-square-mount-v2.3mf` (PrusaSliceri projekt: CORE One HF0.4, 0.20mm SPEED, Prusament PLA, orgaanilised toed alusplaadilt, tagurpidi; 49 min, 16,2 g) - **kasutusel olev kinnitus.** Võrreldes v1-ga: (1) eemaldatud sillaga kaabliklamber USB-C pesa juures — USB-C pistik ei mahtunud silla alla; tõmbetõkkeks jääb teine klamber +Y seinal; (2) lisatud kaamerapesa objektiivi jaoks: seinad hoiavad kaameramoodulit, objektiivi aken Ø6,5 mm, kaamera lukustab 1,75 mm PLA-filamendist tihvt (ava Ø1,85). Prinditud, paigaldatud robotile ja töötab.
 
-- `camera-mounts/src/xiao-square-mount-v4.f3d` (ilma välisviiteta, avaneb igas arvutis), `camera-mounts/stl/xiao-square-mount-v4.stl`, `camera-mounts/3mf/xiao-square-mount-v4.3mf` (PrusaSliceri projekt: CORE One HF0.4, 0.20mm SPEED, Prusament PLA, orgaanilised toed alusplaadilt, tagurpidi; 55 min, 17,6 g) - v3 + kaamera fikseerimine tihvtiga: pesa seinad pikendatud +Y suunas 3 mm (`pin_ext`) ja neist läbi X-suunaline ava Ø1,85 (`pin_d` 1,75 + `pin_fit` 0,1), millesse käib tükk 1,75 mm PLA-filamenti. Kaamera on −Y piiraja ja tihvti vahel (mõlemal pool 0,23 mm). `ledge_z` 7,8 → 8,8 mm. Printimata.
+  ![xiao-square-mount-v2 Fusionis](docs/photos/xiao-square-mount-v2-fusion.png)
 
-  ![xiao-square-mount-v4 Fusionis altpoolt: kaamerapesa, objektiivi aken ja tihvti ava](docs/photos/xiao-square-mount-v4-fusion.png)
-
-  ![xiao-square-mount-v4 PrusaSliceris: tagurpidi, orgaanilised toed](docs/photos/xiao-square-mount-v4-slicer.png)
-
-- `camera-mounts/src/xiao-square-mount-v5.f3d` (ilma välisviiteta), `camera-mounts/stl/xiao-square-mount-v5.stl`, `camera-mounts/3mf/xiao-square-mount-v5.3mf` (PrusaSliceri projekt, samad seaded mis v4; 49 min, 16,2 g) - v4 ilma esimese kaabliklambrita: eemaldatud `cable_tab` (sild plaadi kohal Y 7,5…38) ning `cable_clip_body`/`cable_clip_cut` (klamber Y 32…38). Kasutaja: USB-C pistiku korpus ei mahtunud silla alla. Teine klamber (`cable_clip2`, +Y seinal) ja tihvtiga kaamerapesa jäävad. Printimata.
-
-  ![xiao-square-mount-v5 Fusionis: ilma esimese kaabliklambrita](docs/photos/xiao-square-mount-v5-fusion.png)
-
-  ![xiao-square-mount-v5 PrusaSliceris](docs/photos/xiao-square-mount-v5-slicer.png)
+  ![xiao-square-mount-v2 PrusaSliceris](docs/photos/xiao-square-mount-v2-slicer.png)
 
 - `gridfinity-calibration/src/gridfinity-calibration.f3d`, `gridfinity-calibration/stl/gridfinity-calibration.stl`, `gridfinity-calibration/3mf/gridfinity-calibration.3mf` - 1 × 1 kalibreerimiskast: välismõõt 41,5 × 41,5 mm, kõrgus 21 mm, **standardne Gridfinity jalg** (generaatori `BASE_PROFILE`, `gf_fit_adjust = 0`), sisetasku 37 × 37 mm nelja sisenurga meetodiks, põhjas keskrist 1 × 35 mm, 0,6 mm sügav. Print: Prusa CORE One HF0.4, `0.20mm SPEED`, Prusament PLA, ilma tugedeta, 21 min, 11,2 g. Prinditud ja kontrollitud: istub ruudustikus, kasutusel roboti kalibreerimisel (ruut C−2).
 
@@ -286,13 +279,13 @@ mitte ei muudeta.
 > Märkus: selles ajaloolises kirjes nimetatud AI oli kasutatud tööriist, mitte füüsiliselt kohal olnud meeskonnaliige. Algset päevikukirjet ei muudeta tagantjärele.
 
 **04.10.26 — Dennel04 (Denys) koos Claude'iga (Fusion MCP kaudu)**
-- Tegime: XIAO ESP32S3 Sense tööriistakaamera kinnitus MG400 J4 mootori nelikandile (robot Fusionis XREF-ina). v1: U-klamber ümber nelikandi kaane, kaane M2,5 kruvide avad süvistustega, plaadi rennid ja otsapiire, kaabliklamber pistiku taga. v1 printimata. v2: tõmbepaela sild eemaldatud, selle asemel teine kaabliklamber +Y seinal; kaabel läheb mööda seina roboti poole.
+- Tegime: XIAO ESP32S3 Sense tööriistakaamera kinnitus MG400 J4 mootori nelikandile (robot Fusionis XREF-ina): U-klamber ümber nelikandi kaane, kaane M2,5 kruvide avad süvistustega, plaadi rennid ja otsapiire, kaabliklamber pistiku taga ja teine +Y seinal; kaabel läheb mööda seina roboti poole.
 - Mõõtmised ja tulemused koos ühikutega: nihikuga mõõdetud ainult kaane kruvi: kogupikkus `6,3 mm`, pea `Ø4,62 mm`. Kõik muud mõõdud on CAD-ist (MG400 mudel: nelikant `44 × 44 mm`, kruvide samm `24 mm`) ja XIAO STEP-ist; neil on Fusionis parameetrid. Lõtk nelikandil `0,3 mm` külje kohta (Lab 1 vahemikust `0,2–0,4 mm`, kinnitamata). Interference robotiga ja XIAO-ga `0`. Print: Prusa CORE One HF0.4, `0.20mm SPEED`, Prusament PLA, orgaanilised toed ainult alusplaadilt, tagurpidi (klambri serv alusel); `45 min`, `15,6 g`. Füüsiline sobivus: `TODO — waiting for physical test`.
 - Otsused ja põhjendused: õppejõud lubas suuliselt kõigile kaamera kinnitada ükskõik kuhu, mitte ainult iminapa tööriistahoidikule (04.10.26). Valisime J4 nelikandi: see ei pöörle J4-ga, nii et kaabel ei keerdu, ja olemasolev tööriistahoidik jääb muutmata. Teine klamber, mitte tõmbepael: kulumaterjali pole vaja ja kaabli saab ilma lõikamata välja.
-- Failid ja versioonid: `camera-mounts/src/xiao-square-mount-v2.f3d`, `camera-mounts/stl/xiao-square-mount-v2.stl`, `camera-mounts/3mf/xiao-square-mount-v2.3mf` (PrusaSlicer projekt).
+- Failid ja versioonid: `camera-mounts/src/xiao-square-mount-v1.f3d`, `camera-mounts/stl/xiao-square-mount-v1.stl`, `camera-mounts/3mf/xiao-square-mount-v1.3mf` (PrusaSlicer projekt).
 - Järgmiseks:
   - Prindil kontrollida: sobivus nelikandil, kas originaalkruvi ulatub läbi süvistuse põhja (`1 mm`) keermesse, plaat rennides, kaabel mõlemas klambris. Kruviavadesse kasvanud toed puhastada.
-  - Kaameramoodul ripub oma lindikaablil ega ole fikseeritud. v3-s on kaamerapesa (Fusionis `xiao-square-mount-v3`); prinditakse alles pärast v2 katset ja kaameramooduli nihikuga mõõtmist.
+  - Kaameramoodul ripub oma lindikaablil ega ole fikseeritud. Kaamerapesa tuleb järgmisesse versiooni.
   - Mõõta iminapa otsa kõrgus nelikandi suhtes (kinnitus ei tohi ulatuda napa otsast allapoole) ja valida kaamera toide.
 
 > Märkus: selles ajaloolises kirjes nimetatud AI oli kasutatud tööriist, mitte füüsiliselt kohal olnud meeskonnaliige. Algset päevikukirjet ei muudeta tagantjärele.
@@ -347,27 +340,15 @@ mitte ei muudeta.
 * Järgmiseks: Z puudutus ruudustiku pinnal; kasti välja/tagasi kordustäpsus; iga pesa Z = ruudustiku Z + pesa põhja kõrgus CAD-ist + detaili paksus (kontroll üks puudutus hoidikutüübi kohta); `layout.md` ruudud ja sihtpunktid kujul ruut + nihe.
 
 **24.10.2026 — Fusioni failid ei avanenud meeskonnakaaslasel**
-* Probleem: `camera-mounts/src/xiao-square-mount-v2.f3d` ja `veebikaamera-post/src/veebikaamera-post-v2.f3d` sisaldavad välisviiteid (XREF) Denysi Fusioni pilvedokumentidele `mg400-solidworks_asm` ja `MG 400 rakis`. Ilma nende dokumentideta annab Fusion vea `New design cannot be created from a local file containing external references`. Sama kehtib `veebikaamera-post-v1.f3d` kohta.
-* Lahendus: lisatud kõrvale **`xiao-square-mount-v2-standalone.f3d`** ja **`veebikaamera-post-v2-standalone.f3d`** — samad detailid ilma roboti/laua viiteta (robot ja laud olid ainult proovimiseks; detailide geomeetria neist ei sõltu). Kontrollitud: avanevad kohalikust failist, kõik kehad alles; `Extrude4` (`webcam_post_upper`) oli juba originaalis maha surutud. Vanad failid jäävad alles.
+* Probleem: `veebikaamera-post/src/veebikaamera-post-v2.f3d` sisaldab välisviiteid (XREF) Denysi Fusioni pilvedokumentidele `mg400-solidworks_asm` ja `MG 400 rakis`. Ilma nende dokumentideta annab Fusion vea `New design cannot be created from a local file containing external references`. Sama kehtib `veebikaamera-post-v1.f3d` kohta.
+* Lahendus: lisatud kõrvale **`veebikaamera-post-v2-standalone.f3d`** — sama detail ilma roboti/laua viiteta (robot ja laud olid ainult proovimiseks; detailide geomeetria neist ei sõltu). Kontrollitud: avanevad kohalikust failist, kõik kehad alles; `Extrude4` (`webcam_post_upper`) oli juba originaalis maha surutud. Vanad failid jäävad alles.
 * Katse lisada robot ja laud faili sisse (break link) andis 8–12 MB faili, mille import kukutas Fusioni kokku — seda varianti ei kasutata. Robotiga kontrolliks: laadi laud `reference/MG 400 rakis.f3z` eraldi ja sisesta detail sinna.
 
-**24.10.2026 — XIAO kaamerakinnitus v4: kaamera kindel fikseerimine ja teisaldatav CAD**
-* Osalejad: meeskonnakaaslase ülesanne; töö tegi Claude Fusioni API kaudu (Denysi arvutis). Füüsilist katset ei tehtud.
-* Põhjus, miks v2/v3 `.f3d` ei avanenud: kontrollitud GitHubist alla laaditud failidega — Fusion annab vea `New design cannot be created from a local file containing external references`; välisviide on `mg400-solidworks_asm` (robot). STL avaneb, sest selles viiteid pole. Lahendus: viitega komponent kustutatakse enne eksporti (`-standalone.f3d`, v4.f3d). `.f3z` koos robotiga ei tehtud: roboti sisse kopeerimisel (break link) tekkis 8–12 MB fail, mille import kukutas Fusioni kokku. Robotiga kontrolliks ava `reference/MG 400 rakis.f3z` ja lisa detail sinna.
-* v3 analüüs (Seeedi XIAO ESP32S3 Sense mudel, kaamera mõõdud nihikuga mõõtmata): kaamera on X-is seinte vahel (0,15–0,25 mm), −Y-s piiraja vastas (0,24 mm), all põhjal (0,24 mm), üleval ~0,5 mm microSD pesani — aga **+Y suunas ei hoia teda miski** (pesa on avatud sinna, kust plaat sisse libiseb). Lisaks oli v3 pesa ülaserv (`ledge_z` 7,8) 0,23 mm XIAO B2B-pistiku ja microSD pesa sees (interferents 1,42 ja 0,04 mm³; tuutori märge "Interference 0" ei pidanud paika).
-* v4 muudatused: (1) tihvt: seinad +Y suunas +3 mm (ülaserv Z −9,0, et mitte microSD-d puudutada), X-suunaline ava Ø1,85 läbi mõlema seina, telg Y = `cam_y0 + cam_w + cam_clr + pin_d/2` (11,98), Z = kaamera kõrguse keskel (−11,3); tihvt = 1,75 mm PLA-filament, pikkus 21,4 mm. Tihvt ei kata objektiivi, lindikaablit ega USB-C-d. (2) `ledge_z` 8,8: pistikuni 0,77 mm, microSD-ni 0,3 mm; seinad hoiavad kaamerat 5,4 mm ulatuses tema 5,76 mm kõrgusest. Kinnitus J4 nelikandile, plaadi rennid ja kaabliklambrid muutmata.
-* Kontroll Fusionis: interferents XIAO-ga 0 (v3: 2 kohta); plaadi väljatõmbamine renni pidi 0–18 mm ilma kokkupuuteta; alates 20 mm puudutab USB-otsa ümbris kaablihoidiku ala (Y 32–38) — sama v3-s ja v2-s, v2 pandi füüsiliselt kokku. Robotimudeli piirikasti (x ≥ −22,0) ja pesa (x ≤ −26,8) vahe ≥ 4,8 mm. Imporditud v4.f3d: ajajoon terve, parameetrid alles. Madalaim punkt Z −15,4 nelikandi põhjast (v3-ga sama).
-* Kokkupanek: plaat koos kaameraga renni pidi sisse → tihvt läbi seinte. Eemaldamine: tihvt välja lükata teise filamenditükiga, plaat välja.
-* Füüsiliselt kontrollida (TODO — waiting for physical test): kaameramooduli mõõdud nihikuga (`cam_w`, `cam_h`, `cam_y0`) ja tegelik asend lindikaabli otsas; kas 1,75 mm filament läheb Ø1,85 avasse ja püsib hõõrdega (horisontaalne ava võib tulla kitsam — vajadusel puurida 1,8–1,9 mm või muuta `pin_fit`); tugede puudumine tihvti avas; kaamera kordub samasse asendisse (eemaldada/panna tagasi, võrrelda kaadreid); vahe iminapani (tööriistahoidiku mõõdud `measurements.md`-s on TODO); PLA soojenemine mooduli juures.
-* Failid: `camera-mounts/src|stl|3mf/xiao-square-mount-v4.*`, `docs/photos/xiao-square-mount-v4-fusion.png`, `docs/photos/xiao-square-mount-v4-slicer.png`. v2 ja v3 failid muutmata.
-
-**24.10.2026 — XIAO kaamerakinnitus v5: esimene kaabliklamber eemaldatud**
-* Osalejad: Denys vaatas v4 Fusionis üle; muudatuse tegi Claude Fusioni API kaudu. Füüsilist katset ei tehtud.
-* Probleem: esimene kaabliklamber (sild `cable_tab` + klamber `cable_clip_body`/`cable_clip_cut`) on USB-C pesale liiga lähedal; USB-C pistiku korpus on suurem kui silla all olev ruum.
-* Lahendus: kolm fiitšerit ja nende visandid kustutatud. Tõmbetõkkeks jääb teine klamber `cable_clip2` +Y seinal. Maht 14 500,6 → 13 584,8 mm³.
-* Kontroll Fusionis: interferents XIAO-ga 0; plaadi väljatõmbamine renni pidi +Y suunas 0–44 mm ilma ühegi kokkupuuteta (v4-s puudutas plaat silda alates 20 mm-st). Imporditud v5.f3d: ajajoon terve, välisviiteid pole.
-* Füüsiliselt kontrollida (TODO — waiting for physical test): USB-C pistik koos kaabliga mahub; kaabel püsib ainult teises klambris ja ei tõmba pistikut lahti J4 pööramisel; kõik v4 kontrollid (kaamera mõõdud, tihvti istuvus, vahe iminapani).
-* Failid: `camera-mounts/src|stl|3mf/xiao-square-mount-v5.*`, `docs/photos/xiao-square-mount-v5-fusion.png`, `docs/photos/xiao-square-mount-v5-slicer.png`. v2–v4 muutmata.
+**24.10.2026 — XIAO kaamerakinnitus v2**
+* Osalejad: Denys vaatas mudeli Fusionis üle, muudatused tegi Claude Fusioni API kaudu, prindi tegi Nikita.
+* Muudatused v1-ga võrreldes: eemaldatud sillaga kaabliklamber (USB-C pistik ei mahtunud silla alla); lisatud kaamerapesa objektiivi aknaga ja 1,75 mm filamenditihvt, mis hoiab kaamera paigal. Kontroll Fusionis: interferents XIAO-ga 0, plaat libiseb rennis vabalt.
+* Tulemus: prinditud, paigaldatud robotile, kaamera annab pilti; kasutusel.
+* Failid: `camera-mounts/src|stl|3mf/xiao-square-mount-v2.*`, `docs/photos/xiao-square-mount-v2-fusion.png`, `docs/photos/xiao-square-mount-v2-slicer.png`.
 
 **24.10.2026 — veebikaamera post v3: jalg lauani ja kaabliklambrid**
 * Osalejad: Denys leidis Fusionis, et post ripub ruudustikust väljas õhus ja kaabliklambrid puuduvad; muudatuse tegi Claude Fusioni API kaudu (v2 pilvedokumendile lisatud, pilve ei salvestatud). Füüsilist katset ei tehtud.
@@ -383,7 +364,6 @@ mitte ei muudeta.
 * Kontroll päris andmetega: G-1 liigesepiir −135,8 vs päris −138; B-2 J3 piir −99 vs −98; lahtrikeskmed vs `cells.py` ≤ 0,06 mm; napa pikkus 66,2 mm D-2 puudutusest, 23.10 G-1 nurgad sobivad. Kontrollijat testiti teadlikult vigaste tsüklitega (8 juhtumit, kõik leitud).
 * Tulemused: B-2 ei sobi kalibreerimiseks (napp ei mahu kalibreerimiskasti) → C-2; klaasitsükkel kokkupõrgeteta; väljund talub ainult 3 mm kalibreerimisviga. Üksikasjad ja piirid: [`../sim/README.md`](../sim/README.md). Kaksik viidi samal päeval labori kaustast välja `3d-print/sim/`-i (Denys: see on kõigi laborite jaoks); Lab 2 tulemused jäävad `docs/`-i.
 * TODO — waiting for physical test: napa läbimõõt, nihe J4 teljest ja pikkus nihikuga; kalibreerimine C-2-s.
-* XIAO kaamerakinnitus v5: esimene testprint käivitatud (Nikita).
 
 **24.10.2026 õhtu — kalibreerimiskast päris robotiga, ruut C-2**
 * Osalejad: Denys laboris (paigaldas kasti, hindas puudutusi), Claude juhtis robotit (2 %, 0,5 mm sammud).

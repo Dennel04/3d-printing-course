@@ -203,7 +203,7 @@ Mõõda vajaduse korral mitu klaasi ja säilita kõik üksiktulemused, et hiljem
 
 24.10.26 õhtu — töökoha õpetamine (paigutus B, oranž hoidik C±1):
 
-- C+1 pesas akumoodul + AtomS3 (ekraan üles) + klaas peal (Denys). Napp R 33, kiirus 5 %, XIAO kaamera v5 kinnitusel kontrolliks.
+- C+1 pesas akumoodul + AtomS3 (ekraan üles) + klaas peal (Denys). Napp R 33, kiirus 5 %, XIAO kaamera v2 kinnitusel kontrolliks.
 - XY: lahtri C+1 keskpunkt `cells.py` järgi 254,88 / −16,75 — Denys: napp klaasi keskel → oranži hoidiku nihe **0 / 0**.
 - Z: Denys laskis napa klaasi puudutuseni, madalamale ei saa: **Z −119,0** → `place_z` ja `pick_z` = −119,0 (slot picker Test → Set, `cycle.workstation_cell` = C+1).
 - Kaksik ennustas −114,1 → päris virn on 4,9 mm madalamal. Põhjus selgitamata (aku pesa sügavus, oranži hoidiku vanad jalad, AtomS3 nimimõõt 12,9): TODO.

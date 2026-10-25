@@ -249,9 +249,9 @@ class Twin:
             self._add("calibration", mesh)
 
     def _tool_meshes(self):
-        # XIAO mount v5: its file frame has the J4 axis at x = y = 0 and the motor bottom at z = -13,
+        # XIAO mount v2: its file frame has the J4 axis at x = y = 0 and the motor bottom at z = -13,
         # the arm pointing -X; link5 frame: arm along +X, motor bottom at z = -85.
-        mount = trimesh.load(LAB / "camera-mounts/stl/xiao-square-mount-v5.stl")
+        mount = trimesh.load(LAB / "camera-mounts/stl/xiao-square-mount-v2.stl")
         t = trimesh.transformations.rotation_matrix(math.pi, (0, 0, 1))
         t[2, 3] = -MOTOR_LEN + 13.0
         mount.apply_transform(t)

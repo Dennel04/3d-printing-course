@@ -28,7 +28,7 @@ python -m venv .venv
 | Ruudustik → robot | labori `calibration/cells.py` (24.10 kolme ruudu sobitus, +0,87°) | kaksiku lahtrikeskmed vs `cells.py` ≤ 0,06 mm |
 | Hoidikud | labori `layout.json` tüüp → STL (`twin.py` `HOLDER_STL`, praegu Lab 2 detailid); vanade jalgadega hoidik tõuseb taladele (jala 3 mm pikendus, +2,85 mm) | — |
 | Iminapp | Ø 20 mm (**oletus**), J4 teljest 31,1 mm roboti poole R 33 juures (sobituse nihe, eeldus: robot istub rakises nagu CAD-is), pikkus J4 mootori alt **66,2 mm** | pikkus D-2 puudutusest (Z −150 klaasihoidiku v1 põhjal); kontroll: 23.10 G-1 nurgad jäävad 1,6 mm kalibreerimiskasti v1 põhja kohale |
-| XIAO kinnitus | `camera-mounts/stl/xiao-square-mount-v5.stl` J4 mootori all | — |
+| XIAO kinnitus | `camera-mounts/stl/xiao-square-mount-v2.stl` J4 mootori all | — |
 | Kokkupõrked | `python-fcl` täpsed kolmnurkvõrgud (mitte kumerad kestad), `trimesh` | negatiivtestid allpool |
 
 ## Mida dry_run kontrollib
