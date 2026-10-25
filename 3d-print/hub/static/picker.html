@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slot Picker</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  /* Same tokens as the hub: grid first, controls in a strip above it, events at the bottom. */
+  :root {
+    --bg: #f6f7f8; --panel: #ffffff; --well: #e7eaed; --ink: #1a2026; --muted: #5d6873; --line: #c9d0d6;
+    --accent: #d9531a; --sel: #2d62c4; --ok: #1d8648; --warn: #a8700b; --bad: #c22d2d; --on-accent: #fff;
+    --display: "Barlow Condensed", "Arial Narrow", sans-serif; --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace; color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg: #1a1f24; --panel: #20262c; --well: #262d34; --ink: #e3e8ec; --muted: #94a0ab; --line: #333c45;
+    --accent: #f0703a; --sel: #6b9af2; --ok: #45c07a; --warn: #e2a63a; --bad: #ff5d55; --on-accent: #12161a; color-scheme: dark; } }
+  :root[data-theme="dark"] { --bg: #1a1f24; --panel: #20262c; --well: #262d34; --ink: #e3e8ec; --muted: #94a0ab; --line: #333c45;
+    --accent: #f0703a; --sel: #6b9af2; --ok: #45c07a; --warn: #e2a63a; --bad: #ff5d55; --on-accent: #12161a; color-scheme: dark; }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 13px/1.45 var(--body); }
+  main { padding: 12px 14px 18px; display: flex; flex-direction: column; gap: 12px; }
+  button, input, select { font: inherit; color: inherit; }
+  button { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px; cursor: pointer; }
+  button:hover { border-color: var(--muted); }
+  button:disabled { opacity: .45; cursor: default; }
+  button.primary { background: var(--ink); color: var(--panel); border-color: var(--ink); }
+  button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  input, select { padding: 3px 6px; border: 1px solid var(--line); border-radius: 5px; background: var(--panel); }
+  input[type=number] { width: 72px; font-family: var(--mono); }
+  input[type=checkbox] { accent-color: var(--accent); }
+  .lbl, .seg label, h2, th { font-family: var(--display); text-transform: uppercase; letter-spacing: .04em; }
+  .lbl { color: var(--muted); font-weight: 600; font-size: 13px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; }
+  .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; background: var(--well); }
+  .seg label { padding: 4px 12px; cursor: pointer; font-weight: 600; font-size: 14px; color: var(--muted); }
+  .seg input { position: absolute; opacity: 0; pointer-events: none; }
+  .seg label:has(input:checked) { background: var(--panel); color: var(--ink); box-shadow: inset 0 -3px 0 var(--accent); }
+  .seg label:has(input:focus-visible) { outline: 2px solid var(--accent); }
+  .help { margin-left: auto; }
+  .help summary { cursor: pointer; color: var(--muted); list-style: none; font-weight: 600; }
+  .help summary::-webkit-details-marker { display: none; }
+  .help p { margin: 6px 0 0; color: var(--muted); max-width: 60ch; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { display: inline-flex; gap: 6px; align-items: center; padding: 2px 9px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); font-size: 12px; }
+  .chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--muted); }
+  .chip.ok::before { background: var(--ok); } .chip.warn::before { background: var(--warn); } .chip.bad::before { background: var(--bad); }
+  .chip b { font-weight: 600; }
+
+  .board { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px; max-width: 760px; width: 100%; }
+  .robot { text-align: center; background: var(--ink); color: var(--panel); border-radius: 6px 6px 0 0; padding: 3px; width: 40%; margin: 0 auto 4px;
+           font: 600 13px var(--display); letter-spacing: .1em; }
+  .grid { display: grid; grid-template-columns: 16px repeat(10, minmax(0, 1fr)); gap: 3px; }
+  .grid .hdr { font: 500 11px var(--mono); color: var(--muted); text-align: center; align-self: center; }
+  .cell { aspect-ratio: 1; min-width: 0; overflow: hidden; border: 1px solid var(--line); background: var(--bg); border-radius: 4px; cursor: pointer;
+          font: 500 clamp(9px, 1.3vw, 11px) var(--mono); padding: 2px 3px; display: flex; flex-direction: column; justify-content: space-between; color: var(--ink); }
+  .cell .h { font: 500 9px var(--body); opacity: .75; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .cell.held { color: #1a2026; }
+  .cell.blocked { color: var(--muted); cursor: not-allowed; background-image: repeating-linear-gradient(45deg, transparent 0 5px, color-mix(in srgb, var(--ink) 9%, transparent) 5px 10px); }
+  body.edit .cell.blocked { cursor: pointer; }
+  body.edit .grid { touch-action: none; user-select: none; }
+  body.edit .cell.held { cursor: grab; }
+  body.dragging, body.dragging .cell { cursor: grabbing !important; }
+  .cell.drag { box-shadow: 0 0 0 2px var(--ink) inset; }
+  .cell.target { outline: 3px solid var(--accent); outline-offset: -1px; }
+  .cell.sel { outline: 3px solid var(--sel); outline-offset: -1px; }
+  .cell:not(.blocked):hover, body.edit .cell:hover { border-color: var(--ink); }
+  .roleTag { font: 600 9px var(--mono); color: #fff; background: #1a2026; border-radius: 3px; padding: 0 3px; }
+  .legend { color: var(--muted); font-size: 11px; margin: 6px 0 0; }
+
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 10px; }
+  h2 { margin: 0; font-size: 16px; font-weight: 600; display: flex; align-items: baseline; gap: 8px; }
+  h2 .n { color: var(--accent); font-family: var(--mono); font-size: 13px; }
+  .note { color: var(--muted); font-size: 12px; margin: 0; max-width: 70ch; }
+  .err { color: var(--bad); }
+  .holder-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 6px 0; border-top: 1px solid var(--line); }
+  .holder-row:first-child { border-top: 0; }
+  .holder-row.active { background: color-mix(in srgb, var(--sel) 8%, transparent); }
+  .swatch { width: 14px; height: 14px; border-radius: 3px; border: 1px solid var(--line); flex: none; }
+  .holder-row input.name { width: 160px; }
+  .holder-row .cells { font: 11px var(--mono); color: var(--muted); min-width: 110px; }
+  .arrows button { padding: 2px 7px; }
+  .dirty { color: var(--warn); font-weight: 600; }
+  body:not(.ws-step) .ws-only { display: none; }
+  table.t { border-collapse: collapse; width: 100%; font-size: 12px; }
+  table.t td, table.t th { border-top: 1px solid var(--line); padding: 5px 4px; text-align: left; vertical-align: middle; }
+  table.t th { color: var(--muted); font-weight: 600; font-size: 12px; }
+  .tablewrap { overflow-x: auto; }
+
+  .log { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+  .log header { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-bottom: 1px solid var(--line); }
+  .log ol { list-style: none; margin: 0; padding: 4px 0; max-height: 220px; overflow: auto; font: 12px/1.5 var(--mono); }
+  .log li { display: grid; grid-template-columns: 7.5ch minmax(0, 1fr); gap: 8px; padding: 1px 10px; }
+  .log li time { color: var(--muted); }
+  .log li.bad { color: var(--bad); } .log li.ok span { color: var(--ok); }
+  .log li span { overflow-wrap: anywhere; }
+  .log .empty { color: var(--muted); padding: 4px 10px; font-family: var(--body); }
+</style>
+</head>
+<body>
+<main>
+  <div class="row">
+    <span class="seg" role="radiogroup" aria-label="Picker mode">
+      <label><input type="radio" name="mode" value="drive" checked> Drive</label>
+      <label><input type="radio" name="mode" value="edit"> Edit layout</label>
+      <label><input type="radio" name="mode" value="test"> Test</label>
+    </span>
+    <label class="drive-only"><input type="checkbox" id="arm"> Motion enabled</label>
+    <label class="drive-only row" style="gap:6px"><span class="lbl">Hover Z</span><input type="number" id="hover" step="5"></label>
+    <details class="help"><summary>How it works</summary>
+      <p><b>Drive</b>: click a cell; the cup goes up to travel Z, across, and down to hover Z, never into a pocket.
+        <b>Edit layout</b>: drag a holder to move it, drag over empty cells to select, then add a holder.
+        <b>Test</b>: teach the points and run the glass cycle; results go to docs/refit_test.csv. STOP and speed are in the hub bar.</p>
+    </details>
+  </div>
+
+  <div class="chips" aria-live="polite">
+    <span class="chip" id="chipRobot">Robot</span>
+    <span class="chip" id="chipVac">Vacuum</span>
+    <span class="chip" id="chipCam">Camera</span>
+  </div>
+
+  <div class="board">
+    <div class="robot">MG400</div>
+    <div class="grid" id="grid"></div>
+    <p class="legend" id="legend"></p>
+  </div>
+
+  <section class="panel editor-only" hidden>
+    <div class="row">
+      <span class="lbl">Selected</span><b class="mono" id="sel-list">–</b>
+      <button id="sel-clear">Clear</button>
+    </div>
+    <div class="row">
+      <input id="new-name" placeholder="Holder name, e.g. Glass input 2">
+      <select id="new-type"></select>
+      <button id="add" class="primary">Add holder</button>
+    </div>
+    <h2>Holders</h2>
+    <div id="holders"></div>
+    <div class="row">
+      <button id="save" class="primary">Save layout</button>
+      <button id="revert">Discard changes</button>
+      <span id="dirty"></span>
+    </div>
+    <p class="note">Arrows move a holder by one cell. “Use selection” gives the holder the selected cells. Nothing is written until Save layout.</p>
+  </section>
+
+  <div class="test-only" hidden style="display:flex;flex-direction:column;gap:12px">
+    <section class="panel">
+      <h2><span class="n">1</span>Roles</h2>
+      <div class="row">
+        <label>Input <select id="role-input"></select></label>
+        <label class="ws-only">Workstation <select id="role-workstation"></select></label>
+        <label class="ws-only">cell <select id="ws-cell"></select></label>
+        <label>Output <select id="role-output"></select></label>
+        <label><input type="checkbox" id="ws-step"> Workstation step</label>
+        <button id="roles-save" class="primary">Save roles</button>
+      </div>
+      <p class="note">Glass n goes from the n-th input cell to the n-th output cell (tags on the grid).</p>
+    </section>
+
+    <section class="panel">
+      <h2><span class="n">2</span>Teach points</h2>
+      <p class="note">Go above, lower with the Jog tab until the cup sits on the glass, then Set. Teach at R 33.</p>
+      <div class="tablewrap"><table class="t" id="teach"></table></div>
+      <details>
+        <summary class="lbl">Probe a surface or wall</summary>
+        <div class="row" style="margin-top:8px">
+          <select id="probe-axis"><option value="z-">Z ↓ surface</option><option value="x+">X+ wall</option>
+            <option value="x-">X− wall</option><option value="y+">Y+ wall</option><option value="y-">Y− wall</option></select>
+          <label>step <select id="probe-step"><option>0.2</option><option selected>0.5</option><option>1</option></select> mm</label>
+          <label>distance <input type="number" id="probe-dist" value="5" min="0.5" max="10" step="0.5"> mm</label>
+          <label><input type="checkbox" id="probe-suck"> suction</label>
+          <input id="probe-label" placeholder="label, e.g. grid-surface" style="width:150px">
+          <button id="probe" class="primary">Probe</button>
+        </div>
+        <p class="note">Each step logs pose, ADC and a camera frame to slot-picker/probes/, then the arm returns. <span class="mono" id="probe-info"></span></p>
+      </details>
+    </section>
+
+    <section class="panel">
+      <h2><span class="n">3</span>Run</h2>
+      <div class="row">
+        <label>Round <input type="number" id="round" min="1" max="99" value="1"></label>
+        <label>Glass <select id="one-glass"><option>1</option><option>2</option><option>3</option><option>4</option></select></label>
+        <button id="run-one">Run one glass</button>
+      </div>
+      <div class="row ws-only">
+        <span class="lbl">Loaded pockets</span>
+        <label><input type="checkbox" class="loaded" value="1" checked> 1</label>
+        <label><input type="checkbox" class="loaded" value="2" checked> 2</label>
+        <label><input type="checkbox" class="loaded" value="3" checked> 3</label>
+        <label><input type="checkbox" class="loaded" value="4" checked> 4</label>
+        <button id="run-loaded" class="primary">Run loaded glasses (4)</button>
+      </div>
+      <p class="note">Between rounds take every holder out and put it back, reload the glasses, do not re-teach.</p>
+      <details>
+        <summary class="lbl">Move one glass between any two cells</summary>
+        <div class="row" style="margin-top:8px">
+          <label>From <select id="tr-from"></select></label>
+          <label>pick Z <input type="number" id="tr-pick" value="-150" step="0.5"></label>
+          <label>To <select id="tr-to"></select></label>
+          <label>place Z <input type="number" id="tr-place" value="-145" step="0.5"></label>
+          <button id="tr-run" class="primary">Move glass</button>
+        </div>
+      </details>
+    </section>
+
+    <section class="panel">
+      <h2><span class="n">4</span>Result → refit_test.csv</h2>
+      <p class="note">Ticks fill in from the steps the robot finished. The robot cannot see the glass: untick what failed.</p>
+      <div class="tablewrap"><table class="t" id="results"></table></div>
+      <div class="row">
+        <button id="refit-save" class="primary">Save round</button>
+        <span class="note" id="frames"></span>
+      </div>
+    </section>
+  </div>
+
+  <section class="log" aria-label="Events">
+    <header><span class="lbl">Events</span><span class="note" id="logCount"></span>
+      <button id="logCopy" style="margin-left:auto">Copy</button><button id="logClear">Clear</button></header>
+    <ol id="log"><li class="empty">Nothing yet. Moves, teach points, runs and errors appear here.</li></ol>
+  </section>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+let layout = null;
+let holders = [];
+let selected = new Set();
+let active = null;
+let dirty = false;
+let drag = null;
+
+async function api(path, body) {
+  const opts = body === undefined ? {} : { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body) };
+  const res = await fetch(path, opts);
+  return res.json();
+}
+
+/* ---- event log (replaces the old status block) ---- */
+const events = [];
+function log(text, kind = "") {
+  const last = events[0];
+  if (last && last.text === text) { last.n++; last.t = new Date(); }
+  else events.unshift({ t: new Date(), text, kind, n: 1 });
+  events.length = Math.min(events.length, 300);
+  renderLog();
+}
+function renderLog() {
+  const ol = $("log");
+  if (!events.length) { ol.innerHTML = `<li class="empty">Nothing yet. Moves, teach points, runs and errors appear here.</li>`; $("logCount").textContent = ""; return; }
+  ol.replaceChildren(...events.slice(0, 120).map(e => {
+    const li = document.createElement("li"); li.className = e.kind;
+    const t = document.createElement("time"); t.textContent = e.t.toLocaleTimeString("et-EE");
+    const s = document.createElement("span"); s.textContent = e.text + (e.n > 1 ? `  ×${e.n}` : "");
+    li.append(t, s); return li;
+  }));
+  $("logCount").textContent = `${events.length}`;
+}
+$("logClear").onclick = () => { events.length = 0; renderLog(); };
+$("logCopy").onclick = () => {
+  const text = events.slice().reverse().map(e => `${e.t.toLocaleTimeString("et-EE")}  ${e.text}`).join("\n");
+  navigator.clipboard.writeText(text).then(() => log("Events copied to the clipboard", "ok")).catch(() => log("Copy failed: select the lines by hand", "bad"));
+};
+const say = msg => log(msg, "bad");
+
+const mode = () => document.querySelector("input[name=mode]:checked").value;
+const cellName = (letter, n) => letter + (n > 0 ? "+" : "") + n;
+const holderOf = name => holders.find(h => h.cells.includes(name));
+const typeOf = h => layout.types[h.type] || {label: h.type, color: "#fff"};
+const esc = s => String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+
+function buildGrid() {
+  const grid = $("grid");
+  grid.append(Object.assign(document.createElement("div"), {className: "hdr"}));
+  for (const n of layout.numbers) grid.append(Object.assign(document.createElement("div"), {className: "hdr", textContent: (n > 0 ? "+" : "") + n}));
+  for (const letter of layout.letters) {
+    grid.append(Object.assign(document.createElement("div"), {className: "hdr", textContent: letter}));
+    for (const n of layout.numbers) {
+      const el = document.createElement("div");
+      el.id = "cell-" + cellName(letter, n);
+      el.onclick = () => { if (mode() === "drive") cellClick(cellName(letter, n)); };
+      el.onpointerdown = e => pressStart(e, cellName(letter, n));
+      grid.append(el);
+    }
+  }
+  for (const c of layout.cells.filter(c => !c.blocked))
+    for (const id of ["tr-from", "tr-to"])
+      $(id).append(new Option(c.name + (c.holder ? " · " + c.holder : ""), c.name));
+  $("tr-from").value = "D-4";
+  $("tr-to").value = "D-5";
+  $("hover").value = layout.motion.default_hover_z;
+  $("hover").min = layout.motion.min_hover_z;
+  $("hover").max = layout.motion.travel_z;
+  $("legend").textContent = `Travel Z ${layout.motion.travel_z} · hover Z ${layout.motion.min_hover_z}…${layout.motion.travel_z} · reach ${layout.motion.radius_min}–${layout.motion.radius_max} mm · striped = out of reach or no-go`;
+  $("new-type").innerHTML = Object.entries(layout.types).map(([k, t]) => `<option value="${k}">${esc(t.label)}</option>`).join("");
+}
+
+function paint() {
+  for (const c of layout.cells) {
+    const el = $("cell-" + c.name);
+    const h = holderOf(c.name);
+    const outOfReach = c.blocked && !c.blocked.endsWith("no-go");
+    const noGo = h && (h.no_go ?? typeOf(h).no_go);
+    el.className = "cell" + (outOfReach || noGo ? " blocked" : "") + (selected.has(c.name) ? " sel" : "") +
+                   (h ? " held" : "") + (drag && drag.h && drag.h === h ? " drag" : "") +
+                   (seqCell === c.name ? " target" : "");
+    el.style.background = h ? typeOf(h).color : "";
+    el.title = `${c.name}  X ${c.x}  Y ${c.y}  r ${c.radius} mm` + (h ? `\n${h.name} (${typeOf(h).label})` : "") +
+               (outOfReach ? `\n${c.blocked}` : noGo ? "\nno-go" : "");
+    const tag = mode() === "test" ? slotTag(c.name) : "";
+    el.innerHTML = `<span>${c.name}${tag ? ` <span class="roleTag">${tag}</span>` : ""}</span><span class="h">${h ? esc(h.name) : ""}</span>`;
+  }
+  $("sel-list").textContent = selected.size ? [...selected].join(" ") : "–";
+  $("dirty").innerHTML = dirty ? `<span class="dirty">unsaved changes</span>` : "";
+}
+
+function renderHolders() {
+  const box = $("holders");
+  box.innerHTML = "";
+  holders.forEach((h, i) => {
+    const row = document.createElement("div");
+    row.className = "holder-row" + (i === active ? " active" : "");
+    row.innerHTML = `<span class="swatch" style="background:${typeOf(h).color}"></span>
+      <input class="name" value="${esc(h.name)}" aria-label="Holder name">
+      <select aria-label="Holder type">${Object.entries(layout.types).map(([k, t]) => `<option value="${k}"${k === h.type ? " selected" : ""}>${esc(t.label)}</option>`).join("")}</select>
+      <span class="cells">${h.cells.join(" ")}</span>
+      <span class="arrows"><button data-d="0,-1" aria-label="Move left">←</button><button data-d="-1,0" aria-label="Move up">↑</button><button data-d="1,0" aria-label="Move down">↓</button><button data-d="0,1" aria-label="Move right">→</button></span>
+      <button data-act="use">Use selection</button>
+      <button data-act="del">Delete</button>`;
+    row.querySelector("input").oninput = e => { h.name = e.target.value; changed(false); };
+    row.querySelector("select").onchange = e => { h.type = e.target.value; changed(); };
+    row.querySelectorAll(".arrows button").forEach(b => b.onclick = () => move(i, ...b.dataset.d.split(",").map(Number)));
+    row.querySelector("[data-act=use]").onclick = () => {
+      if (!selected.size) return say("Select cells on the grid first.");
+      if (!claim([...selected], h)) return;
+      h.cells = [...selected]; selected.clear(); active = i; changed();
+    };
+    row.querySelector("[data-act=del]").onclick = () => {
+      if (!confirm(`Delete holder "${h.name}"?`)) return;
+      holders.splice(i, 1); active = null; changed();
+    };
+    row.onclick = e => { if (e.target === row) { active = i; renderHolders(); } };
+    box.append(row);
+  });
+}
+
+function changed(rerender = true) { dirty = true; if (rerender) renderHolders(); paint(); }
+
+function claim(cells, owner) {
+  for (const c of cells) {
+    const other = holderOf(c);
+    if (other && other !== owner) { say(`${c} already belongs to ${other.name}`); return false; }
+  }
+  return true;
+}
+
+const pos = name => [layout.letters.indexOf(name[0]), layout.numbers.indexOf(Number(name.slice(1)))];
+function shifted(cells, dl, dn) {
+  const out = [];
+  for (const c of cells) {
+    const [li, ni] = pos(c);
+    if (li + dl < 0 || li + dl >= layout.letters.length || ni + dn < 0 || ni + dn >= layout.numbers.length) return null;
+    out.push(cellName(layout.letters[li + dl], layout.numbers[ni + dn]));
+  }
+  return out;
+}
+function move(i, dl, dn) {
+  const h = holders[i];
+  const moved = shifted(h.cells, dl, dn);
+  if (!moved) return say(`${h.name} would leave the grid`);
+  if (!claim(moved, h)) return;
+  h.cells = moved; active = i; changed();
+}
+
+function pressStart(e, name) {
+  if (mode() !== "edit" || e.button > 0) return;
+  e.preventDefault();
+  const h = holderOf(name);
+  drag = h ? {kind: "move", start: name, h, orig: [...h.cells], moved: false}
+           : {kind: "select", start: name, base: new Set(selected), moved: false};
+  if (h) { active = holders.indexOf(h); renderHolders(); }
+  document.body.classList.toggle("dragging", !!h);
+  paint();
+}
+function cellUnder(e) {
+  const el = document.elementFromPoint(e.clientX, e.clientY)?.closest(".cell");
+  return el ? el.id.slice(5) : null;
+}
+document.addEventListener("pointermove", e => {
+  if (!drag) return;
+  const name = cellUnder(e);
+  if (!name) return;
+  if (name !== drag.start) drag.moved = true;
+  const [l0, n0] = pos(drag.start), [l1, n1] = pos(name);
+  if (drag.kind === "move") {
+    const moved = shifted(drag.orig, l1 - l0, n1 - n0);
+    const clash = moved && moved.find(c => { const o = holderOf(c); return o && o !== drag.h; });
+    if (moved && !clash) drag.h.cells = moved;
+  } else if (drag.moved) {
+    selected = new Set(drag.base);
+    for (let l = Math.min(l0, l1); l <= Math.max(l0, l1); l++)
+      for (let n = Math.min(n0, n1); n <= Math.max(n0, n1); n++) selected.add(cellName(layout.letters[l], layout.numbers[n]));
+  }
+  paint();
+});
+document.addEventListener("pointerup", () => {
+  if (!drag) return;
+  const d = drag;
+  drag = null;
+  document.body.classList.remove("dragging");
+  if (!d.moved) { selected.has(d.start) ? selected.delete(d.start) : selected.add(d.start); return paint(); }
+  if (d.kind === "move" && d.h.cells.join() !== d.orig.join()) { log(`${d.h.name} → ${d.h.cells.join(" ")} (unsaved)`); return changed(); }
+  renderHolders(); paint();
+});
+
+async function cellClick(name) {
+  const c = layout.cells.find(c => c.name === name);
+  if (c.blocked) return say(`${name}: ${c.blocked}`);
+  if (dirty) return say("Save or discard the layout changes first.");
+  if (!$("arm").checked) return say(`Tick “Motion enabled” to drive to ${name}.`);
+  const r = await api("/api/goto", {cell: name, hover_z: parseFloat($("hover").value)});
+  if (!r.ok) say(`${name}: ${r.error}`); else log(`Drive to ${name}, hover Z ${$("hover").value}`);
+}
+
+$("add").onclick = () => {
+  const name = $("new-name").value.trim();
+  if (!name) return say("Give the new holder a name.");
+  if (!selected.size) return say("Select its cells on the grid first.");
+  if (!claim([...selected], null)) return;
+  holders.push({name, type: $("new-type").value, cells: [...selected], status: "placed " + new Date().toLocaleDateString("et-EE")});
+  log(`Added ${name} on ${[...selected].join(" ")} (unsaved)`);
+  selected.clear(); $("new-name").value = ""; active = holders.length - 1; changed();
+};
+$("sel-clear").onclick = () => { selected.clear(); paint(); };
+$("save").onclick = async () => {
+  const r = await api("/api/holders", {holders});
+  if (!r.ok) return say(`Save layout: ${r.error}`);
+  dirty = false; log("Layout saved to layout.json", "ok"); await load();
+};
+$("revert").onclick = async () => { if (!dirty || confirm("Discard unsaved layout changes?")) { dirty = false; selected.clear(); await load(); log("Layout changes discarded"); } };
+document.querySelectorAll("input[name=mode]").forEach(r => r.onchange = () => {
+  document.body.classList.toggle("edit", mode() === "edit");
+  document.body.classList.toggle("test", mode() === "test");
+  document.querySelector(".editor-only").hidden = mode() !== "edit";
+  document.querySelector(".test-only").hidden = mode() !== "test";
+  document.querySelectorAll(".drive-only").forEach(e => e.hidden = mode() !== "drive");
+  selected.clear(); paint();
+});
+
+/* ---- Test: roles, teaching, runs, refit rows ---- */
+const ROLES = ["input", "workstation", "output"];
+const NEEDS = {input: ["pick_z"], workstation: ["place_z", "pick_z"], output: ["place_z"]};
+const LABEL = {picked_from_input: "took from input", placed_at_workstation: "on workstation",
+               picked_from_workstation: "took from workstation", placed_at_output: "into output"};
+let ran = new Set();
+let syncedRun = null;
+const wsStep = () => !!layout.cycle.workstation_step;
+const activeRoles = () => wsStep() ? ROLES : ["input", "output"];
+const roleHolder = role => layout.holders.find(h => h.name === layout.cycle.roles[role]);
+const teachOf = h => ({dx: 0, dy: 0, pick_z: null, place_z: null, ...(h && h.teach)});
+
+function slotTag(cell) {
+  for (const role of ["input", "output"]) {
+    const h = roleHolder(role);
+    if (h && h.cells.includes(cell)) return (role === "input" ? "in " : "out ") + (h.cells.indexOf(cell) + 1);
+  }
+  const w = wsStep() && roleHolder("workstation");
+  if (w && cell === (layout.cycle.workstation_cell || w.cells[0])) return "ws";
+  return "";
+}
+
+function renderTest() {
+  const opts = sel => `<option value="">–</option>` + layout.holders.map(h => `<option${h.name === sel ? " selected" : ""}>${esc(h.name)}</option>`).join("");
+  for (const role of ROLES) $("role-" + role).innerHTML = opts(layout.cycle.roles[role]);
+  $("ws-step").checked = wsStep();
+  document.body.classList.toggle("ws-step", wsStep());
+  wsCells();
+  const t = $("teach");
+  t.innerHTML = `<tr><th>Role</th><th>Holder · glass 1 cell</th><th>XY offset</th><th>Pick Z</th><th>Place Z</th><th></th></tr>`;
+  for (const role of activeRoles()) {
+    const h = roleHolder(role), tv = teachOf(h);
+    const cell = !h ? "–" : role === "workstation" ? (layout.cycle.workstation_cell || h.cells[0]) : h.cells[0];
+    const z = k => NEEDS[role].includes(k) ? `<span class="mono">${tv[k] ?? "<span class=err>not set</span>"}</span> <button data-t="${role},${k}">Set</button>` : "";
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${role}</td><td>${h ? esc(h.name) + " · " + cell : "<span class=err>choose a holder</span>"}</td>
+      <td><span class="mono">${tv.dx.toFixed(1)} / ${tv.dy.toFixed(1)}</span> <button data-t="${role},xy">Set</button></td>
+      <td>${z("pick_z")}</td><td>${z("place_z")}</td><td><button data-a="${role}">Go above</button></td>`;
+    t.append(tr);
+  }
+  t.querySelectorAll("[data-t]").forEach(b => b.onclick = async () => {
+    const [role, what] = b.dataset.t.split(",");
+    const r = await api("/api/cycle/teach", {role, what});
+    if (!r.ok) return say(`Teach ${role} ${what}: ${r.error}`);
+    log(`Taught ${role} ${what}`, "ok"); await load();
+  });
+  t.querySelectorAll("[data-a]").forEach(b => b.onclick = async () => {
+    const r = await api("/api/cycle/above", {role: b.dataset.a, glass: Number($("one-glass").value)});
+    if (!r.ok) say(`Go above ${b.dataset.a}: ${r.error}`); else log(`Go above ${b.dataset.a}, glass ${$("one-glass").value}`);
+  });
+  renderResults();
+}
+function wsCells() {
+  const name = $("role-workstation").value, h = layout.holders.find(h => h.name === name);
+  $("ws-cell").innerHTML = (h ? h.cells : []).map(c => `<option${c === layout.cycle.workstation_cell ? " selected" : ""}>${c}</option>`).join("");
+}
+$("role-workstation").onchange = wsCells;
+$("ws-step").onchange = () => document.body.classList.toggle("ws-step", $("ws-step").checked);
+$("roles-save").onclick = async () => {
+  const body = Object.fromEntries(ROLES.map(r => [r, $("role-" + r).value]));
+  body.workstation_cell = $("ws-cell").value;
+  body.workstation_step = $("ws-step").checked;
+  const r = await api("/api/cycle/roles", body);
+  if (!r.ok) return say(`Roles: ${r.error}`);
+  log("Roles saved", "ok"); await load();
+};
+
+function renderResults() {
+  const t = $("results");
+  const cols = layout.fields.join();
+  if (t.dataset.cols === cols) return;
+  t.dataset.cols = cols;
+  ran.clear();
+  t.innerHTML = `<tr><th>Glass</th>${layout.fields.map(f => `<th>${LABEL[f]}</th>`).join("")}<th>Notes</th></tr>`;
+  for (let g = 1; g <= 4; g++) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td class="mono">${g}</td>${layout.fields.map(f => `<td><input type="checkbox" id="r-${g}-${f}" aria-label="glass ${g} ${LABEL[f]}"></td>`).join("")}
+      <td><input id="r-${g}-notes" style="width:100%" aria-label="glass ${g} notes"></td>`;
+    t.append(tr);
+  }
+}
+function clearResults() {
+  for (let g = 1; g <= 4; g++) { layout.fields.forEach(f => $(`r-${g}-${f}`).checked = false); $(`r-${g}-notes`).value = ""; }
+  ran.clear();
+}
+async function run(glasses) {
+  if (glasses.some(g => ran.has(g)) && !confirm("These glasses already have unsaved results in this round. Run again and clear their ticks?")) return;
+  const r = await api("/api/cycle/run", {glasses, round: Number($("round").value)});
+  if (!r.ok) return say(`Run: ${r.error}`);
+  log(`Round ${$("round").value}: run glass ${glasses.join(", ")}`);
+  glasses.forEach(g => { layout.fields.forEach(f => $(`r-${g}-${f}`).checked = false); ran.add(g); });
+}
+$("run-one").onclick = () => run([Number($("one-glass").value)]);
+const loaded = () => [...document.querySelectorAll(".loaded:checked")].map(c => Number(c.value));
+function loadedLabel() { const n = loaded().length; $("run-loaded").textContent = `Run loaded glasses (${n})`; $("run-loaded").disabled = !n; }
+document.querySelectorAll(".loaded").forEach(c => c.onchange = loadedLabel);
+$("run-loaded").onclick = () => loaded().length ? run(loaded()) : say("Tick at least one loaded pocket.");
+function syncResults(cyc, busy) {
+  if (!cyc || !layout.fields || (!busy && syncedRun === cyc.id)) return;
+  for (const [g, res] of Object.entries(cyc.results))
+    for (const f of layout.fields) if (res[f]) $(`r-${g}-${f}`).checked = true;
+  $("frames").textContent = (cyc.frames.length ? "frames: " + cyc.frames.join(", ") : "") + (cyc.grips && cyc.grips.length ? " · grip: " + cyc.grips.join("; ") : "");
+  if (!busy) syncedRun = cyc.id;
+}
+$("refit-save").onclick = async () => {
+  if (!ran.size) return say("Nothing run in this round yet.");
+  const rnd = Number($("round").value);
+  const rows = [...ran].sort().map(g => ({glass: g, notes: $(`r-${g}-notes`).value, ...Object.fromEntries(layout.fields.map(f => [f, $(`r-${g}-${f}`).checked]))}));
+  const r = await api("/api/refit", {round: rnd, rows});
+  if (!r.ok) return say(`Save round: ${r.error}`);
+  log(`Round ${rnd}: ${rows.length} rows saved to docs/refit_test.csv`, "ok");
+  clearResults(); $("round").value = rnd + 1;
+};
+window.onbeforeunload = e => { if (dirty) e.preventDefault(); };
+$("tr-run").onclick = async () => {
+  const r = await api("/api/transfer", {from: $("tr-from").value, to: $("tr-to").value, pick_z: Number($("tr-pick").value), place_z: Number($("tr-place").value)});
+  if (!r.ok) say("Move glass: " + r.error); else log(`Move glass ${$("tr-from").value} → ${$("tr-to").value}`);
+};
+$("probe").onclick = async () => {
+  const r = await api("/api/probe", {axis: $("probe-axis").value, step: Number($("probe-step").value),
+    distance: Number($("probe-dist").value), suction: $("probe-suck").checked, label: $("probe-label").value});
+  if (!r.ok) say(`Probe: ${r.error}`); else log(`Probe ${$("probe-axis").value} started`);
+};
+function showProbe(p) {
+  if (!p) return;
+  const l = p.last;
+  $("probe-info").textContent = `probes/${p.dir}: ${p.rows} rows` + (l ? ` · step ${l.step}: z ${l.z}, ADC ${l.adc || "–"}` : "");
+}
+
+/* ---- status chips + events from the robot state ---- */
+let seqCell = null, lastStep = "", lastErr = "";
+function chip(id, kind, label, text, tip = "") { const c = $(id); c.className = "chip " + kind; c.innerHTML = `<b>${label}</b> ${esc(text)}`; c.title = tip; }
+function friendlyPort(err) {
+  const m = /(COM\d+)/.exec(err || "");
+  if (/could not open port|FileNotFound|cannot find/i.test(err || "")) return `off: ${m ? m[1] : "port"} not found`;
+  return err || "off";
+}
+async function poll() {
+  try {
+    const s = await api("/api/state");
+    const r = s.robot;
+    chip("chipRobot", r.error || (r.alarm_ids || []).length ? "bad" : r.enabled ? "ok" : "warn", "Robot",
+         `${r.mode_name}${r.speed_ratio != null ? " · " + r.speed_ratio + " %" : ""}`);
+    const pr = s.pressure;
+    chip("chipVac", pr.ok ? "ok" : "warn", "Vacuum", pr.ok ? `ADC ${pr.adc}` + (pr.vacuum !== null ? ` · ${pr.vacuum}` : "") : friendlyPort(pr.error),
+         pr.ok ? "" : `Picks run without the vacuum check.
+${pr.error || ""}`);
+    chip("chipCam", s.camera.error ? "warn" : s.camera.open ? "ok" : "", "Camera", s.camera.error ? friendlyPort(s.camera.error) : s.camera.open ? `on · ${s.camera.fps} fps` : "idle", s.camera.error || "");
+    seqCell = s.seq.cell;
+    const step = s.seq.busy || s.seq.step !== "idle" ? `${s.seq.cell || ""} ${s.seq.step}`.trim() : "";
+    if (step && step !== lastStep) log(step, s.seq.step === "arrived" || s.seq.step === "done" ? "ok" : "");
+    lastStep = step;
+    if (s.seq.error && s.seq.error !== lastErr) say(s.seq.error);
+    lastErr = s.seq.error || "";
+    syncResults(s.seq.cycle, s.seq.busy);
+    showProbe(s.seq.probe);
+    paint();
+  } catch (e) {
+    chip("chipRobot", "bad", "Robot", "hub not reachable");
+  }
+  setTimeout(poll, 400);
+}
+
+async function load() {
+  layout = await api("/api/layout");
+  holders = JSON.parse(JSON.stringify(layout.holders));
+  active = null;
+  renderHolders(); renderTest(); paint();
+}
+api("/api/layout").then(l => { layout = l; buildGrid(); load(); poll(); });
+</script>
+</body>
+</html>

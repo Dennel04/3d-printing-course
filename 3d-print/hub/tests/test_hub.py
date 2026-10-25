@@ -120,6 +120,11 @@ class HubApiTest(unittest.TestCase):
             body = urllib.request.urlopen(f"http://127.0.0.1:{self.port}{path}", timeout=10).read()
             self.assertIn(b"<html", body.lower()[:400])
 
+    def test_picker_page_is_the_hub_version(self):
+        body = urllib.request.urlopen(f"http://127.0.0.1:{self.port}/picker", timeout=10).read().decode()
+        self.assertIn('id="log"', body)          # event log instead of the old status block
+        self.assertNotIn('id="status"', body)
+
     def test_state_starts_in_simulation(self):
         s = self.req("/hub/state")
         self.assertEqual(s["mode"], "sim")

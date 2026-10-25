@@ -30,8 +30,10 @@ switch **Motion enabled** is cleared.
   step is turned into a Cartesian target through the robot's joint model (R = J1 + J4) and checked against
   the joint limits before it is sent. Steps 0.2 / 1 / 5 / 10 or **Hold** (1 mm or 1° every 0.2 s while
   pressed). Keys: arrows X/Y, PgUp/PgDn Z, Q/E R, Esc = STOP. Pump suck / blow / off.
-- **Picker** — the slot picker page (Drive / Edit layout / Test, teach points, glass cycle, refit CSV),
-  running on whichever robot is selected.
+- **Picker** — the slot picker (Drive / Edit layout / Test, teach points, glass cycle, refit CSV) on whichever
+  robot is selected. Hub version `static/picker.html` (same API as `lab2/slot-picker/index.html`, which still
+  works on its own): status chips for robot, vacuum sensor and camera, and an **Events** log (moves, teach points,
+  runs, saved rounds, errors; Copy for the devlog) instead of the status block; STOP, speed and camera live in the hub.
 - **Tests** — the twin checks on the current `layout.json`: dry run (as the robot runs it and the planned
   full cycle), refit rounds 2-5, calibration error tolerance, scene audit, rebuild of the 3D scene, and
   the hub self-test. Each gets pass / warn / fail, a one-line summary and its full output.

@@ -223,6 +223,23 @@ $("#camToggle").onclick = () => {
   img.src = on ? "/stream.mjpg?t=" + Date.now() : "";
   $("#camToggle").textContent = on ? "Stop stream" : "Start stream";
 };
+let shownFrame = null;
+async function lastFrame() {
+  try {
+    const p = await (await fetch("/api/photo")).json();
+    if (p.name && p.name !== shownFrame) {
+      shownFrame = p.name;
+      $("#frameImg").src = "/frames/" + p.name; $("#frameImg").hidden = false;
+      $("#frameName").textContent = `Last saved frame: ${p.name} (${p.time})`;
+    }
+  } catch (e) { /* camera folder may be empty */ }
+}
+$("#camSnap").onclick = async () => {
+  $("#camSnap").disabled = true;
+  try { await api("/api/view", {}); await lastFrame(); } catch (e) { $("#frameName").textContent = e.message; }
+  $("#camSnap").disabled = false;
+};
+setInterval(() => { if (!$("#tab-camera").hidden) lastFrame(); }, 2000);
 setInterval(() => { const c = ui.state?.camera; if (c) $("#camState").textContent = c.open ? `Camera on, ${c.fps} fps` : (c.error || "Camera closed"); }, 1000);
 
 /* ---------------- 3D stage ---------------- */
