@@ -50,42 +50,59 @@ def color_for(name):
         return "#f26b1d"
     if name == "cup rubber":
         return "#161616"
-    if name in ("cup metal", "cup fitting"):
+    if name in ("cup metal", "cup fitting", "cup flange"):
         return "#c3c8ce"
     if name.startswith("glass"):
         return "#9fd3ff"
     return "#b0b0b0"
 
 
-# Suction tool as on the robot (photo docs/photos/mg400-tool-mount-side-2026-10-24.jpg, scaled by the caliper
-# cup OD 22.25 mm): Dobot kit flange hub -> clamp collar -> buffer body with a side 4 mm push-in fitting ->
-# nut -> buffer rod -> black bellows cup. No public CAD exists (Dobot, SMC-type buffer pad); proportions from
-# the photo, total stretched to the twin's cup length. Only for the picture: collisions use the twin cylinder.
-PHOTO_LEN = 79.5
-TOOL_PROFILE = {   # part: [(radius, z from the motor bottom down, photo mm), ...]
-    "cup metal": [(0, 0), (15, 0), (15, 4), (22, 4), (22, 8), (11, 8), (11, 19), (9, 19), (9, 57), (7.5, 57),
-                  (7.5, 65), (4, 65), (4, 67), (0, 67)],
-    "cup rubber": [(0, 66), (6.5, 66), (8, 69), (7, 71.5), (11.125, 78.5), (11.125, 79.5), (0, 79.5)],
+# Suction tool as on the robot, top to bottom:
+#  * Dobot MG400 end flange: official CAD robot/meshes/mg400_end_flange.stl (MG400_End_Flange_3D.stp, Dobot via
+#    Pololu; User Guide V1.7 fig. 5.3): boss D22 x 10 up into the J4 motor, disc D40 x 4, 4 x M3 on PCD 30
+#  * kit suction holder under the disc (no public CAD; front/side photos 24.10, scaled by the caliper cup
+#    D22.25): 2 M3 socket heads, buffer body D16 x 36 with a side 4 mm push-in fitting, neck, nut D14.4,
+#    black bellows cup D22.25 x 13.8 (measurements.md)
+# The twin's cup length (66.2) is measured from the end of the J4 output shaft (bottom of the URDF link5
+# mesh: D8 shaft ~12-14 mm under the motor body). The flange sits on that shaft with its boss against the
+# motor face (guide fig. 5.3: shaft 12, flange 14), so its disc ends 2 mm below the shaft end. The holder
+# under it is drawn stretched to reach the twin's cup tip (photo estimate 57.8 mm; TODO caliper the free
+# length and the buffer stroke). Picture only: collisions use the twin cylinder.
+SHAFT = 12.0
+FLANGE = 14.0
+HOLDER_LEN = 57.8
+HOLDER_PROFILE = {   # (radius, depth below the flange disc, mm)
+    "cup metal": [(0, 0), (8, 0), (8, 36), (5, 36), (5, 38), (7.2, 38), (7.2, 44), (0, 44)],
+    "cup rubber": [(0, 44), (5.5, 44), (7, 46), (6, 48.5), (11.125, 56.6), (11.125, 57.8), (0, 57.8)],
 }
 
 
 def suction_tool(length):
-    """Meshes of the tool in the twin's cup frame (z up, top at +length/2, tip at -length/2)."""
-    k = length / PHOTO_LEN
+    """Meshes of the tool in the twin's cup frame (z up, top = motor bottom at +length/2, tip at -length/2)."""
+    top = length / 2                 # end of the J4 shaft
+    k = (length - (FLANGE - SHAFT)) / HOLDER_LEN
     out = {}
-    for name, prof in TOOL_PROFILE.items():
-        pts = [(r, length / 2 - z * k) for r, z in prof]
-        m = trimesh.creation.revolve(np.array(pts[::-1]), sections=48)
-        out[name] = m
-    # side push-in fitting (hex + collet), towards +x, at photo z 49
-    zf = length / 2 - 49 * k
-    hexn = trimesh.creation.cylinder(radius=5, height=7, sections=6)
+    fl = trimesh.load(HERE / "robot" / "meshes" / "mg400_end_flange.stl")   # mm, axis y, disc y 0..-4, boss to -14
+    fl.apply_transform(trimesh.transformations.rotation_matrix(-math.pi / 2, (1, 0, 0)))   # y -> -z
+    fl.apply_translation((0, 0, top + SHAFT - fl.bounds[1][2]))   # boss top at the motor face
+    zt = fl.bounds[0][2]                                      # underside of the flange disc
+    out["cup flange"] = fl
+    for name, prof in HOLDER_PROFILE.items():
+        pts = [(r, zt - d * k) for r, d in prof]
+        out[name] = trimesh.creation.revolve(np.array(pts[::-1]), sections=48)
+    parts = []
+    for a in (0, math.pi):          # M3 socket heads under the disc, PCD 30
+        h = trimesh.creation.cylinder(radius=2.75, height=3, sections=16)
+        h.apply_translation((15 * math.cos(a + math.pi / 4), 15 * math.sin(a + math.pi / 4), zt - 1.5))
+        parts.append(h)
+    zf = zt - 29 * k                 # side push-in fitting: hex 8 mm + collet D6, towards +x
+    hexn = trimesh.creation.cylinder(radius=4.6, height=7, sections=6)
     hexn.apply_transform(trimesh.transformations.rotation_matrix(math.pi / 2, (0, 1, 0)))
-    hexn.apply_translation((9 + 3.5, 0, zf))
-    collet = trimesh.creation.cylinder(radius=4.2, height=9, sections=24)
+    hexn.apply_translation((8 + 3.5, 0, zf))
+    collet = trimesh.creation.cylinder(radius=3.0, height=8, sections=24)
     collet.apply_transform(trimesh.transformations.rotation_matrix(math.pi / 2, (0, 1, 0)))
-    collet.apply_translation((9 + 7 + 4.5, 0, zf))
-    out["cup fitting"] = trimesh.util.concatenate([hexn, collet])
+    collet.apply_translation((8 + 7 + 4, 0, zf))
+    out["cup fitting"] = trimesh.util.concatenate(parts + [hexn, collet])
     return out
 
 
@@ -185,7 +202,7 @@ def main():
             return
         c = press(p)
         f = {n: qpos(shift @ tf if (n.startswith("arm ") or n == "xiao mount") else tf) for n, (_, tf) in parts.items()}
-        for n in ("cup metal", "cup fitting"):
+        for n in ("cup metal", "cup fitting", "cup flange"):
             f[n] = f["cup"]
         # the bellows cup + buffer rod give way: the robot goes c mm lower than the first touch
         rubber = parts["cup"][1].copy()

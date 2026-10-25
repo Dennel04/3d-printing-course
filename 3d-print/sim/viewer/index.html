@@ -146,8 +146,8 @@ async function load() {
     o.geometry = o.geometry.toNonIndexed();
     o.geometry.computeVertexNormals();
     o.material = new THREE.MeshStandardMaterial({
-      color: col, roughness: glass ? 0.1 : name.includes("pipe") || name === "cup metal" || name === "cup fitting" ? 0.3 : 0.7,
-      metalness: name.includes("pipe") ? 0.9 : name === "cup metal" || name === "cup fitting" ? 0.55 : name.startsWith("rakis") ? 0.3 : 0.05,
+      color: col, roughness: glass ? 0.1 : name.includes("pipe") || (name.startsWith("cup ") && name !== "cup rubber") ? 0.3 : 0.7,
+      metalness: name.includes("pipe") ? 0.9 : name.startsWith("cup ") && name !== "cup rubber" ? 0.55 : name.startsWith("rakis") ? 0.3 : 0.05,
       transparent: glass, opacity: glass ? 0.65 : 1,
     });
     o.castShadow = !name.startsWith("table");
@@ -278,7 +278,10 @@ addEventListener("keydown", e => { if (e.code === "Space") { e.preventDefault();
 addEventListener("resize", resize);
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { bg(); drawStrip(); });
 
-window.twin = { seek: s => { t = s; }, pause: () => { playing = false; }, cam: setCam };
+window.twin = { seek: s => { t = s; }, pause: () => { playing = false; }, cam: setCam,
+  look: (pos, target) => { follow = false; camera.position.set(...pos); controls.target.set(...target); controls.update(); },
+  snap: () => { apply(t); controls.update(); renderer.render(scene, camera); return renderer.domElement.toDataURL("image/png"); },
+  world: n => { const v = new THREE.Vector3(); nodes[n].getWorldPosition(v); return v.toArray(); } };
 load().catch(err => { console.error(err); document.getElementById("err").style.display = "grid"; });
 </script>
 </body>

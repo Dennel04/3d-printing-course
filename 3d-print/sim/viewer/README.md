@@ -27,3 +27,11 @@ Lehel: paus/mängi (tühik), kiirus, ajajoone lohistamine, sammu klõps paremas 
 
 Hoidikud tulevad ise `slot-picker/layout.json`-ist (tüüp → STL `twin.py` `HOLDER_STL`-is); uus hoidikutüüp = uus rida seal.
 `viewer/data/` genereeritakse, gitis seda ei ole.
+
+## Iminapa tööriist pildil
+
+Dobot MG400 lõppflantsi ametlik CAD (`sim/robot/meshes/mg400_end_flange.stl`, allikas `MG400_End_Flange_3D.stp`,
+Dobot / Pololu; MG400 User Guide V1.7 joonis 5.3: Ø40 × 4 ketas + Ø22 × 10 nukk, 4 × M3 P.C.D 30) istub J4 võllil.
+Selle all komplekti puhvriga iminapa hoidik (avalikku CAD-i pole): mõõdud fotodelt, mõõtkava nihikuga mõõdetud
+napp Ø22,25. Napa + puhvri kokkusurumist näitab leht (andmed `audit_scene.py`). TODO nihikuga: hoidiku vaba pikkus
+ja puhvri käik.
