@@ -318,6 +318,11 @@ class Twin:
         t[2, 3] = -MOTOR_LEN + 13.0
         mount.apply_transform(t)
         self.mount_local = mount
+        # the XIAO ESP32S3 Sense in that mount: Seeed's official model as placed in xiao-square-mount-v2.f3d,
+        # exported from Fusion in the mount file frame (scene/xiao-esp32s3-sense-in-mount-v2.stl)
+        cam = trimesh.load(HERE / "scene" / "xiao-esp32s3-sense-in-mount-v2.stl")
+        cam.apply_transform(t)
+        self.xiao_local = cam
 
     # ---- tool length from a touch: cup pressed on a known surface at a known robot Z ----
     def set_cup_length_from_touch(self, robot_z, surface_z):
@@ -349,6 +354,7 @@ class Twin:
         tm = self.arm.link_poses(j1, j2, j3, 0.0)["link5"].copy()
         tm[:3, 3] = t5[:3, 3]
         out["xiao mount"] = (self.mount_local, tm)
+        out["xiao camera"] = (self.xiao_local, tm)
         ox, oy = cup_offset(r)
         tip = self.cup_tip_z(z)
         top = z + self.HZ - MOTOR_LEN
@@ -372,6 +378,7 @@ class Twin:
         self._scene_obj = {n: fcl.CollisionObject(self._bvh(m)) for n, m in self.scene.items()}
         self._arm_bvh = {"arm " + n: self._bvh(m) for n, m in self.arm.meshes.items() if n != "base_link"}
         self._arm_bvh["xiao mount"] = self._bvh(self.mount_local)
+        self._arm_bvh["xiao camera"] = self._bvh(self.xiao_local)
 
     def clearance(self, x, y, z, r=TOOL_R, ignore=(), cup_ignore=()):
         """Smallest distance (mm) from every moving part to every scene part at this pose, worst first.

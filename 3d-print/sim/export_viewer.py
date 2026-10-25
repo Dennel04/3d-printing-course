@@ -2,7 +2,7 @@
 
 Same layout.json, cycle.py, cells.py and arm model as dry_run.py. Writes
   viewer/data/scene.glb   every object as a named node: static ones in world coordinates (z up, mm),
-                          moving ones (arm links, XIAO mount, cup, glasses) in their own frame
+                          moving ones (arm links, XIAO mount + camera, cup, glasses) in their own frame
   viewer/data/anim.json   frames every 2 mm of the path: pose of every moving node, the action label,
                           plus dry_run's verdict per move (ok / close / COLLISION)
 Extra objects (anything exported from Fusion as STL) go in viewer/extras.json, see viewer/README.md.
@@ -42,12 +42,16 @@ def color_for(name):
         return "#e8e8e3"
     if name == "battery":
         return "#3b6fb6"
+    if name == "AtomS3 screen":
+        return "#10161c"
     if name == "AtomS3":
-        return "#7aa7d9"
+        return "#cfd2d4"
     if name.startswith("arm "):
         return "#e9ecef" if "link5" not in name else "#c9ced4"
     if name == "xiao mount":
         return "#f26b1d"
+    if name == "xiao camera":
+        return "#2e3a46"
     if name in ("cup rubber", "cup oring"):
         return "#161616"
     if name == "cup collet":
@@ -160,6 +164,10 @@ def main():
     for n, mesh in T.scene.items():
         if n in glass_names:
             continue
+        if n == "AtomS3":           # one mesh for collisions, two colours in the picture
+            add(n, dry_run.ATOM_SHELL.copy().apply_translation(run.atom_at), "static")
+            add("AtomS3 screen", dry_run.ATOM_SCREEN.copy().apply_translation(run.atom_at), "static")
+            continue
         add(n, mesh, "static")
     base = T.arm.link_poses(0, 0, 0, 0)["base_link"]
     # The twin keeps the cells.py fit shift as a cup offset from the J4 axis (31 mm at R 33). On the robot the
@@ -213,7 +221,7 @@ def main():
         if parts is None:
             return
         c = press(p)
-        f = {n: qpos(shift @ tf if (n.startswith("arm ") or n == "xiao mount") else tf) for n, (_, tf) in parts.items()}
+        f = {n: qpos(shift @ tf if (n.startswith("arm ") or n.startswith("xiao ")) else tf) for n, (_, tf) in parts.items()}
         for n in ("cup metal", "cup fitting", "cup flange", "cup collet", "cup oring"):
             f[n] = f["cup"]
         # the robot goes c mm lower than the twin's first touch: drawn as the pad giving way (see dry_run.PRESS_ALLOWED)

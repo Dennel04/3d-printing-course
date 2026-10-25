@@ -4,3 +4,5 @@ python-fcl==0.7.0.11
 numpy
 rtree
 matplotlib
+networkx
+cascadio

@@ -5,7 +5,7 @@ Uses the action list cycle.plan_glass() builds for the robot and slot-picker/lay
 the twin geometry (pick: cup on the glass top pressed 1 mm, place on the workstation: glass on the Atom
 screen, output: glass 1 mm above the floor); taught and derived values are both reported.
 --full checks the planned full cycle instead: roles below, workstation step on, all Z derived. Every move is checked as a straight line every 2 mm (assumption: mg400-base streams a
-straight Cartesian path): joint limits, and collisions of the arm, the XIAO mount, the cup and the
+straight Cartesian path): joint limits, and collisions of the arm, the XIAO mount + camera, the cup and the
 carried glass with the rig, holders, the webcam post, glasses in pockets and the battery+Atom stack.
 The cup and the carried glass may touch only their own target pocket during approach/down/lift.
 
@@ -41,7 +41,8 @@ def load_cycle():
 load_cycle()
 
 GLASS = (30.0, 30.0, 2.0)
-ATOM_H, BATTERY_H = 12.9, 21.97          # measurements.md (Atom nominal, battery measured)
+MODELS = twin.HERE.parent / "models"     # shared purchased-part models (3d-print/models, see its README)
+BATTERY_H_MEASURED = 21.97               # measurements.md (Maksim's table, tool not noted)
 STEP = 2.0
 WARN_CLEARANCE = 3.0
 PICK_OFFSET_MAX = (GLASS[0] - twin.CUP_D) / 2   # cup fully on the glass up to this offset (5 mm)
@@ -55,6 +56,35 @@ def box(extents, centre):
     m = trimesh.creation.box(extents=extents)
     m.apply_translation(centre)
     return m
+
+
+def part_model(files, keep=None):
+    """A purchased part from 3d-print/models as one mesh: x/y centred on 0, bottom at z = 0, as in the file
+    (z up = screen / contacts up, the way they sit at the workstation). keep: which bodies of the file to use."""
+    meshes = []
+    for f in files:
+        m = trimesh.load(MODELS / f)
+        meshes += [b for b in m.split(only_watertight=False) if keep is None or keep(b)]
+    m = trimesh.util.concatenate(meshes)
+    lo, hi = m.bounds
+    m.apply_translation((-(lo[0] + hi[0]) / 2, -(lo[1] + hi[1]) / 2, -lo[2]))
+    return m
+
+
+# AtomS3.stl holds the parts side by side (95 mm): the assembled pair (shell + face) is the one at x < 30.
+# Atomic Battery Base = bottom shell + face shell. CAD heights: Atom 12.9 (= nominal), battery 18.0, while the
+# module in measurements.md is 21.97 high; the twin stacks the CAD parts (the 24.10 workstation touch is
+# 4.9 mm below the measured-height stack, ~1 mm below the CAD one). TODO caliper: battery height without Atom.
+ATOM_SHELL = part_model(["m5stack-atoms3/AtomS3.stl"], keep=lambda b: b.bounds[1][0] < 30)
+# The M5Stack file is the plastic shell only: the display is missing and the frame opening (16.1 x 16.1, 45 deg
+# chamfer from the frame top 12.9 down to 12.1) shows the inside. Screen = a dark block filling that opening,
+# top at the chamfer bottom (assumption: real recess not measured), 1.5 mm thick.
+ATOM_SCREEN = trimesh.creation.box(extents=(16.1, 16.1, 1.5))
+ATOM_SCREEN.apply_translation((0, 0, 12.1 - 0.75))
+ATOM = trimesh.util.concatenate([ATOM_SHELL, ATOM_SCREEN])
+BATTERY = part_model(["m5stack-atomic-battery-base/Atomic_Battery_Base_Bottom_Shell.obj",
+                      "m5stack-atomic-battery-base/Atomic_Battery_Base_Face_Shell.stl"])
+ATOM_H, BATTERY_H = float(ATOM.bounds[1][2]), float(BATTERY.bounds[1][2])
 
 
 class Run:
@@ -124,6 +154,8 @@ class Run:
                                     + (f"; taught dx {t['dx']} dy {t['dy']}" if t["dx"] or t["dy"] else ""))
         self.log.append(f"pocket floors z {self.floor['input']:.2f} / {self.floor['workstation']:.2f} / "
                         f"{self.floor['output']:.2f}, Atom top z {self.atom_top:.2f}")
+        self.log.append(f"workstation stack (3d-print/models CAD): battery {BATTERY_H:.2f} + AtomS3 {ATOM_H:.2f} mm; "
+                        f"measured battery {BATTERY_H_MEASURED} would put the Atom {BATTERY_H_MEASURED - BATTERY_H:+.2f} mm higher")
 
     def _world(self, cell):
         return twin.rig_to_world((*twin.cell_model(cell), 0))[:2]
@@ -139,8 +171,9 @@ class Run:
             return
         x, y = self._world(lay["cycle"]["workstation_cell"])
         f = self.floor["workstation"]
-        self.T.scene["battery"] = box((24.04, 24.01, BATTERY_H), (x, y, f + BATTERY_H / 2))
-        self.T.scene["AtomS3"] = box((24, 24, ATOM_H), (x, y, f + BATTERY_H + ATOM_H / 2))
+        self.T.scene["battery"] = BATTERY.copy().apply_translation((x, y, f))
+        self.atom_at = (x, y, f + BATTERY_H)
+        self.T.scene["AtomS3"] = ATOM.copy().apply_translation(self.atom_at)
         self._refresh()
 
     def _refresh(self):

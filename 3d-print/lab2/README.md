@@ -361,6 +361,11 @@ mitte ei muudeta.
 * Denys printis nurga (`veebikaamera-post-v1-nurk`), istub rakise torul hästi. Varasemad Gridfinity-jalaga posti kavandid eemaldati laborist; alles jääb ainult toruotsa lahendus (nurk + ülemine), mida kasutame. Post ei võta enam ruudustikus ruute (F/G −4 … −5 vabad).
 * Järgmiseks: ülemine osa printida, toru 458 mm, kaamera kõrgus ja kaader kogu laua ning robotiga.
 
+**25.10.2026 — Dennel04 (Denys) koos Claude'iga: kaksikus päris komponendimudelid**
+* Tegime: kaksikus (`3d-print/sim`) on töökoha aku ja AtomS3 kastide asemel M5Stacki mudelid (`3d-print/models/`) ning XIAO kinnituses Seeedi XIAO ESP32S3 Sense mudel samas kohas kui `xiao-square-mount-v2.f3d`-s. Kaamera osaleb kokkupõrkekontrollis ja 3D-vaates.
+* Tulemus: CAD-virn (aku 18,0 + Atom 12,9 mm) on 3,97 mm madalam kui mõõdetud aku 21,97 mm-ga. Nüüd on kõik kolm õpetatud punkti kaksiku esimesest puudutusest sama palju madalamal: sisend 1,2, töökoht 1,2, väljund 0,7 mm (enne töökoht 5,1). Kokkupõrkeid pole (`docs/sim_dry_run*.txt`).
+* Lahtine: aku kõrgus nihikuga ilma Atomita (21,97 vs mudel 18,0); kaksikus jääb klaas töökohal oranži hoidiku servale, mitte Atomi ekraanile (oli ka enne, päris robotil töötab) — oranži hoidiku pesa kontroll.
+
 ### Väljundid ja tulemused
 
 **Väljundid**

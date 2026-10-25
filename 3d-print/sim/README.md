@@ -31,14 +31,15 @@ python -m venv .venv
 | Ruudustik → robot | labori `calibration/cells.py` (24.10 kolme ruudu sobitus, +0,87°) | kaksiku lahtrikeskmed vs `cells.py` ≤ 0,06 mm |
 | Hoidikud | labori `layout.json` tüüp → STL (`twin.py` `HOLDER_STL`, praegu Lab 2 detailid); vanade jalgadega hoidik tõuseb taladele (jala 3 mm pikendus, +2,85 mm) | — |
 | Iminapp | välisläbimõõt Ø 22,25 mm (nihik 24.10, `measurements.md`; õpetaja: komplekti napp φ13/φ16), J4 teljest 31,1 mm roboti poole R 33 juures (sobituse nihe, eeldus: robot istub rakises nagu CAD-is), pikkus J4 mootori alt **66,2 mm** | pikkus D-2 puudutusest (Z −150 klaasihoidiku v1 põhjal); kontroll: 23.10 G-1 nurgad jäävad 1,6 mm kalibreerimiskasti v1 põhja kohale |
-| XIAO kinnitus | `camera-mounts/stl/xiao-square-mount-v2.stl` J4 mootori all | — |
+| XIAO kinnitus + kaamera | `camera-mounts/stl/xiao-square-mount-v2.stl` J4 mootori all; selles Seeedi ametlik XIAO ESP32S3 Sense mudel (`../models/xiao-esp32s3-sense/`) täpselt nagu `xiao-square-mount-v2.f3d`-s, Fusionist eksporditud kinnituse koordinaatides: `scene/xiao-esp32s3-sense-in-mount-v2.stl` | — |
+| Aku + AtomS3 töökohal | M5Stacki CAD (`../models/`): Atomic Battery Base (põhi + kate) 18,0 mm, AtomS3 12,9 mm; virn pesa põhjal. M5Stacki failis on ainult plastkorpus (ekraani pole, raami ava 16,1 × 16,1 näitab sisemust) → kaksik lisab tumeda ekraaniploki ava täiteks, pealispind raami faasi põhjas 0,8 mm raami pealt (eeldus, mõõtmata) | mõõdetud akumoodul on 21,97 mm (`measurements.md`) — CAD-virnaga on töökoha 24.10 puudutus 1,2 mm esimesest puudutusest madalamal nagu sisend/väljund (0,7–1,2), mõõdetud kõrgusega oleks vahe 5,1 mm. TODO nihikuga: aku kõrgus ilma Atomita |
 | Kokkupõrked | `python-fcl` täpsed kolmnurkvõrgud (mitte kumerad kestad), `trimesh` | negatiivtestid allpool |
 
 ## Mida dry_run kontrollib
 
 Vaikimisi kontrollitakse seda, mida robot praegu teeks: `layout.json` režiim (`workstation_step`), rollid (võivad olla sama hoidik) ja õpetatud dx/dy/Z; õpetamata Z tuletatakse geomeetriast ning õpetatud ja tuletatud väärtus kirjutatakse kõrvuti. `--full` kontrollib planeeritud täistsüklit (rollid ettepanekupaigutusest, kõik Z tuletatud); `tolerance.py` kasutab täistsüklit.
 
-- iga liikumine sirgjoonena iga 2 mm järel (**eeldus**: `mg400-base` liigub sirgelt): liigesepiirid, käe, XIAO kinnituse, napa ja kantava klaasi (30 × 30 × 2) kokkupõrge rakise, hoidikute, posti, pesades olevate klaaside ning aku + Atomi virnaga;
+- iga liikumine sirgjoonena iga 2 mm järel (**eeldus**: `mg400-base` liigub sirgelt): liigesepiirid, käe, XIAO kinnituse ja kaamera, napa ja kantava klaasi (30 × 30 × 2) kokkupõrge rakise, hoidikute, posti, pesades olevate klaaside ning aku + Atomi virnaga;
 - oma sihtmärki (klaas, Atom, väljundi põhi) võib napp/klaas puudutada ainult lähenemisel ja **mitte sügavamalt kui 1,5 mm** (õpetatud võtmine surub 1 mm);
 - võtmisel: napa nihe klaasi keskelt ≤ 5 mm (Ø 20 napp 30 mm klaasil);
 - vabastamisel: millele klaas jääb (töökohal ainult Atomi ekraanile).
