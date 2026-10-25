@@ -408,7 +408,8 @@ renderer.setAnimationLoop(now => {
   controls.update();
   renderer.render(scene3, camera);
 });
-window.hub = { snap: () => { renderer.render(scene3, camera); return renderer.domElement.toDataURL("image/png"); }, setCam, replay };
+window.hub = { snap: () => { renderer.render(scene3, camera); return renderer.domElement.toDataURL("image/png"); }, setCam, replay,
+  look: (pos, target) => { camera.position.copy(to3(pos)); controls.target.copy(to3(target)); controls.update(); } };
 
 /* ---------------- picker layout -> 3D ---------------- */
 let syncing = false;

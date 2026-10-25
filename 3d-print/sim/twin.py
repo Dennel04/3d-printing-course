@@ -78,6 +78,8 @@ TABLE_Z = -16.72         # table = grid bottom (Denys, 24.10)
 PIPE_D, PIPE_Y, PIPE_Z = 16.0, 110.5, -7.1      # rig pipes (MG 400 rakis.md)
 PIPE_LEN, PIPE_X_FRONT = 670.0, -586.5          # front end 50 mm past the table edge (x -536.5)
 POST_PIPE_X, POST_PIPE_Z0, POST_PIPE_LEN = -555.7, 7.5, 458.0
+# yaw of the post top's opening (+x of its file) in the rig model: towards the grid centre (rig x -265.5, y 0)
+POST_TOP_YAW = math.atan2(0.0 + PIPE_Y, -265.5 - POST_PIPE_X)
 FOOT = 4.65              # socket depth; a deeper foot (old 3 mm extension) stands on the beams
 
 
@@ -289,8 +291,18 @@ class Twin:
             self.seat[h["name"]] = (z0, self._settle(mesh))
             self._add("holder:" + h["name"], mesh)
         if with_post:
-            for part in ("nurk", "ulemine"):
-                mesh = trimesh.load(LAB / f"veebikaamera-post/stl/veebikaamera-post-v1-{part}.stl")
+            mesh = trimesh.load(LAB / "veebikaamera-post/stl/veebikaamera-post-v1-nurk.stl")   # rig coordinates
+            mesh.apply_transform(rig_matrix())
+            self._add("webcam post nurk", mesh)
+            # top holder v2 (Denys 25.10, fusion-tutor veebikaamera-ulemine-v1): own frame, pipe socket axis at
+            # x = y = 0, socket floor z 0.5, clip cradle open towards +x, wedge (kiil) behind. Sits on the pipe end,
+            # opening turned towards the grid centre (as the v1 top: turned by hand on the pipe).
+            top = np.eye(4)
+            top[:3, :3] = trimesh.transformations.rotation_matrix(POST_TOP_YAW, (0, 0, 1))[:3, :3]
+            top[:3, 3] = (POST_PIPE_X, -PIPE_Y, POST_PIPE_Z0 + POST_PIPE_LEN - 0.5)
+            for part in ("ulemine", "kiil"):
+                mesh = trimesh.load(LAB / f"veebikaamera-post/stl/veebikaamera-post-v2-{part}.stl")
+                mesh.apply_transform(top)
                 mesh.apply_transform(rig_matrix())
                 self._add("webcam post " + part, mesh)
             # vertical 16 mm pipe between the elbow and the top part (tools/fusion-mcp/s_post_v4.py: axis
