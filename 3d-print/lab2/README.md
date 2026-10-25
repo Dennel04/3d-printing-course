@@ -360,6 +360,10 @@ mitte ei muudeta.
 * Failid ja versioonid: `glass-input-holder/src|stl|3mf/glass-input-holder-v3.*`; v1 ja v2 alles.
 * Järgmiseks: printida v3, kontrollida istumist ja loksu ruutudes D/E −4/−5, panna 4 klaasi pesadesse; pärast ümberpanekut kontrollida klaasi sisendi õpetatud punkti (pick −152).
 
+**25.10.2026 — veebikaamera post: üks versioon, nurk prinditud**
+* Denys printis nurga (`veebikaamera-post-v1-nurk`), istub rakise torul hästi. Varasemad Gridfinity-jalaga posti kavandid eemaldati laborist; alles jääb ainult toruotsa lahendus (nurk + ülemine), mida kasutame. Post ei võta enam ruudustikus ruute (F/G −4 … −5 vabad).
+* Järgmiseks: ülemine osa printida, toru 458 mm, kaamera kõrgus ja kaader kogu laua ning robotiga.
+
 ### Väljundid ja tulemused
 
 **Väljundid**
@@ -382,7 +386,3 @@ mitte ei muudeta.
 * Mida me teeksime teisiti: TODO — complete after physical fit and refit tests.
 * Mida järgmine labor peaks enne alustamist teadma: TODO — complete after the
   holders, camera mounts and robot target points are physically verified.
-
-**25.10.2026 — veebikaamera post: üks versioon, nurk prinditud**
-* Denys printis nurga (`veebikaamera-post-v1-nurk`), istub rakise torul hästi. Varasemad Gridfinity-jalaga posti kavandid eemaldati laborist; alles jääb ainult toruotsa lahendus (nurk + ülemine), mida kasutame. Post ei võta enam ruudustikus ruute (F/G −4 … −5 vabad).
-* Järgmiseks: ülemine osa printida, toru 458 mm, kaamera kõrgus ja kaader kogu laua ning robotiga.
