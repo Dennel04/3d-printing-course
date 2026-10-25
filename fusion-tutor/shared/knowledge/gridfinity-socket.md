@@ -84,3 +84,16 @@ Checks after building:
 - Why `valjundhoidik-v1` does not go in to the end is not proven yet: check
   support remnants under the base, elephant foot on the first layer (caliper:
   the foot bottom should be ~35.8 mm), where it stops.
+
+## Converting an existing holder to the standard foot (done 25.10 on glass-input-holder-v3)
+
+Author: Dennel04 (with Claude), 2026-10-25.
+1. Suppress the old foot features (sketches, extrudes, fillets, chamfers): don't delete, keep the history.
+2. Outer size: `42 * n - 0.5` only. The team's first holders also subtracted `grid_clearance` (83.2 instead of 83.5).
+3. **Check that the outer sketch is tied to the origin.** v2's rectangle had only two dimensions,
+   so a larger size grew to one side (-41.9 .. +41.6). Fix: construction diagonal, midpoint
+   constraint to the sketch origin. Measure extents with `pointContainment`, not
+   `boundingBox` (it is loose).
+4. `add_std_feet(root, [(+-21, +-21)], foot_top_z)` with `foot_top_z` = the body bottom; check
+   half-widths 17.85 / 18.60 / 20.70 near the bottom / middle / top.
+5. 2 x 2 sliced feet down without supports: the 45 deg chamfers print by themselves.

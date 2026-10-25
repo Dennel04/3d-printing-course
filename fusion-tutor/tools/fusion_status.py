@@ -18,7 +18,8 @@ def main():
     try:
         st = hook.Fusion().state()
     except Exception as e:
-        print(f"Fusion: NOT ANSWERING ({e}): a modal dialog in Fusion, Fusion closed or MCP off")
+        print(f"Fusion: NOT ANSWERING ({e}): a modal dialog in Fusion, Fusion closed or MCP off"
+              " -> python tools/start_fusion.py (starts it if closed)")
     else:
         cmd = st["cmd"] or "-"
         idle = "idle" if st["cmd"] in hook.IDLE else "COMMAND ACTIVE"

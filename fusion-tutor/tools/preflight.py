@@ -119,7 +119,8 @@ def main():
         ms = int((time.time() - t0) * 1000)
     except Exception as e:
         check("fail", "Fusion", f"not answering ({e})",
-              "Start Fusion; Preferences > General > API > Fusion MCP Server; "
+              "python tools/start_fusion.py (starts Fusion if closed, waits for MCP); "
+              "else Preferences > General > API > Fusion MCP Server; "
               "if Fusion is open, close the dialog in it (save?/message)")
     else:
         idle = s["cmd"] in hook.IDLE

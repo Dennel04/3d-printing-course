@@ -133,9 +133,12 @@ shows Fusion's state and the latest hook actions at any time.
 ## Fusion MCP
 
 Server: `.mcp.json` -> `http://127.0.0.1:27182/mcp`. Enable it in Fusion:
-Preferences > General > API > Fusion MCP Server. If MCP doesn't answer, say
-so and ask the student to enable it or send a screenshot; don't guess about
-the model blindly. Read `shared/knowledge/fusion-mcp-tips.md` before working
+Preferences > General > API > Fusion MCP Server. If MCP doesn't answer, first
+run `python tools/start_fusion.py` yourself: Fusion is often simply closed
+(it is installed for all users, so it is not under LocalAppData; the script
+starts it from the Start menu and waits for MCP). Only if Fusion runs and
+still doesn't answer, ask the student to close the dialog / enable MCP or
+send a screenshot; don't guess about the model blindly. Read `shared/knowledge/fusion-mcp-tips.md` before working
 with Fusion.
 
 Tools:
