@@ -173,20 +173,30 @@ function renderTests(tests) {
     if (!el) {
       el = document.createElement("article");
       el.className = "test"; el.dataset.test = key;
-      el.innerHTML = `<h3></h3><button class="ghost run">Run</button><p class="about"></p>
+      el.innerHTML = `<h3></h3><span class="btns"><button class="ghost watch" hidden>Watch</button><button class="ghost run">Run</button></span><p class="about"></p>
         <div class="res"><span class="chip"></span><span class="sum"></span></div>
         <details><summary>Output</summary><pre></pre></details>`;
       el.querySelector(".run").onclick = () => runTest(key);
+      if (key === "dry_run" || key === "dry_run_full") {
+        const w = el.querySelector(".watch");
+        w.hidden = false;
+        w.title = "Play the planned cycle in the 3D view with this check's colours on the timeline";
+        w.onclick = () => { $("#viewReplay").click(); replay.t = 0; replay.playing = true; setCam("iso"); };
+      }
       box.appendChild(el);
     }
     el.querySelector("h3").textContent = t.title;
     el.querySelector(".about").textContent = t.about;
     const chip = el.querySelector(".chip");
     chip.className = "chip " + t.status; chip.textContent = t.status;
-    el.querySelector(".sum").textContent = t.summary + (t.seconds != null ? `  ·  ${t.seconds} s at ${t.finished}` : "");
+    const running = t.status === "running";
+    const el_s = running && t.started ? `${Math.max(0, Math.round(Date.now() / 1000 - t.started))} s · ` : "";
+    el.querySelector(".sum").textContent = running ? el_s + t.summary.replace(/^running \d+ s · /, "")
+      : t.summary + (t.seconds != null ? `  ·  ${t.seconds} s at ${t.finished}` : "");
     el.querySelector(".run").disabled = t.status === "running";
     const pre = el.querySelector("pre");
-    if (pre.textContent !== t.output) pre.textContent = t.output || "(no output yet)";
+    if (pre.textContent !== t.output) { pre.textContent = t.output || "(no output yet)"; if (running) pre.scrollTop = pre.scrollHeight; }
+    if (running) el.querySelector("details").open = true;
     anyRunning ||= t.status === "running";
     anyBad ||= t.status === "fail" || t.status === "warn";
   }
@@ -215,6 +225,18 @@ async function pollTests() {
     if (tests.export.status === "pass" && tests.export.finished !== scene.builtAt) { scene.builtAt = tests.export.finished; loadScene(); }
   } catch (e) { testTimer = setTimeout(pollTests, 3000); }
 }
+
+$("#simRun").onclick = async () => {
+  const st = $("#simRunState");
+  if (ui.mode !== "sim") { st.textContent = "Switch to Simulation first: this would move the real arm."; return; }
+  try {
+    await api("/hub/glasses/reset", {});
+    await api("/api/speed", { ratio: Math.min(30, ui.state?.limits?.max_speed_ratio || 30) });
+    await api("/api/cycle/run", { glasses: [1, 2, 3, 4], round: 0 });
+    $("#viewLive").click(); setCam("iso");
+    st.textContent = "Running: watch Live arm. STOP in the top bar ends it.";
+  } catch (e) { st.textContent = e.message; }
+};
 
 /* ---------------- camera ---------------- */
 $("#camToggle").onclick = () => {

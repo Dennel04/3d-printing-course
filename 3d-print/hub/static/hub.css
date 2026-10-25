@@ -139,6 +139,8 @@ h1 { margin: 0; font-size: 20px; font-weight: 700; line-height: 1; }
 
 .tests { display: flex; flex-direction: column; gap: 10px; }
 .test { border: 1px solid var(--line); border-radius: var(--r); padding: 10px 12px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; background: var(--bg); }
+.test .btns { display: flex; gap: 6px; }
+.test.simrun { border-color: var(--sim); }
 .test h3 { margin: 0; font: 600 16px var(--display); letter-spacing: .03em; }
 .test .about { grid-column: 1 / -1; color: var(--muted); font-size: 12px; margin: 0; }
 .test .res { grid-column: 1 / -1; display: flex; gap: 8px; align-items: center; font-size: 13px; min-width: 0; }

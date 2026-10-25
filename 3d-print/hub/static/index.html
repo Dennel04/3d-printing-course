@@ -116,6 +116,12 @@
         <p class="lead">Twin checks run on the current layout.json, calibration and part files.</p>
         <button id="runAll">Run all</button>
       </div>
+      <article class="test simrun">
+        <h3>Watch the cycle on the simulated robot</h3><button id="simRun">Run 4 glasses</button>
+        <p class="about">The checks below are calculations and do not move anything. This runs the real picker cycle
+          (same code as on the robot) on the simulated MG400: watch it in Live arm. Speed 30 %, glasses reset first.</p>
+        <div class="res"><span class="sum" id="simRunState"></span></div>
+      </article>
       <div id="testList" class="tests"></div>
     </div>
 

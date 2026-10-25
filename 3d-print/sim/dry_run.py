@@ -87,6 +87,14 @@ BATTERY = part_model(["m5stack-atomic-battery-base/Atomic_Battery_Base_Bottom_Sh
 ATOM_H, BATTERY_H = float(ATOM.bounds[1][2]), float(BATTERY.bounds[1][2])
 
 
+class EchoList(list):
+    """A report that also prints each line as it is added (progress for long runs)."""
+
+    def append(self, line):
+        super().append(line)
+        print(line, flush=True)
+
+
 class Run:
     def __init__(self, glasses, full=False):
         lay = copy.deepcopy(twin.json.loads((twin.LAB / "slot-picker" / "layout.json").read_text(encoding="utf-8")))
@@ -243,7 +251,7 @@ class Run:
         pos = None
         carried = None
         last_allowed = set()
-        report = list(self.log)
+        report = EchoList(self.log) if getattr(self, "echo", False) else list(self.log)
         for g in self.glasses:
             target_of = {"input": [f"glass {g}", "holder:" + inp["name"]],
                          "workstation": ["AtomS3", "holder:" + cycle.holder(lay, "workstation")["name"]],
@@ -357,9 +365,11 @@ def main():
     twin.use_lab(a.lab)
     load_cycle()
     run = Run([int(v) for v in a.glasses.split(",")], full=a.full)
+    run.echo = True                      # lines appear while the run goes on
+    for line in run.log:
+        print(line, flush=True)
     rep = run.run()
     text = "\n".join(rep)
-    print(text)
     (twin.LAB / "docs" / ("sim_dry_run_full.txt" if a.full else "sim_dry_run.txt")).write_text(text + "\n", encoding="utf-8")
 
 

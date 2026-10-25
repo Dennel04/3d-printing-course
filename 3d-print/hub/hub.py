@@ -37,9 +37,9 @@ MAX_STEP = {"cart": 10.0, "joint": 10.0}
 # twin checks behind the Tests tab: (title, script, args, what it answers)
 TESTS = {
     "dry_run": ("Dry run: layout as the robot runs it", "dry_run.py", [],
-                "Every move of the current layout.json cycle against the arm, holders and glasses"),
+                "Calculation, the arm does not move: every move of the current layout.json cycle against the arm, holders and glasses"),
     "dry_run_full": ("Dry run: planned full cycle", "dry_run.py", ["--full"],
-                     "Input → workstation → output with derived heights"),
+                     "Calculation, the arm does not move: input → workstation → output with heights from the CAD"),
     "refit": ("Refit rounds 2-5", "refit_sim.py", [],
               "Holders put back anywhere inside their foot play (±1 mm), 4 glasses per round"),
     "tolerance": ("Calibration error tolerance", "tolerance.py", [],
@@ -116,7 +116,7 @@ class Tests:
         with self.lock:
             if self.state[name]["status"] == "running":
                 raise ValueError(f"{name} is already running")
-            self.state[name].update(status="running", summary="running…", output="")
+            self.state[name].update(status="running", summary="starting…", output="", started=time.time())
         threading.Thread(target=self._run, args=(name,), daemon=True).start()
 
     def _run(self, name):
@@ -126,14 +126,23 @@ class Tests:
             cmd, cwd = [sys.executable, "-m", "unittest", "-v", "test_hub"], HERE / "tests"
         else:
             cmd, cwd = [sys.executable, script, *args, "--lab", str(self.lab)], SIM
+        cmd.insert(1, "-u")          # unbuffered: the page shows each line as it comes
+        lines = []
         try:
-            p = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, timeout=1800,
-                               encoding="utf-8", errors="replace")
-            out, code = p.stdout + ("\n" + p.stderr if p.stderr.strip() else ""), p.returncode
-            if name == "hub":   # unittest reports on stderr
-                out = p.stderr + p.stdout
-        except subprocess.TimeoutExpired:
-            out, code = "timed out after 30 min", -1
+            p = subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
+                                 encoding="utf-8", errors="replace")
+            for line in p.stdout:
+                lines.append(line.rstrip("\n"))
+                with self.lock:
+                    self.state[name].update(output="\n".join(lines[-400:]),
+                                            summary=f"running {time.time() - t0:.0f} s · {lines[-1][:110]}")
+                if time.time() - t0 > 1800:
+                    p.kill()
+                    lines.append("timed out after 30 min")
+            code = p.wait()
+            out = "\n".join(lines)
+        except OSError as exc:
+            out, code = f"could not start: {exc}", -1
         status, summary = verdict(name, out, code)
         with self.lock:
             self.state[name].update(status=status, summary=summary, output=out[-20000:],
