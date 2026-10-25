@@ -26,8 +26,8 @@ while a sequence runs.
 
 **One motion lock for the whole hub.** Every request that can move the arm (jog, picker drive, go above, move
 glass, cycle, probe) is refused by the server until the **Motion** switch at the top of the Jog tab is on.
-Switching robots turns it off; on the real robot it turns off by itself after 2 minutes without a motion request
-(the switch shows the countdown). A jog pressed while it is off makes the switch blink. STOP / Esc always works.
+It stays on until it is switched off, the robot is switched or the hub restarts. A jog pressed while it is
+off makes the switch blink. STOP / Esc always works.
 
 **Layout.** Drag the bar between the 3D view and the panel to resize it (double-click resets, arrow keys
 nudge, the arrow collapses the panel; the size is remembered in this browser). The view cube in the 3D corner

@@ -92,7 +92,6 @@ def verdict(name, out, code):
 # every request that can move the arm; refused while motion is locked (one lock for the whole hub)
 MOTION_PATHS = {"/api/goto", "/api/transfer", "/api/cycle/above", "/api/cycle/run", "/api/jog", "/api/probe",
                 "/hub/jog"}
-REAL_ARM_IDLE_S = 120     # Real robot: motion locks itself after this long without a motion request
 
 
 class Robots:
@@ -103,7 +102,7 @@ class Robots:
         self.real, self.sim, self.mode_file = real, sim, mode_file
         saved = mode_file.read_text().strip() if mode_file and mode_file.is_file() else ""
         self._mode = saved if saved in ("sim", "real") else "sim"
-        self.armed, self.last_motion = False, 0.0
+        self.armed = False
 
     @property
     def mode(self):
@@ -126,24 +125,13 @@ class Robots:
             pass          # server down or robot off: the top bar shows it and offers Connect
 
     def arm(self, on):
-        self.armed, self.last_motion = bool(on), time.time()
-
-    def _expire(self):
-        if self.armed and self.mode == "real" and time.time() - self.last_motion > REAL_ARM_IDLE_S:
-            self.armed = False       # pendant practice: no silent standing permission on the real arm
+        self.armed = bool(on)
 
     def motion_allowed(self):
-        self._expire()
-        if self.armed:
-            self.last_motion = time.time()
         return self.armed
 
     def arm_state(self):
-        self._expire()
-        left = None
-        if self.armed and self.mode == "real":
-            left = max(0, round(REAL_ARM_IDLE_S - (time.time() - self.last_motion)))
-        return {"armed": self.armed, "locks_in_s": left}
+        return {"armed": self.armed}
 
     @property
     def current(self):

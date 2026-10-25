@@ -87,7 +87,7 @@ function renderState(s) {
   const r = s.robot || {};
   const pill = $("#robotPill");
   const name = r.mode_name || "unknown";
-  pill.textContent = (s.mode === "sim" ? "SIM · " : "") + name + (r.pump_mode && r.pump_mode !== "off" ? " · pump " + r.pump_mode : "");
+  pill.textContent = (s.mode === "sim" ? "SIM · " : "") + name;
   pill.className = "pill " + (!r.reachable ? "bad" : r.error || (r.alarm_ids || []).length ? "bad" : r.enabled && r.servo_active !== false ? "ok" : "warn");
   const sp = $("#speed");
   sp.max = s.limits.max_speed_ratio;
@@ -105,13 +105,7 @@ function renderState(s) {
   ui.armed = !!m.armed;
   const arm = $("#btnArm");
   arm.setAttribute("aria-pressed", String(ui.armed));
-  const mmss = v => `${Math.floor(v / 60)}:${String(v % 60).padStart(2, "0")}`;
-  $("#armText").textContent = !ui.armed ? "Motion off" : m.locks_in_s != null ? `Motion on · ${mmss(m.locks_in_s)}` : "Motion on";
-  const ll = $("#lockLine");
-  ll.textContent = ui.armed
-    ? (s.mode === "real" ? "Jog, picker and cycle can move the real arm. Turns off by itself after 2 min without motion." : "Jog, picker and cycle move the simulated arm.")
-    : "Safety switch: while it is off, nothing on this page can move the arm (STOP always works). Click to turn on.";
-  ll.classList.toggle("armed", ui.armed);
+  $("#armText").textContent = ui.armed ? "Motion on" : "Motion off";
   // the server is up but has lost the robot (cable, power, e-stop): its old fault flags are stale, offer Connect
   const offline = r.reachable && r.connected === false;
   const fault = !offline && (r.error || (r.alarm_ids || []).length);
@@ -180,7 +174,7 @@ async function jogOnce(axis, sign, step = ui.step) {
     return true;
   } catch (e) {
     say(e.message, "bad");
-    if (!ui.armed) { const sw = $("#motionSwitch"); sw.classList.remove("nudge"); void sw.offsetWidth; sw.classList.add("nudge"); }
+    if (!ui.armed) { const sw = $("#btnArm"); sw.classList.remove("nudge"); void sw.offsetWidth; sw.classList.add("nudge"); }
     return false;
   }
 }
@@ -199,7 +193,10 @@ $$("[data-step]").forEach(b => b.onclick = () => {
   ui.step = b.dataset.step === "hold" ? "hold" : +b.dataset.step;
   setChecked($$("[data-step]"), x => x.dataset.step === b.dataset.step);
 });
-$$("[data-pump]").forEach(b => b.onclick = () => api("/api/pump", { mode: b.dataset.pump }).catch(e => say(e.message, "bad")));
+$$("[data-pump]").forEach(b => b.onclick = () => {
+  $$("[data-pump]").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  api("/api/pump", { mode: b.dataset.pump }).catch(e => say(e.message, "bad"));
+});
 
 const KEYMAP = { ArrowUp: ["x", 1], ArrowDown: ["x", -1], ArrowLeft: ["y", 1], ArrowRight: ["y", -1],
                  PageUp: ["z", 1], PageDown: ["z", -1], q: ["r", 1], e: ["r", -1] };

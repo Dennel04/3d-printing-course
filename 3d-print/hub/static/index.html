@@ -94,16 +94,14 @@
     </nav>
 
     <div class="tab" id="tab-jog">
-      <div class="motion-switch" id="motionSwitch">
-        <button class="arm" id="btnArm" aria-pressed="false">
-          <span class="lock" aria-hidden="true"></span><span id="armText">Motion off</span></button>
-        <p class="lockline" id="lockLine"></p>
-      </div>
       <div class="row between">
         <div class="seg small" role="radiogroup" aria-label="Jog space">
           <button id="spaceCart" data-space="cart">Cartesian</button>
           <button id="spaceJoint" data-space="joint">Joint</button>
         </div>
+        <button class="arm" id="btnArm" aria-pressed="false"
+          title="Safety switch: while it is off nothing on this page moves the arm (STOP always works). Turns off when the robot is switched.">
+          <span class="lock" aria-hidden="true"></span><span id="armText">Motion off</span></button>
       </div>
       <div class="steps" role="radiogroup" aria-label="Step">
         <span class="label">Step</span>
