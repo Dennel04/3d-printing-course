@@ -31,6 +31,7 @@ Wi-Fi füüsiline toimimine ja station PC võrgust ligipääs, kaablite marsruut
 
 - [ ] `docs/layout.md`: töövoog, ruutude paigutus ja skeem mõõdetud laua järgi.
   - 24.10.26: paigutus otsustatud (variant B, kaksikus kontrollitud) ja kirjas [`docs/layout.md`](docs/layout.md) koos skeemiga. Avatud: hoidikud füüsiliselt uutesse ruutudesse, AtomS3 nihikuga, veebikaamera posti lõplik koht.
+  - 25.10.26 seis: klaasi sisend (D/E −4/−5), töökoht (C±1) ja väljund (D/E +4/+5) on paigutuse B ruutudes ja õpetatud — ring 1 sõideti nendega (24.10.26 ~19:00 kirje). Veebikaamera post on laua serval rakise toru otsas, ruudustikust väljas (25.10.26 kirje). Avatud: AtomS3 sisendi (E/F −1/−2) ja kalibreerimiskasti (F+2) paigaldus pole eraldi kirjas; AtomS3 nihikuga.
 - [x] 1 x 1 Gridfinity kalibreerimishoidik testitud ruudustikus ja robotiga.
   - 24.10.26: 1 × 1 kalibreerimiskast `gridfinity-calibration` prinditi uuesti standardse Gridfinity jalaga (generaatori profiil) ja see on nüüd meie kalibreerimise standard. Istub ruudustikus hästi ega loksu; kontrollitud robotiga ruudus C−2: Z puudutus põhjal −155,0, neli sisenurka → keskpunkt 253,81 / 68,46, napp risti keskel 253,94 / 68,30 (kasutusel `calibration/cells.py`). Andmed: [`docs/calibration_c-2.csv`](docs/calibration_c-2.csv), [`docs/measurements.md`](docs/measurements.md).
   - 23.10.26 otsus: keskpunkt leitakse iminapaga hoidiku nelja sisenurga kaudu (nelja punkti keskmine); napa raadius taandub sümmeetria tõttu välja ja lisaks saame ruudustiku pöördenurga. Protseduur: [`docs/test-procedure.md`](docs/test-procedure.md) A1, tabel: [`docs/measurements.md`](docs/measurements.md).
@@ -45,7 +46,9 @@ Wi-Fi füüsiline toimimine ja station PC võrgust ligipääs, kaablite marsruut
   - 23.10.26: heade väljund modelleeritud — `valjundhoidik/src/valjundhoidik-v1.f3d`, `valjundhoidik/stl/valjundhoidik-v1.stl`. Alus: 2 × 2 välismõõt 83,2 × 83,2 mm ja Gridfinity jalad; nelja pesa ja vaheseinte asemel üks lahtine kast. Uued parameetrid: põhi `out_floor_thickness = 2,5 mm`, õõne sügavus `out_cavity_depth = 14 mm`, sein `out_wall_thickness = 2,5 mm`, sisenurga raadius `4 mm`, sissejuhtiv faas ülaservas `out_lead_in = 2 mm`. Kõrgus ilma jalata 16,5 mm, jalaga 24,15 mm (alla 60 mm piiri). Sisemus ~78 × 78 mm, 4 klaasi mahuvad kõrvuti. 3MF ja füüsiline kontroll: TODO.
   - 23.10.26 print ette valmistatud: `valjundhoidik/3mf/valjundhoidik-v1.3mf` (PrusaSlicer). Prusa CORE One HF0.4, `0.20mm SPEED`, Prusament PLA, täide 15 % grid, 2 perimeetrit, jalad all. Orgaanilised toed ainult alusplaadilt: korpuse alumine serv ulatub jalgadest ~2,9 mm välja ja see pind toetub ruudustikule, nii et ta peab jääma sirge. Ilma tugedeta 46 min / 33,6 g, tugedega **1 h 7 min / 37,7 g** (valitud). Pikim mõõt 83,2 mm < 150 mm, seega brim'i ei ole vaja. Füüsiline kontroll: TODO.
   - 24.10.26: `valjundhoidik-v1` prinditud (2 × 2, üks lahtine kast ilma vaheseinteta). Füüsiline kontroll: hoidik istub ruudustikus hästi (jalad v2 parandusega ei kiilu). Klaasi panek robotiga ja pesade mõõdud nihikuga: TODO.
+  - 25.10.26 seis: klaasi panek robotiga heade väljundisse tehtud — ring 1, 4 / 4 klaasi D/E +4/+5-sse ([`docs/refit_test.csv`](docs/refit_test.csv)). Töökoht C+1 kasutusel. Praagi koht (B±1) on paigutuses määratud, kuid robotiga pole sinna midagi pandud ega punkti õpetatud.
 - [ ] Iga pesa mõõt ja roboti sihtpunkt dokumenteeritud ruudu ning nihkega.
+  - 25.10.26 seis: sihtpunktid ruut + nihe + Z on [`docs/layout.md`](docs/layout.md) tabelis klaasi sisendi, töökoha C+1 ja väljundi kohta. Avatud: AtomS3 sisendi ja praagi sihtpunktid, prinditud pesade nihikumõõdud (praegu ainult CAD-mõõdud).
 - [ ] Klaasiga tehtud viis korduskatset ja tulemused failis `docs/refit_test.csv`.
   - 24.10.26: **ring 1 tehtud, 4 / 4 klaasi** (sisend D/E −4/−5 → töökoht C+1 AtomS3 peal → väljund D/E +4/+5, 10 %), Denys kinnitas. Kaadrid `docs/photos/cycle-r1-*.jpg`. Järgmiseks: hoidikud välja ja tagasi, ringid 2–5 ilma ümberõpetamiseta.
 - [x] XIAO ESP32S3 Sense kaamera kinnitus ning valitud ja katsetatud toide.
@@ -67,7 +70,9 @@ Wi-Fi füüsiline toimimine ja station PC võrgust ligipääs, kaablite marsruut
     ![veebikaamera-post-v1 nurk altpoolt](docs/photos/veebikaamera-post-v1-under.png)
 
 - [ ] `docs/bom.md` sisaldab iga tellitava rea põhjendust.
+  - 25.10.26: kõigil ridadel on põhjendus; lisatud 16 mm vertikaalne toru ja 1,75 mm filamenditihvt, toite rida uuendatud (USB-C kaabel valitud). Kogused ja olemasolu vajavad meeskonna kinnitust.
 - [ ] Iga prindi lähtefail, STL ja 3MF on versioonitud.
+  - 25.10.26 kontroll (prinditud detailid): `atoms3-input-holder-v1`, `ready-parts-input-holder-v1`, `valjundhoidik-v1`, `xiao-square-mount-v1` ja `-v2` — f3d, STL, 3MF olemas. `glass-input-holder` ja `gridfinity-calibration` — failid olemas, kuid versiooninumbrita (v3 nimetati 25.10.26 ümber, v1/v2 eemaldati kaustast; alles git-ajaloos). `veebikaamera-post-v1` — f3d ja kaks STL-i, **3MF puudub** (nurk prinditud 25.10.26); ülemise osa viilutatud fail on ainult `fusion-tutor/people/Dennel04/models/`. `valjundhoidik-v1` f3d/STL kirjutati 23.10.26 üle (jala parandus, kommit `175b000`) ilma uue versiooninimeta.
 - [ ] Arenduspäevik täidetud; esitamisel lisatud tag `3d-print-lab2`.
 
 ## Füüsilise töö fototõendid — 24.10.2026
@@ -159,6 +164,16 @@ Kõigi nende olek on `TODO — waiting for physical test`.
 - [`docs/bom.md`](docs/bom.md) — kinnitamist vajav komponentide nimekiri.
 - [`../sim/`](../sim/README.md) — töökoha digitaalne kaksik (ühine kõigile laboritele): ulatus- ja min-Z kaart, kalibreerimiskoha kontroll, klaasitsükli kuivkäivitus, kalibreerimisvea taluvus.
 
+25.10.2026 täiendus (failid, millele seni README-st viidet polnud):
+
+- [`slot-picker/`](slot-picker/README.md) — veebiaken roboti juhtimiseks ruudu kaupa, paigutus [`slot-picker/layout.json`](slot-picker/layout.json) ja klaasitsükkel [`slot-picker/cycle.py`](slot-picker/cycle.py); Z-proovide kaadrid kaustas `slot-picker/probes/`.
+- [`calibration/cells.py`](calibration/cells.py) (ruudu keskpunkt roboti X/Y-s) ja [`calibration/jog.py`](calibration/jog.py) (väike samm `mg400-base` serveri kaudu).
+- [`tool-camera/`](tool-camera/capture.py) — XIAO USB diagnostika: püsivara [`tool-camera/firmware/`](tool-camera/firmware/platformio.ini) ja `capture.py`.
+- Kalibreerimise ja puudutuste toorandmed: [`docs/calibration_g-1_corners.csv`](docs/calibration_g-1_corners.csv), [`docs/calibration_c-2.csv`](docs/calibration_c-2.csv), [`docs/glass_holder_touch.csv`](docs/glass_holder_touch.csv) (D−2 pesa põhja puudutus 24.10.26).
+- Kaksiku tulemused Lab 2 kohta: [`docs/sim_dry_run.txt`](docs/sim_dry_run.txt), [`docs/sim_dry_run_full.txt`](docs/sim_dry_run_full.txt), [`docs/sim_reach.csv`](docs/sim_reach.csv), [`docs/sim_refit.txt`](docs/sim_refit.txt), [`docs/sim_tolerance.txt`](docs/sim_tolerance.txt).
+- [`docs/dobot-capture/capture.ps1`](docs/dobot-capture/capture.ps1) — `pktmon` võrguliikluse salvestus PC ↔ MG400, kui DobotLink / Studio Pro lülitab roboti API-režiimi (lisatud kommitis `326034c`, vt arenduspäevik 25.10.2026 korrastus).
+- [`../models/`](../models/README.md) — ostetud komponentide mudelid (AtomS3, aku, XIAO, veebikaamera).
+
 ## CAD-failid
 
 - `src/gridfinity-tray-v1.scad` - nelja pesaga varasem alustusmudel, mille lihtsustatud jalg ei vasta dokumenteeritud Gridfinity profiilile. Seda versiooni ei tohi printida ega kasutada uute hoidikute alusena.
@@ -188,6 +203,7 @@ Kõigi nende olek on `TODO — waiting for physical test`.
 - `ready-parts-input-holder/src/ready-parts-input-holder-v1.f3d`, `ready-parts-input-holder/stl/ready-parts-input-holder-v1.stl`, `ready-parts-input-holder/3mf/ready-parts-input-holder-v1.3mf` - ReadyParts sisendhoidiku Fusioni fail ja ekspordid; mõõtude ning füüsilise sobivuse kinnitus: `TODO — waiting for physical test`.
 - `glass-input-holder/src/glass-input-holder.f3d`, `glass-input-holder/stl/glass-input-holder.stl`, `glass-input-holder/3mf/glass-input-holder.3mf` - klaasi sisendhoidik 2 × 2: neli pesa 30,6 × 30,6 mm (30 mm klaas + 0,3 mm külje kohta), sügavus 1,5 mm, keskmed ±21 mm; välismõõt 83,5 × 83,5 mm (`42 × 2 − 0,5`); **standardne Gridfinity jalg** nagu kalibreerimiskastil (generaatori `BASE_PROFILE`, 4,75 mm). Kõrgus jalaga 10,25 mm. Print: Prusa CORE One HF0.4, `0.20mm SPEED`, Prusament PLA, jalad all, ilma tugedeta, 42 min, 28,2 g. Prinditud ja kontrollitud 25.10.26: istub ruudustikus täpselt.
 - `valjundhoidik`: jalg 35,78 mm (R 1,5 mm, 0,5 mm faas all), v1 failid üle kirjutatud, printimata.
+  - 25.10.26 parandus: „printimata“ pärineb 23.10.26 olekust. `valjundhoidik-v1` prinditi 24.10.26 ja kasutati ringis 1 (vt kontrollnimekiri ja [`docs/refit_test.csv`](docs/refit_test.csv)).
 
 Need lähtefailid ei ole veel füüsiliselt sobivaks kinnitatud. Iga print vajab PrusaSlicerist eksporditud STL-i ja 3MF-i, uue versiooninime ning mõõtmistulemuste dokumenteerimist.
 
@@ -365,6 +381,15 @@ mitte ei muudeta.
 * Tulemus: CAD-virn (aku 18,0 + Atom 12,9 mm) on 3,97 mm madalam kui mõõdetud aku 21,97 mm-ga. Nüüd on kõik kolm õpetatud punkti kaksiku esimesest puudutusest sama palju madalamal: sisend 1,2, töökoht 1,2, väljund 0,7 mm (enne töökoht 5,1). Kokkupõrkeid pole (`docs/sim_dry_run*.txt`).
 * Lahtine: aku kõrgus nihikuga ilma Atomita (21,97 vs mudel 18,0); kaksikus jääb klaas töökohal oranži hoidiku servale, mitte Atomi ekraanile (oli ka enne, päris robotil töötab) — oranži hoidiku pesa kontroll.
 
+**25.10.2026 — r4imps (Raimo) koos Claude'iga: repo korrastus enne kaitsmist**
+* Tegime: kontrollisime kontrollnimekirja tõendeid, linke ja failide versioone; harus `organize-2026-10-25`. Füüsilisi katseid, mõõtmisi ega CAD-muudatusi ei tehtud; mõõdetud väärtusi, CSV-sid ja fotosid ei muudetud.
+* Päritolu, mis seni puudus:
+  * Kommit `326034c` (Denys, 24.10.26 19:24, „wip … saved before shutdown“) lisas veebikaamera posti v4 (f3d, nurk ja ülemine STL, kolm renderit) ning [`docs/dobot-capture/capture.ps1`](docs/dobot-capture/capture.ps1). Kommiti sõnum ütleb, et failid tehti teistes Claude'i sessioonides ega olnud üle vaadatud. Kommitis `b13f5c1` (25.10.26) nimetati v4 ümber `veebikaamera-post-v1`-ks (nurga STL ja renderid muutmata, f3d ja ülemise STL muudetud); see on praegune toruotsa post.
+  * Kommiti `235ee8e` kaheksa fotot (24.10.2026 fotode kirje) on Nikita omad; kommiti autor on Nikikikl.
+  * 25.10.26 eemaldati kaustadest vanad versioonid: `glass-input-holder-v1/-v2`, `gridfinity-calibration-v1`, `xiao-square-mount-v3…v5` (v3 sai nimeks v1) ja veebikaamera posti v2–v4 Gridfinity-jalaga kavandid; `glass-input-holder-v3` ja `gridfinity-calibration-v3` said versiooninumbrita nime. Kõik on alles git-ajaloos (`8107cc9`, `b66a58f`, `f37e300`, `b13f5c1`).
+* Failid: `README.md`, `docs/layout.md`, `docs/bom.md`.
+* Järgmiseks: vt kontrollnimekirja 25.10.26 seisumärkmed; ringid 2–5, veebikaamera posti 3MF ja ülemine osa, pesade nihikumõõdud, tag `3d-print-lab2`.
+
 ### Väljundid ja tulemused
 
 **Väljundid**
@@ -379,6 +404,11 @@ mitte ei muudeta.
 * Smart Solutions Lab 2/3 saab siit pärast füüsilisi katseid kontrollitud
   hoidikukohad, roboti sihtpunktid ja kaamerate kinnitusgeomeetria: TODO — real
   measurement required.
+
+* 25.10.2026 seis: XIAO kinnitus `xiao-square-mount-v2` on prinditud,
+  paigaldatud ja kasutusel; klaasi sisend, töökoht C+1 ja heade väljund on
+  ruutudes ning ring 1 (4 / 4) on tehtud. Ringid 2–5 ja veebikaamera post
+  on avatud (vt kontrollnimekiri).
 
 **KAARDISTA ISE, lõpus.**
 * Git repo ja tag: TODO — lisada alles esitamisel.

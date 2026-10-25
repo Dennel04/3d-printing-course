@@ -13,6 +13,10 @@ Course laboratory repository.
 - [`3d-print/`](3d-print/) is the graded submission source of truth.
 - [`fusion-tutor/`](fusion-tutor/README.md) is the working and tutorial area
   for the CAD workflow.
+- [`3d-print/sim/`](3d-print/sim/README.md) is the shared digital twin of the
+  MG400 workstation (reach, collisions, glass cycle dry run).
+- [`3d-print/models/`](3d-print/models/README.md) holds models of the bought
+  components (AtomS3, battery base, XIAO, webcam).
 
 ## Russian translations
 

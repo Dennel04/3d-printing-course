@@ -6,6 +6,8 @@ Täida pärast päris laua, roboti ja detailide ülevaatust, enne hoidikute lõp
 
 Valis Denys 24.10.26 kahe kaksikus kontrollitud variandi vahelt (A = varasem `layout.json` ettepanek). Hoidikute rollid on meeskonna 23.10.26 otsused (README). Masinloetav sama paigutus: [`../slot-picker/layout.json`](../slot-picker/layout.json). Füüsiliselt on paigas ainult klaasi sisend; ülejäänud hoidikud tuleb laual ümber tõsta — TODO.
 
+- 25.10.26 parandus: töökoht ja väljund tõsteti paigutuse B ruutudesse ja õpetati 24.10.26 õhtul; ring 1 tehtud 4 / 4. Vt allpool „25.10.26 täpsustus“.
+
 ![Paigutus ülaltvaates](photos/layout-2026-10-24.png)
 
 Ülaltvaade operaatori poolt (robot üleval, rida A roboti juures):
@@ -32,6 +34,7 @@ Selle labori test (ülesanne osa 3) teeb ainult klaasi teed: sisend → töökoh
 ### Töökohad ja väljundid
 
 - **Töökohti: üks samm-tüüp** (detailide virnastamine aku peale), sest kõik kolm robotisammu toimuvad samas kohas virna peal; ülesanne lubab sammul kohta eelmisega jagada (meeskonna otsus 23.10.26). Pesasid on kaks: **C−1 = töökoht 1** (tsükli vaikimisi koht, `cycle.workstation_cell`), **C+1 = töökoht 2** (Denys 24.10.26).
+  - 25.10.26 parandus: tsükli koht `cycle.workstation_cell` on [`../slot-picker/layout.json`](../slot-picker/layout.json) järgi **C+1**, mitte C−1; ring 1 kasutas C+1-te.
 - Töökoht on ruutudes, kus robot on kõige täpsem: kaugus J1 teljest **214–256 mm** (ülesanne: kuni 300 mm, read A–C, numbrid −3 … +3).
 - **Väljundeid kaks:** heade väljund (`valjundhoidik-v1`, 2 × 2 lahtine kast) ja praak (oranži hoidiku robotipoolsed pesad B−1, B+1; Denys 24.10.26).
 - Liikumine käib ühes suunas: sisendid numbritel −1 … −5, töökoht keskel, väljund +4 … +5.
@@ -82,6 +85,12 @@ Ruudu keskpunkt robotis = [`../calibration/cells.py`](../calibration/cells.py) (
 
 - Hoidikud füüsiliselt uutesse ruutudesse; seejärel töökoha ja väljundi punktide õpetamine.
 - AtomS3 mõõdud nihikuga; nelja klaasi hajuvus.
+
+### 25.10.26 täpsustus
+
+- Ülal „Füüsiliselt on paigas ainult klaasi sisend“ ja lahtine punkt „hoidikud uutesse ruutudesse … õpetamine“ on 24.10.26 õhtu seis enne õpetamist. Samal õhtul tõsteti hoidikud paigutuse B järgi, töökoht C+1 ja väljund D+4 õpetati ning ring 1 tehti 4 / 4 (README arenduspäevik 24.10.2026 ~19:00 ja ~19:20, [`refit_test.csv`](refit_test.csv)). AtomS3 sisendi ja kalibreerimiskasti paigaldus pole eraldi kirjas.
+- „Töökohad ja väljundid“ ütleb, et tsükli vaikimisi koht (`cycle.workstation_cell`) on C−1. Tegelikult on [`../slot-picker/layout.json`](../slot-picker/layout.json) väärtus `"workstation_cell": "C+1"` ja ring 1 kasutas C+1-te; sihtpunktide tabel ütleb sama („tsükli töökoht“ C+1).
+- Veebikaamera posti koht on otsustatud: laua serval rakise toru otsas, ruudustikust väljas (README 25.10.2026).
 
 ## Esialgne mall (23.10.26, ajalugu)
 
