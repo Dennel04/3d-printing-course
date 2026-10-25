@@ -48,13 +48,15 @@ Wi-Fi füüsiline toimimine ja station PC võrgust ligipääs, kaablite marsruut
 - [ ] Iga pesa mõõt ja roboti sihtpunkt dokumenteeritud ruudu ning nihkega.
 - [ ] Klaasiga tehtud viis korduskatset ja tulemused failis `docs/refit_test.csv`.
   - 24.10.26: **ring 1 tehtud, 4 / 4 klaasi** (sisend D/E −4/−5 → töökoht C+1 AtomS3 peal → väljund D/E +4/+5, 10 %), Denys kinnitas. Kaadrid `docs/photos/cycle-r1-*.jpg`. Järgmiseks: hoidikud välja ja tagasi, ringid 2–5 ilma ümberõpetamiseta.
-- [ ] XIAO ESP32S3 Sense kaamera kinnitus ning valitud ja katsetatud toide.
+- [x] XIAO ESP32S3 Sense kaamera kinnitus ning valitud ja katsetatud toide.
   - 24.10.26: kinnitus `xiao-square-mount-v2` (kaamerapesa objektiivi aknaga, tihvt) prinditud ja paigaldatud, töötab.
   - 23.10.26: XIAO istub prinditud kinnituses roboti küljes ja annab pilti. Toide katsetamisel USB-C kaudu arvutist (COM5). Püsivara `tool-camera/firmware/` (JPEG 1600 × 1200 USB kaudu, sest labori arvutil pole WiFi-t), kaader `python tool-camera/capture.py COM5 <fail>.jpg`. Sensor OV3660 (PID 0x3660), PSRAM 8 MB. Esimene kaader: [`docs/photos/tool-camera-first-frame.jpg`](docs/photos/tool-camera-first-frame.jpg) — pildis on iminapp, ruudustik ja oranž hoidik; iminapa voolik läheb diagonaalis üle kaadri.
   - **Toide: USB-C kaabel** (sama kaabel annab ka pildi). Kinnitus on J4 mootori nelikandil, mis J4-ga kaasa ei pöörle; kaabel läheb roboti taha ega sega J4 pööret. Aku jäi ära: lisakaal käe otsas ja tühjeneb. Roboti tööriistapistik jäi ära: pinge kontrollimata, vale pinge rikub mooduli. Kumbki ei anna ka pilti.
   - **Kaal (hinnang, kaalumata):** kinnitus v2 ≈ 15 g (STL maht 13,6 cm³, PrusaSlicer 16,2 g koos tugedega), XIAO ESP32S3 Sense ≈ 5–10 g, kaabli tükk paar grammi → tööriistale lisandub ≈ 25 g, MG400 500 g piirist väike osa.
   - **Napp jääb vabaks:** kinnituse madalaim punkt on 15,4 mm nelikandi põhjast allpool, napp ulatub J4 mootori alt ~66 mm → kinnitus ja kaamera on napa otsast ~50 mm kõrgemal ega sega laskumist pesasse.
-    - Veel teha: kaader töökohast klaasi ja Atomiga.
+  - **Kaader töökohast** (24.10.26 19:22, ring 1 klaas 4, napp C+1 kohal): oranžis töökohas AtomS3 (sinine) ja klaas tema peal, iminapp üleval paremal. Kaabel ei jäänud kogu tsükli ajal kuhugi kinni.
+
+    ![XIAO tööriistakaamera kaader: töökoht C+1, AtomS3 ja klaas](docs/photos/tool-camera-workstation-2026-10-24.jpg)
 - [ ] USB UHD veebikaamera jäik post; mõõdetud pildikõikumine roboti liikumise ajal.
   - 23.10.26 prototüüp v1 (CAD, printimata): `veebikaamera-post/src/veebikaamera-post-v1.f3d`, STL-id `veebikaamera-post-v1-alumine.stl` ja `veebikaamera-post-v1-ulemine.stl`.
     - Kaamera: Verbatim AWC-03 (49580), andmelehelt 106 × 55 × 42,5 mm, 129 g, vaatenurk 120° diagonaalis (≈113° × 81° 16:9 juures), klambris ¼" statiivikeere, kaabel micro-USB → USB-A 1,5 m. Mõõdud nihikuga: TODO.
