@@ -48,11 +48,45 @@ def color_for(name):
         return "#e9ecef" if "link5" not in name else "#c9ced4"
     if name == "xiao mount":
         return "#f26b1d"
-    if name == "cup":
-        return "#1b1b1b"
+    if name == "cup rubber":
+        return "#161616"
+    if name in ("cup metal", "cup fitting"):
+        return "#c3c8ce"
     if name.startswith("glass"):
         return "#9fd3ff"
     return "#b0b0b0"
+
+
+# Suction tool as on the robot (photo docs/photos/mg400-tool-mount-side-2026-10-24.jpg, scaled by the caliper
+# cup OD 22.25 mm): Dobot kit flange hub -> clamp collar -> buffer body with a side 4 mm push-in fitting ->
+# nut -> buffer rod -> black bellows cup. No public CAD exists (Dobot, SMC-type buffer pad); proportions from
+# the photo, total stretched to the twin's cup length. Only for the picture: collisions use the twin cylinder.
+PHOTO_LEN = 79.5
+TOOL_PROFILE = {   # part: [(radius, z from the motor bottom down, photo mm), ...]
+    "cup metal": [(0, 0), (15, 0), (15, 4), (22, 4), (22, 8), (11, 8), (11, 19), (9, 19), (9, 57), (7.5, 57),
+                  (7.5, 65), (4, 65), (4, 67), (0, 67)],
+    "cup rubber": [(0, 66), (6.5, 66), (8, 69), (7, 71.5), (11.125, 78.5), (11.125, 79.5), (0, 79.5)],
+}
+
+
+def suction_tool(length):
+    """Meshes of the tool in the twin's cup frame (z up, top at +length/2, tip at -length/2)."""
+    k = length / PHOTO_LEN
+    out = {}
+    for name, prof in TOOL_PROFILE.items():
+        pts = [(r, length / 2 - z * k) for r, z in prof]
+        m = trimesh.creation.revolve(np.array(pts[::-1]), sections=48)
+        out[name] = m
+    # side push-in fitting (hex + collet), towards +x, at photo z 49
+    zf = length / 2 - 49 * k
+    hexn = trimesh.creation.cylinder(radius=5, height=7, sections=6)
+    hexn.apply_transform(trimesh.transformations.rotation_matrix(math.pi / 2, (0, 1, 0)))
+    hexn.apply_translation((9 + 3.5, 0, zf))
+    collet = trimesh.creation.cylinder(radius=4.2, height=9, sections=24)
+    collet.apply_transform(trimesh.transformations.rotation_matrix(math.pi / 2, (0, 1, 0)))
+    collet.apply_translation((9 + 7 + 4.5, 0, zf))
+    out["cup fitting"] = trimesh.util.concatenate([hexn, collet])
+    return out
 
 
 def qpos(m):
@@ -99,13 +133,24 @@ def main():
             continue
         add(n, mesh, "static")
     base = T.arm.link_poses(0, 0, 0, 0)["base_link"]
-    add("arm base_link", T.arm.meshes["base_link"].copy().apply_transform(base), "static")
+    # The twin keeps the cells.py fit shift as a cup offset from the J4 axis (31 mm at R 33). On the robot the
+    # cup is centred under the flange (photo), so the picture moves the arm by that shift instead: same cup
+    # path, arm drawn where the fit says the robot really stands relative to the rig.
+    shift = np.eye(4)
+    shift[:2, 3] = twin.cup_offset(twin.TOOL_R)
+    add("arm base_link", T.arm.meshes["base_link"].copy().apply_transform(shift @ base), "static")
 
     # moving nodes: geometry in its own frame, pose per frame
     first = T.pose_meshes(*cycle.slot_xy(lay, "input", glasses[0], run.by_name), lay["cycle"]["travel_z"])
     movers = list(first)
     for n, (mesh, _) in first.items():
+        if n == "cup":
+            continue
         add(n, mesh, "moving")
+    tool = suction_tool(T.cup_len)
+    for n, mesh in tool.items():
+        add(n, mesh, "moving")
+    movers = [m for m in movers if m != "cup"] + list(tool)
     glass_local = dry_run.box(dry_run.GLASS, (0, 0, 0))
     glass_pose = {}
     for n in glass_names:
@@ -129,27 +174,55 @@ def main():
     ox, oy = twin.cup_offset(twin.TOOL_R)
     vi = 0
 
+    contact = {"z": None}       # robot Z where the cup (or the carried glass) first touches the current target
+
+    def press(p):
+        return max(0.0, contact["z"] - p[2]) if contact["z"] is not None else 0.0
+
     def snap(p, label):
         parts = T.pose_meshes(*p)
         if parts is None:
             return
-        f = {n: qpos(tf) for n, (_, tf) in parts.items()}
+        c = press(p)
+        f = {n: qpos(shift @ tf if (n.startswith("arm ") or n == "xiao mount") else tf) for n, (_, tf) in parts.items()}
+        for n in ("cup metal", "cup fitting"):
+            f[n] = f["cup"]
+        # the bellows cup + buffer rod give way: the robot goes c mm lower than the first touch
+        rubber = parts["cup"][1].copy()
+        rubber[2, 3] += c
+        f["cup rubber"] = qpos(rubber)
         if carried:
             g = np.eye(4)
-            g[:3, 3] = (p[0] + ox, p[1] + oy, T.cup_tip_z(p[2]) - dry_run.GLASS[2] / 2)
+            g[:3, 3] = (p[0] + ox, p[1] + oy, T.cup_tip_z(p[2]) + c - dry_run.GLASS[2] / 2)
             glass_pose[carried] = g
         for n, m in glass_pose.items():
             f[n] = qpos(m)
-        frames.append({"t": round(t, 3), "p": [round(v, 2) for v in p], "a": len(labels) - 1, "s": f})
+        frames.append({"t": round(t, 3), "p": [round(v, 2) for v in p], "a": len(labels) - 1, "c": round(c, 2), "s": f})
+
+    inp_h, out_h = cycle.holder(lay, "input"), cycle.holder(lay, "output")
+    press_log = []
+
+    def target_of(g):
+        return {"input": [f"glass {g}", "holder:" + inp_h["name"]],
+                "workstation": ["AtomS3", "holder:" + cycle.holder(lay, "workstation")["name"]],
+                "output": ["holder:" + out_h["name"]] + [f"placed glass {k}" for k in glasses]}
 
     for g in glasses:
         for act in cycle.plan_glass(lay, g, run.by_name):
             if act[0] == "pump":
                 if act[1] == "suck":
                     carried = f"glass {g}"
+                    for name in (f"glass {g}", f"workstation glass {g}"):
+                        if name in T.scene:
+                            del T.scene[name]
+                    run._refresh()
                     labels.append({"text": f"glass {g}: pump on, glass picked", "status": "event"})
                 elif act[1] == "blow" and carried:
                     labels.append({"text": f"glass {g}: blow, glass released", "status": "event"})
+                    key = f"workstation glass {g}" if run._near_ws(pos) else f"placed glass {g}"
+                    gz = T.cup_tip_z(pos[2]) + press(pos) - dry_run.GLASS[2] / 2
+                    T.scene[key] = dry_run.box(dry_run.GLASS, (pos[0] + ox, pos[1] + oy, gz))
+                    run._refresh()
                     carried = None
                 snap(pos, None)
                 continue
@@ -162,6 +235,16 @@ def main():
                 continue
             _, label, x, y, z = act
             b = (x, y, z)
+            if "down to" in label:
+                where = "input" if "input" in label else "workstation" if "workstation" in label else "output"
+                allowed = set(target_of(g)[where]) | ({f"workstation glass {g}"} if where == "workstation" else set())
+                zc, _ = run.first_contact(b, carried, allowed, lay["cycle"]["travel_z"])
+                contact["z"] = zc
+                if zc is not None:
+                    press_log.append(f"glass {g}: {label}: first touch at Z {zc:.1f}, robot goes to {z:.1f} -> "
+                                     f"cup + buffer compressed {zc - z:.1f} mm")
+            elif "above" in label:
+                contact["z"] = None
             st = "ok"
             line = ""
             if vi < len(moves_verdict) and moves_verdict[vi][0] == label:
@@ -185,9 +268,10 @@ def main():
     colors = {s["name"]: color_for(s["name"]) if not s["name"].startswith("extra ") else COLORS[s["name"]] for s in static}
     meta = {"mode": "planned full cycle" if a.full else "layout.json as the robot runs it",
             "lab": twin.LAB.name, "glasses": glasses, "nodes": static, "colors": colors, "movers": movers + glass_names,
-            "actions": labels, "frames": frames, "report": report,
+            "actions": labels, "frames": frames, "report": report, "press": press_log,
             "holders": [{"name": h["name"], "cells": h["cells"]} for h in lay["holders"]]}
     (OUT / "anim.json").write_text(json.dumps(meta, separators=(",", ":")), encoding="utf-8")
+    print(chr(10).join(press_log))
     print(f"{len(frames)} frames, {t:.0f} s at 100 mm/s, {len(static)} objects -> {OUT}")
 
 

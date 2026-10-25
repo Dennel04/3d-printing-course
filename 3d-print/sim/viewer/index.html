@@ -86,6 +86,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const STATUS = { ok: "--ok", close: "--close", COLLISION: "--bad", event: "--event" };
@@ -101,8 +102,9 @@ const camera = new THREE.PerspectiveCamera(40, 1, 5, 20000);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 
-scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8f96, 1.2));
-const sun = new THREE.DirectionalLight(0xffffff, 1.6);
+scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8f96, 0.6));
+const sun = new THREE.DirectionalLight(0xffffff, 1.2);
 sun.position.set(-600, 1400, 500);
 sun.castShadow = true;
 sun.shadow.mapSize.set(2048, 2048);
@@ -126,8 +128,8 @@ const bg = () => scene.background = new THREE.Color(css("--bg"));
 
 async function load() {
   const [gltf, anim] = await Promise.all([
-    new GLTFLoader().loadAsync("data/scene.glb"),
-    fetch("data/anim.json").then(r => r.json()),
+    new GLTFLoader().loadAsync("data/scene.glb?" + Date.now()),
+    fetch("data/anim.json?" + Date.now()).then(r => r.json()),
   ]);
   A = anim; frames = A.frames; T = frames[frames.length - 1].t;
   document.getElementById("mode").textContent = `${A.lab} · ${A.mode} · klaasid ${A.glasses.join(", ")}`;
@@ -144,8 +146,8 @@ async function load() {
     o.geometry = o.geometry.toNonIndexed();
     o.geometry.computeVertexNormals();
     o.material = new THREE.MeshStandardMaterial({
-      color: col, roughness: glass ? 0.1 : name.includes("pipe") ? 0.25 : 0.7,
-      metalness: name.includes("pipe") ? 0.9 : name.startsWith("rakis") ? 0.3 : 0.05,
+      color: col, roughness: glass ? 0.1 : name.includes("pipe") || name === "cup metal" || name === "cup fitting" ? 0.3 : 0.7,
+      metalness: name.includes("pipe") ? 0.9 : name === "cup metal" || name === "cup fitting" ? 0.55 : name.startsWith("rakis") ? 0.3 : 0.05,
       transparent: glass, opacity: glass ? 0.65 : 1,
     });
     o.castShadow = !name.startsWith("table");
@@ -162,7 +164,7 @@ async function load() {
 function buildTrail() {
   const ox = 0, pts = frames.map(f => new THREE.Vector3(...f.p));
   // cup tip path: the cup node position each frame (bottom of the cylinder)
-  const cup = frames.map(f => f.s.cup).filter(Boolean).map(s => new THREE.Vector3(s[0], s[1], s[2]));
+  const cup = frames.map(f => f.s["cup rubber"]).filter(Boolean).map(s => new THREE.Vector3(s[0], s[1], s[2]));
   const g = new THREE.BufferGeometry().setFromPoints(cup.length ? cup : pts);
   trail = new THREE.Line(g, new THREE.LineBasicMaterial({ color: css("--accent") }));
   world.add(trail);
@@ -226,12 +228,13 @@ function apply(time) {
   const col = css(STATUS[act.status] || "--ok");
   document.getElementById("now").innerHTML =
     `<b>${act.text || ""}</b><span class="pill" style="background:${col}">${act.status || ""}</span>` +
-    `<br><span style="color:var(--muted)">roboti X ${p[0].toFixed(1)} · Y ${p[1].toFixed(1)} · Z ${p[2].toFixed(1)}</span>`;
+    `<br><span style="color:var(--muted)">roboti X ${p[0].toFixed(1)} · Y ${p[1].toFixed(1)} · Z ${p[2].toFixed(1)}` +
+    ` · napp + puhver kokku ${((a.c || 0) + ((b.c || 0) - (a.c || 0)) * k).toFixed(1)} mm</span>`;
   document.querySelectorAll(".act").forEach((d, j) => d.classList.toggle("cur", j === (k > 0.5 ? b : a).a));
   document.getElementById("time").textContent = `${time.toFixed(1)} / ${T.toFixed(1)} s @ 100 mm/s`;
   document.getElementById("head").style.left = (time / T * 100) + "%";
-  if (follow && nodes.cup) {
-    const target = new THREE.Vector3(); nodes.cup.getWorldPosition(target);
+  if (follow && nodes["cup rubber"]) {
+    const target = new THREE.Vector3(); nodes["cup rubber"].getWorldPosition(target);
     controls.target.lerp(target, 0.15);
   }
 }

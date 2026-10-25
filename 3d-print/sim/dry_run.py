@@ -45,7 +45,8 @@ ATOM_H, BATTERY_H = 12.9, 21.97          # measurements.md (Atom nominal, batter
 STEP = 2.0
 WARN_CLEARANCE = 3.0
 PICK_OFFSET_MAX = (GLASS[0] - twin.CUP_D) / 2   # cup fully on the glass up to this offset (5 mm)
-PRESS_ALLOWED = 1.5     # the cup may press this far into its target (picks are taught 1 mm into the glass)
+PRESS_ALLOWED = 6.0     # bellows cup + spring buffer give way; refit round 1 (24.10) worked with 4.2 / 5.2 / 0.7 mm
+                        # (audit_scene.py). Buffer stroke not measured: TODO caliper
 ROLES = {"input": "Glass input", "workstation": "Workstation (orange)", "output": "Good output"}
 
 

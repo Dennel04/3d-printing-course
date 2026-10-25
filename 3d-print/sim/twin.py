@@ -228,7 +228,48 @@ class Twin:
         box.apply_transform(rig_matrix())
         self._add("table", box)
 
+    def _settle(self, mesh):
+        """Drop a holder (world frame, at its cell) onto the rig like gravity would: lowest height where it
+        touches the grid, beams or pipes but does not cut into them. Moves the mesh; returns the change in mm."""
+        lo, hi = mesh.bounds
+        obj = fcl.CollisionObject(self._bvh(mesh))
+        sup = []
+        for n, m in self.scene.items():
+            if not (n.startswith("rakis") or n == "table"):
+                continue
+            b = m.bounds
+            if (b[0][:2] > hi[:2] + 1).any() or (b[1][:2] < lo[:2] - 1).any():
+                continue
+            if n not in self._sup_cache:
+                self._sup_cache[n] = fcl.CollisionObject(self._bvh(m))
+            sup.append(self._sup_cache[n])
+
+        def hits(dz):
+            obj.setTransform(fcl.Transform(np.eye(3), [0.0, 0.0, dz]))
+            return any(fcl.collide(obj, s, fcl.CollisionRequest(), fcl.CollisionResult()) for s in sup)
+        up = 0.0
+        while hits(up):
+            up += 5.0
+            if up > 60:
+                raise RuntimeError("holder cannot be placed: cuts into the rig even 60 mm higher")
+        down = up - 1.0                       # small steps: fcl only sees surfaces crossing, a big step could
+        while not hits(down):                 # jump through a thin wall
+            down -= 1.0
+            if down < -60:
+                raise RuntimeError("holder falls through the rig")
+        a, b = down, up                       # a: cutting in, b: free
+        while b - a > 0.01:
+            m_ = (a + b) / 2
+            if hits(m_):
+                a = m_
+            else:
+                b = m_
+        mesh.apply_translation((0, 0, b))
+        return b
+
     def _load_holders(self, with_post, calibration_at):
+        self.seat = {}
+        self._sup_cache = {}
         for h in self.layout["holders"]:
             path = HOLDER_STL.get(h["type"])
             if not path:
@@ -245,6 +286,7 @@ class Twin:
             t[:3, 3] = (cx - x0, cy - y0, z0)
             mesh.apply_transform(t)
             mesh.apply_transform(rig_matrix())
+            self.seat[h["name"]] = (z0, self._settle(mesh))
             self._add("holder:" + h["name"], mesh)
         if with_post:
             for part in ("nurk", "ulemine"):
@@ -265,6 +307,7 @@ class Twin:
             t[:3, 3] = (cx - (b[0][0] + b[1][0]) / 2, cy - (b[0][1] + b[1][1]) / 2, CAL_FOOT_Z - b[0][2])
             mesh.apply_transform(t)
             mesh.apply_transform(rig_matrix())
+            self.seat["calibration"] = (CAL_FOOT_Z, self._settle(mesh))
             self._add("calibration", mesh)
 
     def _tool_meshes(self):
@@ -311,6 +354,7 @@ class Twin:
         top = z + self.HZ - MOTOR_LEN
         cup = trimesh.creation.cylinder(radius=CUP_D / 2, height=top - tip, sections=32)
         t = np.eye(4)
+        t[:3, :3] = t5[:3, :3]          # turns with J4 (the side vacuum fitting shows it in the viewer)
         t[:3, 3] = (x + ox, y + oy, (tip + top) / 2)
         out["cup"] = (cup, t)
         return out
