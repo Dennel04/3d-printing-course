@@ -53,7 +53,7 @@ GRID_TOP = 7.28          # rig model: grid top above the robot floor
 TOOL_R = 33.0            # every calibrated point is taken at R 33
 # Cup length below the J4 motor, from the 24.10 D-2 touch (Z -150 on the glass holder v1 pocket floor,
 # holder on its 3 mm foot extension, +2.85 mm). Cross-check: 23.10 G-1 corners then sit 1.6 mm above the
-# calibration v1 floor (the other assumption puts the cup 1.2 mm under the floor). TODO measure.
+# first calibration bin floor (the other assumption puts the cup 1.2 mm under the floor). TODO measure.
 CUP_LEN = 66.2
 
 # ---- tool (TODO measure: cup diameter, cup offset from the J4 axis, cup length) ----
@@ -69,11 +69,10 @@ HOLDER_STL = {
     "atom": "atoms3-input-holder/stl/atoms3-input-holder-v1.stl",
     "workstation": "ready-parts-input-holder/stl/ready-parts-input-holder-v1.stl",
     "output": "valjundhoidik/stl/valjundhoidik-v1.stl",
-    "calibration": "gridfinity-calibration/stl/gridfinity-calibration-v1.stl",
+    "calibration": "gridfinity-calibration/stl/gridfinity-calibration.stl",
 }
-# local z = 0 is the base bottom (feet below it); calibration v1 has z = 0 at the foot bottom.
-HOLDER_Z0 = {"calibration": GRID_TOP - 4.65}
-HOLDER_XY0 = {"calibration": (150.0, 150.0)}      # v1 STL is not centred
+# local z = 0 is the base bottom (feet below it); the calibration bin is placed by its bounds instead.
+CAL_FOOT_Z = 2.289          # calibration bin foot bottom when seated (1 x 1 wedges on the chamfers)
 BEAM_TOP = 2.48          # rig model: top of the beams under the +-1 / +-3 columns
 TABLE_Z = -16.72         # table = grid bottom (Denys, 24.10)
 FOOT = 4.65              # socket depth; a deeper foot (old 3 mm extension) stands on the beams
@@ -174,7 +173,7 @@ class Arm:
 
 # ---------------- the twin ----------------
 class Twin:
-    def __init__(self, layout=None, with_post=True, calibration_v3_at=None):
+    def __init__(self, layout=None, with_post=True, calibration_at=None):
         self.arm = Arm()
         self.layout = layout or json.loads((LAB / "slot-picker" / "layout.json").read_text(encoding="utf-8"))
         self.HZ = self._fit_hz()
@@ -182,7 +181,7 @@ class Twin:
         self.scene = {}               # name -> trimesh in world frame
         self._load_rig()
         self._load_table()
-        self._load_holders(with_post, calibration_v3_at)
+        self._load_holders(with_post, calibration_at)
         self._tool_meshes()
         self._build_fcl()
 
@@ -216,14 +215,17 @@ class Twin:
         box.apply_transform(rig_matrix())
         self._add("table", box)
 
-    def _load_holders(self, with_post, calibration_v3_at):
+    def _load_holders(self, with_post, calibration_at):
         for h in self.layout["holders"]:
             path = HOLDER_STL.get(h["type"])
             if not path:
                 continue
             mesh = trimesh.load(LAB / path)
-            x0, y0 = HOLDER_XY0.get(h["type"], (0.0, 0.0))
-            z0 = HOLDER_Z0.get(h["type"], GRID_TOP + holder_lift(mesh))
+            if h["type"] == "calibration":
+                b = mesh.bounds
+                x0, y0, z0 = (b[0][0] + b[1][0]) / 2, (b[0][1] + b[1][1]) / 2, CAL_FOOT_Z - b[0][2]
+            else:
+                x0, y0, z0 = 0.0, 0.0, GRID_TOP + holder_lift(mesh)
             cs = [cell_model(c) for c in h["cells"]]
             cx, cy = sum(c[0] for c in cs) / len(cs), sum(c[1] for c in cs) / len(cs)
             t = np.eye(4)
@@ -236,15 +238,15 @@ class Twin:
                 mesh = trimesh.load(LAB / f"veebikaamera-post/stl/veebikaamera-post-v3-{part}.stl")
                 mesh.apply_transform(rig_matrix())
                 self._add("webcam post " + part, mesh)
-        if calibration_v3_at:
-            mesh = trimesh.load(LAB / "gridfinity-calibration/stl/gridfinity-calibration-v3.stl")
+        if calibration_at:
+            mesh = trimesh.load(LAB / "gridfinity-calibration/stl/gridfinity-calibration.stl")
             b = mesh.bounds
-            cx, cy = cell_model(calibration_v3_at)
+            cx, cy = cell_model(calibration_at)
             t = np.eye(4)
-            t[:3, 3] = (cx - (b[0][0] + b[1][0]) / 2, cy - (b[0][1] + b[1][1]) / 2, 2.289 - b[0][2])
+            t[:3, 3] = (cx - (b[0][0] + b[1][0]) / 2, cy - (b[0][1] + b[1][1]) / 2, CAL_FOOT_Z - b[0][2])
             mesh.apply_transform(t)
             mesh.apply_transform(rig_matrix())
-            self._add("calibration v3", mesh)
+            self._add("calibration", mesh)
 
     def _tool_meshes(self):
         # XIAO mount v5: its file frame has the J4 axis at x = y = 0 and the motor bottom at z = -13,

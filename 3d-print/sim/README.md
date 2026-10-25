@@ -11,7 +11,7 @@ cd 3d-print/sim
 python -m venv .venv
 .venv/Scripts/python -m pip install -r requirements.txt
 .venv/Scripts/python reach_map.py          # <lab>/docs/sim_reach.csv, <lab>/docs/photos/sim-reach-map.png
-.venv/Scripts/python check_calibration.py  # kus nelja nurga meetod kalibreerimishoidikuga v3 töötab
+.venv/Scripts/python check_calibration.py  # kus nelja nurga meetod kalibreerimiskastiga töötab
 .venv/Scripts/python dry_run.py            # layout.json nii nagu on (režiim, rollid, õpetatud Z), <lab>/docs/sim_dry_run.txt
 .venv/Scripts/python dry_run.py --full     # planeeritud täistsükkel sisend -> töökoht -> väljund, <lab>/docs/sim_dry_run_full.txt
 .venv/Scripts/python tolerance.py          # kalibreerimisvea taluvus, <lab>/docs/sim_tolerance.txt
@@ -45,7 +45,7 @@ Negatiivtestid (24.10.26), kõik leitud: travel Z −140 → 15 kokkupõrget; t�
 ## Lab 2 tulemused 24.10.26 (ettepanekupaigutus `lab2/slot-picker/layout.json`)
 
 - Kaart: `../lab2/docs/photos/sim-reach-map.png`, tabel `../lab2/docs/sim_reach.csv`. A±1, A±2, G±4, G±5 kättesaamatud; B±1/B±2 ja G-rida piirab liiges (napp ei jõua alla 19–40 mm ruudustiku kohal).
-- **B-2 ei sobi kalibreerimiseks** (ülesanne soovitab B-2): napp jõuab B-2-s alla ainult +19,1 mm ruudustiku kohale, kalibreerimishoidiku v3 ülaserv on +16,0 mm — napp ei mahu kasti. `check_calibration.py`: nelja nurga meetod töötab C-2, C-1, D-2, E±3, F-2, F-3; ei tööta B-2, B-3, G-1. Ettepanek: kalibreerimine **C-2**-s, kontroll E+3-s.
+- **B-2 ei sobi kalibreerimiseks** (ülesanne soovitab B-2): napp jõuab B-2-s alla ainult +19,1 mm ruudustiku kohale, kalibreerimiskasti ülaserv on +16,0 mm — napp ei mahu kasti. `check_calibration.py`: nelja nurga meetod töötab C-2, C-1, D-2, E±3, F-2, F-3; ei tööta B-2, B-3, G-1. Ettepanek: kalibreerimine **C-2**-s, kontroll E+3-s.
 - Klaasitsükkel (4 klaasi) on kokkupõrgeteta; väikseim vahe 6,1 mm; travel Z −100 jätab Atomi kohale 14 mm.
 - Kalibreerimisvea taluvus (`../lab2/docs/sim_tolerance.txt`): võtmine talub 5 mm, **väljund ainult 3 mm** (klaas pannakse lahtri keskele, 21 mm kasti keskelt → klaasi serv seinast 3 mm). Ettepanek: väljundi kohad kasti keskele lähemale (±16 mm → varu 8 mm).
 
@@ -57,5 +57,5 @@ Printimise vead (elevandijalg, tugede jäägid, kahanemine) — selleks on füü
 
 - Täistsükkel (`--full`): 4 klaasi kokkupõrgeteta, taluvus endine (võtmine 5 mm, väljund 3 mm).
 - Ülekandetest (praegune `layout.json`: kõik rollid = Glass input, D-4/D-5/E-4/E-5): kokkupõrkeid pole; output `place_z` pole õpetatud (slot picker ei lase seda käivitada, kaksik tuletab −147,0).
-- Päris robot 24.10 õhtul C-2-s: kasti v3 põhja puudutus Z −155,0 vs kaksik −154,8 → napa pikkus kinnitatud; napa efektiivne läbimõõt ≈ 23 mm (kaksik eeldab 20).
+- Päris robot 24.10 õhtul C-2-s: kalibreerimiskasti põhja puudutus Z −155,0 vs kaksik −154,8 → napa pikkus kinnitatud; napa efektiivne läbimõõt ≈ 23 mm (kaksik eeldab 20).
 - Õpetatud `pick_z −150,5`: kaksiku järgi algab klaasi puudutus Z −147,9 ja tühja pesa põhi −149,9 → klaasiga surub −150,5 napa 2,6 mm (lubatud 1,5). 24.10 17:06 Z-proovi kaadrites on pesad tühjad ja napp surutakse kokku juba alates −151 → tõenäoliselt õpetati tühja põhja peale. **Kontrollida**: kas õpetamisel oli klaas pesas.

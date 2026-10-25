@@ -135,16 +135,9 @@ Mõõda vajaduse korral mitu klaasi ja säilita kõik üksiktulemused, et hiljem
 
 ## Gridfinity kalibreerimine
 
-### Esimene kalibreerimisprint
+### Kalibreerimiskast
 
-| Väli | Tulemus | Märkus |
-|---|---|---|
-| Kandidaatversioon | TODO — waiting for physical test | Näiteks `gridfinity-calibration-v2.scad`; kirja panna päriselt prinditud versioon. |
-| Sobitusparandus külje kohta (mm) | TODO — waiting for physical test | CAD-i `fit_adjustment`; täislaiuse muutus on sellest kaks korda suurem. |
-| Istub täielikult põhja | TODO — waiting for physical test | |
-| Loks | TODO — waiting for physical test | |
-| Eemaldamiseks vajalik jõud / pingutus | TODO — waiting for physical test | Kui mõõdad jõudu, kirjuta ühik N. |
-| Vajalikud muudatused | TODO — waiting for physical test | Uue prindi korral salvesta eraldi versioon. |
+`gridfinity-calibration` (1 × 1, 41,5 × 41,5 × 21 mm, standardne Gridfinity jalg generaatorist, sisetasku 37 × 37 mm, rist põhjas): prinditud, istub ruudustikus täielikult ega loksu (24.10.26).
 
 | Väli | Mõõdetud / arvutatud väärtus | Meetod / märkus |
 |---|---|---|
@@ -171,7 +164,7 @@ Mõõda vajaduse korral mitu klaasi ja säilita kõik üksiktulemused, et hiljem
 23.10.26 märkused (G-1, nelja sisenurga meetod; toorandmed [`calibration_g-1_corners.csv`](calibration_g-1_corners.csv)):
 
 - Ruut B-2 osutus liiga lähedaseks: raadiusel ~192 mm J1-st jõuab käsi ainult Z ≈ −98-ni (J3 105° piir, `mg400-base` `kinematics.py`), kasti põhja ei ulatu. Seetõttu kalibreeriti kaugemas ruudus **G-1** (ülesande järgi "near the limit" tsoon).
-- Kalibreerimiskast `gridfinity-calibration-v1` (STL-ist): välismõõt 41,2 × 41,2 × 20 mm, sisemus **37,2 × 37,2 mm**, teravad sisenurgad, põhi 4 mm, sisemuse sügavus 16 mm.
+- 23.10 kasutatud kast: sisemus **37,2 × 37,2 mm**, sügavus 16 mm.
 - Iminapa käik kasti sees: X ≈ 14,8 mm, Y ≈ 15,3 mm → napa efektiivne läbimõõt **≈ 22 mm** (37,2 − käik). Pehme napp kaldub seina vastu juba enne, kui robot tegelikult "puudutab"; puudutuse kriteerium = napp sirge ja seina vastas, kalle näitab ülesurumist.
 - G-1 keskpunkt mudelist (`MG 400 rakis.md` §4) roboti raamis eeldusel X_robot = −x, Y_robot = −y: **391,5 / 21,0**. Eeldatav nihe mõõdetud − arvutatud ≈ **+5,3 / +5,4 mm**. Eelinfo: neljas nurk kinnitamata ja Xmin+Ymax nurk teisel Z-l; telgede suund kontrollimata (vaja kontrollruutu lähemal robotile, nt C+2).
 
@@ -192,17 +185,17 @@ Mõõda vajaduse korral mitu klaasi ja säilita kõik üksiktulemused, et hiljem
 - Kontroll ruutudes, mida sobitus ei kasutanud: **B+5 215,52 / −186,15** ja **F-4 378,39 / 152,37** — kasutaja hinnangul keskel (Z −130 / −100, silma järgi). Kalibreerimine praegu kasutatav.
 - Täpsustamiseks: korrata nurkade mõõtmist puutes (kasti põhjas, Z ≈ −155) 3–4 ruudus, eesmärk jääkviga < 0,5 mm.
 
-24.10.26 õhtu — kontroll kalibreerimiskastiga v3 ruudus C-2 (toorandmed [`calibration_c-2_v3.csv`](calibration_c-2_v3.csv)):
+24.10.26 õhtu — kontroll kalibreerimiskastiga ruudus C-2 (toorandmed [`calibration_c-2.csv`](calibration_c-2.csv)):
 
-- Kast `gridfinity-calibration-v3` (standardne Gridfinity jalg, pesa 37 × 37 mm, rist põhjas) ruudus **C-2**; C-2 ei olnud `cells.py` sobituses, seega see on sõltumatu kontroll. R 33, kiirus 2 %, sammud 0,5 mm; puudutust hindas Denys silmaga (napp sirge ja seina vastas, kast ei kaldu).
+- Kast `gridfinity-calibration` (standardne Gridfinity jalg, pesa 37 × 37 mm, rist põhjas) ruudus **C-2**; C-2 ei olnud `cells.py` sobituses, seega see on sõltumatu kontroll. R 33, kiirus 2 %, sammud 0,5 mm; puudutust hindas Denys silmaga (napp sirge ja seina vastas, kast ei kaldu).
 - Z puudutus kasti põhjal/ristil lahtri keskel: **Z −155,0** (kaksik ennustas põhja −154,8, risti pealt −154,2) → napa pikkus kaksikus õige ±0,8 mm piires.
 - Neli nurka Z −152 juures (3 mm põhja kohal): +X+Y 260,68 / 75,46; +X−Y 260,68 / 61,46; −X−Y 246,68 / 61,46; −X+Y 247,18 / 75,46. Teise nurga esimene katse Y 60,46 juures surus seina ja kallutas kasti veidi — tagasi 1 mm, kast istus tagasi; arvesse läks 61,46.
 - Kontroll: vastasküljed 14,00 / 14,01 ja 14,00 / 13,50, diagonaalid 19,80 / 19,45 mm (erinevus ≤ 0,5 mm = silmaga puudutuse täpsus).
 - Keskpunkt (nelja nurga keskmine): **253,81 / 68,46**; `cells.py` ennustas 253,68 / 66,46 → viga **+0,12 / +2,00 mm**. Kontroll: napp viidi mõõdetud keskpunkti Z −150 juurde — Denys: keskel risti kohal.
-- Napa käik 37 mm pesas 14 mm → napa efektiivne läbimõõt sellel kõrgusel **≈ 23 mm** (23.10 v1 kastiga ≈ 22; kaksik eeldab 20).
-- Tähelepanek: sama +2 mm Y-suunas õpetati 24.10 klaasi sisendhoidikus D-4 (`teach.dy 2.0`, slot picker). Võimalik põhjus: `cells.py` sobituse D-2 punkt võeti vanade jalgadega klaasihoidikus (jala lõtk ~0,95 mm külje kohta), uus v3 kast istub lõtkuta. Otsus `cells.py` uue sobituse kohta: TODO — meeskond.
+- Napa käik 37 mm pesas 14 mm → napa efektiivne läbimõõt sellel kõrgusel **≈ 23 mm** (23.10 ≈ 22; kaksik eeldab 20).
+- Tähelepanek: sama +2 mm Y-suunas õpetati 24.10 klaasi sisendhoidikus D-4 (`teach.dy 2.0`, slot picker). Võimalik põhjus: `cells.py` sobituse D-2 punkt võeti vanade jalgadega klaasihoidikus (jala lõtk ~0,95 mm külje kohta), kalibreerimiskast istub lõtkuta. Otsus `cells.py` uue sobituse kohta: TODO — meeskond.
 - Kasti välja/tagasi kordustäpsust ei mõõdetud (Denys: keskpunkt sobib, uuesti ei kalibreeri).
-- Samal õhtul (Denys: „поменяй“): C-2 lisati `cells.py` sobitusse (4 ruutu, pööre **+0,61°**). Jääkvead G-1 −1,88/+0,45, E+3 +0,76/−1,35, D-2 +1,26/−0,27, C-2 −0,14/+1,16 mm — jäik sobitus ei mahu 1 mm sisse, nõrgimad on G-1 ja E+3 (silma järgi Z −87, parallaks) ning D-2 (vanade jalgadega hoidik). Täpsustamiseks: 2–3 ruutu (nt E+3, F-3) kastiga v3 puutes ja uus sobitus ainult nende põhjal.
+- Samal õhtul (Denys: „поменяй“): C-2 lisati `cells.py` sobitusse (4 ruutu, pööre **+0,61°**). Jääkvead G-1 −1,88/+0,45, E+3 +0,76/−1,35, D-2 +1,26/−0,27, C-2 −0,14/+1,16 mm — jäik sobitus ei mahu 1 mm sisse, nõrgimad on G-1 ja E+3 (silma järgi Z −87, parallaks) ning D-2 (vanade jalgadega hoidik). Täpsustamiseks: 2–3 ruutu (nt E+3, F-3) kalibreerimiskastiga puutes ja uus sobitus ainult nende põhjal.
 - Klaasi sisendhoidiku õpetus teisendati nii, et D-4 päris punkt jääb samaks (294,40 / 153,09): dx 0 → −0,64, dy 2,0 → 1,35.
 - 18:14: Denys seadis slot pickeriga napa C-2-s kasti põhjal (Z −155,0) risti keskele: **253,94 / 68,30** (nelja nurga tulemus 253,81 / 68,46, vahe 0,13 / 0,16 mm). `cells.py`-s kasutatakse nüüd seda punkti; sobitus +0,62°, C-2 arvutuslik 253,97 / 67,24 → jääkviga C-2-s endiselt −0,03 / +1,06 mm, sest jäik sobitus kaalub nelja punkti võrdselt ja G-1, E+3, D-2 vead on 1–2 mm. Klaasi sisendhoidiku õpetus uuesti teisendatud (dx −0,65, dy 1,39), D-4 päris punkt sama.
 - 18:16: Denys seadis napa klaasi sisendhoidiku pesa D-4 keskele (Z −150,0): **293.56 / 154.20**. Varasem õpetus (Raimo 17:06) näitas 294.41 / 153.09 → vahe -0.85 / +1.11 mm. Salvestatud hoidiku õpetusena (`teach` dx -1.50, dy +2.50 lahtri D-4 keskpunktist), mitte `cells.py`-sse: hoidik on vanade jalgadega (lõtk ~1 mm), seega pesa keskpunkt sisaldab hoidiku asendit ruudustikus. `pick_z` muutmata (−150,5).

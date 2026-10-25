@@ -32,7 +32,7 @@ Wi-Fi füüsiline toimimine ja station PC võrgust ligipääs, kaablite marsruut
 - [ ] `docs/layout.md`: töövoog, ruutude paigutus ja skeem mõõdetud laua järgi.
   - 24.10.26: paigutus otsustatud (variant B, kaksikus kontrollitud) ja kirjas [`docs/layout.md`](docs/layout.md) koos skeemiga. Avatud: hoidikud füüsiliselt uutesse ruutudesse, AtomS3 nihikuga, veebikaamera posti lõplik koht.
 - [x] 1 x 1 Gridfinity kalibreerimishoidik testitud ruudustikus ja robotiga.
-  - 24.10.26: `gridfinity-calibration-v3` (standardne jalg, rist) istub ruudustikus hästi; robotiga ruudus C−2: Z puudutus põhjal −155,0, neli sisenurka → keskpunkt 253,81 / 68,46, Denys seadis napa risti keskele 253,94 / 68,30 (kasutusel `calibration/cells.py`). Andmed: [`docs/calibration_c-2_v3.csv`](docs/calibration_c-2_v3.csv), [`docs/measurements.md`](docs/measurements.md). Kasti välja/tagasi kordustäpsust ei mõõdetud.
+  - 24.10.26: 1 × 1 kalibreerimiskast `gridfinity-calibration` prinditi uuesti standardse Gridfinity jalaga (generaatori profiil) ja see on nüüd meie kalibreerimise standard. Istub ruudustikus hästi ega loksu; kontrollitud robotiga ruudus C−2: Z puudutus põhjal −155,0, neli sisenurka → keskpunkt 253,81 / 68,46, napp risti keskel 253,94 / 68,30 (kasutusel `calibration/cells.py`). Andmed: [`docs/calibration_c-2.csv`](docs/calibration_c-2.csv), [`docs/measurements.md`](docs/measurements.md).
   - 23.10.26 otsus: keskpunkt leitakse iminapaga hoidiku nelja sisenurga kaudu (nelja punkti keskmine); napa raadius taandub sümmeetria tõttu välja ja lisaks saame ruudustiku pöördenurga. Protseduur: [`docs/test-procedure.md`](docs/test-procedure.md) A1, tabel: [`docs/measurements.md`](docs/measurements.md).
   - 23.10.26 kalibreerimine alustatud ruudus G-1 (B-2-s ei ulatu käsi kasti põhja, J3 piir). 3 nurka 4-st kinnitatud, eeldatav nihe ≈ +5,3 / +5,4 mm; vt [`docs/measurements.md`](docs/measurements.md). Lõpetamata: 4. nurk, Xmin+Ymax nurk samal Z-l, kontrollruut.
 - [ ] Kolm sisendhoidikut, igaühes vähemalt neli mõõdetud pesa.
@@ -40,10 +40,8 @@ Wi-Fi füüsiline toimimine ja station PC võrgust ligipääs, kaablite marsruut
   - 24.10.26 kasutaja kinnitas kõigi kolme sisendhoidikutüübi detailide füüsilise sobivuse: põhjani, vabalt lõtku piires, sõrmedega eemaldatavad, kiilumiseta. Täpne kontrollitud pesade arv ja prinditud pesade nihikumõõdud on kinnitamata; kogu punkti ei märgita tehtuks. Üksikasjad: [`docs/measurements.md`](docs/measurements.md), 24.10 kirje.
 - [ ] Töökoha hoidik ja heade ning praakdetailide väljundikohad.
   - 23.10.26 otsus: `ready-parts-input-holder-v1` (2 × 2) on korraga akumooduli sisend ja töökoht: inimene laeb akumoodulid, robot paneb igaühe peale AtomS3 ja selle peale klaasi. Ülesanne lubab sammul jagada kohta eelmisega.
-  - 23.10.26 otsus: praak = `gridfinity-calibration-v1` (1 × 1 lahtine kast) pärast kalibreerimist. CAD-ist: välismõõt 41,2 × 41,2 mm, kõrgus 20 mm, sisemus ~37,2 × 37,2 mm, sügavus 16 mm. Klaas ja AtomS3 on 24 × 24 mm, varu ~6,6 mm igale poole; kõrgus jääb alla 60 mm piiri. Ülesanne praagi suurust ega pesasid ei nõua ("võib olla lihtsalt kast"). Füüsiline kontroll: TODO.
-  - 23.10.26 mõõduparandus eelnevale kirjele: meie klaas on **30 × 30 × 2 mm**, mitte 24 × 24 × 2 mm (Maksimi Excel, `Measurements!D8:E19`, meeskonna kinnitus). Kirjeldatud 37,2 mm sirgete siseseinte vahe korral on keskse klaasi teoreetiline külgvaru `(37,2 − 30) / 2 = 3,6 mm`, mitte 6,6 mm. See ei ole sobivuskatse; kalibreerimiskast ei ole praagi praegune sihtkoht.
   - Heade väljund (4 klaasi, suuremate kaldservadega): TODO — modelleerimata.
-  - 23.10.26 parandus (meeskonna otsus, lihtsustus): praak läheb samuti oranži `ready-parts-input-holder-v1` hoidikusse; `gridfinity-calibration-v1` jääb ainult kalibreerimiseks.
+  - 23.10.26 parandus (meeskonna otsus, lihtsustus): praak läheb samuti oranži `ready-parts-input-holder-v1` hoidikusse.
   - 23.10.26: heade väljund modelleeritud — `valjundhoidik/src/valjundhoidik-v1.f3d`, `valjundhoidik/stl/valjundhoidik-v1.stl`. Alus on `glass-input-holder-v1` (sama 2 × 2 välismõõt 83,2 × 83,2 mm ja Gridfinity jalad); nelja pesa ja vaheseinte asemel üks lahtine kast. Uued parameetrid: põhi `out_floor_thickness = 2,5 mm`, õõne sügavus `out_cavity_depth = 14 mm`, sein `out_wall_thickness = 2,5 mm`, sisenurga raadius `4 mm`, sissejuhtiv faas ülaservas `out_lead_in = 2 mm`. Kõrgus ilma jalata 16,5 mm, jalaga 24,15 mm (alla 60 mm piiri). Sisemus ~78 × 78 mm, 4 klaasi mahuvad kõrvuti. 3MF ja füüsiline kontroll: TODO.
   - 23.10.26 print ette valmistatud: `valjundhoidik/3mf/valjundhoidik-v1.3mf` (PrusaSlicer). Prusa CORE One HF0.4, `0.20mm SPEED`, Prusament PLA, täide 15 % grid, 2 perimeetrit, jalad all. Orgaanilised toed ainult alusplaadilt: korpuse alumine serv ulatub jalgadest ~2,9 mm välja ja see pind toetub ruudustikule, nii et ta peab jääma sirge. Ilma tugedeta 46 min / 33,6 g, tugedega **1 h 7 min / 37,7 g** (valitud). Pikim mõõt 83,2 mm < 150 mm, seega brim'i ei ole vaja. Füüsiline kontroll: TODO.
   - 24.10.26: `valjundhoidik-v1` prinditud (2 × 2, üks lahtine kast ilma vaheseinteta). Füüsiline kontroll: hoidik istub ruudustikus hästi (jalad v2 parandusega ei kiilu). Klaasi panek robotiga ja pesade mõõdud nihikuga: TODO.
@@ -91,7 +89,7 @@ Wi-Fi füüsiline toimimine ja station PC võrgust ligipääs, kaablite marsruut
 
     ![veebikaamera-post-v3 jalg ja kaabliklambrid](docs/photos/veebikaamera-post-v3-jalg.png)
     - 24.10.26 Gridfinity jalad ümber tehtud (enne printimist). Denys: `valjundhoidik-v1` liigub ruudustikus edasi-tagasi ega lähe päris lõpuni. Põhjus CAD-is (mõõdetud `MG 400 rakis` B-Rep pindadest, `grid_pos_0`, lahter A+1): pesa on Gridfinity profiil — 45° 2,15 mm (laius 41,98 → 37,68), vertikaalne 1,8 mm (37,68, R 1,84), 45° 0,7 mm (→ 36,28, R 1,14); kõik nurgakaared ühe keskpunktiga 17 mm lahtri keskelt. Meie jalg oli sirge 35,78 mm prisma (R 1,5), mis puudutas pesa ainult kõige kitsamas kohas; vertikaalosas oli lõtk **0,95 mm külje kohta**, midagi ei tsentreerinud. Uus jalg = pesa profiil, iga pind nihutatud sissepoole `foot_clearance = 0,25 mm` (Gridfinity standard), nurkade keskpunkt sama: 45° 2,15 / 1,8 / 45° 0,7 mm. Kontroll Fusionis: jala poollaius 20,66 / 18,59 / 17,96 mm vs pesa 20,91 / 18,84 / 18,21 mm (täpselt 0,25), interferents 0, alus toetub ruudustiku harjadele z 7,28. Vanad jalad (`Extrude2`, `Chamfer1`) maha surutud, mitte kustutatud. Miks `valjundhoidik-v1` lõpuni ei lähe, ei ole füüsiliselt tõestatud (kontrollida tugede jääke aluse all, esimese kihi laienemist, kus kinni jääb): TODO.
-    - 24.10.26 parandus samal päeval: ülesanne nõuab **standardset** Gridfinity jalga (4,75 mm, „võta generaatorist, ära joonista silma järgi“). Võrdlus generaatoriga gridfinity-rebuilt-openscad (`BASE_PROFILE`: 45° 0,8 / 1,8 / 45° 2,15 mm, 35,6 → 37,2 → 41,5 mm, R 0,8 → 1,6 → 3,75): meie „pesa − 0,25“ jalg erines (alumine faas 0,7, kõrgus 4,65). Posti jalad on nüüd standardsed (`gf_std_foot1–3`, `gf_fit_adjust = 0`; eelmised `gf_foot_step*` maha surutud). 2 × 2 alus toetub oma sisemistele harjadele (z 7,28), külglõtk 0,24 mm nagu standardis; interferents ruudustikuga 0. Jala test = kalibreerimishoidik v3 (`gridfinity-calibration-v3`, vt CAD-failid).
+    - 24.10.26 parandus samal päeval: ülesanne nõuab **standardset** Gridfinity jalga (4,75 mm, „võta generaatorist, ära joonista silma järgi“). Võrdlus generaatoriga gridfinity-rebuilt-openscad (`BASE_PROFILE`: 45° 0,8 / 1,8 / 45° 2,15 mm, 35,6 → 37,2 → 41,5 mm, R 0,8 → 1,6 → 3,75): meie „pesa − 0,25“ jalg erines (alumine faas 0,7, kõrgus 4,65). Posti jalad on nüüd standardsed (`gf_std_foot1–3`, `gf_fit_adjust = 0`; eelmised `gf_foot_step*` maha surutud). 2 × 2 alus toetub oma sisemistele harjadele (z 7,28), külglõtk 0,24 mm nagu standardis; interferents ruudustikuga 0.
 
     - 24.10.26 jala parandus: Denys märkas, et posti kolmnurksed ribid (`Extrude6` −X, `Extrude7` −Y; 30 mm välja, 4 mm paksud, z 7,3…107) lõppesid ruudustiku kõrgusel õhus, 24 mm laua kohal, ja jala 45 × 45 mm tald ei ulatunud nende alla — ribid ei kandnud midagi. Nüüd jätkuvad samad ribid jalal (sama tasand ja paksus, 30 mm välja) talla pealt kuni z 7,28; posti ribid toetuvad neile (kaugus 0, interferents 0). Tald kasvas −X/−Y suunas ribide otsteni (67,5 × 67,5 mm, `leg_rib_pad_margin = 0`): see on külg, kuhu post ruudustikust eemale kalduks. Jala maht 20,1 → 32,7 cm³.
     ![veebikaamera-post-v3 Gridfinity jalad altpoolt](docs/photos/veebikaamera-post-v3-gridfinity-jalad.png)
@@ -208,8 +206,6 @@ Kõigi nende olek on `TODO — waiting for physical test`.
 
 ## CAD-failid
 
-- `src/gridfinity-calibration-v1.scad` - varasem lihtsustatud jalaga prototüüp; seda versiooni ei tohi printida.
-- `src/gridfinity-calibration-v2.scad` - kandidaat esimeseks füüsiliseks 1 × 1 kalibreerimisprindiks. Jalg järgib dokumenteeritud Gridfinity profiili; ülapinnal on keskpunkti tähistav rist. Füüsiline sobivus: `TODO — waiting for physical test`.
 - `src/gridfinity-tray-v1.scad` - nelja pesaga varasem alustusmudel, mille lihtsustatud jalg ei vasta dokumenteeritud Gridfinity profiilile. Seda versiooni ei tohi printida ega kasutada uute hoidikute alusena.
 
 - `gripper-attachment/src/mg400-gripper-attachment-v1.f3d`, `gripper-attachment/stl/mg400-gripper-attachment-v1.stl` - MG400 haarats-tööriist (Fusioni dokument `MG_400_gripper_attachment`, versioon 5). Keskel flantsi boss ja kahvel AtomS3R-i ning aku tõstmiseks, vasakul iminapa kinnitus, paremal süstla klamber. Printimata; 3MF puudub. Lahtised küsimused vt arenduspäevik 04.10.26. **Arendus peatatud 23.10.26:** Lab 2-s kasutame ainult iminappa (vt arenduspäevik 23.10.26).
@@ -236,12 +232,11 @@ Kõigi nende olek on `TODO — waiting for physical test`.
 
   ![xiao-square-mount-v5 PrusaSliceris](docs/photos/xiao-square-mount-v5-slicer.png)
 
-- `gridfinity-calibration/src/gridfinity-calibration-v1.f3d`, `gridfinity-calibration/stl/gridfinity-calibration-v1.stl`, `gridfinity-calibration/3mf/gridfinity-calibration-v1.3mf` - lisatud 1 × 1 Gridfinity kalibreerimishoidiku Fusioni fail ja ekspordid; füüsiline sobivus ja roboti kalibreerimine: `TODO — waiting for physical test`.
-- `gridfinity-calibration/src/gridfinity-calibration-v3.f3d`, `gridfinity-calibration/stl/gridfinity-calibration-v3.stl`, `gridfinity-calibration/3mf/gridfinity-calibration-v3.3mf` - 24.10.26 (Claude Fusioni API kaudu; nimi v3, sest `src/gridfinity-calibration-v2.scad` on OpenSCADi kandidaat). 1 × 1, välismõõt 41,5 × 41,5 mm, R 3,75, kõrgus 21 mm (3 × 7), **standardne Gridfinity jalg** (generaatori `BASE_PROFILE`, `gf_fit_adjust = 0`), põhi 7 mm kõrgusel, sisetasku 37 × 37 mm (R 0,5, sügavus 14) nelja sisenurga meetodiks (napa efektiivne läbimõõt ~22 mm → käik ~15 mm), põhjas keskrist 1 × 35 mm, 0,6 mm sügav (ülesanne: „keskel terav tipp või rist“; tipp segaks nappi nurkades, risti näeb ka XIAO kaamera). Kontroll Fusionis ruudus B-2 (`MG 400 rakis`): jalg toetub pesa kaldservadele (profiilid paralleelsed, horisontaalne vahe 0,24 mm), 0,05 mm külgnihe annab juba interferentsi → teoreetiline külglõtk 0; nominaalne ülaserv **16,0 mm** ruudustiku pinnast (füüsiline kontroll: kõrgem = jalg prindib laiemaks). Print: Prusa CORE One HF0.4, `0.20mm SPEED`, Prusament PLA, ilma tugedeta, 21 min, 11,2 g. Füüsiline sobivus: TODO — waiting for physical test.
+- `gridfinity-calibration/src/gridfinity-calibration.f3d`, `gridfinity-calibration/stl/gridfinity-calibration.stl`, `gridfinity-calibration/3mf/gridfinity-calibration.3mf` - 1 × 1 kalibreerimiskast: välismõõt 41,5 × 41,5 mm, kõrgus 21 mm, **standardne Gridfinity jalg** (generaatori `BASE_PROFILE`, `gf_fit_adjust = 0`), sisetasku 37 × 37 mm nelja sisenurga meetodiks, põhjas keskrist 1 × 35 mm, 0,6 mm sügav. Print: Prusa CORE One HF0.4, `0.20mm SPEED`, Prusament PLA, ilma tugedeta, 21 min, 11,2 g. Prinditud ja kontrollitud: istub ruudustikus, kasutusel roboti kalibreerimisel (ruut C−2).
 
-  ![gridfinity-calibration-v3 ruudus B-2](docs/photos/gridfinity-calibration-v3-ruudustikus.png)
+  ![gridfinity-calibration ruudustikus](docs/photos/gridfinity-calibration-ruudustikus.png)
 
-  ![gridfinity-calibration-v3 standardne jalg](docs/photos/gridfinity-calibration-v3-jalg.png)
+  ![gridfinity-calibration standardne jalg](docs/photos/gridfinity-calibration-jalg.png)
 - `atoms3-input-holder/src/atoms3-input-holder-v1.f3d`, `atoms3-input-holder/stl/atoms3-input-holder-v1.stl`, `atoms3-input-holder/3mf/atoms3-input-holder-v1.3mf` - AtomS3 sisendhoidiku Fusioni fail ja ekspordid; mõõtude ning füüsilise sobivuse kinnitus: `TODO — waiting for physical test`.
 - `ready-parts-input-holder/src/ready-parts-input-holder-v1.f3d`, `ready-parts-input-holder/stl/ready-parts-input-holder-v1.stl`, `ready-parts-input-holder/3mf/ready-parts-input-holder-v1.3mf` - ReadyParts sisendhoidiku Fusioni fail ja ekspordid; mõõtude ning füüsilise sobivuse kinnitus: `TODO — waiting for physical test`.
 - `glass-input-holder/src/glass-input-holder-v1.f3d`, `glass-input-holder/stl/glass-input-holder-v1.stl`, `glass-input-holder/3mf/glass-input-holder-v1.3mf` - klaasi sisendhoidiku Fusioni fail ja ekspordid; mõõtude ning füüsilise sobivuse kinnitus: `TODO — waiting for physical test`.
@@ -268,17 +263,6 @@ mitte ei muudeta.
 * Otsustasime, ja miks:
 * Lahti järgmiseks korraks:
 * Failid: (valikuline lisainfo)
-
-**03.10.26 — Codex; meeskonnaliikmete kohalolek teadmata**
-- Tegime: kontrollisime Gridfinity jala profiili ametliku lauakirjelduse ja avatud lähtekoodiga generaatori vastu; koostasime kalibreerimishoidiku v2 keskristiga ning märkisime v1 tray lihtsustatud jala aegunuks.
-- Probleem: v1 jalg oli ühe koonusega ega sisaldanud standardset vertikaalset lõiku ega kahte eraldi kaldserva.
-- Mõõtmised ja tulemused koos ühikutega: füüsilisi mõõtmisi ega katseid ei tehtud. V2 nominaalprofiil on `0,8 mm + 1,8 mm + 2,15 mm = 4,75 mm`; esialgne `fit_adjustment = 0 mm` külje kohta. Füüsiline sobivus: `TODO — waiting for physical test`.
-- Oodatav tulemus: keskristi abil saab määrata ruudu keskpunkti ja füüsiline print näitab jala tegelikku sobivust. Tegelik tulemus: `TODO — waiting for physical test`.
-- Otsused ja põhjendused: säilitasime v1 failid ajaloo jaoks; v2 eraldab nominaalprofiili printeri sobitusparandusest. Tray jalga ei kasutata enne füüsilist sobivuskatset.
-- Failid ja versioonid: `src/gridfinity-calibration-v2.scad`, `src/gridfinity-tray-v1.scad`, `docs/measurements.md`, `README.md`.
-- Järgmiseks: kontrollida v2 OpenSCADis, seejärel printida eraldi füüsiline kandidaat ja dokumenteerida sobivus, loks ning eemaldamisjõud.
-
-> Märkus: selles ajaloolises kirjes nimetatud AI oli kasutatud tööriist, mitte füüsiliselt kohal olnud meeskonnaliige. Algset päevikukirjet ei muudeta tagantjärele.
 
 **04.10.26 — r4imps (Raimo) koos Claude'iga (Fusion MCP kaudu)**
 - Tegime: vaatasime üle haaratsi `MG_400_gripper_attachment` ja muutsime seda kaalu ning kruvide järgi. Fusionis on iga samm eraldi versioonina (v1 = algne, v5 = tänane lõpp).
@@ -328,7 +312,7 @@ mitte ei muudeta.
 * Failid: `tool-camera/firmware/`, `tool-camera/capture.py`, `docs/photos/tool-camera-first-frame.jpg`, `README.md`.
 
 **23.10.26 õhtu — Dennel04 (Denys) koos Claude'iga — kalibreerimine**
-* Tegime: alustasime nelja sisenurga kalibreerimist musta 1 × 1 kastiga (`gridfinity-calibration-v1`). Robotit juhiti `mg400-base` serveri kaudu (2 % kiirus, 0,5 mm sammud, abiskript `calibration/jog.py`) ja osaliselt DobotStudio Pro-st.
+* Tegime: alustasime nelja sisenurga kalibreerimist musta 1 × 1 kastiga. Robotit juhiti `mg400-base` serveri kaudu (2 % kiirus, 0,5 mm sammud, abiskript `calibration/jog.py`) ja osaliselt DobotStudio Pro-st.
 * Juhtus (numbrid): B-2-s jõuab käsi ainult Z ≈ −98-ni (J3 105° piir), seega G-1. Kinnitatud nurgad: Xmax+Ymin 404,47 / 18,80, Xmax+Ymax 403,98 / 34,34, Xmin+Ymax 389,47 / 33,80 (Z −150,85). Xmin+Ymin 389,50 / 18,77 kinnitamata. Napi efektiivne läbimõõt ≈ 22 mm. Eeldatav keskpunkt ≈ 396,85 / 26,43, nihe mudelist ≈ +5,3 / +5,4 mm.
 * Probleemid: DobotStudio Pro JOG-režiim võtab roboti üle ja sulgeb serveri TCP ühenduse (vaja lülitada TCP/IP režiimi). Pehme napp kaldub seina vastu — puudutust hinnatakse silmaga, kalle = liiga kaugel.
 * Lahti järgmiseks korraks: kinnitada Xmin+Ymin nurk; korrata Xmin+Ymax Z −155,84 peal; arvutada keskpunkt ja pööre; kontrollruut lähemal (nt C+2); kast välja/tagasi ja kordus (kordustäpsus).
@@ -389,8 +373,7 @@ mitte ei muudeta.
 * Osalejad: Denys leidis Fusionis, et post ripub ruudustikust väljas õhus ja kaabliklambrid puuduvad; muudatuse tegi Claude Fusioni API kaudu (v2 pilvedokumendile lisatud, pilve ei salvestatud). Füüsilist katset ei tehtud.
 * Esimene katse pani laua rakise jalgade alla (z −46,7); Denys parandas: laud on ruudustiku alumise serva kõrgusel (z −16,7). Jalg tehti ümber, jalal kaabliklambrit ei ole (24 mm toru on klambrile liiga lühike).
 * Kuus kaabliklambrit oli liiga palju (Denys) → üks klamber tüki kohta. Koostevaade kõigi hoidikutega ruudustikus lisatud.
-* Gridfinity pesa mõõdeti täpselt (B-Rep pinnad: tasapinnad, koonused, silindrid) ja posti jalad tehti pesa profiili järgi (lõtk 0,25 mm); sama päeva parandus: jalg standardseks (generaator), test = kalibreerimishoidik v3. Teadmine ja tööriistad meeskonnale: `fusion-tutor/shared/knowledge/gridfinity-socket.md`, `fusion-tutor/shared/tools/fusion-geometry/`. Teised hoidikud (väljund, klaas, AtomS3, oranž, kalibreerimiskast) kasutavad veel sirget jalga — uued versioonid pärast jala testi.
-* Kalibreerimishoidik v3: standardne Gridfinity jalg (generaator + mõõdetud pesa), keskrist, 4 nurga tasku; posti jalad samuti standardseks.
+* Gridfinity pesa mõõdeti täpselt (B-Rep pinnad: tasapinnad, koonused, silindrid) ja posti jalad tehti pesa profiili järgi (lõtk 0,25 mm); sama päeva parandus: jalg standardseks (generaator). Teadmine ja tööriistad meeskonnale: `fusion-tutor/shared/knowledge/gridfinity-socket.md`, `fusion-tutor/shared/tools/fusion-geometry/`. Teised hoidikud (väljund, klaas, AtomS3, oranž) kasutavad veel sirget jalga — uued versioonid pärast jala testi.
 * Posti ribid rippusid õhus (Denys) → ribid jätkuvad jalal lauani, jala tald laiendatud ribide alla.
 * Tulemus ja TODO: vt kontrollnimekirja punkti „USB UHD veebikaamera jäik post“, v3. v1 ja v2 failid muutmata.
 
@@ -398,13 +381,13 @@ mitte ei muudeta.
 * Osalejad: Denys soovis realistlikku simulatsiooni, et päris robotiga vigu mitte teha; ehitas Claude. Füüsilist katset ei tehtud.
 * Tegime: Dobot ametlik MG400 URDF (MIT) + meie `mg400-base` sobitatud liigesemudel ja piirid + rakis, hoidikud `layout.json` järgi, veebikaamera post, XIAO kinnitus, iminapp; täpsed kokkupõrked `python-fcl`-iga. Kaksik kasutab sama `cycle.py` ja `cells.py` mis robot.
 * Kontroll päris andmetega: G-1 liigesepiir −135,8 vs päris −138; B-2 J3 piir −99 vs −98; lahtrikeskmed vs `cells.py` ≤ 0,06 mm; napa pikkus 66,2 mm D-2 puudutusest, 23.10 G-1 nurgad sobivad. Kontrollijat testiti teadlikult vigaste tsüklitega (8 juhtumit, kõik leitud).
-* Tulemused: B-2 ei sobi kalibreerimiseks (napp ei mahu kasti v3) → C-2; klaasitsükkel kokkupõrgeteta; väljund talub ainult 3 mm kalibreerimisviga. Üksikasjad ja piirid: [`../sim/README.md`](../sim/README.md). Kaksik viidi samal päeval labori kaustast välja `3d-print/sim/`-i (Denys: see on kõigi laborite jaoks); Lab 2 tulemused jäävad `docs/`-i.
+* Tulemused: B-2 ei sobi kalibreerimiseks (napp ei mahu kalibreerimiskasti) → C-2; klaasitsükkel kokkupõrgeteta; väljund talub ainult 3 mm kalibreerimisviga. Üksikasjad ja piirid: [`../sim/README.md`](../sim/README.md). Kaksik viidi samal päeval labori kaustast välja `3d-print/sim/`-i (Denys: see on kõigi laborite jaoks); Lab 2 tulemused jäävad `docs/`-i.
 * TODO — waiting for physical test: napa läbimõõt, nihe J4 teljest ja pikkus nihikuga; kalibreerimine C-2-s.
 * XIAO kaamerakinnitus v5: esimene testprint käivitatud (Nikita).
 
-**24.10.2026 õhtu — kalibreerimiskast v3 päris robotiga, ruut C-2**
+**24.10.2026 õhtu — kalibreerimiskast päris robotiga, ruut C-2**
 * Osalejad: Denys laboris (paigaldas kasti, hindas puudutusi), Claude juhtis robotit (2 %, 0,5 mm sammud).
-* Kast v3 (rist põhjas, standardne jalg) prinditi ja sobib hästi. Z puudutus põhjal −155,0 (kaksik −154,8). Neli sisenurka → keskpunkt 253,81 / 68,46, `cells.py` viga +0,12 / +2,00 mm; mõõdetud keskpunktis on napp risti kohal. Napa efektiivne läbimõõt ≈ 23 mm. Andmed: [`docs/calibration_c-2_v3.csv`](docs/calibration_c-2_v3.csv), [`docs/measurements.md`](docs/measurements.md).
+* Kalibreerimiskast (rist põhjas, standardne jalg) istub ruudustikus hästi. Z puudutus põhjal −155,0 (kaksik −154,8). Neli sisenurka → keskpunkt 253,81 / 68,46, `cells.py` viga +0,12 / +2,00 mm; mõõdetud keskpunktis on napp risti kohal. Napa efektiivne läbimõõt ≈ 23 mm. Andmed: [`docs/calibration_c-2.csv`](docs/calibration_c-2.csv), [`docs/measurements.md`](docs/measurements.md).
 * Kaksiku `dry_run.py` kontrollib nüüd `layout.json`-i nii, nagu robot seda praegu käivitaks (ülekandetest), ja `--full` planeeritud täistsüklit; kokkupõrkeid pole kummaski.
 * Lahtine: kas `cells.py` sobitada uuesti C-2-ga (Y +2 mm kordub ka D-4 õpetuses); kasti välja/tagasi kordustäpsus jäi mõõtmata.
 
@@ -412,7 +395,7 @@ mitte ei muudeta.
 * Osalejad: Denys laboris (valis variandi, seadis C−2, D−4, D−5 keskpunktid, tegi klaasi ülekande), Claude (kaksik, slot picker, dokumendid). Raimo slot pickerit muutis Claude Denysi palvel (Raimot veel ei teavitatud).
 * Paigutus: kaksikus võrreldi variante; valiti B — töökoht oranžis C±1 (214–256 mm J1-st), praak B±1, klaas D/E −4/−5 (paigas), AtomS3 E/F −1/−2, väljund D/E +4/+5, kalibreerimiskast F+2. Täistsükkel 4 klaasiga 0 kokkupõrget, ükski tee ei lähe üle kolmanda hoidiku. Väljundi kalibreerimisvea varu ainult 2–5 mm → ettepanek väljundi kohad kasti keskele lähemale (Raimoga kokku leppida).
 * Slot picker: kiiruse valik lehel; liikumiskõrgus −90, hover kuni −110; käeulatuse ja tee kontroll enne liikumist; Test → **Move one glass** (From/To lahter, pick Z, place Z). Klaasi ülekanne õnnestus pick Z −152-ga (Denys).
-* Kalibreerimine: C−2 kast v3 (Denys keskele 253,94 / 68,30) lisatud `cells.py` sobitusse; klaasi sisendi nihe D−4/D−5 keskpunktidest (dx −2,00, dy +2,50).
+* Kalibreerimine: C−2 kalibreerimiskast (Denys keskele 253,94 / 68,30) lisatud `cells.py` sobitusse; klaasi sisendi nihe D−4/D−5 keskpunktidest (dx −2,00, dy +2,50).
 * Järgmiseks: hoidikud uutesse ruutudesse, töökoha ja väljundi punktide õpetamine, 5 ringi × 4 klaasi → `docs/refit_test.csv`.
 
 **24.10.2026 — eraldi iminapa nihikumõõdud ja sisendhoidikute käsitsi sobivuskontroll**

@@ -71,7 +71,7 @@ sketch = rounded rectangle with corner radius `half - 17`. Script:
 `../tools/fusion-geometry/gf_std_foot.py` (`add_std_feet(component,
 centres_mm, foot_top_z_mm)`, parameter `gf_fit_adjust` = extra inward offset
 per side, 0 = standard). Calibration bin: `../tools/fusion-geometry/gf_calibration_bin.py`
-(3d-print/lab2/gridfinity-calibration v3).
+(3d-print/lab2/gridfinity-calibration).
 
 Checks after building:
 - Interference with the grid = none; `measureMinimumDistance` = contact;
@@ -80,7 +80,7 @@ Checks after building:
 
 ## Open (physical)
 
-- Calibration bin v3 printed: seats fully? rocks? height above the grid vs 16.0 mm nominal: TODO.
+- Calibration bin printed 24.10: seats in the grid, no rock, used for the C-2 calibration.
 - Why `valjundhoidik-v1` does not go in to the end is not proven yet: check
   support remnants under the base, elephant foot on the first layer (caliper:
   the foot bottom should be ~35.8 mm), where it stops.

@@ -97,7 +97,7 @@ _(mistakes that no longer recur move here)_
    and honestly mark the statuses above. _(not done: on 04.10 we worked on the
    Lab 2 cameras; do it when there is a first model of my own)_
 2. Lab 2: model a parametric 1x1 Gridfinity holder in Fusion myself (compare
-   with the OpenSCAD version `lab2/src/gridfinity-calibration-v2.scad`).
+   with the lab calibration bin `lab2/gridfinity-calibration`).
 3. Lab 3 (issued 27.10): practise in advance what it will need: components vs
    bodies, Interference, a light "cone" body, a nut pocket, a syringe size
    parameter, a spring clamp using the Lab 1 numbers.

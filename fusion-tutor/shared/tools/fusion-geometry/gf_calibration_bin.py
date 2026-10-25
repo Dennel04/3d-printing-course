@@ -1,4 +1,4 @@
-# Gridfinity calibration bin v3 (3d-print/lab2/gridfinity-calibration). Run as: header of s_gf_std.py + this file.
+# Gridfinity calibration bin (3d-print/lab2/gridfinity-calibration). Run as: header of s_gf_std.py + this file.
 # 1x1, standard foot, 41.5 x 41.5 x 21, pocket 37 for the 4-corner suction-cup method, 1 x 35 mm cross 0.6 deep.
 
 def run(_context):
@@ -17,7 +17,7 @@ def run(_context):
     v = lambda n: up.itemByName(n).value * 10   # mm
     cx, cy = -181.5, -63.0                      # cell B-2 (assignment: calibrate in B-2)
     z0 = 2.629 - 0.34                           # foot bottom when the chamfers touch (parallel profiles, 0.24 gap)
-    o = root.occurrences.addNewComponent(adsk.core.Matrix3D.create()); C = o.component; C.name = "gridfinity_calibration_v3"
+    o = root.occurrences.addNewComponent(adsk.core.Matrix3D.create()); C = o.component; C.name = "gridfinity_calibration"
     def plane(z):
         pi = C.constructionPlanes.createInput(); pi.setByOffset(C.xYConstructionPlane, adsk.core.ValueInput.createByReal(z / 10))
         return C.constructionPlanes.add(pi)
@@ -46,6 +46,6 @@ def run(_context):
     ei = C.features.extrudeFeatures.createInput(profs, adsk.fusion.FeatureOperations.CutFeatureOperation)
     ei.setDistanceExtent(False, adsk.core.ValueInput.createByReal(-v("cal_cross_depth") / 10)); ei.participantBodies = [C.bRepBodies.item(0)]
     C.features.extrudeFeatures.add(ei).name = "cal_cross"
-    b = C.bRepBodies.item(0); b.name = "gridfinity_calibration_v3"
+    b = C.bRepBodies.item(0); b.name = "gridfinity_calibration"
     bb = b.boundingBox
     print("bodies %d  %.2f x %.2f x %.2f mm  vol %.2f cm3  z %.3f..%.3f" % (C.bRepBodies.count, (bb.maxPoint.x-bb.minPoint.x)*10, (bb.maxPoint.y-bb.minPoint.y)*10, (bb.maxPoint.z-bb.minPoint.z)*10, b.volume, bb.minPoint.z*10, bb.maxPoint.z*10))

@@ -10,7 +10,7 @@ import sys
 
 R_DEG = 33.0
 # 24.10.26, R 33: measured centre (robot X, Y) per cell; see docs/measurements.md
-# C-2 added 24.10.26 evening: calibration bin v3 (docs/calibration_c-2_v3.csv); four inner corners gave
+# C-2 added 24.10.26 evening: calibration bin (docs/calibration_c-2.csv); four inner corners gave
 # 253.805 / 68.46, Denys then centred the cup on the cross at the floor: 253.94 / 68.30 (used)
 MEASURED = {
     "G-1": (420.50, 27.55),
