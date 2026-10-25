@@ -133,6 +133,12 @@ physical part, each with `src/` `stl/` `3mf/`.
   `3d-print/lab3/docs/tool_layout.md`. Never substitute datasheet or CAD
   dimensions for physical measurements without an explicit label, and never
   close a physical acceptance criterion without the corresponding real test.
+- Lab 3 (25.10.2026): hoia ülesandekoopia ametliku allikaga bait-baidilt
+  samana. Kehtib pump → Y → napp / klapp → süstal, klapi kolmas ava on
+  atmosfääri; tsükkel on doseerimine → tõstmine → kõvendamine → väljund.
+  Arvesta nelja nihet (sh kaamera pildi keskpunkt) ning 500 g piiriga koos
+  täis süstla ja klaasiga. Õpetaja klapikinnitus ja pooleli süstlapäis on
+  CAD-referentsid; uus hoidik, O-rõngas ja must UV-kate vajavad oma kontrolli.
 - Prefer adding new versioned files over overwriting existing STL/3mf/source
   files.
 - If asked to translate assignment text, translate faithfully; don't
