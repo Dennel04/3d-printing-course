@@ -35,12 +35,12 @@
     <button class="ghost" id="btnClear" hidden>Clear error</button>
     <button class="stop" id="btnStop" title="Stop the arm and cancel the running sequence (Esc)">STOP</button>
   </div>
-  <div class="toast" id="toast" role="status" hidden></div>
 </header>
 
 <main class="deck">
   <section class="stage" aria-label="3D view">
     <div id="view"></div>
+    <div class="toast" id="toast" role="status"><span id="toastText"></span><button class="toast-x" id="toastX" aria-label="Dismiss">×</button></div>
     <div class="webcam" id="webcamPane" hidden><video id="webcamVideo" autoplay muted playsinline></video><p id="webcamEmpty"></p></div>
     <div class="stage-top">
       <div class="seg small" role="radiogroup" aria-label="3D view">

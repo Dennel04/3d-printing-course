@@ -19,12 +19,27 @@ const ui = { mode: "sim", space: "cart", step: 1, state: null, armed: false, rea
 
 function say(text, kind = "") { const m = $("#jogMsg"); m.textContent = text; m.className = "msg " + kind; }
 let toastTimer = null;
+function hideToast() { clearTimeout(toastTimer); $("#toast").classList.remove("show"); }
 function toast(text, kind = "") {
   const t = $("#toast");
-  t.textContent = text; t.className = "toast " + kind; t.hidden = !text;
+  if (!text) return hideToast();
+  $("#toastText").textContent = text; t.style.setProperty("--dx", "0px");
+  t.className = "toast show " + kind;
   clearTimeout(toastTimer);
-  if (text) toastTimer = setTimeout(() => t.hidden = true, kind === "bad" ? 8000 : 4500);
+  toastTimer = setTimeout(hideToast, kind === "bad" ? 7000 : 3000);
 }
+// click or the x closes it; a sideways swipe throws it away
+(() => {
+  const t = $("#toast"); let x0 = null;
+  t.onclick = hideToast;
+  t.onpointerdown = e => { x0 = e.clientX; t.setPointerCapture(e.pointerId); t.classList.add("drag"); clearTimeout(toastTimer); };
+  t.onpointermove = e => { if (x0 !== null) t.style.setProperty("--dx", e.clientX - x0 + "px"); };
+  t.onpointerup = e => {
+    const dx = x0 === null ? 0 : e.clientX - x0; x0 = null; t.classList.remove("drag");
+    if (Math.abs(dx) > 60) { t.style.setProperty("--dx", Math.sign(dx) * 400 + "px"); hideToast(); }
+    else if (Math.abs(dx) > 4) { t.style.setProperty("--dx", "0px"); toastTimer = setTimeout(hideToast, 3000); }
+  };
+})();
 function setChecked(buttons, pred) { buttons.forEach(b => b.setAttribute("aria-checked", String(pred(b)))); }
 
 /* ---------------- rail ---------------- */
@@ -41,25 +56,23 @@ $$(".mode button").forEach(b => b.onclick = async () => {
   b.classList.remove("confirm"); b.textContent = mode === "real" ? "Real robot" : "Simulation";
   try {
     await api("/hub/mode", { mode });
-    toast(mode === "real" ? "Real robot selected. Motion is off; turn it on in the Jog tab." : "Simulation selected. Motion is off; turn it on in the Jog tab.");
+    toast(mode === "real" ? "Real robot. Motion is off." : "Simulation. Motion is off.");
   } catch (e) { toast(e.message, "bad"); }
 });
 $("#btnArm").onclick = async () => {
   const on = $("#btnArm").getAttribute("aria-pressed") !== "true";
   try {
     await api("/hub/arm", { armed: on });
-    toast(on ? (ui.mode === "real" ? "Motion on for the real arm. Keep a hand on the e-stop." : "Motion on for the simulated arm.") : "Motion off.");
   } catch (e) { toast(e.message, "bad"); }
 };
 $("#speed").oninput = e => $("#speedOut").textContent = e.target.value + " %";
 $("#speed").onchange = async e => {
   try { await api("/api/speed", { ratio: +e.target.value }); } catch (err) { toast(err.message, "bad"); }
 };
-$("#btnEnable").onclick = () => api("/hub/enable", {}).then(() => toast("Robot enabled: it holds its position. Turn Motion on in the Jog tab to move it."))
-  .catch(e => toast(e.message, "bad"));
+$("#btnEnable").onclick = () => api("/hub/enable", {}).catch(e => toast(e.message, "bad"));
 $("#btnConnect").onclick = async e => {
   e.target.disabled = true;
-  try { await api("/hub/connect", {}); toast("Connected. Press Enable robot, then Arm."); }
+  try { await api("/hub/connect", {}); }
   catch (err) { toast(`${err.message}. Check the robot is powered on and the Ethernet cable, and close DobotStudio (or switch it to TCP/IP).`, "bad"); }
   e.target.disabled = false;
 };
