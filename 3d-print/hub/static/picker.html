@@ -488,7 +488,7 @@ function renderTest() {
   for (const role of activeRoles()) {
     const h = roleHolder(role), tv = teachOf(h);
     const cell = !h ? "–" : role === "workstation" ? (layout.cycle.workstation_cell || h.cells[0]) : h.cells[0];
-    const z = k => NEEDS[role].includes(k) ? `<span class="mono">${tv[k] ?? "<span class=err>not set</span>"}</span> <button data-t="${role},${k}">Set</button>` : "";
+    const z = k => NEEDS[role].includes(k) ? `<span class="mono">${tv[k] == null ? "<span class=err>not set</span>" : esc(tv[k])}</span> <button data-t="${role},${k}">Set</button>` : "";
     const tr = document.createElement("tr");
     tr.innerHTML = `<td>${role}</td><td>${h ? esc(h.name) + " · " + cell : "<span class=err>choose a holder</span>"}</td>
       <td><span class="mono">${tv.dx.toFixed(1)} / ${tv.dy.toFixed(1)}</span> <button data-t="${role},xy">Set</button></td>
