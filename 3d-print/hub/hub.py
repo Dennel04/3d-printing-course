@@ -98,9 +98,32 @@ REAL_ARM_IDLE_S = 120     # Real robot: motion locks itself after this long with
 class Robots:
     """The robot the slot picker talks to: Simulation (in-process) or Real (mg400-base), and the motion lock."""
 
-    def __init__(self, real, sim):
-        self.real, self.sim, self.mode = real, sim, "sim"
+    def __init__(self, real, sim, mode_file=None):
+        # the last selected robot survives a hub restart (mode_file); motion always starts off
+        self.real, self.sim, self.mode_file = real, sim, mode_file
+        saved = mode_file.read_text().strip() if mode_file and mode_file.is_file() else ""
+        self._mode = saved if saved in ("sim", "real") else "sim"
         self.armed, self.last_motion = False, 0.0
+
+    @property
+    def mode(self):
+        return self._mode
+
+    @mode.setter
+    def mode(self, mode):
+        self._mode = mode
+        if self.mode_file:
+            self.mode_file.write_text(mode)
+        if mode == "real":
+            self.ensure_connected()
+
+    def ensure_connected(self):
+        """Real robot: open mg400-base's link to the arm if it is down (no motion; Enable stays a click)."""
+        try:
+            if not self.real.call("/status").get("connected"):
+                self.real.call("/connect", {})
+        except Exception:
+            pass          # server down or robot off: the top bar shows it and offers Connect
 
     def arm(self, on):
         self.armed, self.last_motion = bool(on), time.time()
@@ -273,13 +296,15 @@ def joint_target(status, axis, delta):
 WEBCAM_MAX_BYTES = 20_000_000   # a 4K JPEG is ~1-3 MB
 
 
-def build(lab, port):
+def build(lab, port, mode_file=None):
     sys.path.insert(0, str(lab / "slot-picker"))
     import slot_picker as sp
 
     layout = sp.load_layout()
     sp.check_holders(layout["holders"], layout["types"])
-    robots = Robots(sp.Mg400(layout["mg400_api"]), SimRobot(speed_ratio=min(10, layout["motion"]["max_speed_ratio"])))
+    robots = Robots(sp.Mg400(layout["mg400_api"]), SimRobot(speed_ratio=min(10, layout["motion"]["max_speed_ratio"])), mode_file)
+    if robots.mode == "real":
+        threading.Thread(target=robots.ensure_connected, daemon=True).start()
     seq = sp.Sequencer(robots, layout, sp.ToolCamera(layout["camera_port"]), sp.PressureMonitor(layout.get("pressure_port")))
     live = LivePose()
     tests = Tests(lab, on_export=lambda: live.reset_glasses() if live.twin else None)
@@ -424,9 +449,9 @@ def main():
     ap.add_argument("--lab", default=str(HERE.parent / "lab2"))
     a = ap.parse_args()
     lab = Path(a.lab).resolve()
-    handler, _ = build(lab, a.port)
+    handler, robots = build(lab, a.port, mode_file=HERE / ".mode")
     server = ThreadingHTTPServer(("127.0.0.1", a.port), handler)
-    print(f"MG400 Station Hub on http://127.0.0.1:{a.port}  (lab {lab.name}, starts in Simulation)")
+    print(f"MG400 Station Hub on http://127.0.0.1:{a.port}  (lab {lab.name}, robot: {robots.mode}, motion off)")
     server.serve_forever()
 
 

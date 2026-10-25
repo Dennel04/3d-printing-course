@@ -55,7 +55,8 @@ $("#speed").oninput = e => $("#speedOut").textContent = e.target.value + " %";
 $("#speed").onchange = async e => {
   try { await api("/api/speed", { ratio: +e.target.value }); } catch (err) { toast(err.message, "bad"); }
 };
-$("#btnEnable").onclick = () => api("/hub/enable", {}).catch(e => toast(e.message, "bad"));
+$("#btnEnable").onclick = () => api("/hub/enable", {}).then(() => toast("Robot enabled: it holds its position. Turn Motion on in the Jog tab to move it."))
+  .catch(e => toast(e.message, "bad"));
 $("#btnConnect").onclick = async e => {
   e.target.disabled = true;
   try { await api("/hub/connect", {}); toast("Connected. Press Enable robot, then Arm."); }
@@ -74,7 +75,7 @@ function renderState(s) {
   const pill = $("#robotPill");
   const name = r.mode_name || "unknown";
   pill.textContent = (s.mode === "sim" ? "SIM · " : "") + name + (r.pump_mode && r.pump_mode !== "off" ? " · pump " + r.pump_mode : "");
-  pill.className = "pill " + (!r.reachable ? "bad" : r.error || (r.alarm_ids || []).length ? "bad" : r.enabled ? "ok" : "warn");
+  pill.className = "pill " + (!r.reachable ? "bad" : r.error || (r.alarm_ids || []).length ? "bad" : r.enabled && r.servo_active !== false ? "ok" : "warn");
   const sp = $("#speed");
   sp.max = s.limits.max_speed_ratio;
   if (document.activeElement !== sp && r.speed_ratio) { sp.value = Math.min(r.speed_ratio, sp.max); $("#speedOut").textContent = sp.value + " %"; }
@@ -103,7 +104,8 @@ function renderState(s) {
   const fault = !offline && (r.error || (r.alarm_ids || []).length);
   $("#btnConnect").hidden = !offline;
   $("#btnClear").hidden = !fault;
-  $("#btnEnable").hidden = !r.reachable || offline || r.enabled || fault;
+  const idle = r.enabled && r.servo_active === false;     // enabled, but mg400-base is not streaming moves
+  $("#btnEnable").hidden = !r.reachable || offline || fault || (r.enabled && !idle);
   $$(".dial").forEach(d => d.classList.toggle("locked", !ui.armed || seq.busy));
   if (s.pose3d) live.target = s.pose3d;
 }

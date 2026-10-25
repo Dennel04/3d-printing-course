@@ -34,6 +34,11 @@ nudge, the arrow collapses the panel; the size is remembered in this browser). T
 turns the view to a face (TOP, X±, Y± in robot axes); Fit and Tool are the two fixed views. Enable robot and
 Clear error appear only when they are needed; messages pop up under the top bar.
 
+The hub remembers the last selected robot (`hub/.mode`, not in git) and opens it again after a restart;
+on Real it opens mg400-base's link to the arm by itself. Motion always starts off, Enable stays a click.
+**Enable robot** also shows when the arm says ENABLED but mg400-base has stopped following (after a fault):
+the arm ignores moves until it is pressed.
+
 If the robot drops off (power, cable, e-stop, DobotStudio took it) the top bar shows **Connect**: it
 reconnects mg400-base without moving; then **Enable robot** (the arm holds where it is) and **Motion** on in the Jog tab.
 
