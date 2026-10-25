@@ -166,7 +166,7 @@ class LivePose:
             return None
         shift = np.eye(4)
         shift[:2, 3] = tw.cup_offset(tw.TOOL_R)
-        out = {n: ev.qpos(shift @ tf if (n.startswith("arm ") or n == "xiao mount") else tf)
+        out = {n: ev.qpos(shift @ tf if ev.on_arm(n) else tf)
                for n, (_, tf) in parts.items()}
         for n in ("cup metal", "cup fitting", "cup flange", "cup collet", "cup oring", "cup rubber"):
             out[n] = out["cup"]
@@ -233,7 +233,7 @@ def build(lab, port):
             if path == "/":
                 return self._file(STATIC / "index.html", types[".html"])
             if path == "/picker":
-                return self._file(lab / "slot-picker" / "index.html", types[".html"])
+                return self._file(STATIC / "picker.html", types[".html"])   # hub version of slot-picker/index.html
             if path.startswith("/static/") or path.startswith("/viewer/"):
                 root, rel = (STATIC, path[8:]) if path.startswith("/static/") else (VIEWER_DATA, path[8:])
                 f = (root / rel).resolve()

@@ -122,6 +122,11 @@ def suction_tool(length):
     return out
 
 
+def on_arm(name):
+    """Parts drawn with the arm, moved by the fit shift (the XIAO mount and camera ride on the J4 motor)."""
+    return name.startswith("arm ") or name.startswith("xiao ")
+
+
 def qpos(m):
     q = trimesh.transformations.quaternion_from_matrix(m)      # w x y z
     return [round(float(v), 2) for v in m[:3, 3]] + [round(float(v), 5) for v in (q[1], q[2], q[3], q[0])]
@@ -221,7 +226,7 @@ def main():
         if parts is None:
             return
         c = press(p)
-        f = {n: qpos(shift @ tf if (n.startswith("arm ") or n.startswith("xiao ")) else tf) for n, (_, tf) in parts.items()}
+        f = {n: qpos(shift @ tf if on_arm(n) else tf) for n, (_, tf) in parts.items()}
         for n in ("cup metal", "cup fitting", "cup flange", "cup collet", "cup oring"):
             f[n] = f["cup"]
         # the robot goes c mm lower than the twin's first touch: drawn as the pad giving way (see dry_run.PRESS_ALLOWED)
