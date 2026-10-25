@@ -116,7 +116,7 @@ Mõõda vajaduse korral mitu klaasi ja säilita kõik üksiktulemused, et hiljem
 | Nähtav ala (mm või px) | TODO — waiting for physical test | |
 | Tööriista mass enne (g) | TODO — waiting for physical test | |
 | Tööriista mass pärast (g) | TODO — waiting for physical test | |
-| Valitud toide | TODO — waiting for physical test | Pinge ja vool koos ühikutega. |
+| Valitud toide | USB-C kaabel arvutist (USB 5 V) | Kaabel annab ka pildi; läheb roboti taha, J4 pööre ei sega. |
 | Kaabli marsruut | TODO — waiting for physical test | Kontrollida kogu käe liikumisel ja J4 pööramisel. |
 | Tõmbetõke | TODO — waiting for physical test | |
 
