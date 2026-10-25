@@ -20,6 +20,7 @@ electronics course drives the display.
 ```
 3d-print/
   models/              <- ühised ostetud komponentide mudelid (AtomS3, aku, XIAO, veebikaamera); vt models/README.md
+  hub/                 <- MG400 Station Hub: robot (Simulation/Real), slot picker, jog, 3D, twin checks; vt hub/README.md
   sim/                 <- ühine töökoha digitaalne kaksik (MG400 URDF, rakis, kokkupõrked); --lab valib labori; vt sim/README.md
   lab1/
     README.md          <- the lab assignment, copied here on day 1, filled in as work happens

@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MG400 Station Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="/static/hub.css">
+</head>
+<body>
+<header class="rail">
+  <div class="brand">
+    <span class="mark" aria-hidden="true"></span>
+    <div><h1>MG400 Station Hub</h1><p class="sub" id="labName">Lab 2 · glass cell</p></div>
+  </div>
+
+  <div class="seg mode" role="radiogroup" aria-label="Robot">
+    <button id="modeSim" role="radio" data-mode="sim">Simulation</button>
+    <button id="modeReal" role="radio" data-mode="real">Real robot</button>
+  </div>
+
+  <div class="robot-state">
+    <span class="pill" id="robotPill">connecting…</span>
+    <span class="hint" id="robotHint"></span>
+  </div>
+
+  <label class="speed" for="speed">Speed
+    <input id="speed" type="range" min="1" max="30" value="10">
+    <output id="speedOut">10 %</output>
+  </label>
+
+  <div class="rail-actions">
+    <button class="ghost" id="btnEnable">Enable</button>
+    <button class="ghost" id="btnClear">Clear error</button>
+    <button class="stop" id="btnStop" title="Stop the arm and cancel the running sequence (Esc)">STOP</button>
+  </div>
+</header>
+
+<main class="deck">
+  <section class="stage" aria-label="3D view">
+    <div id="view"></div>
+    <div class="stage-top">
+      <div class="seg small" role="radiogroup" aria-label="3D view">
+        <button id="viewLive" data-view="live">Live arm</button>
+        <button id="viewReplay" data-view="replay">Cycle replay</button>
+      </div>
+      <div class="seg small cams">
+        <button data-cam="iso">Overview</button><button data-cam="top">Top</button>
+        <button data-cam="side">Side</button><button data-cam="tool">Tool</button>
+      </div>
+    </div>
+    <div class="replay" id="replayBar" hidden>
+      <button class="ghost" id="replayPlay">Pause</button>
+      <select id="replaySpeed" aria-label="Replay speed">
+        <option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option>
+      </select>
+      <div class="strip" id="strip"><canvas></canvas><div class="head" id="stripHead"></div></div>
+      <span class="mono" id="replayStep"></span>
+    </div>
+    <div class="readout">
+      <div class="group"><span class="k">X</span><span class="v" id="rx">–</span><span class="k">Y</span><span class="v" id="ry">–</span>
+        <span class="k">Z</span><span class="v" id="rz">–</span><span class="k">R</span><span class="v" id="rr">–</span></div>
+      <div class="group"><span class="k">J1</span><span class="v" id="j1">–</span><span class="k">J2</span><span class="v" id="j2">–</span>
+        <span class="k">J3</span><span class="v" id="j3">–</span><span class="k">J4</span><span class="v" id="j4">–</span></div>
+      <div class="group"><span class="k">Pump</span><span class="v" id="pump">–</span><span class="k">Task</span><span class="v task" id="task">idle</span></div>
+    </div>
+  </section>
+
+  <section class="console" aria-label="Controls">
+    <nav class="tabs" role="tablist">
+      <button role="tab" data-tab="jog" aria-selected="true">Jog</button>
+      <button role="tab" data-tab="picker">Picker</button>
+      <button role="tab" data-tab="tests">Tests <span class="dot" id="testsDot" hidden></span></button>
+      <button role="tab" data-tab="camera">Camera</button>
+    </nav>
+
+    <div class="tab" id="tab-jog">
+      <div class="row between">
+        <div class="seg small" role="radiogroup" aria-label="Jog space">
+          <button id="spaceCart" data-space="cart">Cartesian</button>
+          <button id="spaceJoint" data-space="joint">Joint</button>
+        </div>
+        <label class="arm"><input type="checkbox" id="armMotion"> Motion enabled</label>
+      </div>
+      <div class="steps" role="radiogroup" aria-label="Step">
+        <span class="label">Step</span>
+        <button data-step="0.2">0.2</button><button data-step="1">1</button><button data-step="5">5</button>
+        <button data-step="10">10</button><button data-step="hold" title="Keep moving while the button is held">Hold</button>
+        <span class="unit" id="stepUnit">mm</span>
+      </div>
+      <div class="dials">
+        <svg class="dial" id="dialA" viewBox="-110 -110 220 220" role="group" aria-label="First pad"></svg>
+        <svg class="dial" id="dialB" viewBox="-110 -110 220 220" role="group" aria-label="Second pad"></svg>
+      </div>
+      <p class="keys">Keys: arrows X/Y · PgUp/PgDn Z · Q/E R · Esc stop. Joint mode moves through the robot's own joint model; each step is checked against the joint limits first.</p>
+      <div class="row pumpRow">
+        <span class="label">Pump</span>
+        <button class="ghost" data-pump="suck">Suck</button><button class="ghost" data-pump="blow">Blow</button>
+        <button class="ghost" data-pump="off">Off</button>
+      </div>
+      <div class="msg" id="jogMsg" role="status"></div>
+    </div>
+
+    <div class="tab" id="tab-picker" hidden>
+      <iframe id="picker" title="Slot picker" src="about:blank"></iframe>
+    </div>
+
+    <div class="tab" id="tab-tests" hidden>
+      <div class="row between">
+        <p class="lead">Twin checks run on the current layout.json, calibration and part files.</p>
+        <button id="runAll">Run all</button>
+      </div>
+      <div id="testList" class="tests"></div>
+    </div>
+
+    <div class="tab" id="tab-camera" hidden>
+      <div class="row between">
+        <p class="lead">XIAO tool camera (COM port from layout.json). The port stays open while the stream runs.</p>
+        <button id="camToggle">Start stream</button>
+      </div>
+      <div class="cam"><img id="camImg" alt="Tool camera stream" hidden><p id="camEmpty">Stream is off.</p></div>
+      <p class="hint" id="camState"></p>
+    </div>
+  </section>
+</main>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module" src="/static/hub.js"></script>
+</body>
+</html>

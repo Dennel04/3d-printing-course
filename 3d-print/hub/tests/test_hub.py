@@ -1,0 +1,162 @@
+"""Hub self-test: the simulated MG400, the joint jog maths and the hub HTTP API (Simulation mode only,
+nothing is sent to a real robot). Run: ../../sim/.venv/Scripts/python -m unittest -v test_hub"""
+import json
+import math
+import socket
+import sys
+import threading
+import time
+import unittest
+import urllib.request
+from http.server import ThreadingHTTPServer
+from pathlib import Path
+
+HUB = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(HUB))
+import hub  # noqa: E402
+from sim_robot import SimRobot, Z_FLOOR  # noqa: E402
+
+
+def wait_idle(robot, timeout=10.0):
+    t0 = time.time()
+    while robot.call("/status")["target"] is not None:
+        if time.time() - t0 > timeout:
+            raise AssertionError("simulated arm did not arrive")
+        time.sleep(0.02)
+
+
+class SimRobotTest(unittest.TestCase):
+    def setUp(self):
+        self.r = SimRobot(pose=(300, 0, -50, 33), speed_ratio=100)
+
+    def test_move_arrives(self):
+        self.assertTrue(self.r.call("/move", {"x": 320, "y": 40, "z": -80, "r": 40})["ok"])
+        wait_idle(self.r)
+        self.assertEqual(self.r.call("/status")["pose"], [320, 40, -80, 40])
+
+    def test_jog_adds_to_the_target(self):
+        self.r.call("/jog", {"axis": "z", "delta": -5})
+        self.r.call("/jog", {"axis": "z", "delta": -5})
+        wait_idle(self.r)
+        self.assertAlmostEqual(self.r.call("/status")["pose"][2], -60, places=3)
+
+    def test_out_of_reach_is_refused(self):
+        reply = self.r.call("/move", {"x": 600, "y": 0, "z": 0})
+        self.assertFalse(reply["ok"])
+        self.assertIn("out of reach", reply["error"])
+
+    def test_z_floor_clamps(self):
+        reply = self.r.call("/move", {"x": 330, "y": 0, "z": -400})
+        if reply["ok"]:
+            self.assertEqual(reply["clamped"]["z"], Z_FLOOR)
+
+    def test_status_joints_match_pose(self):
+        s = self.r.call("/status")
+        x, y, z = hub.kin.forward(*s["joints"][:3])
+        self.assertLess(math.dist((x, y, z), s["pose"][:3]), 0.01)
+        self.assertAlmostEqual(s["joints"][0] + s["joints"][3], s["pose"][3], places=2)
+
+    def test_disabled_robot_does_not_move(self):
+        self.r.call("/disable")
+        self.assertFalse(self.r.call("/move", {"x": 310, "y": 0, "z": -50})["ok"])
+
+    def test_pump(self):
+        self.assertTrue(self.r.call("/pump", {"mode": "suck"})["ok"])
+        self.assertEqual(self.r.call("/status")["pump_mode"], "suck")
+        self.assertFalse(self.r.call("/pump", {"mode": "vent"})["ok"])
+
+
+class JointJogTest(unittest.TestCase):
+    status = {"pose": [300.0, 0.0, -50.0, 33.0]}
+
+    def test_j1_turns_about_the_base(self):
+        t = hub.joint_target(self.status, "j1", 5)
+        self.assertAlmostEqual(math.hypot(t["x"], t["y"]), 300, places=2)
+        self.assertAlmostEqual(math.degrees(math.atan2(t["y"], t["x"])), 5, places=2)
+        self.assertAlmostEqual(t["r"], 38, places=2)      # R = J1 + J4, J4 kept
+
+    def test_j4_turns_only_r(self):
+        t = hub.joint_target(self.status, "j4", -3)
+        self.assertAlmostEqual(t["x"], 300, places=2)
+        self.assertAlmostEqual(t["r"], 30, places=2)
+
+    def test_j2_changes_reach_not_angle(self):
+        t = hub.joint_target(self.status, "j2", 2)
+        self.assertGreater(math.hypot(t["x"], t["y"]), 300)
+        self.assertAlmostEqual(t["y"], 0, places=2)
+
+    def test_limit_is_refused(self):
+        with self.assertRaises(ValueError):
+            hub.joint_target(self.status, "j3", 200)
+
+
+class HubApiTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        s = socket.socket()
+        s.bind(("127.0.0.1", 0))
+        cls.port = s.getsockname()[1]
+        s.close()
+        handler, cls.robots = hub.build(hub.HERE.parent / "lab2", cls.port)
+        cls.server = ThreadingHTTPServer(("127.0.0.1", cls.port), handler)
+        threading.Thread(target=cls.server.serve_forever, daemon=True).start()
+        cls.robots.sim.speed_ratio = 30
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.server.shutdown()
+
+    def req(self, path, body=None):
+        r = urllib.request.Request(f"http://127.0.0.1:{self.port}{path}",
+                                   data=None if body is None else json.dumps(body).encode(),
+                                   headers={"Content-Type": "application/json"})
+        try:
+            return json.load(urllib.request.urlopen(r, timeout=10))
+        except urllib.error.HTTPError as e:
+            return json.load(e)
+
+    def test_page_and_picker_load(self):
+        for path in ("/", "/picker"):
+            body = urllib.request.urlopen(f"http://127.0.0.1:{self.port}{path}", timeout=10).read()
+            self.assertIn(b"<html", body.lower()[:400])
+
+    def test_state_starts_in_simulation(self):
+        s = self.req("/hub/state")
+        self.assertEqual(s["mode"], "sim")
+        self.assertTrue(s["robot"]["simulation"])
+        self.assertEqual(len(s["robot"]["joints"]), 4)
+
+    def test_cartesian_and_joint_jog(self):
+        z0 = self.req("/hub/state")["robot"]["pose"][2]
+        self.assertTrue(self.req("/hub/jog", {"space": "cart", "axis": "z", "delta": -2})["ok"])
+        wait_idle(self.robots.sim)
+        self.assertAlmostEqual(self.req("/hub/state")["robot"]["pose"][2], z0 - 2, places=2)
+        self.assertTrue(self.req("/hub/jog", {"space": "joint", "axis": "j1", "delta": 3})["ok"])
+        wait_idle(self.robots.sim)
+
+    def test_jog_rejects_big_steps_and_bad_axes(self):
+        self.assertFalse(self.req("/hub/jog", {"space": "cart", "axis": "z", "delta": -50})["ok"])
+        self.assertFalse(self.req("/hub/jog", {"space": "joint", "axis": "j9", "delta": 1})["ok"])
+
+    def test_slot_picker_api_runs_on_the_simulation(self):
+        lay = self.req("/api/layout")
+        self.assertIn("cells", lay)
+        st = self.req("/api/state")
+        self.assertEqual(st["robot"]["mode_name"], "ENABLED")
+
+    def test_mode_switch(self):
+        self.assertTrue(self.req("/hub/mode", {"mode": "real"})["ok"])
+        self.assertEqual(self.req("/hub/state")["mode"], "real")
+        self.assertTrue(self.req("/hub/mode", {"mode": "sim"})["ok"])
+        self.assertFalse(self.req("/hub/mode", {"mode": "both"})["ok"])
+
+    def test_foreign_origin_is_refused(self):
+        r = urllib.request.Request(f"http://127.0.0.1:{self.port}/hub/mode", data=b'{"mode":"real"}',
+                                   headers={"Content-Type": "application/json", "Origin": "http://evil.example"})
+        with self.assertRaises(urllib.error.HTTPError) as e:
+            urllib.request.urlopen(r, timeout=5)
+        self.assertEqual(e.exception.code, 403)
+
+
+if __name__ == "__main__":
+    unittest.main()

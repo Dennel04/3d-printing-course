@@ -1,0 +1,2 @@
+-r ../sim/requirements.txt
+pyserial
