@@ -61,6 +61,42 @@ class SimRobotTest(unittest.TestCase):
         self.r.call("/disable")
         self.assertFalse(self.r.call("/move", {"x": 310, "y": 0, "z": -50})["ok"])
 
+    def hold(self, axis, sign, secs):
+        """Like the page's Hold key: /jog_hold every 100 ms, poses sampled every 20 ms."""
+        poses, t0, renew = [], time.monotonic(), 0.0
+        while time.monotonic() - t0 < secs:
+            if time.monotonic() >= renew:
+                self.assertTrue(self.r.call("/jog_hold", {"axis": axis, "dir": sign})["ok"])
+                renew = time.monotonic() + 0.1
+            poses.append(self.r.call("/status")["pose"])
+            time.sleep(0.02)
+        return poses
+
+    def test_held_jog_moves_without_stopping_between_calls(self):
+        self.r.speed_ratio = 10                               # 30 mm/s, 0.5 s ramp
+        poses = self.hold("x", 1, 1.5)
+        steps = [b[0] - a[0] for a, b in zip(poses, poses[1:])]
+        cruise = steps[len(steps) // 2:]
+        self.assertGreater(min(cruise), 0)                    # never stands still while held
+        self.assertLess(max(cruise) / (sum(cruise) / len(cruise)), 2.5)   # no surges between calls
+        x = poses[-1][0]
+        self.assertTrue(self.r.call("/jog_hold", {"dir": 0})["ok"])
+        wait_idle(self.r)
+        braked = self.r.call("/status")["pose"][0] - x
+        self.assertLess(braked, 30 * 30 / (2 * 60) + 2)       # braking distance v^2/2a, no lead run-on
+
+    def test_held_jog_brakes_when_the_page_goes_quiet(self):
+        self.hold("y", 1, 0.5)
+        wait_idle(self.r, timeout=3)                          # no renewal: stops by itself
+
+    def test_held_jog_stops_at_the_floor(self):
+        self.r.speed_ratio = 100
+        self.r.pose = [330.0, 0.0, Z_FLOOR + 5, 33.0]
+        self.hold("z", -1, 0.8)
+        self.r.call("/jog_hold", {"dir": 0})
+        wait_idle(self.r)
+        self.assertAlmostEqual(self.r.call("/status")["pose"][2], Z_FLOOR, places=3)
+
     def test_pump(self):
         self.assertTrue(self.r.call("/pump", {"mode": "suck"})["ok"])
         self.assertEqual(self.r.call("/status")["pump_mode"], "suck")
@@ -246,6 +282,21 @@ class HubApiTest(unittest.TestCase):
         self.assertAlmostEqual(self.req("/hub/state")["robot"]["pose"][2], z0 - 2, places=2)
         self.assertTrue(self.req("/hub/jog", {"space": "joint", "axis": "j1", "delta": 3})["ok"])
         wait_idle(self.robots.sim)
+
+    def test_held_jog_over_http(self):
+        self.req("/hub/arm", {"armed": False})
+        self.assertFalse(self.req("/hub/jog_hold", {"space": "cart", "axis": "z", "dir": -1})["ok"])
+        self.assertTrue(self.req("/hub/jog_hold", {"dir": 0})["ok"])          # release always passes
+        self.req("/hub/arm", {"armed": True})
+        for space, axis in (("cart", "z"), ("joint", "j1"), ("joint", "j4")):
+            p0 = self.req("/hub/state")["robot"]["pose"]
+            for _ in range(5):
+                self.assertTrue(self.req("/hub/jog_hold", {"space": space, "axis": axis, "dir": 1})["ok"])
+                time.sleep(0.1)
+            self.assertTrue(self.req("/hub/jog_hold", {"dir": 0})["ok"])
+            wait_idle(self.robots.sim)
+            self.assertNotEqual(self.req("/hub/state")["robot"]["pose"], p0, f"{space} {axis} did not move")
+        self.assertFalse(self.req("/hub/jog_hold", {"space": "joint", "axis": "j9", "dir": 1})["ok"])
 
     def test_jog_rejects_big_steps_and_bad_axes(self):
         self.req("/hub/arm", {"armed": True})

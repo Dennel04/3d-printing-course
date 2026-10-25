@@ -165,8 +165,19 @@ function buildDials() {
   $("#stepUnit").textContent = ui.space === "cart" ? "mm / °R" : "degrees";
 }
 
+// Hold: like DobotStudio's held jog key. While held the page renews /hub/jog_hold every 100 ms and the
+// follower keeps a goal ahead of the arm, so it cruises at the set speed; on release it brakes smoothly.
+// Without a renewal the robot side brakes by itself (closed tab, lost network).
 let hold = null;
-function stopHold() { if (hold) { clearInterval(hold.timer); hold.key?.classList.remove("down"); hold = null; } }
+function stopHold() {
+  if (!hold) return;
+  const h = hold;
+  hold = null;
+  clearInterval(h.timer);
+  h.key?.classList.remove("down");
+  // after the last renewal has landed, or it would restart the move behind the release
+  h.pending.finally(() => api("/hub/jog_hold", { dir: 0 }).catch(e => say(e.message, "bad")));
+}
 async function jogOnce(axis, sign, step = ui.step) {
   try {
     const r = await api("/hub/jog", { space: ui.space, axis, delta: sign * step });
@@ -174,20 +185,37 @@ async function jogOnce(axis, sign, step = ui.step) {
     say(t ? `→ X ${t.x.toFixed(1)}  Y ${t.y.toFixed(1)}  Z ${t.z.toFixed(1)}  R ${t.r.toFixed(1)}` : "", "ok");
     return true;
   } catch (e) {
-    say(e.message, "bad");
-    if (!ui.armed) { const sw = $("#btnArm"); sw.classList.remove("nudge"); void sw.offsetWidth; sw.classList.add("nudge"); }
+    refused(e);
     return false;
   }
+}
+function refused(e) {
+  say(e.message, "bad");
+  if (!ui.armed) { const sw = $("#btnArm"); sw.classList.remove("nudge"); void sw.offsetWidth; sw.classList.add("nudge"); }
+}
+function startHold(axis, sign, key = null) {
+  if (hold && hold.axis === axis && hold.sign === sign) return;     // key auto-repeat
+  stopHold();
+  const h = hold = { key, axis, sign, busy: false };
+  const renew = () => {
+    if (h.busy) return;                       // one request at a time, no pile-up on a slow link
+    h.busy = true;
+    h.pending = api("/hub/jog_hold", { space: ui.space, axis, dir: sign })
+      .catch(e => { if (hold === h) { refused(e); stopHold(); } })
+      .finally(() => { h.busy = false; });
+  };
+  h.timer = setInterval(renew, 100);
+  renew();
 }
 function press(k) {
   k.classList.add("down");
   const axis = k.dataset.axis, sign = +k.dataset.sign;
   if (ui.step !== "hold") { jogOnce(axis, sign).finally(() => setTimeout(() => k.classList.remove("down"), 120)); return; }
-  stopHold();
-  hold = { key: k, timer: setInterval(() => jogOnce(axis, sign, 1).then(ok => { if (!ok) stopHold(); }), 200) };
-  jogOnce(axis, sign, 1);
+  startHold(axis, sign, k);
 }
 function release(k) { if (hold && hold.key === k) stopHold(); }
+addEventListener("blur", stopHold);
+document.addEventListener("visibilitychange", () => { if (document.hidden) stopHold(); });
 
 $$("[data-space]").forEach(b => b.onclick = () => { ui.space = b.dataset.space; setChecked($$("[data-space]"), x => x.dataset.space === ui.space); buildDials(); });
 $$("[data-step]").forEach(b => b.onclick = () => {
@@ -205,7 +233,14 @@ addEventListener("keydown", ev => {
   if (ev.key === "Escape") { stop(); return; }
   if (/INPUT|SELECT|TEXTAREA/.test(document.activeElement?.tagName) || $("#tab-jog").hidden || ui.space !== "cart") return;
   const m = KEYMAP[ev.key];
-  if (m) { ev.preventDefault(); jogOnce(m[0], m[1], ui.step === "hold" ? 1 : ui.step); }
+  if (!m) return;
+  ev.preventDefault();
+  if (ui.step === "hold") startHold(m[0], m[1]);
+  else jogOnce(m[0], m[1], ui.step);
+});
+addEventListener("keyup", ev => {
+  const m = KEYMAP[ev.key];
+  if (m && hold && !hold.key && hold.axis === m[0] && hold.sign === m[1]) stopHold();
 });
 
 /* ---------------- tabs ---------------- */

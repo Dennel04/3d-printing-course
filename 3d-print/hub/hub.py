@@ -34,6 +34,10 @@ from sim_robot import SimRobot  # noqa: E402
 CART_AXES = ("x", "y", "z", "r")
 JOINT_AXES = ("j1", "j2", "j3", "j4")
 MAX_STEP = {"cart": 10.0, "joint": 10.0}
+# Hold-to-move in joint space: the goal rides this far ahead of the live joints and is renewed on every
+# call (~10 per second), so the follower cruises instead of braking before each step. If the page dies the
+# arm stops at most this far on (Cartesian holds have a timeout in mg400-base / the simulation instead).
+JOINT_HOLD_LEAD = 6.0    # degrees
 
 # twin checks behind the Tests tab: (title, script, args, what it answers)
 TESTS = {
@@ -91,7 +95,7 @@ def verdict(name, out, code):
 
 # every request that can move the arm; refused while motion is locked (one lock for the whole hub)
 MOTION_PATHS = {"/api/goto", "/api/transfer", "/api/cycle/above", "/api/cycle/run", "/api/jog", "/api/probe",
-                "/hub/jog"}
+                "/hub/jog"}   # /hub/jog_hold checks the lock itself: releasing a held key always passes
 
 
 class Robots:
@@ -289,6 +293,18 @@ def joint_target(status, axis, delta):
     return {"x": round(nx, 3), "y": round(ny, 3), "z": round(nz, 3), "r": round(vals[0] + vals[3], 3)}
 
 
+def joint_hold_target(status, axis, sign):
+    """Goal for a held joint jog: JOINT_HOLD_LEAD ahead of the live joints, shortened near a joint limit."""
+    lead = JOINT_HOLD_LEAD
+    while True:
+        try:
+            return joint_target(status, axis, sign * lead)
+        except ValueError:
+            lead /= 2
+            if lead < 0.2:
+                raise
+
+
 def follow_workstation_cell(layout, before, save, letters, numbers):
     """After a layout save: if the workstation holder moved, its chosen cell moves with it (same offset);
     if that is impossible the cell falls back to the holder's first cell. The picker itself does not do this,
@@ -441,6 +457,32 @@ def build(lab, port, mode_file=None):
                 if not reply.get("ok"):
                     raise ValueError(reply.get("error") or f"refused: {reply}")
                 return {"target": reply.get("clamped")}
+            if path == "/hub/jog_hold":
+                space, axis, sign = data.get("space", "cart"), data.get("axis"), int(data.get("dir", 0))
+                if sign not in (-1, 0, 1):
+                    raise ValueError("dir: -1, 0 or 1")
+                if not sign:                              # released: brake smoothly (not a running sequence)
+                    return {} if seq.state["busy"] else robots.call("/stop", {})
+                if not robots.motion_allowed():
+                    raise ValueError("Motion is off: turn on the Motion switch in the Jog tab first.")
+                if seq.state["busy"]:
+                    raise ValueError("the robot is running a sequence; press STOP first")
+                status = seq.ready_status()
+                if space == "joint" and axis == "j4":     # J4 alone turns only R (R = J1 + J4)
+                    space, axis = "cart", "r"
+                if space == "cart":
+                    if axis not in CART_AXES:
+                        raise ValueError("axis: x, y, z or r")
+                    reply = robots.call("/jog_hold", {"axis": axis, "dir": sign})
+                elif space == "joint":
+                    if axis not in JOINT_AXES:
+                        raise ValueError("axis: j1, j2, j3 or j4")
+                    reply = robots.call("/move", joint_hold_target(status, axis, sign))
+                else:
+                    raise ValueError("space: cart or joint")
+                if not reply.get("ok"):
+                    raise ValueError(reply.get("error") or f"refused: {reply}")
+                return {}
             if path in ("/hub/enable", "/hub/disable", "/hub/clear_error", "/hub/stop"):
                 if path == "/hub/stop":
                     seq.stop()
