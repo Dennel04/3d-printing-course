@@ -124,9 +124,39 @@ switch (routes added to `MOTION_PATHS`).
 - Hub tests keep passing (27 now).
 - Real robot, at 5–10 %: calibrate, take references, drift test, then refit rounds 2–5 with the look step.
 
+## Stage 2 — table webcam: know the layout before the start (Denys 25.10.2026, added after review)
+
+Goal: before a run the station knows where the holders, the glasses and the output are, compares it
+with the picker's `layout.json` and updates the layout itself when it is sure. The tool camera (stage 1)
+then only corrects the last millimetres.
+
+- **One owner of the webcam: the hub server.** `WebcamGrabber` (cv2.VideoCapture, DirectShow,
+  3840×2160) replaces the browser `getUserMedia`; the Webcam view shows `/hub/webcam/stream` (MJPEG,
+  scaled) and Save frame stays. The browser no longer opens the camera.
+- **Image → table, taught once** (the assignment: the image-table relation is taught once): the user
+  clicks the four outer corners of the grid in a frame; homography to the grid plane, stored in
+  `lab2/webcam/homography.json`. Every scan checks that the grid edges still line up (camera knocked →
+  "re-teach the corners", no scan results used).
+- **Top view:** the frame is warped to a 5 px/mm image of the grid (cells A..G × +5..−5).
+- **Learn the holders from the confirmed layout:** "Learn appearance" crops every holder of the current,
+  confirmed layout from the top view and stores a template per holder (+ an empty-grid reference).
+- **Scan:** for every holder, template matching over every legal placement of its footprint (1×1 or
+  2×2 cells, no overlap, not in blocked cells) → best placement, score and margin to the second best.
+  Glass slots: crop of each input pocket compared with "with glass" / "empty" references → present or
+  not (feeds the picker's "Loaded input pockets").
+- **Decide:** a holder is *sure* when score ≥ 0.8 and margin ≥ 0.15. Result in the picker editor as a
+  diff ("Workstation seen at C-1 C+1 B-1 B+1, layout says C+4 …") with Apply. With "Auto-update layout"
+  on and every holder sure and the robot idle, it is applied by itself: cells change, taught offsets
+  stay with the holder, the workstation cell follows its holder, 3D is rebuilt, the event log says so.
+  Anything unsure → never applied automatically; the cycle refuses to start while the scan disagrees
+  with the layout.
+- **When:** button "Scan table" and automatically before every cycle start.
+- **Tests:** synthetic top views (rendered holders on a rendered grid, moved, noise, one missing);
+  homography round trip; decision thresholds; layout diff/apply keeps teach data.
+
 ## Out of scope (later)
 
-Table webcam global check; ArUco markers; AI analysis of the logs; Z/touch detection by camera.
+ArUco markers; AI (LLM) analysis of the logs and frames; Z/touch detection by camera.
 
 ## Dependency
 
