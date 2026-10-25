@@ -229,7 +229,7 @@ function apply(time) {
   document.getElementById("now").innerHTML =
     `<b>${act.text || ""}</b><span class="pill" style="background:${col}">${act.status || ""}</span>` +
     `<br><span style="color:var(--muted)">roboti X ${p[0].toFixed(1)} · Y ${p[1].toFixed(1)} · Z ${p[2].toFixed(1)}` +
-    ` · napp + puhver kokku ${((a.c || 0) + ((b.c || 0) - (a.c || 0)) * k).toFixed(1)} mm</span>`;
+    ` · alla esimese puute ${((a.c || 0) + ((b.c || 0) - (a.c || 0)) * k).toFixed(1)} mm</span>`;
   document.querySelectorAll(".act").forEach((d, j) => d.classList.toggle("cur", j === (k > 0.5 ? b : a).a));
   document.getElementById("time").textContent = `${time.toFixed(1)} / ${T.toFixed(1)} s @ 100 mm/s`;
   document.getElementById("head").style.left = (time / T * 100) + "%";

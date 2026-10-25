@@ -2,8 +2,8 @@
   holders   placed by the rule (base on the grid top / old feet on the beams) vs dropped like gravity onto
             the rig (twin._settle): the change must be ~0, and what each one rests on
   glasses   bottom of every glass vs the pocket floor under it (gap > 0.2 mm = floating, < 0 = sunk)
-  cup       every taught "down to" point: first touch vs the taught Z = how far the bellows cup and the
-            buffer spring are pressed (from viewer/data/anim.json, made by export_viewer.py)
+  cup       every taught "down to" point: first touch vs the taught Z = how far the robot goes below the
+            twin's first touch (pad lip ~1-2 mm, the rest = twin height error) (from viewer/data/anim.json, made by export_viewer.py)
 Run: .venv/Scripts/python audit_scene.py [--lab ../lab2]
 """
 import argparse
@@ -54,7 +54,7 @@ def main():
         z, on = below(T, *b.bounds.mean(axis=0)[:2], b.bounds[0][2] + 0.01, {"battery", "AtomS3"})
         print(f"  battery    on {on:28s} gap {b.bounds[0][2] - z:+.2f} mm; AtomS3 top z {a.bounds[1][2]:.2f}")
     data = twin.HERE / "viewer" / "data" / "anim.json"
-    print("CUP (taught Z below the first touch = bellows + buffer pressed)")
+    print("CUP (taught Z below the twin's first touch)")
     if data.exists():
         for line in json.loads(data.read_text(encoding="utf-8")).get("press", []):
             if line.startswith("glass 1:"):

@@ -45,8 +45,9 @@ ATOM_H, BATTERY_H = 12.9, 21.97          # measurements.md (Atom nominal, batter
 STEP = 2.0
 WARN_CLEARANCE = 3.0
 PICK_OFFSET_MAX = (GLASS[0] - twin.CUP_D) / 2   # cup fully on the glass up to this offset (5 mm)
-PRESS_ALLOWED = 6.0     # bellows cup + spring buffer give way; refit round 1 (24.10) worked with 4.2 / 5.2 / 0.7 mm
-                        # (audit_scene.py). Buffer stroke not measured: TODO caliper
+PRESS_ALLOWED = 6.0     # taught Z below the twin's first touch: refit round 1 (24.10) worked with 4.2 / 5.2 / 0.7 mm
+                        # (audit_scene.py). The pad (SMC ZP20C type, no buffer) gives ~1-2 mm; the rest is twin height
+                        # error (cup length from one touch, holder heights): TODO caliper the tool free length
 ROLES = {"input": "Glass input", "workstation": "Workstation (orange)", "output": "Good output"}
 
 

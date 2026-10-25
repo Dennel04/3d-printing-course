@@ -216,7 +216,7 @@ def main():
         f = {n: qpos(shift @ tf if (n.startswith("arm ") or n == "xiao mount") else tf) for n, (_, tf) in parts.items()}
         for n in ("cup metal", "cup fitting", "cup flange", "cup collet", "cup oring"):
             f[n] = f["cup"]
-        # the bellows cup + buffer rod give way: the robot goes c mm lower than the first touch
+        # the robot goes c mm lower than the twin's first touch: drawn as the pad giving way (see dry_run.PRESS_ALLOWED)
         rubber = parts["cup"][1].copy()
         rubber[2, 3] += c
         f["cup rubber"] = qpos(rubber)
@@ -271,7 +271,7 @@ def main():
                 contact["z"] = zc
                 if zc is not None:
                     press_log.append(f"glass {g}: {label}: first touch at Z {zc:.1f}, robot goes to {z:.1f} -> "
-                                     f"cup + buffer compressed {zc - z:.1f} mm")
+                                     f"taught Z {zc - z:.1f} mm below the first touch")
             elif "above" in label:
                 contact["z"] = None
             st = "ok"
