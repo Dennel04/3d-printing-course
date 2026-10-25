@@ -16,6 +16,7 @@ python -m venv .venv
 .venv/Scripts/python dry_run.py --full     # planeeritud täistsükkel sisend -> töökoht -> väljund, <lab>/docs/sim_dry_run_full.txt
 .venv/Scripts/python tolerance.py          # kalibreerimisvea taluvus, <lab>/docs/sim_tolerance.txt
 .venv/Scripts/python refit_sim.py         # korduskatse ringid 2-5: hoidikud juhuslikult jala lõtku piires (--play 1), <lab>/docs/sim_refit.txt
+.venv/Scripts/python export_viewer.py     # 3D-vaade brauseris (viewer/), vt viewer/README.md
 .venv/Scripts/python reach_map.py --lab ../lab3   # teine labor (vajab oma calibration/, slot-picker/)
 ```
 

@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="et">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MG400 Twin Viewer</title>
+<style>
+  :root {
+    --bg: #f4f5f7; --panel: #ffffffee; --text: #1d2228; --muted: #6a7480; --line: #d9dde2;
+    --ok: #2e9d5b; --close: #d99a1e; --bad: #d64545; --event: #5a7bd6; --accent: #f26b1d;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15181c; --panel: #1f242aee; --text: #e6e9ec; --muted: #9aa3ad; --line: #333a42;
+    }
+  }
+  :root[data-theme="dark"] { --bg: #15181c; --panel: #1f242aee; --text: #e6e9ec; --muted: #9aa3ad; --line: #333a42; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text);
+    font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; overflow: hidden; }
+  #view { position: fixed; inset: 0; }
+  .panel { position: fixed; background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+    backdrop-filter: blur(6px); }
+  #top { top: 12px; left: 12px; right: 12px; padding: 8px 12px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  #top h1 { font-size: 15px; margin: 0; font-weight: 650; }
+  #mode { color: var(--muted); font-size: 12px; }
+  #now { flex: 1; min-width: 200px; text-align: right; font-variant-numeric: tabular-nums; }
+  #now b { font-weight: 600; }
+  .pill { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 12px; color: #fff; margin-left: 6px; }
+  #bottom { left: 12px; right: 12px; bottom: 12px; padding: 10px 12px; }
+  #controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  button, select { font: inherit; color: var(--text); background: transparent; border: 1px solid var(--line);
+    border-radius: 7px; padding: 4px 10px; cursor: pointer; }
+  button:hover { border-color: var(--muted); }
+  button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+  #time { font-variant-numeric: tabular-nums; color: var(--muted); min-width: 110px; }
+  #strip { position: relative; height: 26px; margin-top: 8px; cursor: pointer; }
+  #strip canvas { width: 100%; height: 100%; display: block; border-radius: 5px; }
+  #head { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--text); pointer-events: none; }
+  #side { top: 64px; right: 12px; width: 340px; max-height: calc(100% - 200px); overflow: auto; padding: 8px 0; }
+  #side h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 6px 12px; }
+  .act { padding: 3px 12px 3px 22px; position: relative; cursor: pointer; font-size: 13px; }
+  .act::before { content: ""; position: absolute; left: 10px; top: 10px; width: 6px; height: 6px; border-radius: 50%; background: var(--c); }
+  .act:hover { background: #8881; }
+  .act.cur { background: #f26b1d22; font-weight: 600; }
+  .act.event { color: var(--muted); }
+  #legend { display: flex; gap: 10px; font-size: 12px; color: var(--muted); margin-left: auto; }
+  #legend span::before { content: ""; display: inline-block; width: 9px; height: 9px; border-radius: 2px; background: var(--c); margin-right: 4px; }
+  #err { position: fixed; inset: 0; display: none; place-items: center; text-align: center; padding: 24px; }
+  @media (max-width: 760px) { #side { display: none; } #legend { display: none; } }
+</style>
+</head>
+<body>
+<div id="view"></div>
+<div id="top" class="panel">
+  <h1>MG400 töökoha kaksik</h1><span id="mode"></span>
+  <div id="now"></div>
+</div>
+<div id="side" class="panel"><h2>Tsükli sammud</h2><div id="acts"></div></div>
+<div id="bottom" class="panel">
+  <div id="controls">
+    <button id="play" class="on">❚❚ Paus</button>
+    <select id="speed" title="Kiirus (1× = 100 mm/s)">
+      <option value="0.25">0,25×</option><option value="0.5">0,5×</option><option value="1" selected>1×</option>
+      <option value="2">2×</option><option value="4">4×</option><option value="8">8×</option>
+    </select>
+    <span id="time"></span>
+    <button data-cam="iso">Üldvaade</button><button data-cam="top">Ülalt</button>
+    <button data-cam="side">Küljelt</button><button data-cam="follow" id="followBtn">Jälgi nappi</button>
+    <button id="trailBtn" class="on">Napa tee</button><button id="rigBtn" class="on">Rakis</button>
+    <div id="legend"><span style="--c:var(--ok)">ok</span><span style="--c:var(--close)">&lt; 3 mm</span>
+      <span style="--c:var(--bad)">kokkupõrge</span><span style="--c:var(--event)">pump / ootus</span></div>
+  </div>
+  <div id="strip"><canvas></canvas><div id="head"></div></div>
+</div>
+<div id="err"><div><h2>Andmed puuduvad</h2><p>Käivita <code>.venv/Scripts/python export_viewer.py</code> ja ava leht serveri kaudu:<br>
+<code>python -m http.server -d viewer 8020</code> → http://127.0.0.1:8020</p></div></div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const STATUS = { ok: "--ok", close: "--close", COLLISION: "--bad", event: "--event" };
+
+const view = document.getElementById("view");
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+view.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(40, 1, 5, 20000);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+
+scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8f96, 1.2));
+const sun = new THREE.DirectionalLight(0xffffff, 1.6);
+sun.position.set(-600, 1400, 500);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, { left: -900, right: 900, top: 900, bottom: -900, near: 100, far: 4000 });
+scene.add(sun);
+
+// data is z-up in mm; three.js is y-up
+const world = new THREE.Group();
+world.rotation.x = -Math.PI / 2;
+scene.add(world);
+
+function resize() {
+  renderer.setSize(innerWidth, innerHeight);
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  drawStrip();
+}
+
+let A, nodes = {}, frames, T, playing = true, t = 0, speed = 1, follow = false, trail;
+const bg = () => scene.background = new THREE.Color(css("--bg"));
+
+async function load() {
+  const [gltf, anim] = await Promise.all([
+    new GLTFLoader().loadAsync("data/scene.glb"),
+    fetch("data/anim.json").then(r => r.json()),
+  ]);
+  A = anim; frames = A.frames; T = frames[frames.length - 1].t;
+  document.getElementById("mode").textContent = `${A.lab} · ${A.mode} · klaasid ${A.glasses.join(", ")}`;
+  const root = gltf.scene;
+  // GLTFLoader sanitizes node names (spaces -> _, drops : . / [ ]); map them back to the data names
+  const real = {};
+  for (const n of A.nodes.map(n => n.name)) real[THREE.PropertyBinding.sanitizeNodeName(n)] = n;
+  root.traverse(o => { if (real[o.name]) o.name = real[o.name]; });
+  root.traverse(o => {
+    if (!o.isMesh) return;
+    const name = o.name || o.parent?.name;
+    const col = A.colors[name] || "#b0b0b0";
+    const glass = name.startsWith("glass");
+    o.geometry = o.geometry.toNonIndexed();
+    o.geometry.computeVertexNormals();
+    o.material = new THREE.MeshStandardMaterial({
+      color: col, roughness: glass ? 0.1 : 0.7, metalness: name.startsWith("rakis") ? 0.4 : 0.05,
+      transparent: glass, opacity: glass ? 0.65 : 1,
+    });
+    o.castShadow = !name.startsWith("table");
+    o.receiveShadow = true;
+  });
+  // the GLB keeps one node per object; re-parent them under the z-up group
+  [...root.children].forEach(c => world.add(c));
+  world.traverse(o => { if (o.name) nodes[o.name] = nodes[o.name] || o; });
+  for (const n of A.movers) if (nodes[n]) nodes[n].matrixAutoUpdate = true;
+  buildTrail(); buildActs(); resize(); setCam("iso"); bg();
+  renderer.setAnimationLoop(tick);
+}
+
+function buildTrail() {
+  const ox = 0, pts = frames.map(f => new THREE.Vector3(...f.p));
+  // cup tip path: the cup node position each frame (bottom of the cylinder)
+  const cup = frames.map(f => f.s.cup).filter(Boolean).map(s => new THREE.Vector3(s[0], s[1], s[2]));
+  const g = new THREE.BufferGeometry().setFromPoints(cup.length ? cup : pts);
+  trail = new THREE.Line(g, new THREE.LineBasicMaterial({ color: css("--accent") }));
+  world.add(trail);
+}
+
+function buildActs() {
+  const box = document.getElementById("acts");
+  A.actions.forEach((a, i) => {
+    const d = document.createElement("div");
+    d.className = "act" + (a.status === "event" ? " event" : "");
+    d.style.setProperty("--c", css(STATUS[a.status] || "--ok"));
+    d.textContent = a.text;
+    if (a.detail) d.title = a.detail;
+    d.onclick = () => { const f = frames.find(f => f.a === i); if (f) t = f.t; };
+    box.appendChild(d);
+  });
+}
+
+function drawStrip() {
+  if (!frames) return;
+  const c = document.querySelector("#strip canvas");
+  const w = c.clientWidth, h = c.clientHeight;
+  c.width = w * devicePixelRatio; c.height = h * devicePixelRatio;
+  const g = c.getContext("2d");
+  g.scale(devicePixelRatio, devicePixelRatio);
+  g.fillStyle = css("--line"); g.fillRect(0, 0, w, h);
+  for (let i = 1; i < frames.length; i++) {
+    const a = A.actions[frames[i].a];
+    g.fillStyle = css(STATUS[a?.status] || "--ok");
+    const x0 = frames[i - 1].t / T * w, x1 = frames[i].t / T * w;
+    g.fillRect(x0, 0, Math.max(1, x1 - x0), h);
+  }
+  // glass boundaries
+  g.fillStyle = css("--text");
+  let last = null;
+  frames.forEach(f => { const m = /^glass (\d+)/.exec(A.actions[f.a]?.text || ""); const k = m && m[1];
+    if (k && k !== last) { g.fillRect(f.t / T * w, 0, 1, h); g.font = "11px system-ui"; g.fillText("klaas " + k, f.t / T * w + 4, 16); last = k; } });
+}
+
+const _p = new THREE.Vector3(), _q = new THREE.Quaternion(), _q2 = new THREE.Quaternion();
+function frameAt(time) {
+  let lo = 0, hi = frames.length - 1;
+  while (hi - lo > 1) { const m = (lo + hi) >> 1; if (frames[m].t <= time) lo = m; else hi = m; }
+  const a = frames[lo], b = frames[hi];
+  const k = b.t > a.t ? Math.min(1, Math.max(0, (time - a.t) / (b.t - a.t))) : 0;
+  return { a, b, k, i: lo };
+}
+
+function apply(time) {
+  const { a, b, k, i } = frameAt(time);
+  for (const n of A.movers) {
+    const o = nodes[n], sa = a.s[n], sb = b.s[n];
+    if (!o || !sa) continue;
+    const s2 = sb || sa;
+    o.position.set(sa[0] + (s2[0] - sa[0]) * k, sa[1] + (s2[1] - sa[1]) * k, sa[2] + (s2[2] - sa[2]) * k);
+    _q.set(sa[3], sa[4], sa[5], sa[6]); _q2.set(s2[3], s2[4], s2[5], s2[6]);
+    o.quaternion.slerpQuaternions(_q, _q2, k);
+  }
+  const act = A.actions[(k > 0.5 ? b : a).a] || {};
+  const p = a.p;
+  const col = css(STATUS[act.status] || "--ok");
+  document.getElementById("now").innerHTML =
+    `<b>${act.text || ""}</b><span class="pill" style="background:${col}">${act.status || ""}</span>` +
+    `<br><span style="color:var(--muted)">roboti X ${p[0].toFixed(1)} · Y ${p[1].toFixed(1)} · Z ${p[2].toFixed(1)}</span>`;
+  document.querySelectorAll(".act").forEach((d, j) => d.classList.toggle("cur", j === (k > 0.5 ? b : a).a));
+  document.getElementById("time").textContent = `${time.toFixed(1)} / ${T.toFixed(1)} s @ 100 mm/s`;
+  document.getElementById("head").style.left = (time / T * 100) + "%";
+  if (follow && nodes.cup) {
+    const target = new THREE.Vector3(); nodes.cup.getWorldPosition(target);
+    controls.target.lerp(target, 0.15);
+  }
+}
+
+let prev = performance.now();
+function tick(now) {
+  const dt = Math.min(0.1, (now - prev) / 1000); prev = now;
+  if (playing) { t += dt * speed; if (t > T) t = 0; }
+  apply(t);
+  controls.update();
+  renderer.render(scene, camera);
+}
+
+function setCam(kind) {
+  follow = kind === "follow";
+  document.getElementById("followBtn").classList.toggle("on", follow);
+  const c = new THREE.Vector3(300, 0, -150);   // world: robot x 300 -> three (x, y=z, z=-y)
+  const to = v => new THREE.Vector3(v[0], v[2], -v[1]);
+  const pos = { iso: [1250, -950, 900], top: [250, 0, 1700], side: [250, -1500, 250], follow: [650, -450, 300] }[kind];
+  camera.position.copy(to(pos));
+  controls.target.copy(to([230, 0, kind === "top" ? -150 : 0]));
+  if (kind === "top") camera.up.set(1, 0, 0); else camera.up.set(0, 1, 0);
+  controls.update();
+}
+
+document.getElementById("play").onclick = e => { playing = !playing; e.target.textContent = playing ? "❚❚ Paus" : "▶ Mängi"; e.target.classList.toggle("on", playing); };
+document.getElementById("speed").onchange = e => speed = +e.target.value;
+document.querySelectorAll("[data-cam]").forEach(b => b.onclick = () => setCam(b.dataset.cam));
+document.getElementById("trailBtn").onclick = e => { trail.visible = !trail.visible; e.target.classList.toggle("on", trail.visible); };
+document.getElementById("rigBtn").onclick = e => {
+  const on = !e.target.classList.contains("on"); e.target.classList.toggle("on", on);
+  for (const n in nodes) if (n.startsWith("rakis")) nodes[n].visible = on;
+};
+const strip = document.getElementById("strip");
+const seek = e => { const r = strip.getBoundingClientRect(); t = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)) * T; };
+let drag = false;
+strip.onpointerdown = e => { drag = true; strip.setPointerCapture(e.pointerId); seek(e); };
+strip.onpointermove = e => drag && seek(e);
+strip.onpointerup = () => drag = false;
+addEventListener("keydown", e => { if (e.code === "Space") { e.preventDefault(); document.getElementById("play").click(); } });
+addEventListener("resize", resize);
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { bg(); drawStrip(); });
+
+window.twin = { seek: s => { t = s; }, pause: () => { playing = false; }, cam: setCam };
+load().catch(err => { console.error(err); document.getElementById("err").style.display = "grid"; });
+</script>
+</body>
+</html>
