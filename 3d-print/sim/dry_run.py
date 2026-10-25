@@ -125,7 +125,7 @@ class Run:
     # floor of the pocket under a cell centre (top surface of the holder there), world z
     def _surface(self, holder_name, cell):
         mesh = self.T.scene["holder:" + holder_name]
-        p = twin.rig_to_world((*twin.cell_model(cell), 0))
+        p = twin.grid_to_world((*twin.cell_model(cell), 0))
         loc, _, _ = mesh.ray.intersects_location([[p[0], p[1], 300.0]], [[0, 0, -1.0]])
         return float(loc[:, 2].max())
 
@@ -166,7 +166,7 @@ class Run:
                         f"measured battery {BATTERY_H_MEASURED} would put the Atom {BATTERY_H_MEASURED - BATTERY_H:+.2f} mm higher")
 
     def _world(self, cell):
-        return twin.rig_to_world((*twin.cell_model(cell), 0))[:2]
+        return twin.grid_to_world((*twin.cell_model(cell), 0))[:2]
 
     def _place_parts(self):
         lay = self.lay

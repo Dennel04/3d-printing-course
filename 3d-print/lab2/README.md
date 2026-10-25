@@ -186,6 +186,8 @@ Kõigi nende olek on `TODO — waiting for physical test`.
   ![gridfinity-calibration standardne jalg](docs/photos/gridfinity-calibration-jalg.png)
 - `atoms3-input-holder/src/atoms3-input-holder-v1.f3d`, `atoms3-input-holder/stl/atoms3-input-holder-v1.stl`, `atoms3-input-holder/3mf/atoms3-input-holder-v1.3mf` - AtomS3 sisendhoidiku Fusioni fail ja ekspordid; mõõtude ning füüsilise sobivuse kinnitus: `TODO — waiting for physical test`.
 - `ready-parts-input-holder/src/ready-parts-input-holder-v1.f3d`, `ready-parts-input-holder/stl/ready-parts-input-holder-v1.stl`, `ready-parts-input-holder/3mf/ready-parts-input-holder-v1.3mf` - ReadyParts sisendhoidiku Fusioni fail ja ekspordid; mõõtude ning füüsilise sobivuse kinnitus: `TODO — waiting for physical test`.
+- `atoms3-input-holder/src|stl|3mf/atoms3-input-holder-v2.*` - AtomS3 sisendhoidik v2: standardne Gridfinity jalg (nagu klaasi hoidikul), välismõõt 83,5 mm, sõrmepilud; PrusaSlicer 53 min. Printimata. Kaksik kasutab seda.
+- `ready-parts-input-holder/src|stl|3mf/ready-parts-input-holder-v2.*` - oranž töökoha hoidik v2: standardne Gridfinity jalg, 83,5 mm, sõrmepilud; PrusaSlicer 1 h 33 min. Prindib. Kaksik kasutab seda; pesa põhi on 3,06 mm madalam kui v1-l → töökoha Z tuleb pärast vahetust uuesti õpetada (kaksik: place −120,9 vs v1 õpetus −119,0).
 - `glass-input-holder/src/glass-input-holder.f3d`, `glass-input-holder/stl/glass-input-holder.stl`, `glass-input-holder/3mf/glass-input-holder.3mf` - klaasi sisendhoidik 2 × 2: neli pesa 30,6 × 30,6 mm (30 mm klaas + 0,3 mm külje kohta), sügavus 1,5 mm, keskmed ±21 mm; välismõõt 83,5 × 83,5 mm (`42 × 2 − 0,5`); **standardne Gridfinity jalg** nagu kalibreerimiskastil (generaatori `BASE_PROFILE`, 4,75 mm). Kõrgus jalaga 10,25 mm. Print: Prusa CORE One HF0.4, `0.20mm SPEED`, Prusament PLA, jalad all, ilma tugedeta, 42 min, 28,2 g. Prinditud ja kontrollitud 25.10.26: istub ruudustikus täpselt.
 - `valjundhoidik`: jalg 35,78 mm (R 1,5 mm, 0,5 mm faas all), v1 failid üle kirjutatud, printimata.
 
@@ -364,6 +366,14 @@ mitte ei muudeta.
 * Tegime: kaksikus (`3d-print/sim`) on töökoha aku ja AtomS3 kastide asemel M5Stacki mudelid (`3d-print/models/`) ning XIAO kinnituses Seeedi XIAO ESP32S3 Sense mudel samas kohas kui `xiao-square-mount-v2.f3d`-s. Kaamera osaleb kokkupõrkekontrollis ja 3D-vaates.
 * Tulemus: CAD-virn (aku 18,0 + Atom 12,9 mm) on 3,97 mm madalam kui mõõdetud aku 21,97 mm-ga. Nüüd on kõik kolm õpetatud punkti kaksiku esimesest puudutusest sama palju madalamal: sisend 1,2, töökoht 1,2, väljund 0,7 mm (enne töökoht 5,1). Kokkupõrkeid pole (`docs/sim_dry_run*.txt`).
 * Lahtine: aku kõrgus nihikuga ilma Atomita (21,97 vs mudel 18,0); kaksikus jääb klaas töökohal oranži hoidiku servale, mitte Atomi ekraanile (oli ka enne, päris robotil töötab) — oranži hoidiku pesa kontroll.
+
+**25.10.2026 — kaksikus uued hoidikud**
+* Kaksik (`3d-print/sim`) kasutab nüüd AtomS3 hoidikut v2 ja töökoha hoidikut v2 (standardne jalg); klaasi hoidik oli juba uus. Kõik kolm istuvad ruudustikul samal kõrgusel (põhi z 2,53). Kokkupõrkeid pole; klaas jääb töökohal nüüd Atomi ekraanile (v1-ga jäi hoidiku servale).
+* Pärast v2 töökoha paigaldamist: õpetada töökoha Z uuesti (kaksiku järgi ~3 mm madalam kui praegune −119,0).
+
+**25.10.2026 — kaksikus laud ja ruudustiku asukoht nagu päris rakisel**
+* Laud Treston 700 mm (CAD-i laud): algab roboti taga tagumiste L-ide all, torud ulatuvad ette ~50 mm üle esiserva, veebikaamera post toru otsas.
+* Robot istub kaksikus nüüd oma pesa keskel, napp flantsi keskel. Kalibreerimise 31 mm nihe on ruudustiku asukoht torudel: ruudustik on CAD-ist 31,2 mm robotist eemal → pesa ja ruudustiku vahel ~30 mm paljast toru, nagu Denys laual näeb. Varem joonistati see nihe napa nihkeks ja robot oli pesas paigast ära. Kaksiku lahtrid = `cells.py`, kokkupõrkeid pole, kõrgused muutumata.
 
 ### Väljundid ja tulemused
 

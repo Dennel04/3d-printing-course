@@ -42,7 +42,20 @@ def use_lab(path):
     spec.loader.exec_module(cells)
     FIT_DEG, _robot_of = cells.fit()
     _C, _S = math.cos(math.radians(FIT_DEG)), math.sin(math.radians(FIT_DEG))
+    _fit_grid_shift()
     return LAB
+
+
+GRID_SHIFT = (0.0, 0.0)
+
+
+def _fit_grid_shift():
+    """The robot sits centred in its nest (photo: cup centred under the flange) and the grid tiles slide on the
+    pipes: the calibration fit (cells.py) minus the CAD cell positions is where the grid really is relative to
+    the robot. 24.10/25.10 fit: 31 mm further out than in CAD = the bare pipe Denys sees between nest and grid."""
+    global GRID_SHIFT
+    d = [np.subtract(_robot_of(c), rig_to_world((*cell_model(c), 0))[:2]) for c in ("C-2", "E+3", "G-1", "D-4")]
+    GRID_SHIFT = tuple(float(v) for v in np.mean(d, axis=0))
 
 
 def add_lab_arg(ap):
@@ -58,16 +71,16 @@ CUP_LEN = 66.2
 
 # ---- tool (TODO measure: cup diameter, cup offset from the J4 axis, cup length) ----
 CUP_D = 22.25            # suction cup outer diameter, mm (caliper 24.10, measurements.md; effective ~23 from the C-2 corners)
-# Calibration fit: flange - cup = (31.10, 0.08) mm at R 33 (robot frame). Assumes the robot sits in the
-# rig exactly as in CAD, so the whole fit shift is the cup's offset from the J4 axis.
-CUP_OFFSET_R33 = (-31.10, -0.08)
+# The cup is centred under the flange (close-up photo 25.10). The calibration fit shift (31 mm) used to be put
+# here; it is the grid's place on the pipes instead (GRID_SHIFT).
+CUP_OFFSET_R33 = (0.0, 0.0)
 MOTOR_LEN = 85.0         # link5 (J4 motor) hangs this far below its frame origin (URDF mesh)
 
 # ---- holder STL per layout type, and how the part sits (z of its local 0 above the grid top) ----
 HOLDER_STL = {
     "glass": "glass-input-holder/stl/glass-input-holder.stl",
-    "atom": "atoms3-input-holder/stl/atoms3-input-holder-v1.stl",
-    "workstation": "ready-parts-input-holder/stl/ready-parts-input-holder-v1.stl",
+    "atom": "atoms3-input-holder/stl/atoms3-input-holder-v2.stl",
+    "workstation": "ready-parts-input-holder/stl/ready-parts-input-holder-v2.stl",
     "output": "valjundhoidik/stl/valjundhoidik-v1.stl",
     "calibration": "gridfinity-calibration/stl/gridfinity-calibration.stl",
 }
@@ -76,7 +89,14 @@ CAL_FOOT_Z = 2.289          # calibration bin foot bottom when seated (1 x 1 wed
 BEAM_TOP = 2.48          # rig model: top of the beams under the +-1 / +-3 columns
 TABLE_Z = -16.72         # table = grid bottom (Denys, 24.10)
 PIPE_D, PIPE_Y, PIPE_Z = 16.0, 110.5, -7.1      # rig pipes (MG 400 rakis.md)
-PIPE_LEN, PIPE_X_FRONT = 670.0, -586.5          # front end 50 mm past the table edge (x -536.5)
+# Table: Treston, 700 mm deep (the rig CAD's table; Treston TP benches are 500/700/800). Back edge behind the
+# robot where the back L brackets hook over it (hook face x +163.5 in the rig model, they press the nest), front
+# edge x -536.5 where the front L (on the pipes) hook over it. The 670 mm pipes stick out ~50 mm in front, not at
+# the back (Denys 24.10/25.10). Table width not measured.
+TABLE_DEPTH, TABLE_WIDTH = 700.0, 700.0
+TABLE_BACK_X = 163.5
+TABLE_FRONT_X = TABLE_BACK_X - TABLE_DEPTH     # -536.5
+PIPE_LEN, PIPE_X_FRONT = 670.0, -586.5
 POST_PIPE_X, POST_PIPE_Z0, POST_PIPE_LEN = -555.7, 7.5, 458.0
 # yaw of the post top's opening (+x of its file) in the rig model: towards the grid centre (rig x -265.5, y 0)
 POST_TOP_YAW = math.atan2(0.0 + PIPE_Y, -265.5 - POST_PIPE_X)
@@ -104,6 +124,18 @@ def rig_to_world(p):
 def rig_matrix():
     m = np.eye(4)
     m[:2, :2] = [[-_C, _S], [-_S, -_C]]
+    return m
+
+
+def grid_to_world(p):
+    """Grid model point (rig frame) -> world: the grid sits GRID_SHIFT away from its CAD place."""
+    x, y, z = rig_to_world(p)
+    return x + GRID_SHIFT[0], y + GRID_SHIFT[1], z
+
+
+def grid_matrix():
+    m = rig_matrix()
+    m[:2, 3] = GRID_SHIFT
     return m
 
 
@@ -213,10 +245,12 @@ class Twin:
             if f.stem.startswith("rakis_pipe_long"):
                 continue                # drawn below at their real length and place
             mesh = trimesh.load(f)
-            mesh.apply_transform(m)
+            # grid tiles and their pipe dowels slide on the pipes (GRID_SHIFT); nest, L brackets stay at CAD
+            grid = f.stem.startswith(("rakis_grid", "rakis_pipe_dowel"))
+            mesh.apply_transform(grid_matrix() if grid else m)
             self._add(f.stem, mesh)
-        # the two 16 mm pipes: 670 mm (table 700 - 30, rakis doc), front ends ~50 mm past the table edge since
-        # Denys moved the L brackets (24.10, by eye); axes y +-110.5, z -7.1 in the rig model
+        # the two 16 mm pipes: 670 mm, front ends ~50 mm past the front table edge (see TABLE_*);
+        # axes y +-110.5, z -7.1 in the rig model
         for side, y in (("neg", -PIPE_Y), ("pos", PIPE_Y)):
             pipe = trimesh.creation.cylinder(radius=PIPE_D / 2, height=PIPE_LEN, sections=32)
             pipe.apply_transform(trimesh.transformations.rotation_matrix(math.pi / 2, (0, 1, 0)))
@@ -225,8 +259,8 @@ class Twin:
             self._add(f"rakis_pipe_long_{side}", pipe)
 
     def _load_table(self):
-        box = trimesh.creation.box(extents=(700, 700, 20))
-        box.apply_translation((-300, 0, TABLE_Z - 10))     # rig frame, under the grid and the post
+        box = trimesh.creation.box(extents=(TABLE_DEPTH, TABLE_WIDTH, 20))
+        box.apply_translation(((TABLE_BACK_X + TABLE_FRONT_X) / 2, 0, TABLE_Z - 10))     # rig frame
         box.apply_transform(rig_matrix())
         self._add("table", box)
 
@@ -287,7 +321,7 @@ class Twin:
             t = np.eye(4)
             t[:3, 3] = (cx - x0, cy - y0, z0)
             mesh.apply_transform(t)
-            mesh.apply_transform(rig_matrix())
+            mesh.apply_transform(grid_matrix())
             self.seat[h["name"]] = (z0, self._settle(mesh))
             self._add("holder:" + h["name"], mesh)
         if with_post:
@@ -318,7 +352,7 @@ class Twin:
             t = np.eye(4)
             t[:3, 3] = (cx - (b[0][0] + b[1][0]) / 2, cy - (b[0][1] + b[1][1]) / 2, CAL_FOOT_Z - b[0][2])
             mesh.apply_transform(t)
-            mesh.apply_transform(rig_matrix())
+            mesh.apply_transform(grid_matrix())
             self.seat["calibration"] = (CAL_FOOT_Z, self._settle(mesh))
             self._add("calibration", mesh)
 
