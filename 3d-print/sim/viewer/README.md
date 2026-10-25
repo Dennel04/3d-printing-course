@@ -30,8 +30,10 @@ Hoidikud tulevad ise `slot-picker/layout.json`-ist (tüüp → STL `twin.py` `HO
 
 ## Iminapa tööriist pildil
 
-Dobot MG400 lõppflantsi ametlik CAD (`sim/robot/meshes/mg400_end_flange.stl`, allikas `MG400_End_Flange_3D.stp`,
-Dobot / Pololu; MG400 User Guide V1.7 joonis 5.3: Ø40 × 4 ketas + Ø22 × 10 nukk, 4 × M3 P.C.D 30) istub J4 võllil.
-Selle all komplekti puhvriga iminapa hoidik (avalikku CAD-i pole): mõõdud fotodelt, mõõtkava nihikuga mõõdetud
-napp Ø22,25. Napa + puhvri kokkusurumist näitab leht (andmed `audit_scene.py`). TODO nihikuga: hoidiku vaba pikkus
-ja puhvri käik.
+* Dobot MG400 lõppflantsi ametlik CAD (`sim/robot/meshes/mg400_end_flange.stl`, allikas `MG400_End_Flange_3D.stp`,
+  Dobot / Pololu; MG400 User Guide V1.7 joonis 5.3: Ø40 × 4 ketas + Ø22 × 10 nukk J4 võllil Ø8 × 12).
+* Hoidiku plaat Ø40 × 4, 4 sisekuuskantkruvi altpoolt, alumiiniumkere Ø16, külgmine 4 mm kiirliitmik, O-rõngas,
+  adapter (fotod; avalikku CAD-i pole).
+* Napp: kummil tempel **C20** = SMC ZP20C tüüpi lame ribidega napp Ø20 (SMC kataloog ZPT 13-11-6: välis-Ø23,
+  kõrgus C 14; nihik: Ø22,25 × 13,8). Puhvrivedru ei ole: kokku surutakse ainult kummiserv.
+* Napa kokkusurumist näitab leht (`audit_scene.py`). TODO nihikuga: hoidiku vaba pikkus.

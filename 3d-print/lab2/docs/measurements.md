@@ -219,6 +219,7 @@ Allikas: kasutaja 24.10.2026 edastatud füüsilised mõõtmised ja käsitsi teht
 |---|---|---|---|
 | D41 — iminapa välisläbimõõt | 22,25 mm | measured | Kasutaja mõõtis nihikuga 24.10.2026 eraldi kummist iminappa. Täiendab Exceli D41 puuduvat väärtust; algset Excelit ei muudetud. |
 | H1 — iminapa kõrgus | 13,80 mm | measured | Sama eraldi kummist iminapp, nihik, 24.10.2026. H1 on lisamõõdu tähis, mitte Exceli lahtriviide ega Lab 2 eraldi kohustuslik nõue. |
+| Napa tüüp | tempel „C20“ = SMC ZP20C tüüpi lame ribidega napp Ø20 | photo 25.10.2026 | SMC kataloog ZPT 13-11-6: välis-Ø23, kõrgus C 14 mm — klapib nihikumõõtudega. Puhvrivedru hoidikus ei ole. |
 
 Mõõdetud eksemplari samasus robotile paigaldatud iminapaga pole dokumentaalselt kinnitatud. Seetõttu ei esitata neid arve otse paigaldatud tööriista mõõtudena. H1 ei ole kogu vaakumtööriista kõrgus. Varasemad kalibreerimisest tuletatud efektiivsed läbimõõdud ≈ 22 mm ja ≈ 23 mm jäävad oma katsekontekstis alles; need ei asenda nihikumõõtu ega tõenda eksemplaride samasust.
 

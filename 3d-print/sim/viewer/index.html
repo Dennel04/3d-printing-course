@@ -146,8 +146,8 @@ async function load() {
     o.geometry = o.geometry.toNonIndexed();
     o.geometry.computeVertexNormals();
     o.material = new THREE.MeshStandardMaterial({
-      color: col, roughness: glass ? 0.1 : name.includes("pipe") || (name.startsWith("cup ") && name !== "cup rubber") ? 0.3 : 0.7,
-      metalness: name.includes("pipe") ? 0.9 : name.startsWith("cup ") && name !== "cup rubber" ? 0.55 : name.startsWith("rakis") ? 0.3 : 0.05,
+      color: col, roughness: glass ? 0.1 : name.includes("pipe") || ["cup metal", "cup fitting", "cup flange"].includes(name) ? 0.3 : 0.7,
+      metalness: name.includes("pipe") ? 0.9 : ["cup metal", "cup fitting", "cup flange"].includes(name) ? 0.55 : name.startsWith("rakis") ? 0.3 : 0.05,
       transparent: glass, opacity: glass ? 0.65 : 1,
     });
     o.castShadow = !name.startsWith("table");
