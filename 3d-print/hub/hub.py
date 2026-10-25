@@ -12,6 +12,7 @@ selected robot; the hub adds the DobotStudio-style jog (Cartesian and joint), th
 the twin checks (sim/*.py) behind buttons.
 """
 import argparse
+import base64
 import json
 import math
 import subprocess
@@ -269,6 +270,9 @@ def joint_target(status, axis, delta):
     return {"x": round(nx, 3), "y": round(ny, 3), "z": round(nz, 3), "r": round(vals[0] + vals[3], 3)}
 
 
+WEBCAM_MAX_BYTES = 20_000_000   # a 4K JPEG is ~1-3 MB
+
+
 def build(lab, port):
     sys.path.insert(0, str(lab / "slot-picker"))
     import slot_picker as sp
@@ -396,6 +400,16 @@ def build(lab, port):
                 if tests.state["export"]["status"] != "running":
                     tests.start("export")
                 return {}
+            if path == "/hub/webcam/frame":
+                # the page grabs the picture from the table webcam itself and posts one JPEG (base64) here
+                jpeg = base64.b64decode(data.get("jpeg") or "", validate=True)
+                if not jpeg.startswith(b"\xff\xd8") or len(jpeg) > WEBCAM_MAX_BYTES:
+                    raise ValueError("expected one JPEG picture")
+                folder = lab / "webcam-frames"
+                folder.mkdir(exist_ok=True)
+                name = time.strftime("webcam-%Y%m%d-%H%M%S.jpg")
+                (folder / name).write_bytes(jpeg)
+                return {"name": name}
             if path == "/hub/glasses/reset":
                 live.reset_glasses()
                 return {}

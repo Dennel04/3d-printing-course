@@ -1,5 +1,6 @@
 """Hub self-test: the simulated MG400, the joint jog maths and the hub HTTP API (Simulation mode only,
 nothing is sent to a real robot). Run: ../../sim/.venv/Scripts/python -m unittest -v test_hub"""
+import base64
 import json
 import math
 import socket
@@ -206,6 +207,16 @@ class HubApiTest(unittest.TestCase):
         self.assertEqual(self.req("/hub/state")["mode"], "real")
         self.assertTrue(self.req("/hub/mode", {"mode": "sim"})["ok"])
         self.assertFalse(self.req("/hub/mode", {"mode": "both"})["ok"])
+
+    def test_webcam_frame_is_saved(self):
+        def post(body):
+            return self.req("/hub/webcam/frame", {"jpeg": base64.b64encode(body).decode()})
+        self.assertFalse(post(b"not a picture")["ok"])
+        reply = post(b"\xff\xd8\xff\xe0 fake jpeg")
+        self.assertTrue(reply["ok"])
+        saved = hub.HERE.parent / "lab2" / "webcam-frames" / reply["name"]
+        self.assertTrue(saved.is_file())
+        saved.unlink()
 
     def test_foreign_origin_is_refused(self):
         r = urllib.request.Request(f"http://127.0.0.1:{self.port}/hub/mode", data=b'{"mode":"real"}',

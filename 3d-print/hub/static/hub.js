@@ -382,6 +382,10 @@ $$("[data-view]").forEach(b => b.onclick = () => {
   replay.on = b.dataset.view === "replay";
   setChecked($$("[data-view]"), x => x.dataset.view === b.dataset.view);
   $("#replayBar").hidden = !replay.on;
+  const cam = b.dataset.view === "webcam";
+  $("#webcamPane").hidden = $("#webcamRow").hidden = !cam;
+  $("#row3d").hidden = $(".navi").hidden = cam;
+  if (cam) webcamStart(); else webcamStop();
   if (!replay.on && scene.A) applyPose(scene.A.frames[0].s);   // put the glasses back home
   drawStrip();
 });
@@ -558,6 +562,48 @@ addEventListener("message", ev => {
   if (ev.origin !== location.origin) return;
   if (ev.data?.type === "layout-saved" || ev.data?.type === "layout-3d") layoutTo3d();
 });
+
+/* ---------------- table webcam (browser camera API; the hub only stores saved frames) ---------------- */
+const webcam = { stream: null };
+const WEBCAM_HINT = /verbatim|49580|uhd/i;      // the AWC-03 on the post; any other camera can be picked
+async function webcamStart(id) {
+  webcamStop();
+  $("#webcamEmpty").textContent = "Opening the webcam…";
+  try {
+    if (!id) {
+      const devs = (await navigator.mediaDevices.enumerateDevices()).filter(d => d.kind === "videoinput");
+      id = (devs.find(d => WEBCAM_HINT.test(d.label)) || devs[0] || {}).deviceId;
+    }
+    webcam.stream = await navigator.mediaDevices.getUserMedia({ audio: false,
+      video: { ...(id ? { deviceId: { exact: id } } : {}), width: { ideal: 3840 }, height: { ideal: 2160 } } });
+    const v = $("#webcamVideo"); v.srcObject = webcam.stream;
+    const track = webcam.stream.getVideoTracks()[0], s = track.getSettings();
+    const devs = (await navigator.mediaDevices.enumerateDevices()).filter(d => d.kind === "videoinput");
+    $("#webcamDev").innerHTML = devs.map((d, i) => `<option value="${d.deviceId}">${esc(d.label || "Camera " + (i + 1))}</option>`).join("");
+    $("#webcamDev").value = s.deviceId;
+    $("#webcamState").textContent = `${s.width}×${s.height}${s.frameRate ? ", " + Math.round(s.frameRate) + " fps" : ""}`;
+    $("#webcamEmpty").textContent = "";
+  } catch (e) {
+    $("#webcamEmpty").textContent = `No webcam picture: ${e.name || ""} ${e.message}. Check that the USB camera is plugged in, ` +
+      "no other program (Camera app, Zoom) holds it, and camera access is allowed for this browser.";
+  }
+}
+function webcamStop() {
+  webcam.stream?.getTracks().forEach(t => t.stop());
+  webcam.stream = null; $("#webcamVideo").srcObject = null; $("#webcamState").textContent = "";
+}
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+$("#webcamDev").onchange = e => webcamStart(e.target.value);
+$("#webcamSnap").onclick = async () => {
+  const v = $("#webcamVideo");
+  if (!webcam.stream || !v.videoWidth) return toast("The webcam is not showing a picture yet.", "bad");
+  const c = document.createElement("canvas"); c.width = v.videoWidth; c.height = v.videoHeight;
+  c.getContext("2d").drawImage(v, 0, 0);
+  try {
+    const d = await api("/hub/webcam/frame", { jpeg: c.toDataURL("image/jpeg", 0.92).split(",")[1] });
+    toast(`Saved ${d.name} (${c.width}×${c.height}) in lab2/webcam-frames/`);
+  } catch (e) { toast(e.message, "bad"); }
+};
 
 /* ---------------- start ---------------- */
 setChecked($$("[data-space]"), b => b.dataset.space === "cart");

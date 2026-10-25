@@ -42,12 +42,19 @@
 <main class="deck">
   <section class="stage" aria-label="3D view">
     <div id="view"></div>
+    <div class="webcam" id="webcamPane" hidden><video id="webcamVideo" autoplay muted playsinline></video><p id="webcamEmpty"></p></div>
     <div class="stage-top">
       <div class="seg small" role="radiogroup" aria-label="3D view">
         <button id="viewLive" data-view="live">Live arm</button>
         <button id="viewReplay" data-view="replay">Cycle replay</button>
+        <button id="viewCam" data-view="webcam" title="Live picture of the table webcam on the post">Webcam</button>
       </div>
-      <div class="row3d">
+      <div class="row3d webcam-row" id="webcamRow" hidden>
+        <select id="webcamDev" aria-label="Webcam"></select>
+        <button class="ghost small" id="webcamSnap" title="Save the current picture at full resolution into lab2/webcam-frames/">Save frame</button>
+        <span class="hint" id="webcamState"></span>
+      </div>
+      <div class="row3d" id="row3d">
         <button class="ghost small" id="btnLayout3d" title="Rebuild the 3D scene from the picker's saved layout.json (~20 s)">Layout → 3D</button>
         <button class="ghost small" id="btnGlasses" title="Put the glasses back into the input holder">Reset glasses</button>
         <span class="hint" id="layout3dState"></span>

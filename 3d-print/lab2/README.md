@@ -62,7 +62,10 @@ Wi-Fi füüsiline toimimine ja station PC võrgust ligipääs, kaablite marsruut
     - **Nurk** (prinditud 25.10.26, istub hästi): pesa 30 mm toru otsa peale (tilgakujuline ava, prinditakse ilma tugedeta), kaks külgtiiba padjanditega toetuvad lauale L-nurga kõrval, nii et nurk ei pöördu toru ümber; vertikaalne pesa toru jaoks. Vertikaalse toru telg J1-st ~568 mm.
     - **Ülemine v2** (Denys 25.10.26): pesa Ø16,5 toru otsa peale (toru vastu pesa põhja), peal kaamera klambri pesa, taga kiil lukustab. Pööratakse toru peal käsitsi, avatud pool ruudustiku keskele.
     - Vertikaalne toru **458 mm** (kaamera ~470 mm laua kohal). Kõrgus kinnitada kaamerat käes hoides enne lõikamist.
-    - Veel teha: ülemine osa printida; käe suurim kõrgus; kaader kogu laua ja robotiga; pildi värin täiskiirusel; kaamera maha-tagasi sama pilt; kaabel mööda toru alla kinni.
+    - **Paigaldatud 25.10.26:** ülemine osa prinditud, toru lõigatud, kaamera postil ja ühendatud (Verbatim 49580 UHD 4K, 3840×2160, 30 fps). Kaader näitab kogu ruudustikku, kõiki hoidikuid ja robotit ülevalt; pilti näeb ja salvestab MG400 Station Hubis (`3d-print/hub`, nupp **Webcam**).
+    - Veel teha: käe suurim kõrgus; pildi värin täiskiirusel; kaamera maha-tagasi sama pilt; kaabel mööda toru alla kinni.
+
+    ![Veebikaamera kaader postilt: kogu ruudustik, hoidikud ja robot](docs/photos/veebikaamera-kaader-2026-10-25.jpg)
 
     ![veebikaamera-post-v1 nurk altpoolt](docs/photos/veebikaamera-post-v1-under.png)
 
@@ -361,6 +364,11 @@ mitte ei muudeta.
 **25.10.2026 — veebikaamera post: üks versioon, nurk prinditud**
 * Denys printis nurga (`veebikaamera-post-v1-nurk`), istub rakise torul hästi. Varasemad Gridfinity-jalaga posti kavandid eemaldati laborist; alles jääb ainult toruotsa lahendus (nurk + ülemine), mida kasutame. Post ei võta enam ruudustikus ruute (F/G −4 … −5 vabad).
 * Järgmiseks: ülemine osa printida, toru 458 mm, kaamera kõrgus ja kaader kogu laua ning robotiga.
+
+**25.10.2026 — Dennel04 (Denys) koos Claude'iga: veebikaamera postil, pilt hubis**
+* Denys printis ülemise osa, lõikas toru, pani kaamera postile ja ühendas arvutiga. Kaader (3840×2160) näitab ülevalt kogu ruudustikku, hoidikuid ja robotit: `docs/photos/veebikaamera-kaader-2026-10-25.jpg`.
+* MG400 Station Hubi 3D-ala kõrval on vaade **Webcam**: veebikaamera pilt otse brauseris, **Save frame** salvestab täisresolutsiooniga kaadri kausta `lab2/webcam-frames/` (gitis ei ole; dokumentatsiooni jaoks kopeerida `docs/photos/`).
+* Lahtine: pildi värin roboti täiskiirusel, kaamera maha-tagasi sama kaader, käe suurim kõrgus kaamera all, kaabel mööda toru.
 
 **25.10.2026 — Dennel04 (Denys) koos Claude'iga: kaksikus päris komponendimudelid**
 * Tegime: kaksikus (`3d-print/sim`) on töökoha aku ja AtomS3 kastide asemel M5Stacki mudelid (`3d-print/models/`) ning XIAO kinnituses Seeedi XIAO ESP32S3 Sense mudel samas kohas kui `xiao-square-mount-v2.f3d`-s. Kaamera osaleb kokkupõrkekontrollis ja 3D-vaates.

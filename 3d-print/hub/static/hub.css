@@ -121,6 +121,11 @@ button.arm[aria-pressed="true"] .lock::before { left: 6px; }
 .navi-btns { display: flex; gap: 4px; }
 .navi-btns button { background: var(--panel); font-size: 12px; padding: 2px 8px; }
 .stage .replay { right: 132px; }
+.webcam { position: absolute; inset: 0 0 44px; display: grid; place-items: center; background: #000; }
+.webcam video { width: 100%; height: 100%; object-fit: contain; display: block; }
+.webcam p { position: absolute; color: #bbb; max-width: 50ch; text-align: center; }
+.webcam p:empty { display: none; }
+.webcam-row select { font-size: 13px; padding: 3px 6px; background: var(--panel); max-width: 26ch; }
 .readout {
   position: absolute; left: 0; right: 0; bottom: 0; display: flex; flex-wrap: nowrap; overflow: hidden; gap: 6px 22px; align-items: center;
   padding: 10px 14px; background: var(--panel); border-top: 1px solid var(--line);

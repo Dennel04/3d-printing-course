@@ -51,6 +51,10 @@ Clear error appear only when they are needed; messages pop up under the top bar.
 
 The 3D stage follows the selected robot live (**Live arm**) or plays the planned cycle with the
 dry-run verdict on the timeline (**Cycle replay**). Scene: `sim/viewer/data`, made by **Rebuild 3D scene**.
+**Webcam** shows the table webcam on the post (Verbatim 49580 UHD, picked by name, any other camera from the
+list) in the same area, 3840×2160 when the camera gives it. The browser opens the camera itself, so the
+Windows Camera app or a video call must not hold it. **Save frame** stores a full-size JPEG in
+`lab2/webcam-frames/` (git-ignored).
 
 - **Glasses follow the pump** in Live arm: when the pump starts sucking with the cup on a glass (within 12 mm),
   the glass rides with the cup; on blow / off it stays where it was released. Picture only, the robot cannot
