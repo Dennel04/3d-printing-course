@@ -83,6 +83,12 @@ Ruudu keskpunkt robotis = [`../calibration/cells.py`](../calibration/cells.py) (
 - Hoidikud füüsiliselt uutesse ruutudesse; seejärel töökoha ja väljundi punktide õpetamine.
 - AtomS3 mõõdud nihikuga; nelja klaasi hajuvus.
 
+### 25.10.26 täpsustus
+
+- Ülal „Füüsiliselt on paigas ainult klaasi sisend“ ja lahtine punkt „hoidikud uutesse ruutudesse … õpetamine“ on 24.10.26 õhtu seis enne õpetamist. Samal õhtul tõsteti hoidikud paigutuse B järgi, töökoht C+1 ja väljund D+4 õpetati ning ring 1 tehti 4 / 4 (README arenduspäevik 24.10.2026 ~19:00 ja ~19:20, [`refit_test.csv`](refit_test.csv)). AtomS3 sisendi ja kalibreerimiskasti paigaldus pole eraldi kirjas.
+- „Töökohad ja väljundid“ ütleb, et tsükli vaikimisi koht (`cycle.workstation_cell`) on C−1. Tegelikult on [`../slot-picker/layout.json`](../slot-picker/layout.json) väärtus `"workstation_cell": "C+1"` ja ring 1 kasutas C+1-te; sihtpunktide tabel ütleb sama („tsükli töökoht“ C+1).
+- Veebikaamera posti koht on otsustatud: laua serval rakise toru otsas, ruudustikust väljas (README 25.10.2026).
+
 ## Esialgne mall (23.10.26, ajalugu)
 
 ## Koordinaadid ja töövoog
