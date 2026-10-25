@@ -166,7 +166,23 @@ class HubApiTest(unittest.TestCase):
         self.assertTrue(s["robot"]["simulation"])
         self.assertEqual(len(s["robot"]["joints"]), 4)
 
+    def test_motion_is_locked_until_armed(self):
+        self.req("/hub/arm", {"armed": False})
+        r = self.req("/hub/jog", {"space": "cart", "axis": "z", "delta": -1})
+        self.assertFalse(r["ok"])
+        self.assertIn("locked", r["error"])
+        self.assertFalse(self.req("/api/goto", {"cell": "D+2", "hover_z": -110})["ok"])
+        self.assertTrue(self.req("/hub/arm", {"armed": True})["armed"])
+        self.assertTrue(self.req("/hub/state")["motion"]["armed"])
+
+    def test_mode_switch_locks_motion(self):
+        self.req("/hub/arm", {"armed": True})
+        self.req("/hub/mode", {"mode": "real"})
+        self.req("/hub/mode", {"mode": "sim"})
+        self.assertFalse(self.req("/hub/state")["motion"]["armed"])
+
     def test_cartesian_and_joint_jog(self):
+        self.req("/hub/arm", {"armed": True})
         z0 = self.req("/hub/state")["robot"]["pose"][2]
         self.assertTrue(self.req("/hub/jog", {"space": "cart", "axis": "z", "delta": -2})["ok"])
         wait_idle(self.robots.sim)
@@ -175,6 +191,7 @@ class HubApiTest(unittest.TestCase):
         wait_idle(self.robots.sim)
 
     def test_jog_rejects_big_steps_and_bad_axes(self):
+        self.req("/hub/arm", {"armed": True})
         self.assertFalse(self.req("/hub/jog", {"space": "cart", "axis": "z", "delta": -50})["ok"])
         self.assertFalse(self.req("/hub/jog", {"space": "joint", "axis": "j9", "delta": 1})["ok"])
 

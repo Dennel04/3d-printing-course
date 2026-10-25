@@ -21,8 +21,18 @@ the same time (tool camera COM5, pressure COM4).
 | Speed | 300 mm/s × ratio | the robot's |
 | Before use | nothing | mg400-base running, connected and enabled (DobotStudio in TCP/IP mode) |
 
-Switching needs a second click on **Real robot** and is refused while a sequence runs. After every
-switch **Motion enabled** is cleared.
+Switching needs a second click on **Real robot** (the button turns red: "Confirm: real arm") and is refused
+while a sequence runs.
+
+**One motion lock for the whole hub.** Every request that can move the arm (jog, picker drive, go above, move
+glass, cycle, probe) is refused by the server until **Arm** in the top bar is pressed. Switching robots locks
+again; on the real robot the lock comes back by itself after 2 minutes without a motion request (the button
+shows the countdown). STOP / Esc always works.
+
+**Layout.** Drag the bar between the 3D view and the panel to resize it (double-click resets, arrow keys
+nudge, the arrow collapses the panel; the size is remembered in this browser). The view cube in the 3D corner
+turns the view to a face (TOP, X±, Y± in robot axes); Fit and Tool are the two fixed views. Enable robot and
+Clear error appear only when they are needed; messages pop up under the top bar.
 
 ## Tabs
 

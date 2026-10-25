@@ -18,29 +18,45 @@ async function api(path, body) {
 const ui = { mode: "sim", space: "cart", step: 1, state: null, armed: false, realConfirm: 0 };
 
 function say(text, kind = "") { const m = $("#jogMsg"); m.textContent = text; m.className = "msg " + kind; }
+let toastTimer = null;
+function toast(text, kind = "") {
+  const t = $("#toast");
+  t.textContent = text; t.className = "toast " + kind; t.hidden = !text;
+  clearTimeout(toastTimer);
+  if (text) toastTimer = setTimeout(() => t.hidden = true, kind === "bad" ? 8000 : 4500);
+}
 function setChecked(buttons, pred) { buttons.forEach(b => b.setAttribute("aria-checked", String(pred(b)))); }
 
 /* ---------------- rail ---------------- */
+let confirmTimer = null;
 $$(".mode button").forEach(b => b.onclick = async () => {
   const mode = b.dataset.mode;
   if (mode === ui.mode) return;
-  if (mode === "real" && Date.now() - ui.realConfirm > 4000) {
-    ui.realConfirm = Date.now();
-    $("#robotHint").textContent = "Click Real robot again to drive the physical arm.";
+  if (mode === "real" && !b.classList.contains("confirm")) {     // second click on the same button confirms
+    b.classList.add("confirm"); b.textContent = "Confirm: real arm";
+    clearTimeout(confirmTimer);
+    confirmTimer = setTimeout(() => { b.classList.remove("confirm"); b.textContent = "Real robot"; }, 4000);
     return;
   }
+  b.classList.remove("confirm"); b.textContent = mode === "real" ? "Real robot" : "Simulation";
   try {
     await api("/hub/mode", { mode });
-    ui.armed = false; $("#armMotion").checked = false;
-    $("#robotHint").textContent = mode === "real" ? "Real robot: mg400-base on :8000 must be connected and enabled." : "";
-  } catch (e) { $("#robotHint").textContent = e.message; }
+    toast(mode === "real" ? "Real robot selected. Motion is locked; mg400-base on :8000 must be connected and enabled." : "Simulation selected. Motion is locked.");
+  } catch (e) { toast(e.message, "bad"); }
 });
+$("#btnArm").onclick = async () => {
+  const on = $("#btnArm").getAttribute("aria-pressed") !== "true";
+  try {
+    await api("/hub/arm", { armed: on });
+    toast(on ? (ui.mode === "real" ? "Real arm armed. Keep a hand on the e-stop." : "Simulated arm armed.") : "Motion locked.");
+  } catch (e) { toast(e.message, "bad"); }
+};
 $("#speed").oninput = e => $("#speedOut").textContent = e.target.value + " %";
 $("#speed").onchange = async e => {
-  try { await api("/api/speed", { ratio: +e.target.value }); } catch (err) { $("#robotHint").textContent = err.message; }
+  try { await api("/api/speed", { ratio: +e.target.value }); } catch (err) { toast(err.message, "bad"); }
 };
-$("#btnEnable").onclick = () => api("/hub/enable", {}).catch(e => $("#robotHint").textContent = e.message);
-$("#btnClear").onclick = () => api("/hub/clear_error", {}).catch(e => $("#robotHint").textContent = e.message);
+$("#btnEnable").onclick = () => api("/hub/enable", {}).catch(e => toast(e.message, "bad"));
+$("#btnClear").onclick = () => api("/hub/clear_error", {}).catch(e => toast(e.message, "bad"));
 const stop = () => { stopHold(); api("/hub/stop", {}).then(() => say("Stopped.", "ok")).catch(e => say(e.message, "bad")); };
 $("#btnStop").onclick = stop;
 
@@ -65,8 +81,19 @@ function renderState(s) {
   $("#task").textContent = seq.error ? "error: " + seq.error : seq.busy ? seq.step : "idle";
   $("#task").style.color = seq.error ? "var(--bad)" : "";
   $$("[data-pump]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.pump === r.pump_mode)));
-  const locked = !ui.armed || seq.busy;
-  $$(".dial").forEach(d => d.classList.toggle("locked", locked));
+  const m = s.motion || {};
+  ui.armed = !!m.armed;
+  const arm = $("#btnArm");
+  arm.setAttribute("aria-pressed", String(ui.armed));
+  const mmss = v => `${Math.floor(v / 60)}:${String(v % 60).padStart(2, "0")}`;
+  $("#armText").textContent = !ui.armed ? "Locked" : m.locks_in_s != null ? `Armed ${mmss(m.locks_in_s)}` : "Armed";
+  const ll = $("#lockLine");
+  ll.textContent = ui.armed ? (s.mode === "real" ? "Real arm armed" : "Simulated arm armed") : "Motion locked: press Arm";
+  ll.classList.toggle("armed", ui.armed);
+  const fault = r.error || (r.alarm_ids || []).length;
+  $("#btnClear").hidden = !fault;
+  $("#btnEnable").hidden = !r.reachable || r.enabled || fault;
+  $$(".dial").forEach(d => d.classList.toggle("locked", !ui.armed || seq.busy));
   if (s.pose3d) live.target = s.pose3d;
 }
 
@@ -120,7 +147,6 @@ function buildDials() {
 let hold = null;
 function stopHold() { if (hold) { clearInterval(hold.timer); hold.key?.classList.remove("down"); hold = null; } }
 async function jogOnce(axis, sign, step = ui.step) {
-  if (!ui.armed) { say("Tick “Motion enabled” first.", "bad"); return false; }
   try {
     const r = await api("/hub/jog", { space: ui.space, axis, delta: sign * step });
     const t = r.target;
@@ -143,7 +169,6 @@ $$("[data-step]").forEach(b => b.onclick = () => {
   ui.step = b.dataset.step === "hold" ? "hold" : +b.dataset.step;
   setChecked($$("[data-step]"), x => x.dataset.step === b.dataset.step);
 });
-$("#armMotion").onchange = e => { ui.armed = e.target.checked; say(ui.armed ? (ui.mode === "real" ? "Real arm armed. Keep a hand on the e-stop." : "Simulated arm armed.") : ""); };
 $$("[data-pump]").forEach(b => b.onclick = () => api("/api/pump", { mode: b.dataset.pump }).catch(e => say(e.message, "bad")));
 
 const KEYMAP = { ArrowUp: ["x", 1], ArrowDown: ["x", -1], ArrowLeft: ["y", 1], ArrowRight: ["y", -1],
@@ -231,6 +256,7 @@ $("#simRun").onclick = async () => {
   if (ui.mode !== "sim") { st.textContent = "Switch to Simulation first: this would move the real arm."; return; }
   try {
     await api("/hub/glasses/reset", {});
+    await api("/hub/arm", { armed: true });          // simulation only (checked above)
     await api("/api/speed", { ratio: Math.min(30, ui.state?.limits?.max_speed_ratio || 30) });
     await api("/api/cycle/run", { glasses: [1, 2, 3, 4], round: 0 });
     $("#viewLive").click(); setCam("iso");
@@ -290,20 +316,20 @@ function resize() {
   renderer.setSize(w, h); camera.aspect = w / Math.max(1, h); camera.updateProjectionMatrix(); drawStrip();
 }
 new ResizeObserver(resize).observe(view);
-function bg() { scene3.background = new THREE.Color(css("--well")); }
+function bg() { scene3.background = new THREE.Color(css("--well")); if (typeof buildCube === "function" && cube) buildCube(); }
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { bg(); drawStrip(); });
 
 function setCam(kind) {
-  const pos = { iso: [1250, -950, 900], top: [250, 0, 1700], side: [250, -1500, 250] }[kind];
+  const pos = { iso: [1250, -950, 900] }[kind];
   if (kind === "tool") {
     const n = scene.nodes["cup metal"];
     if (!n) return;
     const p = new THREE.Vector3(); n.getWorldPosition(p);
     camera.position.copy(p.clone().add(new THREE.Vector3(140, 60, 140))); controls.target.copy(p);
   } else {
-    camera.position.copy(to3(pos)); controls.target.copy(to3([230, 0, kind === "top" ? -150 : 0]));
+    camera.position.copy(to3(pos)); controls.target.copy(to3([230, 0, 0]));
   }
-  camera.up.set(kind === "top" ? 1 : 0, kind === "top" ? 0 : 1, 0);
+  camera.up.set(0, 1, 0);
   controls.update();
 }
 $$("[data-cam]").forEach(b => b.onclick = () => setCam(b.dataset.cam));
@@ -405,10 +431,100 @@ renderer.setAnimationLoop(now => {
       applyPose(live.target, Math.min(1, dt * 12));
     }
   }
+  if (camAnim) stepCamAnim(now);
   controls.update();
   renderer.render(scene3, camera);
+  drawCube();
 });
-window.hub = { snap: () => { renderer.render(scene3, camera); return renderer.domElement.toDataURL("image/png"); }, setCam, replay,
+/* ---------------- view cube ---------------- */
+// Faces in robot terms (the data is robot-frame z-up; three.js is y-up: robot X = +x, robot Y = -z, up = +y).
+const CUBE_FACES = ["X+", "X−", "TOP", "BOTTOM", "Y−", "Y+"];       // BoxGeometry order: +x -x +y -y +z -z
+const cubeCanvas = $("#cube");
+const cubeRenderer = new THREE.WebGLRenderer({ canvas: cubeCanvas, alpha: true, antialias: true });
+const cubeScene = new THREE.Scene();
+const cubeCam = new THREE.OrthographicCamera(-1.55, 1.55, 1.55, -1.55, 0.1, 20);
+let cube = null, cubeHover = -1;
+function faceTexture(label, hover) {
+  const c = document.createElement("canvas"); c.width = c.height = 128;
+  const g = c.getContext("2d");
+  g.fillStyle = hover ? css("--accent") : css("--panel"); g.fillRect(0, 0, 128, 128);
+  g.strokeStyle = css("--line"); g.lineWidth = 6; g.strokeRect(3, 3, 122, 122);
+  g.fillStyle = hover ? "#fff" : css("--ink");
+  g.font = `700 ${label.length > 3 ? 30 : 40}px "Barlow Condensed", "Arial Narrow", sans-serif`;
+  g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(label, 64, 66);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+}
+function buildCube() {
+  if (cube) cubeScene.remove(cube);
+  cube = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2),
+    CUBE_FACES.map((f, i) => new THREE.MeshBasicMaterial({ map: faceTexture(f, i === cubeHover) })));
+  cubeScene.add(cube);
+}
+function drawCube() {
+  const dir = camera.position.clone().sub(controls.target).normalize();
+  cubeCam.position.copy(dir.multiplyScalar(6)); cubeCam.up.copy(camera.up); cubeCam.lookAt(0, 0, 0);
+  cubeRenderer.render(cubeScene, cubeCam);
+}
+function cubeFaceAt(ev) {
+  const r = cubeCanvas.getBoundingClientRect();
+  const p = new THREE.Vector2(((ev.clientX - r.left) / r.width) * 2 - 1, -((ev.clientY - r.top) / r.height) * 2 + 1);
+  const ray = new THREE.Raycaster(); ray.setFromCamera(p, cubeCam);
+  const hit = ray.intersectObject(cube)[0];
+  return hit ? hit.face.materialIndex : -1;
+}
+const FACE_DIR = [[1, 0, 0], [-1, 0, 0], [0.002, 1, 0], [0.002, -1, 0], [0, 0, 1], [0, 0, -1]];
+let camAnim = null;
+function flyTo(dir3) {
+  const target = controls.target.clone(), dist = camera.position.distanceTo(target);
+  camAnim = { t0: performance.now(), from: camera.position.clone().sub(target).normalize(),
+              to: new THREE.Vector3(...dir3).normalize(), target, dist };
+}
+function stepCamAnim(now) {
+  const k = Math.min(1, (now - camAnim.t0) / 380), e = k < .5 ? 2 * k * k : 1 - (-2 * k + 2) ** 2 / 2;
+  const q = new THREE.Quaternion().setFromUnitVectors(camAnim.from, camAnim.to);
+  const d = camAnim.from.clone().applyQuaternion(new THREE.Quaternion().slerp(q, e));
+  camera.position.copy(camAnim.target.clone().add(d.multiplyScalar(camAnim.dist)));
+  if (k >= 1) camAnim = null;
+}
+cubeCanvas.addEventListener("click", ev => { const f = cubeFaceAt(ev); if (f >= 0) flyTo(FACE_DIR[f]); });
+cubeCanvas.addEventListener("pointermove", ev => { const f = cubeFaceAt(ev); if (f !== cubeHover) { cubeHover = f; buildCube(); } });
+cubeCanvas.addEventListener("pointerleave", () => { if (cubeHover !== -1) { cubeHover = -1; buildCube(); } });
+
+/* ---------------- resizable control panel ---------------- */
+const deck = $(".deck"), splitter = $("#splitter");
+const store = { get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } },
+                set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) { /* private window */ } } };
+const W_DEFAULT = 430;
+function setConsoleW(w) {
+  const max = Math.max(320, deck.clientWidth - 360);
+  w = Math.round(Math.min(max, Math.max(300, w)));
+  deck.style.setProperty("--console-w", w + "px"); store.set("hub.consoleW", w);
+}
+setConsoleW(+(store.get("hub.consoleW") || W_DEFAULT));
+if (store.get("hub.collapsed") === "1") deck.classList.add("collapsed");
+splitter.addEventListener("pointerdown", ev => {
+  if (ev.target.closest(".collapse") || deck.classList.contains("collapsed")) return;
+  splitter.setPointerCapture(ev.pointerId); splitter.classList.add("drag");
+  $("#picker").style.pointerEvents = "none";            // the iframe would swallow the drag
+});
+splitter.addEventListener("pointermove", ev => {
+  if (!splitter.classList.contains("drag")) return;
+  setConsoleW(deck.getBoundingClientRect().right - ev.clientX - 4);
+});
+const endDrag = () => { splitter.classList.remove("drag"); $("#picker").style.pointerEvents = ""; };
+splitter.addEventListener("pointerup", endDrag); splitter.addEventListener("pointercancel", endDrag);
+splitter.addEventListener("dblclick", ev => { if (!ev.target.closest(".collapse")) setConsoleW(W_DEFAULT); });
+splitter.addEventListener("keydown", ev => {
+  const w = parseInt(getComputedStyle(deck).getPropertyValue("--console-w")) || W_DEFAULT;
+  if (ev.key === "ArrowLeft") setConsoleW(w + 24); else if (ev.key === "ArrowRight") setConsoleW(w - 24);
+});
+$("#collapse").onclick = () => {
+  const c = deck.classList.toggle("collapsed");
+  $("#collapse").setAttribute("aria-label", c ? "Show the control panel" : "Collapse the control panel");
+  store.set("hub.collapsed", c ? "1" : "0");
+};
+
+window.hub = { snap: () => { renderer.render(scene3, camera); return renderer.domElement.toDataURL("image/png"); }, setCam, replay, ui,
   look: (pos, target) => { camera.position.copy(to3(pos)); controls.target.copy(to3(target)); controls.update(); } };
 
 /* ---------------- picker layout -> 3D ---------------- */
@@ -447,4 +563,4 @@ addEventListener("message", ev => {
 setChecked($$("[data-space]"), b => b.dataset.space === "cart");
 setChecked($$("[data-step]"), b => b.dataset.step === "1");
 setChecked($$("[data-view]"), b => b.dataset.view === "live");
-buildDials(); bg(); resize(); loadScene(); poll(); pollTests();
+buildDials(); bg(); buildCube(); resize(); loadScene(); poll(); pollTests();

@@ -22,7 +22,6 @@
 
   <div class="robot-state">
     <span class="pill" id="robotPill">connecting…</span>
-    <span class="hint" id="robotHint"></span>
   </div>
 
   <label class="speed" for="speed">Speed
@@ -31,10 +30,13 @@
   </label>
 
   <div class="rail-actions">
-    <button class="ghost" id="btnEnable">Enable</button>
-    <button class="ghost" id="btnClear">Clear error</button>
+    <button class="ghost" id="btnEnable" hidden>Enable robot</button>
+    <button class="ghost" id="btnClear" hidden>Clear error</button>
+    <button class="arm" id="btnArm" aria-pressed="false" title="Allow motion from this page (jog, picker, cycle). Real robot: locks itself after 2 min without motion.">
+      <span class="lock" aria-hidden="true"></span><span id="armText">Locked</span></button>
     <button class="stop" id="btnStop" title="Stop the arm and cancel the running sequence (Esc)">STOP</button>
   </div>
+  <div class="toast" id="toast" role="status" hidden></div>
 </header>
 
 <main class="deck">
@@ -50,10 +52,10 @@
         <button class="ghost small" id="btnGlasses" title="Put the glasses back into the input holder">Reset glasses</button>
         <span class="hint" id="layout3dState"></span>
       </div>
-      <div class="seg small cams">
-        <button data-cam="iso">Overview</button><button data-cam="top">Top</button>
-        <button data-cam="side">Side</button><button data-cam="tool">Tool</button>
-      </div>
+    </div>
+    <div class="navi">
+      <canvas id="cube" width="208" height="208" aria-label="View cube: click a face to look from that side" title="Click a face to look from that side; drag in the scene to orbit"></canvas>
+      <div class="navi-btns"><button class="ghost small" data-cam="iso" title="Whole cell">Fit</button><button class="ghost small" data-cam="tool" title="Close-up of the suction tool">Tool</button></div>
     </div>
     <div class="replay" id="replayBar" hidden>
       <button class="ghost" id="replayPlay">Pause</button>
@@ -72,6 +74,11 @@
     </div>
   </section>
 
+  <div class="splitter" id="splitter" role="separator" aria-orientation="vertical" aria-label="Resize the control panel" tabindex="0"
+       title="Drag to resize · double-click to reset · the arrow collapses the panel">
+    <button class="collapse" id="collapse" aria-label="Collapse the control panel">›</button>
+  </div>
+
   <section class="console" aria-label="Controls">
     <nav class="tabs" role="tablist">
       <button role="tab" data-tab="jog" aria-selected="true">Jog</button>
@@ -86,7 +93,7 @@
           <button id="spaceCart" data-space="cart">Cartesian</button>
           <button id="spaceJoint" data-space="joint">Joint</button>
         </div>
-        <label class="arm"><input type="checkbox" id="armMotion"> Motion enabled</label>
+        <span class="lockline" id="lockLine">Motion locked: press Arm</span>
       </div>
       <div class="steps" role="radiogroup" aria-label="Step">
         <span class="label">Step</span>
@@ -98,7 +105,9 @@
         <svg class="dial" id="dialA" viewBox="-110 -110 220 220" role="group" aria-label="First pad"></svg>
         <svg class="dial" id="dialB" viewBox="-110 -110 220 220" role="group" aria-label="Second pad"></svg>
       </div>
-      <p class="keys">Keys: arrows X/Y · PgUp/PgDn Z · Q/E R · Esc stop. Joint mode moves through the robot's own joint model; each step is checked against the joint limits first.</p>
+      <details class="keys"><summary>Keyboard and limits</summary>
+        <p>Arrows X/Y · PgUp/PgDn Z · Q/E R · Esc stops. A joint step goes through the robot's joint model and is checked against the joint limits before it is sent.</p>
+      </details>
       <div class="row pumpRow">
         <span class="label">Pump</span>
         <button class="ghost" data-pump="suck">Suck</button><button class="ghost" data-pump="blow">Blow</button>

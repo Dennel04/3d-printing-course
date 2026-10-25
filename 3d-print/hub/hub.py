@@ -88,11 +88,38 @@ def verdict(name, out, code):
     return "pass", (lines[-1].strip()[:160] if lines else "done")
 
 
+# every request that can move the arm; refused while motion is locked (one lock for the whole hub)
+MOTION_PATHS = {"/api/goto", "/api/transfer", "/api/cycle/above", "/api/cycle/run", "/api/jog", "/api/probe",
+                "/hub/jog"}
+REAL_ARM_IDLE_S = 120     # Real robot: motion locks itself after this long without a motion request
+
+
 class Robots:
-    """The robot the slot picker talks to: Simulation (in-process) or Real (mg400-base)."""
+    """The robot the slot picker talks to: Simulation (in-process) or Real (mg400-base), and the motion lock."""
 
     def __init__(self, real, sim):
         self.real, self.sim, self.mode = real, sim, "sim"
+        self.armed, self.last_motion = False, 0.0
+
+    def arm(self, on):
+        self.armed, self.last_motion = bool(on), time.time()
+
+    def _expire(self):
+        if self.armed and self.mode == "real" and time.time() - self.last_motion > REAL_ARM_IDLE_S:
+            self.armed = False       # pendant practice: no silent standing permission on the real arm
+
+    def motion_allowed(self):
+        self._expire()
+        if self.armed:
+            self.last_motion = time.time()
+        return self.armed
+
+    def arm_state(self):
+        self._expire()
+        left = None
+        if self.armed and self.mode == "real":
+            left = max(0, round(REAL_ARM_IDLE_S - (time.time() - self.last_motion)))
+        return {"armed": self.armed, "locks_in_s": left}
 
     @property
     def current(self):
@@ -294,7 +321,7 @@ def build(lab, port):
                 s = robot_status()
                 pose = s.get("pose")
                 three = live.poses(*pose, pump=s.get("pump_mode") or "off") if pose and s.get("reachable") else None
-                return self._json(200, {"mode": robots.mode, "robot": s, "seq": seq.state,
+                return self._json(200, {"mode": robots.mode, "robot": s, "seq": seq.state, "motion": robots.arm_state(),
                                         "limits": {"max_speed_ratio": layout["motion"]["max_speed_ratio"],
                                                    "tool_r": layout["calibration"]["tool_r"]},
                                         "pose3d": three, "pose3d_error": live.error,
@@ -304,6 +331,9 @@ def build(lab, port):
             return super().do_GET()
 
         def do_POST(self):
+            path = self.path.split("?")[0]
+            if path in MOTION_PATHS and not self._foreign(post=True) and not robots.motion_allowed():
+                return self._json(409, {"ok": False, "error": "Motion is locked: press Arm in the top bar first."})
             if not self.path.startswith("/hub/"):
                 return super().do_POST()
             if (why := self._foreign(post=True)):
@@ -325,7 +355,11 @@ def build(lab, port):
                 if seq.state["busy"]:
                     raise ValueError("the robot is moving; stop it before switching")
                 robots.mode = mode
+                robots.arm(False)          # a new robot starts locked
                 return {"mode": mode}
+            if path == "/hub/arm":
+                robots.arm(bool(data.get("armed")))
+                return robots.arm_state()
             if path == "/hub/jog":
                 space, axis = data.get("space", "cart"), data.get("axis")
                 delta = float(data.get("delta", 0))

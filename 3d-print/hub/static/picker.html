@@ -110,7 +110,6 @@
       <label><input type="radio" name="mode" value="edit"> Edit layout</label>
       <label><input type="radio" name="mode" value="test"> Test</label>
     </span>
-    <label class="drive-only"><input type="checkbox" id="arm"> Motion enabled</label>
     <label class="drive-only row" style="gap:6px"><span class="lbl">Hover Z</span><input type="number" id="hover" step="5"></label>
     <details class="help"><summary>How it works</summary>
       <p><b>Drive</b>: click a cell; the cup goes up to travel Z, across, and down to hover Z, never into a pocket.
@@ -121,6 +120,7 @@
 
   <div class="chips" aria-live="polite">
     <span class="chip" id="chipRobot">Robot</span>
+    <span class="chip" id="chipMotion">Motion</span>
     <span class="chip" id="chipVac">Vacuum</span>
     <span class="chip" id="chipCam">Camera</span>
   </div>
@@ -426,7 +426,6 @@ async function cellClick(name) {
   const c = layout.cells.find(c => c.name === name);
   if (c.blocked) return say(`${name}: ${c.blocked}`);
   if (dirty) return say("Save or discard the layout changes first.");
-  if (!$("arm").checked) return say(`Tick “Motion enabled” to drive to ${name}.`);
   const r = await api("/api/goto", {cell: name, hover_z: parseFloat($("hover").value)});
   if (!r.ok) say(`${name}: ${r.error}`); else log(`Drive to ${name}, hover Z ${$("hover").value}`);
 }
@@ -610,6 +609,9 @@ async function poll() {
          pr.ok ? "" : `Picks run without the vacuum check.
 ${pr.error || ""}`);
     chip("chipCam", s.camera.error ? "warn" : s.camera.open ? "ok" : "", "Camera", s.camera.error ? friendlyPort(s.camera.error) : s.camera.open ? `on · ${s.camera.fps} fps` : "idle", s.camera.error || "");
+    const m = parent !== window ? parent.hub?.ui?.state?.motion : null;
+    if (m) chip("chipMotion", m.armed ? "warn" : "", "Motion", m.armed ? "armed" : "locked · Arm in the top bar");
+    else $("chipMotion").hidden = true;
     seqCell = s.seq.cell;
     const step = s.seq.busy || s.seq.step !== "idle" ? `${s.seq.cell || ""} ${s.seq.step}`.trim() : "";
     if (step && step !== lastStep) log(step, s.seq.step === "arrived" || s.seq.step === "done" ? "ok" : "");
