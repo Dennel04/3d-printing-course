@@ -61,8 +61,8 @@ Wi-Fi füüsiline toimimine ja station PC võrgust ligipääs, kaablite marsruut
   - **Kinnitus laua serval rakise toru otsas** (väljaspool ruudustikku, käsi sinna ei ulatu): Denys nihutas laual L-nurgad nii, et pika toru esiots ulatub ~50 mm üle laua serva. Prinditakse kaks osa, vertikaalne toru on sama 16 mm toru: `veebikaamera-post/src/veebikaamera-post-v1.f3d`, `stl/veebikaamera-post-v1-nurk.stl`; ülemine: `src/veebikaamera-post-v2-ulemine.f3d`, `stl/veebikaamera-post-v2-ulemine.stl`, `stl/veebikaamera-post-v2-kiil.stl`, `3mf/veebikaamera-post-v2-ulemine-kiil.3mf`.
     - **Nurk** (prinditud 25.10.26, istub hästi): pesa 30 mm toru otsa peale (tilgakujuline ava, prinditakse ilma tugedeta), kaks külgtiiba padjanditega toetuvad lauale L-nurga kõrval, nii et nurk ei pöördu toru ümber; vertikaalne pesa toru jaoks. Vertikaalse toru telg J1-st ~568 mm.
     - **Ülemine v2** (Denys 25.10.26): pesa Ø16,5 toru otsa peale (toru vastu pesa põhja), peal kaamera klambri pesa, taga kiil lukustab. Pööratakse toru peal käsitsi, avatud pool ruudustiku keskele.
-    - Vertikaalne toru **458 mm** (kaamera ~470 mm laua kohal). Kõrgus kinnitada kaamerat käes hoides enne lõikamist.
-    - **Paigaldatud 25.10.26:** ülemine osa prinditud, toru lõigatud, kaamera postil ja ühendatud (Verbatim 49580 UHD 4K, 3840×2160, 30 fps). Kaader näitab kogu ruudustikku, kõiki hoidikuid ja robotit ülevalt; pilti näeb ja salvestab MG400 Station Hubis (`3d-print/hub`, nupp **Webcam**).
+    - Vertikaalne toru: kavandatud 458 mm, lõigatud **~480 mm** (Denys 25.10.26).
+    - **Paigaldatud 25.10.26:** ülemine osa prinditud, toru lõigatud ~480 mm, kaamera postil ja ühendatud (Verbatim 49580 UHD 4K, 3840×2160, 30 fps). Kaader näitab kogu ruudustikku, kõiki hoidikuid ja robotit ülevalt; pilti näeb ja salvestab MG400 Station Hubis (`3d-print/hub`, nupp **Webcam**).
     - Veel teha: käe suurim kõrgus; pildi värin täiskiirusel; kaamera maha-tagasi sama pilt; kaabel mööda toru alla kinni.
 
     ![Veebikaamera kaader postilt: kogu ruudustik, hoidikud ja robot](docs/photos/veebikaamera-kaader-2026-10-25.jpg)
@@ -366,7 +366,7 @@ mitte ei muudeta.
 * Järgmiseks: ülemine osa printida, toru 458 mm, kaamera kõrgus ja kaader kogu laua ning robotiga.
 
 **25.10.2026 — Dennel04 (Denys) koos Claude'iga: veebikaamera postil, pilt hubis**
-* Denys printis ülemise osa, lõikas toru, pani kaamera postile ja ühendas arvutiga. Kaader (3840×2160) näitab ülevalt kogu ruudustikku, hoidikuid ja robotit: `docs/photos/veebikaamera-kaader-2026-10-25.jpg`.
+* Denys printis ülemise osa, lõikas toru (~480 mm, kavandatud 458), pani kaamera postile ja ühendas arvutiga. Kaader (3840×2160) näitab ülevalt kogu ruudustikku, hoidikuid ja robotit: `docs/photos/veebikaamera-kaader-2026-10-25.jpg`.
 * MG400 Station Hubi 3D-ala kõrval on vaade **Webcam**: veebikaamera pilt otse brauseris, **Save frame** salvestab täisresolutsiooniga kaadri kausta `lab2/webcam-frames/` (gitis ei ole; dokumentatsiooni jaoks kopeerida `docs/photos/`).
 * Lahtine: pildi värin roboti täiskiirusel, kaamera maha-tagasi sama kaader, käe suurim kõrgus kaamera all, kaabel mööda toru.
 
