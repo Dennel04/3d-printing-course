@@ -44,10 +44,10 @@ glass 2: glass 2: down to output                ok        min clearance    5.4 m
 glass 2: release -> rests on holder:Good output, falls 1.0 mm, ok
 glass 2: glass 2: lift from output              ok        min clearance   10.4 mm (cup - rakis_grid_pos_0)
 glass 3: glass 3: above input                   ok        min clearance   39.4 mm (cup - holder:Workstation (orange))
-glass 3: glass 3: approach input                ok        min clearance   13.2 mm (cup - webcam post alumine)
-glass 3: glass 3: down to input                 ok        min clearance   11.5 mm (cup - webcam post alumine)
+glass 3: glass 3: approach input                ok        min clearance   15.8 mm (cup - glass 4)
+glass 3: glass 3: down to input                 ok        min clearance   12.1 mm (cup - rakis_grid_neg_1)
 glass 3: pick glass 3: cup 1.7 mm from the glass centre ok
-glass 3: glass 3: lift from input               ok        min clearance    6.2 mm (carried glass - webcam post alumine)
+glass 3: glass 3: lift from input               ok        min clearance    7.1 mm (carried glass - rakis_grid_neg_1)
 glass 3: glass 3: above workstation             ok        min clearance   14.1 mm (carried glass - AtomS3)
 glass 3: glass 3: approach workstation          ok        min clearance   17.9 mm (carried glass - battery)
 glass 3: glass 3: down to workstation           ok        min clearance   12.9 mm (carried glass - battery)
@@ -63,11 +63,11 @@ glass 3: glass 3: approach output               ok        min clearance    9.5 m
 glass 3: glass 3: down to output                ok        min clearance    5.4 mm (carried glass - rakis_grid_pos_1)
 glass 3: release -> rests on holder:Good output, falls 1.0 mm, ok
 glass 3: glass 3: lift from output              ok        min clearance   10.4 mm (cup - rakis_grid_pos_1)
-glass 4: glass 4: above input                   ok        min clearance   52.1 mm (cup - webcam post alumine)
-glass 4: glass 4: approach input                ok        min clearance   13.2 mm (cup - webcam post alumine)
-glass 4: glass 4: down to input                 ok        min clearance   11.5 mm (cup - webcam post alumine)
+glass 4: glass 4: above input                   ok        min clearance    inf mm ( - )
+glass 4: glass 4: approach input                ok        min clearance   15.8 mm (cup - rakis_grid_neg_1)
+glass 4: glass 4: down to input                 ok        min clearance   12.1 mm (cup - rakis_grid_neg_1)
 glass 4: pick glass 4: cup 1.7 mm from the glass centre ok
-glass 4: glass 4: lift from input               ok        min clearance    6.2 mm (carried glass - webcam post alumine)
+glass 4: glass 4: lift from input               ok        min clearance    7.1 mm (carried glass - rakis_grid_neg_1)
 glass 4: glass 4: above workstation             ok        min clearance   14.1 mm (carried glass - AtomS3)
 glass 4: glass 4: approach workstation          ok        min clearance   17.9 mm (carried glass - battery)
 glass 4: glass 4: down to workstation           ok        min clearance   12.9 mm (carried glass - battery)

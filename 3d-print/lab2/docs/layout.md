@@ -17,8 +17,8 @@ Valis Denys 24.10.26 kahe kaksikus kontrollitud variandi vahelt (A = varasem `la
 | **C** | | | | | töökoht 2 | töökoht 1 | | | | |
 | **D** | väljund | väljund | | | | | | | klaas | klaas |
 | **E** | väljund | väljund | | | | Atom | Atom | | klaas | klaas |
-| **F** | | | | kalibr. | | Atom | Atom | | post | post |
-| **G** | | | | | | | | | post | post |
+| **F** | | | | kalibr. | | Atom | Atom | | | |
+| **G** | | | | | | | | | | |
 
 ### Protsessi sammud (sildi kokkupanek)
 
@@ -45,9 +45,9 @@ Selle labori test (ülesanne osa 3) teeb ainult klaasi teed: sisend → töökoh
 | Oranž | `ready-parts-input-holder-v1` | 2 × 2 | B−1, B+1, C−1, C+1 | C±1 aku sisend + töökoht, B±1 praak |
 | Heade väljund | `valjundhoidik-v1` | 2 × 2 | D+4, D+5, E+4, E+5 | valmis detailid |
 | Kalibreerimishoidik | `gridfinity-calibration` | 1 × 1 | F+2 | roboti kalibreerimine (24.10.26 mõõdeti C−2-s) |
-| Veebikaamera post | `veebikaamera-post` v3 kavand | 2 × 2 | F−4, F−5, G−4, G−5 | üldvaatekaamera; robot sinna ei sõida. Lõplik versioon ja asukoht: TODO |
+| Veebikaamera post | `veebikaamera-post-v1` | — | ruudustikust väljas | laua serval rakise toru otsas; ruute ei võta |
 
-Kasutatud ruute 21 / 70. Järgmiste laborite moodulitele jäävad vabaks näiteks B ja C ±2 … ±5, D −3 … +3, E −3 ja E +1 … +3, F+1, F±3 (rida A on aluse lähedal ulatusega piiratud).
+Kasutatud ruute 17 / 70. Järgmiste laborite moodulitele jäävad vabaks näiteks B ja C ±2 … ±5, D −3 … +3, E −3 ja E +1 … +3, F+1, F±3, F/G −4 … −5 (rida A on aluse lähedal ulatusega piiratud).
 
 ### Detailide mõõdud
 
@@ -81,7 +81,6 @@ Ruudu keskpunkt robotis = [`../calibration/cells.py`](../calibration/cells.py) (
 ### Lahtised
 
 - Hoidikud füüsiliselt uutesse ruutudesse; seejärel töökoha ja väljundi punktide õpetamine.
-- Veebikaamera posti lõplik versioon ja ruudud.
 - AtomS3 mõõdud nihikuga; nelja klaasi hajuvus.
 
 ## Esialgne mall (23.10.26, ajalugu)

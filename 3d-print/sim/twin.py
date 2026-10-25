@@ -234,8 +234,8 @@ class Twin:
             mesh.apply_transform(rig_matrix())
             self._add("holder:" + h["name"], mesh)
         if with_post:
-            for part in ("alumine", "ulemine", "jalg"):
-                mesh = trimesh.load(LAB / f"veebikaamera-post/stl/veebikaamera-post-v3-{part}.stl")
+            for part in ("nurk", "ulemine"):
+                mesh = trimesh.load(LAB / f"veebikaamera-post/stl/veebikaamera-post-v1-{part}.stl")
                 mesh.apply_transform(rig_matrix())
                 self._add("webcam post " + part, mesh)
         if calibration_at:
