@@ -34,6 +34,9 @@ nudge, the arrow collapses the panel; the size is remembered in this browser). T
 turns the view to a face (TOP, X±, Y± in robot axes); Fit and Tool are the two fixed views. Enable robot and
 Clear error appear only when they are needed; messages pop up under the top bar.
 
+If the robot drops off (power, cable, e-stop, DobotStudio took it) the top bar shows **Connect**: it
+reconnects mg400-base without moving; then **Enable robot** (the arm holds where it is) and **Arm**.
+
 ## Tabs
 
 - **Jog** — two pads like DobotStudio. Cartesian: X± / Y± and Z± / R±. Joint: J1± / J2± and J3± / J4±; a joint

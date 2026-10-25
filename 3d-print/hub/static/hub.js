@@ -56,6 +56,12 @@ $("#speed").onchange = async e => {
   try { await api("/api/speed", { ratio: +e.target.value }); } catch (err) { toast(err.message, "bad"); }
 };
 $("#btnEnable").onclick = () => api("/hub/enable", {}).catch(e => toast(e.message, "bad"));
+$("#btnConnect").onclick = async e => {
+  e.target.disabled = true;
+  try { await api("/hub/connect", {}); toast("Connected. Press Enable robot, then Arm."); }
+  catch (err) { toast(`${err.message}. Check the robot is powered on and the Ethernet cable, and close DobotStudio (or switch it to TCP/IP).`, "bad"); }
+  e.target.disabled = false;
+};
 $("#btnClear").onclick = () => api("/hub/clear_error", {}).catch(e => toast(e.message, "bad"));
 const stop = () => { stopHold(); api("/hub/stop", {}).then(() => say("Stopped.", "ok")).catch(e => say(e.message, "bad")); };
 $("#btnStop").onclick = stop;
@@ -90,9 +96,12 @@ function renderState(s) {
   const ll = $("#lockLine");
   ll.textContent = ui.armed ? (s.mode === "real" ? "Real arm armed" : "Simulated arm armed") : "Motion locked: press Arm";
   ll.classList.toggle("armed", ui.armed);
-  const fault = r.error || (r.alarm_ids || []).length;
+  // the server is up but has lost the robot (cable, power, e-stop): its old fault flags are stale, offer Connect
+  const offline = r.reachable && r.connected === false;
+  const fault = !offline && (r.error || (r.alarm_ids || []).length);
+  $("#btnConnect").hidden = !offline;
   $("#btnClear").hidden = !fault;
-  $("#btnEnable").hidden = !r.reachable || r.enabled || fault;
+  $("#btnEnable").hidden = !r.reachable || offline || r.enabled || fault;
   $$(".dial").forEach(d => d.classList.toggle("locked", !ui.armed || seq.busy));
   if (s.pose3d) live.target = s.pose3d;
 }
