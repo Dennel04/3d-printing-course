@@ -32,6 +32,8 @@ COLORS = {"Glass input": "#f2f2ee", "AtomS3 input": "#f2f2ee", "Workstation (ora
 def color_for(name):
     if name.startswith("holder:"):
         return COLORS.get(name[7:], "#cfcfca")
+    if "pipe" in name:
+        return "#8f98a3"
     if name.startswith("rakis"):
         return "#9aa3ad"
     if name == "table":

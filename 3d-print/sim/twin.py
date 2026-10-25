@@ -57,7 +57,7 @@ TOOL_R = 33.0            # every calibrated point is taken at R 33
 CUP_LEN = 66.2
 
 # ---- tool (TODO measure: cup diameter, cup offset from the J4 axis, cup length) ----
-CUP_D = 20.0             # suction cup outer diameter, mm (assumed; effective ~22 from the 23.10 travel)
+CUP_D = 22.25            # suction cup outer diameter, mm (caliper 24.10, measurements.md; effective ~23 from the C-2 corners)
 # Calibration fit: flange - cup = (31.10, 0.08) mm at R 33 (robot frame). Assumes the robot sits in the
 # rig exactly as in CAD, so the whole fit shift is the cup's offset from the J4 axis.
 CUP_OFFSET_R33 = (-31.10, -0.08)
@@ -75,6 +75,9 @@ HOLDER_STL = {
 CAL_FOOT_Z = 2.289          # calibration bin foot bottom when seated (1 x 1 wedges on the chamfers)
 BEAM_TOP = 2.48          # rig model: top of the beams under the +-1 / +-3 columns
 TABLE_Z = -16.72         # table = grid bottom (Denys, 24.10)
+PIPE_D, PIPE_Y, PIPE_Z = 16.0, 110.5, -7.1      # rig pipes (MG 400 rakis.md)
+PIPE_LEN, PIPE_X_FRONT = 670.0, -586.5          # front end 50 mm past the table edge (x -536.5)
+POST_PIPE_X, POST_PIPE_Z0, POST_PIPE_LEN = -555.7, 7.5, 458.0
 FOOT = 4.65              # socket depth; a deeper foot (old 3 mm extension) stands on the beams
 
 
@@ -205,9 +208,19 @@ class Twin:
     def _load_rig(self):
         m = rig_matrix()
         for f in sorted((HERE / "scene").glob("rakis_*.stl")):
+            if f.stem.startswith("rakis_pipe_long"):
+                continue                # drawn below at their real length and place
             mesh = trimesh.load(f)
             mesh.apply_transform(m)
             self._add(f.stem, mesh)
+        # the two 16 mm pipes: 670 mm (table 700 - 30, rakis doc), front ends ~50 mm past the table edge since
+        # Denys moved the L brackets (24.10, by eye); axes y +-110.5, z -7.1 in the rig model
+        for side, y in (("neg", -PIPE_Y), ("pos", PIPE_Y)):
+            pipe = trimesh.creation.cylinder(radius=PIPE_D / 2, height=PIPE_LEN, sections=32)
+            pipe.apply_transform(trimesh.transformations.rotation_matrix(math.pi / 2, (0, 1, 0)))
+            pipe.apply_translation((PIPE_X_FRONT + PIPE_LEN / 2, y, PIPE_Z))
+            pipe.apply_transform(m)
+            self._add(f"rakis_pipe_long_{side}", pipe)
 
     def _load_table(self):
         box = trimesh.creation.box(extents=(700, 700, 20))
@@ -238,6 +251,12 @@ class Twin:
                 mesh = trimesh.load(LAB / f"veebikaamera-post/stl/veebikaamera-post-v1-{part}.stl")
                 mesh.apply_transform(rig_matrix())
                 self._add("webcam post " + part, mesh)
+            # vertical 16 mm pipe between the elbow and the top part (tools/fusion-mcp/s_post_v4.py: axis
+            # x -555.7 / y -110.5 in the rig model, from the socket floor z 7.5, 458 mm)
+            pipe = trimesh.creation.cylinder(radius=PIPE_D / 2, height=POST_PIPE_LEN, sections=32)
+            pipe.apply_translation((POST_PIPE_X, -PIPE_Y, POST_PIPE_Z0 + POST_PIPE_LEN / 2))
+            pipe.apply_transform(rig_matrix())
+            self._add("webcam post pipe", pipe)
         if calibration_at:
             mesh = trimesh.load(LAB / "gridfinity-calibration/stl/gridfinity-calibration.stl")
             b = mesh.bounds
@@ -283,7 +302,10 @@ class Twin:
         # tool parts ride on the fitted flange position (the URDF arm drawing is up to ~4 mm off)
         t5 = poses["link5"].copy()
         t5[:3, 3] = (x, y, z + self.HZ)
-        out["xiao mount"] = (self.mount_local, t5)
+        # the XIAO mount sits on the J4 motor square, which does not turn with J4: its yaw follows J1 only
+        tm = self.arm.link_poses(j1, j2, j3, 0.0)["link5"].copy()
+        tm[:3, 3] = t5[:3, 3]
+        out["xiao mount"] = (self.mount_local, tm)
         ox, oy = cup_offset(r)
         tip = self.cup_tip_z(z)
         top = z + self.HZ - MOTOR_LEN
