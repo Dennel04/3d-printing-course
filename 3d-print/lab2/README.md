@@ -160,6 +160,16 @@ Kõigi nende olek on `TODO — waiting for physical test`.
 - [`docs/bom.md`](docs/bom.md) — kinnitamist vajav komponentide nimekiri.
 - [`../sim/`](../sim/README.md) — töökoha digitaalne kaksik (ühine kõigile laboritele): ulatus- ja min-Z kaart, kalibreerimiskoha kontroll, klaasitsükli kuivkäivitus, kalibreerimisvea taluvus.
 
+25.10.2026 täiendus (failid, millele seni README-st viidet polnud):
+
+- [`slot-picker/`](slot-picker/README.md) — veebiaken roboti juhtimiseks ruudu kaupa, paigutus [`slot-picker/layout.json`](slot-picker/layout.json) ja klaasitsükkel [`slot-picker/cycle.py`](slot-picker/cycle.py); Z-proovide kaadrid kaustas `slot-picker/probes/`.
+- [`calibration/cells.py`](calibration/cells.py) (ruudu keskpunkt roboti X/Y-s) ja [`calibration/jog.py`](calibration/jog.py) (väike samm `mg400-base` serveri kaudu).
+- [`tool-camera/`](tool-camera/capture.py) — XIAO USB diagnostika: püsivara [`tool-camera/firmware/`](tool-camera/firmware/platformio.ini) ja `capture.py`.
+- Kalibreerimise ja puudutuste toorandmed: [`docs/calibration_g-1_corners.csv`](docs/calibration_g-1_corners.csv), [`docs/calibration_c-2.csv`](docs/calibration_c-2.csv), [`docs/glass_holder_touch.csv`](docs/glass_holder_touch.csv) (D−2 pesa põhja puudutus 24.10.26).
+- Kaksiku tulemused Lab 2 kohta: [`docs/sim_dry_run.txt`](docs/sim_dry_run.txt), [`docs/sim_dry_run_full.txt`](docs/sim_dry_run_full.txt), [`docs/sim_reach.csv`](docs/sim_reach.csv), [`docs/sim_refit.txt`](docs/sim_refit.txt), [`docs/sim_tolerance.txt`](docs/sim_tolerance.txt).
+- [`docs/dobot-capture/capture.ps1`](docs/dobot-capture/capture.ps1) — `pktmon` võrguliikluse salvestus PC ↔ MG400, kui DobotLink / Studio Pro lülitab roboti API-režiimi (lisatud kommitis `326034c`, vt arenduspäevik 25.10.2026 korrastus).
+- [`../models/`](../models/README.md) — ostetud komponentide mudelid (AtomS3, aku, XIAO, veebikaamera).
+
 ## CAD-failid
 
 - `src/gridfinity-tray-v1.scad` - nelja pesaga varasem alustusmudel, mille lihtsustatud jalg ei vasta dokumenteeritud Gridfinity profiilile. Seda versiooni ei tohi printida ega kasutada uute hoidikute alusena.
