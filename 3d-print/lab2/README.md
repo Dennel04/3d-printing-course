@@ -382,6 +382,15 @@ mitte ei muudeta.
 * Tulemus: CAD-virn (aku 18,0 + Atom 12,9 mm) on 3,97 mm madalam kui mõõdetud aku 21,97 mm-ga. Nüüd on kõik kolm õpetatud punkti kaksiku esimesest puudutusest sama palju madalamal: sisend 1,2, töökoht 1,2, väljund 0,7 mm (enne töökoht 5,1). Kokkupõrkeid pole (`docs/sim_dry_run*.txt`).
 * Lahtine: aku kõrgus nihikuga ilma Atomita (21,97 vs mudel 18,0); kaksikus jääb klaas töökohal oranži hoidiku servale, mitte Atomi ekraanile (oli ka enne, päris robotil töötab) — oranži hoidiku pesa kontroll.
 
+**25.10.2026 — r4imps (Raimo) koos Claude'iga: repo korrastus enne kaitsmist**
+* Tegime: kontrollisime kontrollnimekirja tõendeid, linke ja failide versioone; harus `organize-2026-10-25`. Füüsilisi katseid, mõõtmisi ega CAD-muudatusi ei tehtud; mõõdetud väärtusi, CSV-sid ja fotosid ei muudetud.
+* Päritolu, mis seni puudus:
+  * Kommit `326034c` (Denys, 24.10.26 19:24, „wip … saved before shutdown“) lisas veebikaamera posti v4 (f3d, nurk ja ülemine STL, kolm renderit) ning [`docs/dobot-capture/capture.ps1`](docs/dobot-capture/capture.ps1). Kommiti sõnum ütleb, et failid tehti teistes Claude'i sessioonides ega olnud üle vaadatud. Kommitis `b13f5c1` (25.10.26) nimetati v4 ümber `veebikaamera-post-v1`-ks (nurga STL ja renderid muutmata, f3d ja ülemise STL muudetud); see on praegune toruotsa post.
+  * Kommiti `235ee8e` kaheksa fotot (24.10.2026 fotode kirje) on Nikita omad; kommiti autor on Nikikikl.
+  * 25.10.26 eemaldati kaustadest vanad versioonid: `glass-input-holder-v1/-v2`, `gridfinity-calibration-v1`, `xiao-square-mount-v3…v5` (v3 sai nimeks v1) ja veebikaamera posti v2–v4 Gridfinity-jalaga kavandid; `glass-input-holder-v3` ja `gridfinity-calibration-v3` said versiooninumbrita nime. Kõik on alles git-ajaloos (`8107cc9`, `b66a58f`, `f37e300`, `b13f5c1`).
+* Failid: `README.md`, `docs/layout.md`, `docs/bom.md`.
+* Järgmiseks: vt kontrollnimekirja 25.10.26 seisumärkmed; ringid 2–5, veebikaamera posti 3MF ja ülemine osa, pesade nihikumõõdud, tag `3d-print-lab2`.
+
 ### Väljundid ja tulemused
 
 **Väljundid**
