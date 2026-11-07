@@ -383,25 +383,28 @@ mitte ei muudeta.
 * Laud Treston 700 mm (CAD-i laud): algab roboti taga tagumiste L-ide all, torud ulatuvad ette ~50 mm üle esiserva, veebikaamera post toru otsas.
 * Robot istub kaksikus nüüd oma pesa keskel, napp flantsi keskel. Kalibreerimise 31 mm nihe on ruudustiku asukoht torudel: ruudustik on CAD-ist 31,2 mm robotist eemal → pesa ja ruudustiku vahel ~30 mm paljast toru, nagu Denys laual näeb. Varem joonistati see nihe napa nihkeks ja robot oli pesas paigast ära. Kaksiku lahtrid = `cells.py`, kokkupõrkeid pole, kõrgused muutumata.
 
+**07.11.2026: täpsustus 23.–25.10 kirjete tegijate kohta**
+* [24.10 robotikatsed](https://github.com/Dennel04/3d-printing-course/blob/89f08c706a734b092519c131fdb860ffbee713ad/3d-print/lab2/README.md#L313-L324): Denys oli laboris, paigaldas C−2 kalibreerimiskasti, hindas puudutusi ja seadis keskpunktid. [Klaasitsükli kirjed](https://github.com/Dennel04/3d-printing-course/blob/89f08c706a734b092519c131fdb860ffbee713ad/3d-print/lab2/README.md#L336-L347) nimetavad Denyst töökoha ja väljundi õpetamisel ning ringi 1 tulemuse kinnitajana. Claude aitas tarkvara kaudu robotit juhtida ja andmeid töödelda. Claude ja Codex olid töövahendid; nende mainimine ei tähenda füüsilist kohalolekut.
+* [24.10 XIAO kinnituse kirje](https://github.com/Dennel04/3d-printing-course/blob/89f08c706a734b092519c131fdb860ffbee713ad/3d-print/lab2/README.md#L300-L304) ütleb, et Nikita printis kinnituse, Denys vaatas mudeli üle ja muudatused tehti Claude'i abil Fusionis. Paigaldaja nimi ja Nikita kohalolek robotikatse juures pole kirjas. [25.10 veebikaamera kirjed](https://github.com/Dennel04/3d-printing-course/blob/89f08c706a734b092519c131fdb860ffbee713ad/3d-print/lab2/README.md#L364-L371) nimetavad Denyst posti osade printija ja kaamera paigaldajana.
+* [23.10 mõõteandmete kirjes](https://github.com/Dennel04/3d-printing-course/blob/89f08c706a734b092519c131fdb860ffbee713ad/3d-print/lab2/README.md#L272-L280) on Maksim Naprejev Exceli andmete allikas; kirje ei nimeta mõõtjat, mõõtmise kuupäeva ega kohalolijaid. [24.10 nihikumõõtude ja sobivuskatse kirje](https://github.com/Dennel04/3d-printing-course/blob/89f08c706a734b092519c131fdb860ffbee713ad/3d-print/lab2/README.md#L326-L334) nimetab tegijaks kasutaja, nime täpsustamata. [Fotokirje](https://github.com/Dennel04/3d-printing-course/blob/89f08c706a734b092519c131fdb860ffbee713ad/3d-print/lab2/README.md#L349-L356) ei nimeta fotograafi. [25.10 kahe viimase kaksikukirje](https://github.com/Dennel04/3d-printing-course/blob/89f08c706a734b092519c131fdb860ffbee713ad/3d-print/lab2/README.md#L378-L384) tegijat ei nimetata. [25.10 klaasihoidiku kirjes](https://github.com/Dennel04/3d-printing-course/blob/89f08c706a734b092519c131fdb860ffbee713ad/3d-print/lab2/README.md#L358-L362) kinnitas Denys istuvust; kirje ei nimeta printijat eraldi.
+
 ### Väljundid ja tulemused
 
-**Väljundid**
-* Gridfinity hoidikute kandidaadid ja töölaua paigutusdokumendid; lõplikud
-  hoidikud ning ruudukohad on TODO — real measurement and physical fit test
-  required.
-* XIAO tööriistakaamera kinnituse CAD-kandidaat on olemas; selle füüsiline
-  sobivus ja USB üldvaatekaamera lõplik kinnitus on TODO — waiting for physical
-  test.
-* Hoidikute eemaldamise/tagasipaneku sobivus ja kordustäpsus: TODO — real
-  measurement required.
-* Smart Solutions Lab 2/3 saab siit pärast füüsilisi katseid kontrollitud
-  hoidikukohad, roboti sihtpunktid ja kaamerate kinnitusgeomeetria: TODO — real
-  measurement required.
+**Kinnitatud tulemused**
+
+* **Klaasitsükkel, 24.10.2026:** MG400 viis esimeses ringis **4/4 klaasi** kiirusel 10 % sisendist (D−4, D−5, E−4, E−5) töökohale C+1, seal päris AtomS3 peale, ning sealt väljundisse (D+4, D+5, E+4, E+5). Denys kinnitas tulemuse. [Katsetabel](docs/refit_test.csv), [töökoha kaader](docs/photos/cycle-r1-g4-workstation-20261024-192229.jpg) ja [väljundi kaader](docs/photos/cycle-r1-g4-output-20261024-192256.jpg); [päevik, 24.10 kell 19:15 ja 19:20](https://github.com/Dennel04/3d-printing-course/blob/89f08c706a734b092519c131fdb860ffbee713ad/3d-print/lab2/README.md#L336-L347).
+* **Kasutatud hoidikud ja sihtpunktid:** Ringis 1 olid kasutusel klaasi sisendhoidik, oranž töökoha hoidik ja väljundhoidik v1. Denys õpetas töökohal C+1 roboti Z-koordinaadiks −119,0 mm ja väljundis D+4 −153,0 mm (mõlema XY-nihe 0 / 0 mm). Käsitsi kontroll kinnitas detailide sobivust kolme tüüpi prinditud sisendhoidikusse. 25.10 kinnitas Denys, et standardse jalaga klaasi sisendhoidik istub ruudustikus; ring 1 toimus eelmisel päeval. [Paigutus](docs/layout.md#roboti-sihtpunktid-ruut--nihe-r-33), [mõõteregister](docs/measurements.md) ja [hoidikute foto](docs/photos/gridfinity-workspace-overview-ruler-2026-10-24.jpg).
+* **Kaamerad:** 23.10 saadi XIAO ESP32S3 Sense'ilt (OV3660, COM5) USB kaudu [1600 × 1200 px kaader](docs/photos/tool-camera-first-frame.jpg). 24.10 oli prinditud v2 kinnitus robotil kasutusel; [töökoha kaadris](docs/photos/tool-camera-workstation-2026-10-24.jpg) on AtomS3 ja klaas. Klaasi 1 töökoha kaader jäi lugemisvea tõttu salvestamata. 25.10 paigaldas Denys Verbatim AWC-03 USB-kaamera toruotsal olevale postile ja ühendas arvutiga. Hubis nähti kogu ruudustikku, hoidikuid ja robotit; [salvestatud kaader on 3840 × 2160 px](docs/photos/veebikaamera-kaader-2026-10-25.jpg). Vt [24.10 kinnituse](https://github.com/Dennel04/3d-printing-course/blob/89f08c706a734b092519c131fdb860ffbee713ad/3d-print/lab2/README.md#L300-L304) ja [25.10 veebikaamera päevikukirjet](https://github.com/Dennel04/3d-printing-course/blob/89f08c706a734b092519c131fdb860ffbee713ad/3d-print/lab2/README.md#L368-L372).
+* **Füüsilised mõõtmised:** C−2 kontrollis seadis Denys iminapa põhjaristile, roboti X/Y/Z oli 253,94 / 68,30 / −155,00 mm ([CSV](docs/calibration_c-2.csv)). 24.10 mõõdeti nihikuga eraldi kummist iminapa välisläbimõõt 22,25 mm ja kõrgus 13,80 mm; eksemplari samasus paigaldatud napaga pole kinnitatud. Maksimi tabelis on akumoodul 24,04 × 24,01 × 21,97 mm ja XIAO põhiplaat 17,74 × 21,33 × 1,21 mm märgitud mõõdetuks; mõõtevahend pole kirjas. Meeskond kinnitas klaasi mõõdu 30 × 30 × 2 mm; AtomS3 24 × 24 × 12,9 mm on nimimõõt. [Mõõteregister](docs/measurements.md) eristab neid [CAD-i pesamõõtudest](docs/cad-measurement-review.md) ja tööriista ligikaudsest 80 g massihinnangust.
+
+**Lahtised katsed ja mõõtmised** (`TODO — waiting for physical test`)
+
+* Hoidikud eemaldada ja tagasi panna; teha ringid 2–5 samade punktidega. Mõõta korduspaigalduse viga ning teha 42 mm ümberpaigutuskatse. CSV kinnitab ainult ringi 1.
+* Mõõta prinditud pesad ja lõtkud ning tööriista mass enne ja pärast kaamera lisamist. Kontrollida 25.10 prinditud klaasihoidiku võtmispunkte. C−2 mõõtmine kinnitab kohalikku kontrolli; lõplik ruudustiku kalibreerimine jääb lahtiseks.
+* Kontrollida XIAO Wi-Fi HTTP, lõplikku toidet, kaabli kinnitust ja liikumisvaru kogu trajektooril. Üldvaatekaameral mõõta vibratsiooni ja kaadri korduvust pärast tagasi paigaldamist ning kontrollida käe kõrgust ja kaabli kinnitust. Vt [katseprotseduuri](docs/test-procedure.md).
 
 **KAARDISTA ISE, lõpus.**
 * Git repo ja tag: TODO — lisada alles esitamisel.
-* Numbrid, mille see labor andis, ühikutega: TODO — real measurement required;
-  CAD-i nominaale ei esitata füüsilise kordustäpsuse tulemusena.
-* Mida me teeksime teisiti: TODO — complete after physical fit and refit tests.
-* Mida järgmine labor peaks enne alustamist teadma: TODO — complete after the
-  holders, camera mounts and robot target points are physically verified.
+* Numbrid, mille see labor andis, ühikutega: vt kinnitatud tulemusi ja mõõteregistrit eespool.
+* Mida me teeksime teisiti: kokkuvõte pärast korduskatseid.
+* Mida järgmine labor peaks enne alustamist teadma: ülaltoodud sihtpunktid kehtivad 24.10 katses kasutatud hoidikutele. Pärast hoidiku vahetust kontrollida vastavat sihtpunkti.
