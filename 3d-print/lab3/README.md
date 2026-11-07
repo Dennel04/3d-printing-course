@@ -123,3 +123,8 @@ Lisa iga töökorra lõppu uus sissekanne; ära kirjuta varasemaid sissekandeid 
 - Otsused ja põhjused: Lab 2 mõõtmised, ühe ringi tulemus ning kalibreerimise piirangud säilitati viidetena; need ei kinnita uut tööriista. Õpetaja seitse CAD-allikat on viidatud koos blob SHA-ga, binaarfaile ei kopeeritud.
 - Failid: `assignment-EST.md`, `README.md`, `docs/tool_layout.md`, `docs/measurements.md`, `docs/tool_offsets.md`, `docs/test-procedure.md`, `docs/leak_test.csv`, `docs/cycle_test.csv`, `docs/bom.md`, juurkausta `AGENTS.md`.
 - Oodatav tulemus ja järgmine tegevus: inventuur, päris Metcal 910-B mõõtmine, komponentide kaalumine ning rõhuanduri asukoha kooskõlastus; seejärel õpetaja mudelite ülevaatus ja LED-i/draiveri põhjendatud valik.
+
+**07.11.2026: dokumentatsiooni ülevaatus (Codex)**
+- Võrdlesin GitHubi `main`-haru, 3D ja Andmehõive Lab 3 BOM-e, õppejõu tellimistabelit ning komponentide andmelehti. Lugesin üle ka 11.10 ja 25.10 päevikukirjed.
+- Lisasin [BOM-i](docs/bom.md#uv-komponentide-valik-ja-tellimisolek) LED-i ja draiveri mudelid, Mouseri koodid ning tellimisolekud. Eristasin LED-i andmelehe võrdlusvoolu, draiveri nimiväljundi ja relee kontaktide nimikoormuse. Lisasin selle sissekande README-sse; varasemad kirjed jäid samaks.
+- Ost ja kättesaamine vajavad kinnitust. Elektrilise sobivuse arvutus, füüsilised mõõtmised ja katsed on TODO. Seadmeid ei kasutanud.
