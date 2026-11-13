@@ -3,7 +3,7 @@
   "camera_port": "COM5",
   "pressure_port": "COM4",
   "calibration": {
-    "source": "cell X/Y: ../calibration/cells.py (13.11.26 grid fit, docs/calibration.csv)",
+    "source": "cell X/Y: ../calibration/cells.py (24.10.26 three-cell fit, docs/measurements.md)",
     "tool_r": 33.0
   },
   "motion": {
@@ -88,8 +88,8 @@
       ],
       "status": "placed 24.10",
       "teach": {
-        "dx": -2,
-        "dy": 2.5,
+        "dx": 1.0,
+        "dy": 0.5,
         "pick_z": -152,
         "place_z": null
       }
@@ -118,7 +118,7 @@
       "teach": {
         "dx": 0,
         "dy": 0,
-        "pick_z": -119,
+        "pick_z": -121.0,
         "place_z": -119
       }
     },

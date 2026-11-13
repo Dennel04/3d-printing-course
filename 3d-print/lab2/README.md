@@ -44,8 +44,10 @@ Wi-Fi füüsiline toimimine ja station PC võrgust ligipääs, kaablite marsruut
   - 23.10.26 print ette valmistatud: `valjundhoidik/3mf/valjundhoidik-v1.3mf` (PrusaSlicer). Prusa CORE One HF0.4, `0.20mm SPEED`, Prusament PLA, täide 15 % grid, 2 perimeetrit, jalad all. Orgaanilised toed ainult alusplaadilt: korpuse alumine serv ulatub jalgadest ~2,9 mm välja ja see pind toetub ruudustikule, nii et ta peab jääma sirge. Ilma tugedeta 46 min / 33,6 g, tugedega **1 h 7 min / 37,7 g** (valitud). Pikim mõõt 83,2 mm < 150 mm, seega brim'i ei ole vaja. Füüsiline kontroll: TODO.
   - 24.10.26: `valjundhoidik-v1` prinditud (2 × 2, üks lahtine kast ilma vaheseinteta). Füüsiline kontroll: hoidik istub ruudustikus hästi (jalad v2 parandusega ei kiilu). Klaasi panek robotiga ja pesade mõõdud nihikuga: TODO.
 - [ ] Iga pesa mõõt ja roboti sihtpunkt dokumenteeritud ruudu ning nihkega.
-- [ ] Klaasiga tehtud viis korduskatset ja tulemused failis `docs/refit_test.csv`.
+- [x] Test: neli klaasi sisendist töökohale ja töökohalt väljundisse, hoidikud vahepeal välja ja tagasi; tulemus failis `docs/refit_test.csv`.
   - 24.10.26: **ring 1 tehtud, 4 / 4 klaasi** (sisend D/E −4/−5 → töökoht C+1 AtomS3 peal → väljund D/E +4/+5, 10 %), Denys kinnitas. Kaadrid `docs/photos/cycle-r1-*.jpg`. Järgmiseks: hoidikud välja ja tagasi, ringid 2–5 ilma ümberõpetamiseta.
+  - 13.11.26 (uus paigutus, sisend D/E −1/−2 → töökoht E+2 AtomS3 peal → väljund D/E +3/+4, 10 %): **ring 2 — 4 / 4** (pärast sisendi XY õpetamist), **ring 3 — 4 / 4** pärast kõigi kolme hoidiku eemaldamist ja tagasipanekut, ilma ümberõpetamiseta. Denys kinnitas mõlemad. Kaadrid: [töökoht](docs/photos/cycle-r3-g4-workstation-20261113-165009.jpg), [väljund](docs/photos/cycle-r3-g4-output-20261113-165026.jpg).
+  - Meeskonna otsus (Denys 13.11.26): ringe 4–5 ei tehta. Põhjendus: standardse Gridfinity jalaga hoidik istub ruudustikus tihedalt ja tuleb pärast eemaldamist samasse kohta; ring 3 seda kinnitas. Kaksikus (24.10, hoidiku nihe kuni ±1 mm) läksid ringid 2–5 läbi 16 / 16 ([`docs/sim_refit.txt`](docs/sim_refit.txt)).
 - [x] XIAO ESP32S3 Sense kaamera kinnitus ning valitud ja katsetatud toide.
   - 24.10.26: kinnitus `xiao-square-mount-v2` (kaamerapesa objektiivi aknaga, tihvt) prinditud ja paigaldatud, töötab.
   - 23.10.26: XIAO istub prinditud kinnituses roboti küljes ja annab pilti. Toide katsetamisel USB-C kaudu arvutist (COM5). Püsivara `tool-camera/firmware/` (JPEG 1600 × 1200 USB kaudu, sest labori arvutil pole WiFi-t), kaader `python tool-camera/capture.py COM5 <fail>.jpg`. Sensor OV3660 (PID 0x3660), PSRAM 8 MB. Esimene kaader: [`docs/photos/tool-camera-first-frame.jpg`](docs/photos/tool-camera-first-frame.jpg) — pildis on iminapp, ruudustik ja oranž hoidik; iminapa voolik läheb diagonaalis üle kaadri.
@@ -156,7 +158,7 @@ Kõigi nende olek on `TODO — waiting for physical test`.
 - [`docs/cad-measurement-review.md`](docs/cad-measurement-review.md) — 30 mm klaasi mõju olemasolevatele STL-idele, vajalikud Fusioni kontrollid ja MG400 trajektoori lahtised küsimused.
 - [`docs/test-procedure.md`](docs/test-procedure.md) — lühike juhend roboti juures kasutamiseks.
 - [`docs/layout.md`](docs/layout.md) — töövoog, paigutus ja mõõdetavad sihtpunktid.
-- [`docs/refit_test.csv`](docs/refit_test.csv) — 5 × 4 eemaldamise/tagasipaneku katse read.
+- [`docs/refit_test.csv`](docs/refit_test.csv) — klaasitsükli ringid 1–3 (4 klaasi ringis), ring 3 pärast hoidikute eemaldamist ja tagasipanekut.
 - [`docs/bom.md`](docs/bom.md) — kinnitamist vajav komponentide nimekiri.
 - [`../sim/`](../sim/README.md) — töökoha digitaalne kaksik (ühine kõigile laboritele): ulatus- ja min-Z kaart, kalibreerimiskoha kontroll, klaasitsükli kuivkäivitus, kalibreerimisvea taluvus.
 
@@ -383,7 +385,8 @@ mitte ei muudeta.
 * Kaksik: pesa ja roboti alus on roboti juures, ruudustik tuleb `cells.py`-st; `twin.grid_slide()` annab ruudustiku asukohaks „vastu ja keskel“ suhtes +0,7 mm (= vastu) ja −2,8 mm külgsuunas piki torusid. Väljundis on hoidiku v2 mudel.
 * Parameetrid: R 33, kalibreerimiskasti põhi Z −155,0; B-2 (ülesande soovitatud kalibreerimisruut) ei sobi, sest napp ei ulatu kasti põhja (J3 piir).
 * Failid: `docs/calibration.csv`, `calibration/cells.py`, `slot-picker/`, `tool-camera/firmware/src/main.cpp`, `../sim/twin.py`, `docs/measurements.md`, `docs/test-procedure.md`, `README.md`.
-* Järgmiseks: hoidikute välja/tagasi kordustäpsus ja ringid 2–5 uue kalibreerimisega (`docs/refit_test.csv`).
+* Klaasitsükkel (16:30–16:51): sisendi nihe õpetati uuesti (Denys vaatas napa klaasi keskele): dx +1,0, dy +0,5 mm; töökoha võtmise Z −119 → −121 (−119 juures napp klaasi ei haaranud, panek jäi −119). Ring 2 4/4 (178 s), siis kõik kolm hoidikut välja ja tagasi, ring 3 4/4 (174 s) ilma ümberõpetamiseta. Ringe 4–5 ei tehta (meeskonna otsus, vt kontrollnimekiri).
+* Järgmiseks: `docs/layout.md` uue paigutuse järgi, `docs/bom.md`, failide kontroll, tag `3d-print-lab2`.
 
 ### Väljundid ja tulemused
 
