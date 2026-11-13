@@ -4,7 +4,7 @@ Veebiaken, kus ruudustiku lahtrile klõpsates viib MG400 iminapa selle lahtri ko
 
 ```bash
 python slot_picker.py          # ava http://127.0.0.1:8010
-python slot_picker.py --check  # prindi G-1, E+3, D-2, B+5, F-4 arvutatud X/Y
+python slot_picker.py --check  # prindi F-2, C+4, D+3, G-1, B+5 arvutatud X/Y
 ```
 
 Ainult Pythoni standardteek, lisapakette pole vaja.
@@ -80,11 +80,11 @@ Test-vahekaardil Jog-nuppude all. Kogub andmeid, millega hiljem häälestada puu
 
 Kaamera või Atomi puudumine ei peata sondeerimist (tühi veerg / `no frame: …`). Ühe jooksu kaadrid ~150 KB tükk; `probes/` ei ole gitignore'is, et head jooksud saaks commitida. Testitud 24.10.26 simuleeritud roboti, kaamera ja Atomiga (sammud, vaakumi hüpe CSV-s, STOP, vigased sisendid); päris robotiga: TODO — waiting for physical test.
 
-Kasulikud esimesed jooksud: Z ↓ ruudustiku pinnale (ilma ja koos imemisega), Z ↓ klaasile sisendhoidikus imemisega, ning G-1 kalibreerimiskastis kõik neli seina 0,5 mm sammuga.
+Kasulikud esimesed jooksud: Z ↓ ruudustiku pinnale (ilma ja koos imemisega), Z ↓ klaasile sisendhoidikus imemisega, ning kalibreerimiskastis põhja puudutus.
 
 ## Seaded — `layout.json`
 
-- `calibration` — ainult `tool_r` (33). Lahtrite X/Y tuleb failist [`../calibration/cells.py`](../calibration/cells.py) (24.10.26 kolme ruudu sobitus, pööre +0,87°); uue kalibreerimise järel muuda seal `MEASURED`.
+- `calibration` — ainult `tool_r` (33). Lahtrite X/Y tuleb failist [`../calibration/cells.py`](../calibration/cells.py) (13.11.26 kahe ruudu sobitus F-2 + C+4, pööre +1,48°); uue kalibreerimise järel muuda seal `MEASURED`.
 - `motion` — Drive-režiimi kõrgused, kiiruse piir, ulatus.
 - `cycle` — tsükli rollid, töökoha lahter, `travel_z`, `approach_mm`, `suck_dwell_s`, `blow_s`.
 - `types` — hoidikute tüübid (nimi, värv, `no_go`).

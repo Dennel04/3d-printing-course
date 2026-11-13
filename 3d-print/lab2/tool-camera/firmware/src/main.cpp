@@ -26,7 +26,7 @@ static bool camera_init() {
   c.pin_vsync = 38;
   c.pin_href = 47;
   c.pin_pclk = 13;
-  c.xclk_freq_hz = 20000000;
+  c.xclk_freq_hz = 10000000;
   c.ledc_timer = LEDC_TIMER_0;
   c.ledc_channel = LEDC_CHANNEL_0;
   c.pixel_format = PIXFORMAT_JPEG;

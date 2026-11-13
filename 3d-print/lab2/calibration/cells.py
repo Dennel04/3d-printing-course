@@ -2,21 +2,19 @@
 
 Model formula from assignment-EST.md ("Ruutude nimed"), model rotated 180° about Z,
 then the rigid fit (rotation + shift) to the measured cell centres below.
-Valid only at R = 33° (the suction cup is off the J4 axis). Example: python cells.py D-2 E+3
+Measured at R = 33° (the cup is centred under the flange). Example: python cells.py D+3 F-2
 """
 import math
 import re
 import sys
 
 R_DEG = 33.0
-# 24.10.26, R 33: measured centre (robot X, Y) per cell; see docs/measurements.md
-# C-2 added 24.10.26 evening: calibration bin (docs/calibration_c-2.csv); four inner corners gave
-# 253.805 / 68.46, Denys then centred the cup on the cross at the floor: 253.94 / 68.30 (used)
+# 13.11.26, R 33, grid flush against the robot nest: calibration bin centred by eye, cup lowered to the bin floor
+# (Z -155.0 in both cells). Fit +1.48 deg, F-2 <-> C+4 245.84 mm vs CAD 244.90 (0.47 mm per point).
+# Raw data: docs/calibration.csv
 MEASURED = {
-    "G-1": (420.50, 27.55),
-    "E+3": (340.498, -101.1465),
-    "D-2": (297.201, 67.479),
-    "C-2": (253.94, 68.30),
+    "F-2": (353.80, 69.80),
+    "C+4": (232.80, -144.20),
 }
 
 

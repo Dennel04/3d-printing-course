@@ -3,7 +3,7 @@
   "camera_port": "COM5",
   "pressure_port": "COM4",
   "calibration": {
-    "source": "cell X/Y: ../calibration/cells.py (24.10.26 three-cell fit, docs/measurements.md)",
+    "source": "cell X/Y: ../calibration/cells.py (13.11.26 grid fit, docs/calibration.csv)",
     "tool_r": 33.0
   },
   "motion": {
@@ -23,7 +23,7 @@
       "workstation": "Workstation (orange)",
       "output": "Good output"
     },
-    "workstation_cell": "C+1",
+    "workstation_cell": "E+2",
     "workstation_step": true,
     "travel_z": -100.0,
     "approach_mm": 5.0,
@@ -81,16 +81,16 @@
       "name": "Glass input",
       "type": "glass",
       "cells": [
-        "D-4",
-        "D-5",
-        "E-4",
-        "E-5"
+        "D-1",
+        "D-2",
+        "E-1",
+        "E-2"
       ],
       "status": "placed 24.10",
       "teach": {
-        "dx": -2.0,
+        "dx": -2,
         "dy": 2.5,
-        "pick_z": -152.0,
+        "pick_z": -152,
         "place_z": null
       }
     },
@@ -98,10 +98,10 @@
       "name": "AtomS3 input",
       "type": "atom",
       "cells": [
-        "E-1",
-        "E-2",
-        "F-1",
-        "F-2"
+        "D-3",
+        "D-4",
+        "E-3",
+        "E-4"
       ],
       "status": "decided 24.10 (layout.md), not placed yet"
     },
@@ -109,41 +109,41 @@
       "name": "Workstation (orange)",
       "type": "workstation",
       "cells": [
-        "C-1",
-        "C+1",
-        "B-1",
-        "B+1"
+        "E+1",
+        "E+2",
+        "D+1",
+        "D+2"
       ],
       "status": "decided 24.10 (layout.md), not placed yet",
       "teach": {
-        "dx": 0.0,
-        "dy": -0.0,
-        "pick_z": -119.0,
-        "place_z": -119.0
+        "dx": 0,
+        "dy": 0,
+        "pick_z": -119,
+        "place_z": -119
       }
     },
     {
       "name": "Good output",
       "type": "output",
       "cells": [
+        "D+3",
         "D+4",
-        "D+5",
-        "E+4",
-        "E+5"
+        "E+3",
+        "E+4"
       ],
       "status": "decided 24.10 (layout.md), not placed yet",
       "teach": {
-        "dx": 0.0,
-        "dy": -0.0,
+        "dx": 0,
+        "dy": 0,
         "pick_z": null,
-        "place_z": -153.0
+        "place_z": -153
       }
     },
     {
       "name": "Calibration box",
       "type": "calibration",
       "cells": [
-        "F+2"
+        "F-2"
       ],
       "status": "decided 24.10 (layout.md), not placed yet"
     }

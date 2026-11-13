@@ -44,7 +44,7 @@ Selle labori test (ülesanne osa 3) teeb ainult klaasi teed: sisend → töökoh
 | AtomS3 sisend | `atoms3-input-holder-v1` | 2 × 2 | E−1, E−2, F−1, F−2 | 4 AtomS3-t, ekraan üles |
 | Oranž | `ready-parts-input-holder-v1` | 2 × 2 | B−1, B+1, C−1, C+1 | C±1 aku sisend + töökoht, B±1 praak |
 | Heade väljund | `valjundhoidik-v1` | 2 × 2 | D+4, D+5, E+4, E+5 | valmis detailid |
-| Kalibreerimishoidik | `gridfinity-calibration` | 1 × 1 | F+2 | roboti kalibreerimine (24.10.26 mõõdeti C−2-s) |
+| Kalibreerimishoidik | `gridfinity-calibration` | 1 × 1 | F+2 | roboti kalibreerimine (13.11.26 mõõdeti F-2-s ja C+4-s) |
 | Veebikaamera post | `veebikaamera-post-v1` | — | ruudustikust väljas | laua serval rakise toru otsas; ruute ei võta |
 
 Kasutatud ruute 17 / 70. Järgmiste laborite moodulitele jäävad vabaks näiteks B ja C ±2 … ±5, D −3 … +3, E −3 ja E +1 … +3, F+1, F±3, F/G −4 … −5 (rida A on aluse lähedal ulatusega piiratud).
@@ -61,7 +61,7 @@ Allikas [`measurements.md`](measurements.md) (Maksimi `Measurements.xlsx`, 23.10
 
 ### Roboti sihtpunktid (ruut + nihe, R 33)
 
-Ruudu keskpunkt robotis = [`../calibration/cells.py`](../calibration/cells.py) (24.10.26 sobitus, sh C−2 kalibreerimiskastiga). Nihe = hoidiku `teach` slot pickeris.
+Ruudu keskpunkt robotis = [`../calibration/cells.py`](../calibration/cells.py) (13.11.26 sobitus, F-2 + C+4 kalibreerimiskastiga). Nihe = hoidiku `teach` slot pickeris.
 
 | Koht | Ruut | Nihe X / Y (mm) | Z (robot) | Allikas |
 |---|---|---|---|---|

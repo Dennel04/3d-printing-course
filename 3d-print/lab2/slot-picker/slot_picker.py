@@ -6,7 +6,7 @@ Test: choose the input / workstation / output holders, teach their pick and plac
 glass cycle (cycle.py) one glass or four at a time and save each round into docs/refit_test.csv.
 
 Talks to the mg400-base server (http://127.0.0.1:8000), which must already be connected and enabled.
-Cell X/Y come from the 24.10.26 three-cell fit in ../calibration/cells.py.
+Cell X/Y come from the grid fit in ../calibration/cells.py.
 
 Usage: python slot_picker.py [--port 8010] [--check]
 """
@@ -33,7 +33,7 @@ PROBE_HEADER = ["time", "step", "target_x", "target_y", "target_z", "x", "y", "z
                 "adc", "vacuum_adc", "pump", "frame"]
 sys.path.insert(0, str(HERE.parent / "calibration"))
 sys.path.insert(0, str(HERE.parent / "tool-camera"))
-import cells as calibration  # noqa: E402  single source of the grid fit (G-1, E+3, D-2)
+import cells as calibration  # noqa: E402  single source of the grid fit
 from capture import open_port, read_frame  # noqa: E402
 import cycle  # noqa: E402
 from pressure import PressureMonitor  # noqa: E402
@@ -672,14 +672,13 @@ def make_handler(layout, seq, port):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--port", type=int, default=8010)
-    ap.add_argument("--check", action="store_true", help="print the 24.10 check cells and exit")
+    ap.add_argument("--check", action="store_true", help="print the check cells and exit")
     args = ap.parse_args()
     layout = load_layout()
     check_holders(layout["holders"], layout["types"])
     cells = build_cells(layout)
     if args.check:
-        # B+5 / F-4 were driven to 215.52 / -186.15 and 378.39 / 152.37 on 24.10 and judged centred.
-        for name in ("G-1", "E+3", "D-2", "B+5", "F-4"):
+        for name in ("F-2", "C+4", "D+3", "G-1", "B+5"):
             c = next(c for c in cells if c["name"] == name)
             print(f"{name}: {c['x']:.2f} / {c['y']:.2f}  r {c['radius']}")
         return

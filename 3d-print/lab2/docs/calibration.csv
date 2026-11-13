@@ -1,0 +1,3 @@
+date,cell,x,y,z,r,method
+2026-11-13,F-2,353.80,69.80,-155.0,33,"grid flush against the robot nest; calibration bin, cup centred in the pocket by eye (Denys), lowered to the floor (touch)"
+2026-11-13,C+4,232.80,-144.20,-155.0,33,"same method; fit +1.48 deg, distance F-2 to C+4 245.84 mm vs CAD 244.90"

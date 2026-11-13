@@ -174,13 +174,12 @@ def main():
             add("AtomS3 screen", dry_run.ATOM_SCREEN.copy().apply_translation(run.atom_at), "static")
             continue
         add(n, mesh, "static")
-    base = T.arm.link_poses(0, 0, 0, 0)["base_link"]
-    # The twin keeps the cells.py fit shift as a cup offset from the J4 axis (31 mm at R 33). On the robot the
-    # cup is centred under the flange (photo), so the picture moves the arm by that shift instead: same cup
-    # path, arm drawn where the fit says the robot really stands relative to the rig.
+    # The base box sits centred and square in the nest pocket (twin.base_matrix); the arm turns about J1.
+    add("arm base_link", T.arm.meshes["base_link"].copy().apply_transform(twin.base_matrix()), "static")
     shift = np.eye(4)
-    shift[:2, 3] = twin.cup_offset(twin.TOOL_R)
-    add("arm base_link", T.arm.meshes["base_link"].copy().apply_transform(shift @ base), "static")
+    shift[:2, 3] = twin.cup_offset(twin.TOOL_R)     # (0, 0): cup centred under the flange
+    print("grid vs flush-and-centred: %+.1f mm towards the grid, %+.1f mm sideways; rotation %+.2f deg"
+          % (*twin.grid_slide(), twin.FIT_DEG))
 
     # moving nodes: geometry in its own frame, pose per frame
     first = T.pose_meshes(*cycle.slot_xy(lay, "input", glasses[0], run.by_name), lay["cycle"]["travel_z"])

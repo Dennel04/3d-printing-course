@@ -42,20 +42,26 @@ def use_lab(path):
     spec.loader.exec_module(cells)
     FIT_DEG, _robot_of = cells.fit()
     _C, _S = math.cos(math.radians(FIT_DEG)), math.sin(math.radians(FIT_DEG))
-    _fit_grid_shift()
+    _fit_rig_shift()
     return LAB
 
 
 GRID_SHIFT = (0.0, 0.0)
+NEST_SHIFT = (0.0, 0.0)
 
 
-def _fit_grid_shift():
-    """The robot sits centred in its nest (photo: cup centred under the flange) and the grid tiles slide on the
-    pipes: the calibration fit (cells.py) minus the CAD cell positions is where the grid really is relative to
-    the robot. 24.10/25.10 fit: 31 mm further out than in CAD = the bare pipe Denys sees between nest and grid."""
-    global GRID_SHIFT
-    d = [np.subtract(_robot_of(c), rig_to_world((*cell_model(c), 0))[:2]) for c in ("C-2", "E+3", "G-1", "D-4")]
+def _fit_rig_shift():
+    """Where the rig really is relative to the J1 axis (the robot's own frame = world).
+    Nest, pipes, L brackets, table and post: around the robot base. The base box (URDF base_link, 190 x 190)
+    sits centred in the nest pocket, and the URDF puts J1 5 mm behind the box centre, so the pocket centre is at
+    J1_X in the robot frame. The fitted rotation (cells.py) turns the whole rig, base box included: the robot's
+    coordinate frame is turned against its own base and the rig (J1 zero), the base sits square in its pocket.
+    Grid: where the calibration (cells.py) says the cells are. GRID_SHIFT - NEST_SHIFT = grid_slide(): how far the
+    grid is from "flush against the nest, centred" (13.11.26: +0.7 mm = flush, -2.8 mm sideways on the pipes)."""
+    global GRID_SHIFT, NEST_SHIFT
+    d = [np.subtract(_robot_of(c), _rig_to_world_cad((*cell_model(c), 0))[:2]) for c in ("C-2", "E+3", "G-1", "D-4")]
     GRID_SHIFT = tuple(float(v) for v in np.mean(d, axis=0))
+    NEST_SHIFT = (_C * J1_X, _S * J1_X)
 
 
 def add_lab_arg(ap):
@@ -71,9 +77,9 @@ CUP_LEN = 66.2
 
 # ---- tool (TODO measure: cup diameter, cup offset from the J4 axis, cup length) ----
 CUP_D = 22.25            # suction cup outer diameter, mm (caliper 24.10, measurements.md; effective ~23 from the C-2 corners)
-# The cup is centred under the flange (close-up photo 25.10). The calibration fit shift (31 mm) used to be put
-# here; it is the grid's place on the pipes instead (GRID_SHIFT).
+# The cup is centred under the flange (close-up photo 25.10, Denys 13.11.26).
 CUP_OFFSET_R33 = (0.0, 0.0)
+J1_X = 5.0               # URDF: base_link (190 x 190 box) centre is 5 mm in front of the J1 axis (joint j1 x -0.005)
 MOTOR_LEN = 85.0         # link5 (J4 motor) hangs this far below its frame origin (URDF mesh)
 
 # ---- holder STL per layout type, and how the part sits (z of its local 0 above the grid top) ----
@@ -81,7 +87,8 @@ HOLDER_STL = {
     "glass": "glass-input-holder/stl/glass-input-holder.stl",
     "atom": "atoms3-input-holder/stl/atoms3-input-holder-v2.stl",
     "workstation": "ready-parts-input-holder/stl/ready-parts-input-holder-v2.stl",
-    "output": "valjundhoidik/stl/valjundhoidik-v1.stl",
+    # printed and on the table: standard Gridfinity foot 83.5, four lead-in pockets (floor z 2.5)
+    "output": "valjundhoidik/stl/valjundhoidik-v2.stl",
     "calibration": "gridfinity-calibration/stl/gridfinity-calibration.stl",
 }
 # local z = 0 is the base bottom (feet below it); the calibration bin is placed by its bounds instead.
@@ -115,28 +122,51 @@ def cell_model(cell):
     return -x, -y
 
 
-def rig_to_world(p):
-    """Rig model point (x, y, z) -> world: rotated 180 deg + the fitted rotation about the J1 axis."""
+def _rig_to_world_cad(p):
+    """Rig model point -> world as the CAD assumes it (rig origin on J1): rotated 180 deg + the fitted rotation."""
     x, y = -p[0], -p[1]
     return (_C * x - _S * y, _S * x + _C * y, p[2])
 
 
-def rig_matrix():
+def rig_to_world(p):
+    """Rig model point (nest, pipes, L brackets, table, post) -> world: CAD placement + NEST_SHIFT."""
+    x, y, z = _rig_to_world_cad(p)
+    return x + NEST_SHIFT[0], y + NEST_SHIFT[1], z
+
+
+def _matrix(shift):
     m = np.eye(4)
     m[:2, :2] = [[-_C, _S], [-_S, -_C]]
+    m[:2, 3] = shift
     return m
 
 
+def rig_matrix():
+    return _matrix(NEST_SHIFT)
+
+
 def grid_to_world(p):
-    """Grid model point (rig frame) -> world: the grid sits GRID_SHIFT away from its CAD place."""
-    x, y, z = rig_to_world(p)
+    """Grid model point (rig frame) -> world: cell centres = cells.py."""
+    x, y, z = _rig_to_world_cad(p)
     return x + GRID_SHIFT[0], y + GRID_SHIFT[1], z
 
 
 def grid_matrix():
-    m = rig_matrix()
-    m[:2, 3] = GRID_SHIFT
+    return _matrix(GRID_SHIFT)
+
+
+def base_matrix():
+    """Robot base box (URDF base_link) in the world: centred in the nest pocket, square to it."""
+    m = np.eye(4)
+    m[:2, :2] = [[_C, -_S], [_S, _C]]
+    m[:2, 3] = NEST_SHIFT
     return m
+
+
+def grid_slide():
+    """Grid place minus "flush against the nest, centred", in the rig's own axes (x towards the grid, y sideways), mm."""
+    dx, dy = GRID_SHIFT[0] - NEST_SHIFT[0], GRID_SHIFT[1] - NEST_SHIFT[1]
+    return _C * dx + _S * dy, -_S * dx + _C * dy
 
 
 def cup_offset(r_deg):
@@ -177,6 +207,7 @@ class Arm:
                 mesh.apply_scale(1000.0)
                 self.meshes[lk.get("name")] = mesh
         self.J1_X = -self.joints["j1"]["xyz"][0]     # base_link origin is 5 mm behind the J1 axis
+        assert abs(self.J1_X - J1_X) < 0.01, self.J1_X
 
     def angles(self, j1, j2, j3, j4):
         """Dobot joint angles (deg) -> URDF joint values (rad), mimics resolved."""
@@ -245,7 +276,7 @@ class Twin:
             if f.stem.startswith("rakis_pipe_long"):
                 continue                # drawn below at their real length and place
             mesh = trimesh.load(f)
-            # grid tiles and their pipe dowels slide on the pipes (GRID_SHIFT); nest, L brackets stay at CAD
+            # grid tiles and their pipe dowels slide on the pipes (GRID_SHIFT); nest, L brackets sit at the robot
             grid = f.stem.startswith(("rakis_grid", "rakis_pipe_dowel"))
             mesh.apply_transform(grid_matrix() if grid else m)
             self._add(f.stem, mesh)

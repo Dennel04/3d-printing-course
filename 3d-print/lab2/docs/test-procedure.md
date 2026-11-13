@@ -4,27 +4,16 @@ Kõik mõõtmata tulemused ja katsed on olekus `TODO — waiting for physical te
 
 ## A. Gridfinity kalibreerimine
 
-1. Keela robot ja paigalda 1 × 1 kalibreerimishoidik ruutu `B-2`; kontrolli, et hoidik istub täielikult põhjas.
-2. Luba robot ning vii tööriista tipp väikese kiirusega hoidiku keskpunkti.
-3. Kirjuta roboti X/Y/Z koordinaadid faili `measurements.md`.
-4. Arvuta sama ruudu koordinaadid ametliku lauavalemiga. Arvuta nihe: mõõdetud koordinaat miinus arvutatud koordinaat.
-5. Rakenda sama nihet kaugele kontrollruudule, näiteks `E+3`, ja mõõda tegelik viga.
-6. Kui viga on üle `1 mm`, kontrolli telgede suunda, pöördenurka ja võimalikku telgede vahetust; ära kohanda hoidikut oletuse põhjal.
-7. Määra Z üks kord ruudustiku pealispinna suhtes ja kirjuta mõõteviis üles.
+Ruudustik on lükatud roboti platvormi (pesa) vastu. Kõik punktid R 33 juures.
 
-### A1. Meeskonna valitud meetod: neli sisenurka (23.10.26)
+### A1. Kahe kauge ruudu meetod
 
-Keskristi asemel leiame hoidiku keskpunkti nelja sisenurga kaudu.
-
-1. Vii iminapp väikese jog-sammuga (0,1–0,5 mm) hoidiku iga sisenurka: enne X-suunas vastu seina, siis Y-suunas vastu teist seina. Ära lohista nappi mööda seina.
-2. Kirjuta iga nurga roboti X/Y üles (nurgad 1–4 järjest ümber hoidiku).
-3. Keskpunkt = nelja nurga keskmine: `x = (x1+x2+x3+x4)/4`, `y = (y1+y2+y3+y4)/4`.
-4. Kontroll: vastasküljed (1→2 ja 3→4) ning diagonaalid (1→3 ja 2→4) peavad olema võrdsed. Erinevus näitab ebaühtlast puudutust.
-5. Külje 1→2 nurk roboti X-telje suhtes annab ruudustiku pöörde roboti suhtes (oodatud ~0° või 180°).
-
-Miks see töötab: iminapp on ümar ja pehme ega ulatu päris nurka, vaid peatub mõlema seina vastas napa raadiuse kaugusel. Hoidik on sümmeetriline, seega see nihe on kõigis neljas nurgas sama ja keskmistamisel kaob. Lisaks keskpunktile saame ka ruudustiku pöördenurga, mida keskrist ei anna.
-
-Edasi samamoodi nagu sammud 4–7: nihe B-2-s, kontroll E+3-s, Z. Hoidiku eemaldamine ja tagasipanek ning uus mõõtmine annab Gridfinity kordustäpsuse.
+1. Keela robot ja pane 1 × 1 kalibreerimiskast `gridfinity-calibration` kaugesse ruutu `F-2`; kontrolli, et kast istub täielikult põhjas. (`B-2` ei sobi: napp ei ulatu seal kasti põhja, J3 piir.)
+2. Luba robot, vii napp väikese kiirusega kasti kohale ja sea see silmaga pesa keskele (risti kohale).
+3. Lase napp aeglaselt kasti põhjani (puudutus). Kirjuta X/Y/Z faili [`calibration.csv`](calibration.csv).
+4. Korda teises kauges ruudus `C+4` — kaks kaugel asuvat punkti annavad ruudustiku pöörde.
+5. Lisa punktid `calibration/cells.py`-sse (`MEASURED`); sobitus arvutab pöörde ja nihke. Kontrolli, et mõõdetud ja CAD-i kauguse vahe on alla 1 mm.
+6. Kontroll kolmandas ruudus (nt `D+3`): slot picker viib napa arvutatud keskpunkti, napp peab olema pesa keskel.
 
 ## B. Hoidiku sobivuskatse
 
@@ -36,7 +25,7 @@ Edasi samamoodi nagu sammud 4–7: nihe B-2-s, kontroll E+3-s, Z. Hoidiku eemald
 
 ## C. Klaasi teisalduskatse
 
-23.10.2026 lähteandmete parandus: kasuta meie **30 × 30 × 2 mm** klaasi (`confirmed`, Maksimi Excel `Measurements!D8:E19` ja meeskonna kinnitus). Ametliku ülesande 24 × 24 × 2 mm on säilitatud ajalooline nominaal. Enne uue trajektoori kasutamist läbi [`CAD-i kontrollülesanded`](cad-measurement-review.md): kõik neli pesa, klaasi üleulatus ja pöörded, iminapa ligipääs, töökoht, neli väljundpunkti ja praak. Lõpeta pooleli olev G-1 kalibreerimine ning kontrollruut. Uusi sihtpunkte ei tuletata üksnes USB-C 11,4 mm mõõdust. Katsetulemus: `TODO — waiting for physical test`.
+23.10.2026 lähteandmete parandus: kasuta meie **30 × 30 × 2 mm** klaasi (`confirmed`, Maksimi Excel `Measurements!D8:E19` ja meeskonna kinnitus). Ametliku ülesande 24 × 24 × 2 mm on säilitatud ajalooline nominaal. Enne uue trajektoori kasutamist läbi [`CAD-i kontrollülesanded`](cad-measurement-review.md): kõik neli pesa, klaasi üleulatus ja pöörded, iminapa ligipääs, töökoht, neli väljundpunkti ja praak. Uusi sihtpunkte ei tuletata üksnes USB-C 11,4 mm mõõdust. Katsetulemus: `TODO — waiting for physical test`.
 
 1. Lae sisendhoidikusse neli klaasi.
 2. Paigalda töökoha hoidikusse Atomi mannekeen.
