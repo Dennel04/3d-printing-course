@@ -85,8 +85,8 @@ MOTOR_LEN = 85.0         # link5 (J4 motor) hangs this far below its frame origi
 # ---- holder STL per layout type, and how the part sits (z of its local 0 above the grid top) ----
 HOLDER_STL = {
     "glass": "glass-input-holder/stl/glass-input-holder.stl",
-    "atom": "atoms3-input-holder/stl/atoms3-input-holder-v2.stl",
-    "workstation": "ready-parts-input-holder/stl/ready-parts-input-holder-v2.stl",
+    "atom": "atoms3-input-holder/stl/atoms3-input-holder.stl",
+    "workstation": "ready-parts-input-holder/stl/ready-parts-input-holder.stl",
     # printed and on the table: standard Gridfinity foot 83.5, four lead-in pockets (floor z 2.5)
     "output": "valjundhoidik/stl/valjundhoidik.stl",
     "calibration": "gridfinity-calibration/stl/gridfinity-calibration.stl",

@@ -60,8 +60,8 @@ Mõõtis Denys nihikuga laboris 13.11.2026.
 
 | Detail | X × Y × Z (mm) | Võrdlus |
 |---|---|---|
-| AtomS3 | 24 × 24 × 12,9 | kõrgus kõikus 12,9–13; sama mis M5Stacki mudel (`3d-print/models/m5stack-atoms3`, 24,0 × 24,0 × 12,9) → nimimõõt kinnitatud |
-| Polükarbonaatklaas | 30 × 30 × 1,2 | paksus 1,0–1,2; varasem meeskonna väärtus 2 mm oli vale. Robotipunktid õpetati puudutusega, seega tsüklit see ei muuda |
+| AtomS3 | 24 × 24 × 12,9 | sama mis M5Stacki mudel (`3d-print/models/m5stack-atoms3`) |
+| Polükarbonaatklaas | 30 × 30 × 1,2 | 4 klaasi |
 
 ## AtomS3
 
