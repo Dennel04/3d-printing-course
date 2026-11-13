@@ -54,6 +54,15 @@ Olemasolev tõend eraldi Excelist: README 23.10.26 kaamerasessioon ja commit `9e
 
 23.10.2026: varasem `24 × 24 × 2 mm` on meie füüsilise klaasi kohta vale. Õige kinnitatud lähteväärtus on **30 × 30 × 2 mm** (D8:E19 ja meeskonna kinnitus). `24 × 24 mm` kuulub AtomS3 nimimõõdule ning aku ligikaudsele gabariidile; aku tegelik allikaväärtus on 24,04 × 24,01 mm. Ametliku ülesande originaal ja varasemad kirjed säilivad; need ei ole meie klaasi mõõteallikas. CAD-i ja trajektoori kontroll: [`cad-measurement-review.md`](cad-measurement-review.md).
 
+## 13.11.2026 — AtomS3 ja klaas nihikuga
+
+Mõõtis Denys nihikuga laboris 13.11.2026.
+
+| Detail | X × Y × Z (mm) | Võrdlus |
+|---|---|---|
+| AtomS3 | 24 × 24 × 12,9 | kõrgus kõikus 12,9–13; sama mis M5Stacki mudel (`3d-print/models/m5stack-atoms3`, 24,0 × 24,0 × 12,9) → nimimõõt kinnitatud |
+| Polükarbonaatklaas | 30 × 30 × 1,2 | paksus 1,0–1,2; varasem meeskonna väärtus 2 mm oli vale. Robotipunktid õpetati puudutusega, seega tsüklit see ei muuda |
+
 ## AtomS3
 
 | Väli | Mõõdetud väärtus | Meetod / märkus |

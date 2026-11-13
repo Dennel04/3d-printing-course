@@ -58,6 +58,6 @@ Allikas [`measurements.md`](measurements.md).
 
 | Detail | X × Y × Z (mm) | Olek |
 |---|---|---|
-| Polükarbonaatklaas | 30 × 30 × 2 | meeskonna kinnitatud, 4 tk |
-| AtomS3 | 24 × 24 × 12,9 | nimimõõt |
+| Polükarbonaatklaas | 30 × 30 × 1,2 | nihikuga 13.11.26 (paksus 1,0–1,2), 4 tk |
+| AtomS3 | 24 × 24 × 12,9 | nihikuga 13.11.26, sama mis M5Stacki mudel |
 | Akumoodul | 24,04 × 24,01 × 21,97 | mõõdetud |

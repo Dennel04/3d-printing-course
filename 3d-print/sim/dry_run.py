@@ -40,7 +40,7 @@ def load_cycle():
 
 load_cycle()
 
-GLASS = (30.0, 30.0, 2.0)
+GLASS = (30.0, 30.0, 1.2)        # caliper 13.11.26 (1.0-1.2)
 MODELS = twin.HERE.parent / "models"     # shared purchased-part models (3d-print/models, see its README)
 BATTERY_H_MEASURED = 21.97               # measurements.md (Maksim's table, tool not noted)
 STEP = 2.0
