@@ -88,7 +88,7 @@ HOLDER_STL = {
     "atom": "atoms3-input-holder/stl/atoms3-input-holder-v2.stl",
     "workstation": "ready-parts-input-holder/stl/ready-parts-input-holder-v2.stl",
     # printed and on the table: standard Gridfinity foot 83.5, four lead-in pockets (floor z 2.5)
-    "output": "valjundhoidik/stl/valjundhoidik-v2.stl",
+    "output": "valjundhoidik/stl/valjundhoidik.stl",
     "calibration": "gridfinity-calibration/stl/gridfinity-calibration.stl",
 }
 # local z = 0 is the base bottom (feet below it); the calibration bin is placed by its bounds instead.

@@ -29,20 +29,18 @@ Wi-Fi füüsiline toimimine ja station PC võrgust ligipääs, kaablite marsruut
 
 ## Kontrollnimekiri
 
-- [ ] `docs/layout.md`: töövoog, ruutude paigutus ja skeem mõõdetud laua järgi.
-  - 24.10.26: paigutus otsustatud (variant B, kaksikus kontrollitud) ja kirjas [`docs/layout.md`](docs/layout.md) koos skeemiga. Avatud: hoidikud füüsiliselt uutesse ruutudesse, AtomS3 nihikuga, veebikaamera posti lõplik koht.
+- [x] `docs/layout.md`: töövoog, ruutude paigutus ja skeem mõõdetud laua järgi.
+  - 13.11.26: uus paigutus (ruudustik roboti platvormi vastu): klaasi sisend D/E −1/−2, AtomS3 sisend D/E −3/−4, oranž töökoht + praak D/E +1/+2 (töökoht E+2), heade väljund D/E +3/+4, kalibreerimiskast F−2; skeem ja roboti sihtpunktid [`docs/layout.md`](docs/layout.md).
 - [x] 1 x 1 Gridfinity kalibreerimishoidik testitud ruudustikus ja robotiga.
   - 13.11.26: ruudustik on roboti platvormi (pesa) vastu. Kalibreerimiskast `gridfinity-calibration` (1 × 1, standardne jalg, pesa 37 × 37 mm, rist põhjas) ruutudes F-2 ja C+4: napp seati silmaga pesa keskele ja lasti põhjani (Z −155,0) — F-2 353,80 / 69,80, C+4 232,80 / −144,20 (R 33). Jäik sobitus `calibration/cells.py`: pööre +1,48°, jääkviga 0,47 mm punkti kohta; kontroll D+3-s (väljund) — napp keskel (Denys). Andmed: [`docs/calibration.csv`](docs/calibration.csv), [`docs/measurements.md`](docs/measurements.md).
 - [ ] Kolm sisendhoidikut, igaühes vähemalt neli mõõdetud pesa.
   - 23.10.26 prinditud: klaas (`glass-input-holder`, 2 × 2, 4 pesa), AtomS3 (`atoms3-input-holder-v1`, 2 × 2, 4 pesa), akumoodul (`ready-parts-input-holder-v1`, 2 × 2, 4 pesa). Pesade mõõdud nihikuga: TODO.
   - 24.10.26 kasutaja kinnitas kõigi kolme sisendhoidikutüübi detailide füüsilise sobivuse: põhjani, vabalt lõtku piires, sõrmedega eemaldatavad, kiilumiseta. Täpne kontrollitud pesade arv ja prinditud pesade nihikumõõdud on kinnitamata; kogu punkti ei märgita tehtuks. Üksikasjad: [`docs/measurements.md`](docs/measurements.md), 24.10 kirje.
-- [ ] Töökoha hoidik ja heade ning praakdetailide väljundikohad.
-  - 23.10.26 otsus: `ready-parts-input-holder-v1` (2 × 2) on korraga akumooduli sisend ja töökoht: inimene laeb akumoodulid, robot paneb igaühe peale AtomS3 ja selle peale klaasi. Ülesanne lubab sammul jagada kohta eelmisega.
-  - Heade väljund (4 klaasi, suuremate kaldservadega): TODO — modelleerimata.
-  - 23.10.26 parandus (meeskonna otsus, lihtsustus): praak läheb samuti oranži `ready-parts-input-holder-v1` hoidikusse.
-  - 23.10.26: heade väljund modelleeritud — `valjundhoidik/src/valjundhoidik-v1.f3d`, `valjundhoidik/stl/valjundhoidik-v1.stl`. Alus: 2 × 2 välismõõt 83,2 × 83,2 mm ja Gridfinity jalad; nelja pesa ja vaheseinte asemel üks lahtine kast. Uued parameetrid: põhi `out_floor_thickness = 2,5 mm`, õõne sügavus `out_cavity_depth = 14 mm`, sein `out_wall_thickness = 2,5 mm`, sisenurga raadius `4 mm`, sissejuhtiv faas ülaservas `out_lead_in = 2 mm`. Kõrgus ilma jalata 16,5 mm, jalaga 24,15 mm (alla 60 mm piiri). Sisemus ~78 × 78 mm, 4 klaasi mahuvad kõrvuti. 3MF ja füüsiline kontroll: TODO.
-  - 23.10.26 print ette valmistatud: `valjundhoidik/3mf/valjundhoidik-v1.3mf` (PrusaSlicer). Prusa CORE One HF0.4, `0.20mm SPEED`, Prusament PLA, täide 15 % grid, 2 perimeetrit, jalad all. Orgaanilised toed ainult alusplaadilt: korpuse alumine serv ulatub jalgadest ~2,9 mm välja ja see pind toetub ruudustikule, nii et ta peab jääma sirge. Ilma tugedeta 46 min / 33,6 g, tugedega **1 h 7 min / 37,7 g** (valitud). Pikim mõõt 83,2 mm < 150 mm, seega brim'i ei ole vaja. Füüsiline kontroll: TODO.
-  - 24.10.26: `valjundhoidik-v1` prinditud (2 × 2, üks lahtine kast ilma vaheseinteta). Füüsiline kontroll: hoidik istub ruudustikus hästi (jalad v2 parandusega ei kiilu). Klaasi panek robotiga ja pesade mõõdud nihikuga: TODO.
+- [x] Töökoha hoidik ja heade ning praakdetailide väljundikohad.
+  - **Töökoht:** oranž 2 × 2 hoidik (`ready-parts-input-holder`), ruudud D/E +1/+2; tsükli töökoht E+2. Akumooduli pesas on tihvtid, mis lähevad AtomS3 aku pistikusse, seega saab AtomS3 seal olla ainult ühte moodi (Denys 13.11.26). Klaasil eraldi pesa ei ole: robot paneb klaasi AtomS3 ekraani peale keskele.
+  - **Praak:** sama oranži hoidiku vabad pesad (meeskonna otsus 23.10.26, kinnitas Denys 13.11.26).
+  - **Heade väljund:** `valjundhoidik` (2 × 2, välismõõt 83,5 mm, standardne Gridfinity jalg, neli sissejuhatava faasiga pesa ja sõrmepilud), ruudud D/E +3/+4. Prinditud, istub ruudustikus; klaasitsükli ringid 1–3 panid kõik klaasid sinna (vt allpool).
+  - Print: Prusa CORE One HF0.4, `0.20mm SPEED`, Prusament PLA, täide 15 %, 2 perimeetrit, tugedeta, ~45 min (`valjundhoidik/3mf/valjundhoidik.3mf`).
 - [ ] Iga pesa mõõt ja roboti sihtpunkt dokumenteeritud ruudu ning nihkega.
 - [x] Test: neli klaasi sisendist töökohale ja töökohalt väljundisse, hoidikud vahepeal välja ja tagasi; tulemus failis `docs/refit_test.csv`.
   - 24.10.26: **ring 1 tehtud, 4 / 4 klaasi** (sisend D/E −4/−5 → töökoht C+1 AtomS3 peal → väljund D/E +4/+5, 10 %), Denys kinnitas. Kaadrid `docs/photos/cycle-r1-*.jpg`. Järgmiseks: hoidikud välja ja tagasi, ringid 2–5 ilma ümberõpetamiseta.
@@ -192,7 +190,7 @@ Kõigi nende olek on `TODO — waiting for physical test`.
 - `atoms3-input-holder/src|stl|3mf/atoms3-input-holder-v2.*` - AtomS3 sisendhoidik v2: standardne Gridfinity jalg (nagu klaasi hoidikul), välismõõt 83,5 mm, sõrmepilud; PrusaSlicer 53 min. Printimata. Kaksik kasutab seda.
 - `ready-parts-input-holder/src|stl|3mf/ready-parts-input-holder-v2.*` - oranž töökoha hoidik v2: standardne Gridfinity jalg, 83,5 mm, sõrmepilud; PrusaSlicer 1 h 33 min. Prindib. Kaksik kasutab seda; pesa põhi on 3,06 mm madalam kui v1-l → töökoha Z tuleb pärast vahetust uuesti õpetada (kaksik: place −120,9 vs v1 õpetus −119,0).
 - `glass-input-holder/src/glass-input-holder.f3d`, `glass-input-holder/stl/glass-input-holder.stl`, `glass-input-holder/3mf/glass-input-holder.3mf` - klaasi sisendhoidik 2 × 2: neli pesa 30,6 × 30,6 mm (30 mm klaas + 0,3 mm külje kohta), sügavus 1,5 mm, keskmed ±21 mm; välismõõt 83,5 × 83,5 mm (`42 × 2 − 0,5`); **standardne Gridfinity jalg** nagu kalibreerimiskastil (generaatori `BASE_PROFILE`, 4,75 mm). Kõrgus jalaga 10,25 mm. Print: Prusa CORE One HF0.4, `0.20mm SPEED`, Prusament PLA, jalad all, ilma tugedeta, 42 min, 28,2 g. Prinditud ja kontrollitud 25.10.26: istub ruudustikus täpselt.
-- `valjundhoidik`: jalg 35,78 mm (R 1,5 mm, 0,5 mm faas all), v1 failid üle kirjutatud, printimata.
+- `valjundhoidik/src/valjundhoidik.f3d`, `valjundhoidik/stl/valjundhoidik.stl`, `valjundhoidik/3mf/valjundhoidik.3mf` - heade väljund 2 × 2: standardne Gridfinity jalg, 83,5 mm, neli pesa sissejuhatava faasiga, sõrmepilud; prinditud ja kasutusel.
 
 Need lähtefailid ei ole veel füüsiliselt sobivaks kinnitatud. Iga print vajab PrusaSlicerist eksporditud STL-i ja 3MF-i, uue versiooninime ning mõõtmistulemuste dokumenteerimist.
 
