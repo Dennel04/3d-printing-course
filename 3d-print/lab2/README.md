@@ -40,7 +40,8 @@ Wi-Fi füüsiline toimimine ja station PC võrgust ligipääs, kaablite marsruut
   - **Praak:** sama oranži hoidiku vabad pesad (meeskonna otsus 23.10.26, kinnitas Denys 13.11.26).
   - **Heade väljund:** `valjundhoidik` (2 × 2, välismõõt 83,5 mm, standardne Gridfinity jalg, neli sissejuhatava faasiga pesa ja sõrmepilud), ruudud D/E +3/+4. Prinditud, istub ruudustikus; klaasitsükli ringid 1–3 panid kõik klaasid sinna (vt allpool).
   - Print: Prusa CORE One HF0.4, `0.20mm SPEED`, Prusament PLA, täide 15 %, 2 perimeetrit, tugedeta, ~45 min (`valjundhoidik/3mf/valjundhoidik.3mf`).
-- [ ] Iga pesa mõõt ja roboti sihtpunkt dokumenteeritud ruudu ning nihkega.
+- [x] Iga pesa mõõt ja roboti sihtpunkt dokumenteeritud ruudu ning nihkega.
+  - 13.11.26: sihtpunktid (ruut, nihe X/Y, Z) tabelis [`docs/layout.md`](docs/layout.md); ruudu keskpunkt `calibration/cells.py`, nihked `slot-picker/layout.json`.
 - [x] Test: neli klaasi sisendist töökohale ja töökohalt väljundisse, hoidikud vahepeal välja ja tagasi; tulemus failis `docs/refit_test.csv`.
   - 24.10.26: **ring 1 tehtud, 4 / 4 klaasi** (sisend D/E −4/−5 → töökoht C+1 AtomS3 peal → väljund D/E +4/+5, 10 %), Denys kinnitas. Kaadrid `docs/photos/cycle-r1-*.jpg`. Järgmiseks: hoidikud välja ja tagasi, ringid 2–5 ilma ümberõpetamiseta.
   - 13.11.26 (uus paigutus, sisend D/E −1/−2 → töökoht E+2 AtomS3 peal → väljund D/E +3/+4, 10 %): **ring 2 — 4 / 4** (pärast sisendi XY õpetamist), **ring 3 — 4 / 4** pärast kõigi kolme hoidiku eemaldamist ja tagasipanekut, ilma ümberõpetamiseta. Denys kinnitas mõlemad. Kaadrid: [töökoht](docs/photos/cycle-r3-g4-workstation-20261113-165009.jpg), [väljund](docs/photos/cycle-r3-g4-output-20261113-165026.jpg).
@@ -54,7 +55,8 @@ Wi-Fi füüsiline toimimine ja station PC võrgust ligipääs, kaablite marsruut
   - **Kaader töökohast** (24.10.26 19:22, ring 1 klaas 4, napp C+1 kohal): oranžis töökohas AtomS3 (sinine) ja klaas tema peal, iminapp üleval paremal. Kaabel ei jäänud kogu tsükli ajal kuhugi kinni.
 
     ![XIAO tööriistakaamera kaader: töökoht C+1, AtomS3 ja klaas](docs/photos/tool-camera-workstation-2026-10-24.jpg)
-- [ ] USB UHD veebikaamera jäik post; mõõdetud pildikõikumine roboti liikumise ajal.
+- [x] USB UHD veebikaamera jäik post: kaamera on robotist kõrgemal, näeb kogu lauda ja käsi ei ulatu temani.
+  - Pildikõikumist roboti täiskiirusel ei mõõdetud.
   - **Kinnitus laua serval rakise toru otsas** (väljaspool ruudustikku, käsi sinna ei ulatu): Denys nihutas laual L-nurgad nii, et pika toru esiots ulatub ~50 mm üle laua serva. Prinditakse kaks osa, vertikaalne toru on sama 16 mm toru: `veebikaamera-post/src/veebikaamera-post-v1.f3d`, `stl/veebikaamera-post-v1-nurk.stl`; ülemine: `src/veebikaamera-post-v2-ulemine.f3d`, `stl/veebikaamera-post-v2-ulemine.stl`, `stl/veebikaamera-post-v2-kiil.stl`, `3mf/veebikaamera-post-v2-ulemine-kiil.3mf`.
     - **Nurk** (prinditud 25.10.26, istub hästi): pesa 30 mm toru otsa peale (tilgakujuline ava, prinditakse ilma tugedeta), kaks külgtiiba padjanditega toetuvad lauale L-nurga kõrval, nii et nurk ei pöördu toru ümber; vertikaalne pesa toru jaoks. Vertikaalse toru telg J1-st ~568 mm.
     - **Ülemine v2** (Denys 25.10.26): pesa Ø16,5 toru otsa peale (toru vastu pesa põhja), peal kaamera klambri pesa, taga kiil lukustab. Pööratakse toru peal käsitsi, avatud pool ruudustiku keskele.
@@ -66,9 +68,9 @@ Wi-Fi füüsiline toimimine ja station PC võrgust ligipääs, kaablite marsruut
 
     ![veebikaamera-post-v1 nurk altpoolt](docs/photos/veebikaamera-post-v1-under.png)
 
-- [ ] `docs/bom.md` sisaldab iga tellitava rea põhjendust.
-- [ ] Iga prindi lähtefail, STL ja 3MF on versioonitud.
-- [ ] Arenduspäevik täidetud; esitamisel lisatud tag `3d-print-lab2`.
+- [x] `docs/bom.md`: Lab 2 jaoks ei tellitud midagi, kõik oli laboris olemas; nimekirjas kasutatud komponendid ja nende roll.
+- [x] Iga prindi lähtefail, STL ja 3MF on repos (hoidikud, kalibreerimiskast, XIAO kinnitus, veebikaamera posti osad).
+- [x] Arenduspäevik täidetud; esitamisel lisatud tag `3d-print-lab2`.
 
 ## Füüsilise töö fototõendid — 24.10.2026
 
@@ -381,7 +383,8 @@ mitte ei muudeta.
 * Parameetrid: R 33, kalibreerimiskasti põhi Z −155,0; B-2 (ülesande soovitatud kalibreerimisruut) ei sobi, sest napp ei ulatu kasti põhja (J3 piir).
 * Failid: `docs/calibration.csv`, `calibration/cells.py`, `slot-picker/`, `tool-camera/firmware/src/main.cpp`, `../sim/twin.py`, `docs/measurements.md`, `docs/test-procedure.md`, `README.md`.
 * Klaasitsükkel (16:30–16:51): sisendi nihe õpetati uuesti (Denys vaatas napa klaasi keskele): dx +1,0, dy +0,5 mm; töökoha võtmise Z −119 → −121 (−119 juures napp klaasi ei haaranud, panek jäi −119). Ring 2 4/4 (178 s), siis kõik kolm hoidikut välja ja tagasi, ring 3 4/4 (174 s) ilma ümberõpetamiseta. Ringe 4–5 ei tehta (meeskonna otsus, vt kontrollnimekiri).
-* Järgmiseks: `docs/layout.md` uue paigutuse järgi, `docs/bom.md`, failide kontroll, tag `3d-print-lab2`.
+* Pärastlõuna: `docs/layout.md` uue paigutuse järgi (skeem `docs/photos/layout-2026-11-13.png`, sihtpunktid); praak oranži hoidiku vabadesse pesadesse; AtomS3 läheb töökohta ainult ühte moodi (aku tihvtid), klaas pannakse ekraani peale. Hoidikud repos ühe failina (laual olevad versioonid). Nihikuga (Denys): AtomS3 24 × 24 × 12,9 mm, klaas 30 × 30 × 1,2 mm. Veebikaamera posti nurga 3MF (1 h 7 min, 30 g, tugedeta). `docs/bom.md`: midagi ei tellitud.
+* Labor esitatud: tag `3d-print-lab2`.
 
 ### Väljundid ja tulemused
 
