@@ -1,6 +1,6 @@
 # 23.10.2026 — komponentide mõõtude mõju Lab 2 CAD-ile
 
-Lähteandmed ja olekud: [`measurements.md`](measurements.md), Maksimi `Measurements.xlsx` ning meeskonna kinnitus. Füüsiline klaas on **30 × 30 × 2 mm** (`confirmed`), AtomS3 **24 × 24 × 12,9 mm** (`nominal`). Geomeetriat ei muudetud. Allpool olevad STL-mõõdud on eksporditud võrgu analüüs, mitte prinditud detaili mõõtmine ega Fusioni parameetrite kinnitus.
+Lähteandmed ja olekud: [`measurements.md`](measurements.md), Maksimi `Measurements.xlsx` ning meeskonna kinnitus. 23.10 lähteväärtused olid klaasil **30 × 30 × 2 mm** (`confirmed`, Excelis mõõtevahend märkimata) ja AtomS3-l **24 × 24 × 12,9 mm** (`nominal`). Geomeetriat ei muudetud. Allpool olevad STL-mõõdud on eksporditud võrgu analüüs, mitte prinditud detaili mõõtmine ega Fusioni parameetrite kinnitus.
 
 ## Olemasolevate failide kontroll
 
@@ -14,7 +14,7 @@ STL-i binaarsete kolmnurkade tipud ja telgedega paralleelsed tasapinnad loeti mi
 | `atoms3-input-holder` | AtomS3 füüsilised gabariidid endiselt mõõtmata; Exceli 24 × 24 × 12,9 mm on nimimõõt. | Kontrollida pesa füüsilist lõtku ja orientatsiooni. USB-C keskjoone 11,4 mm lähteserv tuleb fotol või skeemil määrata enne avause või sihtpunkti kasutamist. |
 | `camera-mounts/.../xiao-square-mount-v1` | XIAO põhiplaat 17,74 × 21,33 × 1,21 mm (`measured`); kaameralaiendus, objektiivi asukoht ja antenni vaba ala puuduvad. | Võrrelda põhiplaadi renne mõõduga, jättes komponentidele ja USB-C-le ruumi. 1,21 mm on põhiplaadi mõõt, mitte kaamerakoostu kogukõrgus. Ligikaudne 90° alla on `planned`. Uus kaamerapesa vajab kaameraplaadi mõõtmisi; olemasolev pilt ei tõenda 30 × 30 mm klaasi täielikku nähtavust. |
 
-Kõigi ülaltoodud füüsiliste sobivus- ja trajektoorikontrollide tulemus: `TODO — waiting for physical test`.
+23.10 seisuga olid füüsilised sobivus- ja trajektoorikontrollid lahtised. Vt 24.10 ja 13.11 täiendusi.
 
 ## 24.10.2026 — uus füüsiline tõend ja olemasolevate failide kontroll
 
@@ -32,19 +32,25 @@ Vastavate olemasolevate binaarsete STL-ide tipud ja tasapinnad kontrolliti uuest
 
 Eraldi kummist iminapa D41 ja H1 on nüüd nihikuga mõõdetud (`measured`), kuid selle samasus robotil oleva eksemplariga pole kinnitatud. Seetõttu jäävad paigaldatud tööriista gabariitide, tihenduspinna ja liikumistee kontrollid avatuks. Kaalu puudumisel antud tööriista massihinnang on `estimated, not measured`; tegelik kaalumine enne/pärast kaamerat jääb TODO-ks. Kvalitatiivne pesasobivus ei kinnita kõigi pesade robotiga ligipääsu, Gridfinity jalgade kordustäpsust ega kogu tsükli tulemust. Varasemad katsed ja ebaõnnestumised jäävad alles.
 
+## 13.11.2026 — kontrollitud lõppseis
+
+Denys mõõtis nihikuga klaasi **30 × 30 × 1,2 mm** ja AtomS3 **24 × 24 × 12,9 mm**. [Mõõteregister](measurements.md) säilitab 23.10 Exceli 2 mm väärtuse ajaloolise lähteandmena. Ülaltoodud 2 mm klaasi üleulatuse arvutus ja v1 väljundhoidiku mõõdud kirjeldavad varasemat seisu. Lõpppaigutuses on nelja pesaga `valjundhoidik`; selle ruudud ja õpetatud sihtpunktid on [paigutuse tabelis](layout.md).
+
+Lõpppaigutuses läbis robot ringides 2–3 **8/8 ülekannet**, sh ring 3 pärast kolme hoidiku tagasipanekut samadesse ruutudesse ilma ümberõpetamiseta. Koos varasema paigutuse ringiga 1 on [füüsilises katsetabelis](refit_test.csv) **12/12**. Ringe 4–5 ega 42 mm ümberpaigutuskatset ei tehtud; korduspaigalduse viga millimeetrites ei mõõdetud. Meeskond lõpetas CAD-etapi katsetatud prototüübi põhjal.
+
 ## MG400 haaramise ja trajektoori kontroll
 
 - Klaas suureneb varasema vale lähteväärtusega võrreldes 6 mm kummalgi teljel; keskse haarde korral ulatub serv 3 mm kaugemale. Pööratud 30 mm ruudu suurim teljesuunaline ulatus on `30 × √2 ≈ 42,43 mm` ehk poolulatus 21,21 mm; 24 mm ruudu puhul oli see 16,97 mm. Neid arvutuslikke ümbriseid tuleb võrrelda seina, naaberdetaili, kaabli, kaamerakinnituse ja transporditeega.
 - Sama keskme korral ei tulene mõõduparandusest automaatselt uut X/Y sihtpunkti. Servapõhise referentsi korral võib keskpunkt muutuda 3 mm telje kohta; suund ja nullpunkt tuleb esmalt kinnitada. USB-C 11,4 mm ei ole haardekeskme koordinaat.
-- Kontrollida kõigi nelja sisendpesa tegelik põrandakõrgus ja istumine. V2 jala alumise Z muutus STL-is on 3 mm; sellest ei saa ilma laua ja hoidiku mõõtmiseta järeldada roboti võtukõrguse muutust. Klaasi paksus jääb kinnitatud 2 mm, kuid see ei kinnita Z-sihtpunkti.
+- Kontrollida kõigi nelja sisendpesa tegelik põrandakõrgus ja istumine. V2 jala alumise Z muutus STL-is on 3 mm; sellest ei saa ilma laua ja hoidiku mõõtmiseta järeldada roboti võtukõrguse muutust. Lõppseisu klaas on 1,2 mm paks; roboti Z-sihtpunktid on kirjas [13.11 paigutuses](layout.md).
 - Iminapa läbimõõt, tihenduspind ja kogu tööriista gabariidid tuleb füüsiliselt mõõta. Kontrollida keskset haaret, klaasi püsimist ja tööriista vertikaalset ligipääsu.
-- Ruudustiku kalibreerimine (13.11.2026, F-2 ja C+4, vt [`measurements.md`](measurements.md)) on tehtud. Kontrollida võtmine, tõstmine, transport, töökoht, väljund ja praak koos 30 mm klaasi ning vajaduse korral kogu koostuga.
-- Katsetada [`test-procedure.md`](test-procedure.md) ohutusreeglite järgi: hoidikute laadimisel robot keelatud, käed töötamise ajal eemal, esimene uus trajektoor aeglaselt ja hädastopp käeulatuses. Uue hoidiku esimene õhusõit 20% kiirusel ja 20 mm kõrgemal vastavalt olemasolevale juhendile. Katsetulemus: `TODO — waiting for physical test`.
+- Ruudustiku kalibreerimine (13.11.2026, F-2 ja C+4, vt [`measurements.md`](measurements.md)) on tehtud. 13.11 katsed kinnitasid klaasi tee sisendist töökoha kaudu heade väljundisse. Praak ja kogu koostu teisaldus ei kuulunud sellesse katsesse.
+- Katsetada [`test-procedure.md`](test-procedure.md) ohutusreeglite järgi: hoidikute laadimisel robot keelatud, käed töötamise ajal eemal, esimene uus trajektoor aeglaselt ja hädastopp käeulatuses. Uue hoidiku esimene õhusõit 20% kiirusel ja 20 mm kõrgemal vastavalt olemasolevale juhendile. Katsetatud teekond ja selle piirid on kirjas 13.11 täienduses.
 
 ## Fusion 360 kontrollülesanded enne võimalikku ümbertegemist
 
 1. Ava vastav versioonitud `.f3d`: **File → Open → Open from my computer**. Vali millimeetrid (**Browser → Document Settings → Units → Change Active Units → Millimeter**).
-2. Ava **Design → Solid → Modify → Change Parameters**. Kontrolli, kas detaili X/Y/Z, pesa lõtk külje kohta ja põranda kõrgus on **User Parameters**. Planeeritud klaasi lähteparameetrid on 30 mm, 30 mm, 2 mm; ära nimeta 0,3 mm arvutuslikku külgvaru mõõdetud sobivuseks.
+2. Ava **Design → Solid → Modify → Change Parameters**. Kontrolli, kas detaili X/Y/Z, pesa lõtk külje kohta ja põranda kõrgus on **User Parameters**. Lõppseisu klaasi mõõdud on 30 mm, 30 mm, 1,2 mm; ära nimeta 0,3 mm arvutuslikku külgvaru mõõdetud sobivuseks.
 3. Vali **Inspect → Measure**, mõõda vastasseinad, põrand–serv, faasid ja nurgad kõigis neljas pesas ning kontrolli vastavust ülalolevale STL-ile. Kasuta **Inspect → Section Analysis** istumissügavuse ja klaasi üleulatuse kontrolliks.
-4. Lisa eraldi kontrollkomponendina 30 × 30 × 2 mm klaasi ümbris ning mõõdetud või selgelt nimimõõduga komponendid. Paiguta need kavandatud asenditesse; kasuta **Inspect → Interference**. Kontrolli eraldi lubatud klaasipöördeid ja kogu transporditeed; ühe staatilise asendi nullinterferents ei kinnita trajektoori.
+4. Lisa eraldi kontrollkomponendina 30 × 30 × 1,2 mm klaasi ümbris ning mõõdetud või selgelt nimimõõduga komponendid. Paiguta need kavandatud asenditesse; kasuta **Inspect → Interference**. Kontrolli eraldi lubatud klaasipöördeid ja kogu transporditeed; ühe staatilise asendi nullinterferents ei kinnita trajektoori.
 5. Kui klaas nurka ei mahu, lõtk ei sobi või sein jääb haardeteele, pane kirja konkreetne vastuolu ja parameetrimuutus. Alles kontrolli järel loo uus versioon **File → Save As**; ära kirjuta prinditud iteratsiooni üle. Ekspordi uue versiooni STL ning salvesta vastav PrusaSliceri 3MF. Praeguses sessioonis ei muudetud geomeetriat ega loodud printi.

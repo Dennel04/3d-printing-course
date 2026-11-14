@@ -2,6 +2,8 @@
 
 Kõik mõõtmata tulemused ja katsed on olekus `TODO — waiting for physical test`. Enne katseid ava ka [`MG 400 rakis.md`](MG%20400%20rakis.md), [`measurements.md`](measurements.md) ja [`refit_test.csv`](refit_test.csv).
 
+**Lõppseis:** 24.10 ring 1 andis varasemas paigutuses 4/4. 13.11 andsid lõpppaigutuses ringid 2 ja 3 mõlemad 4/4; ring 3 järgnes kolme hoidiku eemaldamisele ja samadesse ruutudesse tagasipanekule, punkte ümber õpetamata. Meeskond lõpetas CAD-etapi 12/12 füüsilise ülekandega. Ringe 4–5 ja 42 mm füüsilist ümberpaigutuskatset ei tehtud. Allpool kirjeldatud [ametliku ülesande](../assignment-EST.md) täielik katsemaht jääb seega täitmata.
+
 ## A. Gridfinity kalibreerimine
 
 Ruudustik on lükatud roboti platvormi (pesa) vastu. Kõik punktid R 33 juures.
@@ -25,7 +27,7 @@ Ruudustik on lükatud roboti platvormi (pesa) vastu. Kõik punktid R 33 juures.
 
 ## C. Klaasi teisalduskatse
 
-23.10.2026 lähteandmete parandus: kasuta meie **30 × 30 × 2 mm** klaasi (`confirmed`, Maksimi Excel `Measurements!D8:E19` ja meeskonna kinnitus). Ametliku ülesande 24 × 24 × 2 mm on säilitatud ajalooline nominaal. Enne uue trajektoori kasutamist läbi [`CAD-i kontrollülesanded`](cad-measurement-review.md): kõik neli pesa, klaasi üleulatus ja pöörded, iminapa ligipääs, töökoht, neli väljundpunkti ja praak. Uusi sihtpunkte ei tuletata üksnes USB-C 11,4 mm mõõdust. Katsetulemus: `TODO — waiting for physical test`.
+Lõppseisu klaas on **30 × 30 × 1,2 mm** (Denysi 13.11 nihikumõõt). 23.10 kinnitatud 30 × 30 × 2 mm jääb [mõõteregistrisse](measurements.md) varasema Exceli lähteväärtusena. Enne uue trajektoori kasutamist läbi [CAD-i kontrollülesanded](cad-measurement-review.md). Tehtud klaasitsüklite tulemused on [katsetabelis](refit_test.csv).
 
 1. Lae sisendhoidikusse neli klaasi.
 2. Paigalda töökoha hoidikusse Atomi mannekeen.
@@ -37,6 +39,8 @@ Ruudustik on lükatud roboti platvormi (pesa) vastu. Kõik punktid R 33 juures.
 
 ## D. Eemaldamise ja tagasipaneku katse
 
+13.11 ring 3 läbis selle kontrolli ühe korduspaigalduse järel. Allpool on täieliku protokolli juhis; ringe 4–5 ei tehtud.
+
 1. Keela robot, eemalda hoidikud ja paigalda need tagasi samadesse ruutudesse.
 2. Ära muuda õpetatud punkte.
 3. Lae neli klaasi uuesti.
@@ -46,6 +50,8 @@ Ruudustik on lükatud roboti platvormi (pesa) vastu. Kõik punktid R 33 juures.
 
 ## E. 42 mm ümberpaigutuskatse
 
+Seda katset ei tehtud füüsiliselt. Hoidikute tagasipanek samadesse ruutudesse ringiks 3 on eraldi kontroll.
+
 1. Keela robot ja tõsta hoidik teise Gridfinity ruutu.
 2. Tuleta uus sihtpunkt algsest õpetatud punktist, liites vastaval teljel ruutude täisarvu × `42 mm`.
 3. Tee katse väikese kiirusega.
@@ -53,7 +59,7 @@ Ruudustik on lükatud roboti platvormi (pesa) vastu. Kõik punktid R 33 juures.
 
 ## F. Tööriistakaamera katse
 
-23.10.2026 arhitektuur: XIAO USB Serial diagnostika on kontrollitud COM5 kaudu (OV3660, JPEG 1600 × 1200 px, [`tegelik foto`](photos/tool-camera-first-frame.jpg)). Lõppvariandi Wi-Fi HTTP püsivara asub [Smart Solutionsi repos](https://github.com/Dennel04/smart-solutions-course/tree/main/smart-solutions/lab2/firmware-xiao-camera/); siinset USB-püsivara säilitatakse diagnostikaks. Enne lõppvariandi vastuvõtmist kontrolli Wi-Fi HTTP pilti tegelikult XIAO-lt station PC-sse ning salvesta terav töökoha kaader terve 30 × 30 mm klaasi ja Atomiga. Seejärel kontrolli allolevate sammudega toidet, kaablimarsruuti, tõmbetõket ning MG400 kogu kavandatud liikumisvahemikku ja J4 pööret. Kõik need lõppvariandi füüsilised kontrollid: `TODO — waiting for physical test`.
+CAD-etapis paigaldati XIAO kinnitus ja saadi USB kaudu [töökoha kaader](photos/tool-camera-workstation-2026-10-24.jpg). [Wi-Fi HTTP püsivara](https://github.com/Dennel04/smart-solutions-course/tree/main/smart-solutions/lab2/firmware-xiao-camera/), mõlema kaamera lõplik Stationi integratsioon, FPS-i, viite ja võrguliikluse mõõtmine ning toite, kaablite ja liikumisulatuse täielik kontroll jäävad Smart Solutionsi jätkutööks.
 
 1. Kinnita kaamera olemasoleva iminapa kõrvale.
 2. Kontrolli, et iminapa vertikaalne tee ja hoidikutesse laskumine on vabad.
@@ -65,7 +71,7 @@ Ruudustik on lükatud roboti platvormi (pesa) vastu. Kõik punktid R 33 juures.
 
 ## G. Üldvaatekaamera katse
 
-Valitud üldvaatekaamera on Verbatim AWC-03, ühendus USB kaudu station PC-ga. MG400 saab käsud Etherneti kaudu; Atom kasutab USB Serialit ja Wi-Fi-t. Need ühendused ei asenda allolevaid kaamera- ja liikumiskatseid.
+Verbatim AWC-03 on postil ja ühendatud USB kaudu. [25.10 kaadris](photos/veebikaamera-kaader-2026-10-25.jpg) on ruudustik, hoidikud ja robot. Allpool jäävad avatuks liikumisvaru, kaabli, vibratsiooni ja kaamera korduspaigalduse kontrollid.
 
 1. Paiguta kaamera kõrgemale roboti mõõdetud maksimaalsest trajektoorist.
 2. Kontrolli, et kogu ruudustik ja robot on kaadris.

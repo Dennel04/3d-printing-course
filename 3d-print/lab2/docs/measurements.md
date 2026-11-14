@@ -63,13 +63,13 @@ Mõõtis Denys nihikuga laboris 13.11.2026.
 | AtomS3 | 24 × 24 × 12,9 | sama mis M5Stacki mudel (`3d-print/models/m5stack-atoms3`) |
 | Polükarbonaatklaas | 30 × 30 × 1,2 | 4 klaasi |
 
+**Lõppseisu mõõt on 30 × 30 × 1,2 mm.** 23.10 registris olev 30 × 30 × 2 mm (`Measurements.xlsx`, D8:E19) on toonane kinnitatud lähteväärtus; Excel ei nimeta mõõtevahendit. Ametliku ülesande 24 × 24 × 2 mm on ülesande nimimõõt. 13.11 kirjes on nelja klaasi koondmõõt; üksiknäite ega mõõdetud hajuvust sellest ei tuletata. Allpool on varasemad kontrollväljad, mille puhul kehtib mõõdetud gabariitidele 13.11 kirje.
+
 ## AtomS3
 
 | Väli | Mõõdetud väärtus | Meetod / märkus |
 |---|---|---|
-| X (mm) | TODO — waiting for physical test | |
-| Y (mm) | TODO — waiting for physical test | |
-| Z (mm) | TODO — waiting for physical test | |
+| X/Y/Z (mm) | 24 × 24 × 12,9 | Vt 13.11 nihikumõõtu eespool. |
 | Orientatsioon hoidikus | TODO — waiting for physical test | Ekraan üles; kinnitada detailil. |
 | USB-C pesa asukoht | TODO — waiting for physical test | |
 | Nupu ligipääsetavus | TODO — waiting for physical test | |
@@ -125,16 +125,18 @@ Mõõda vajaduse korral mitu klaasi ja säilita kõik üksiktulemused, et hiljem
 | Nähtav ala (mm või px) | TODO — waiting for physical test | |
 | Tööriista mass enne (g) | TODO — waiting for physical test | |
 | Tööriista mass pärast (g) | TODO — waiting for physical test | |
-| Valitud toide | USB-C kaabel arvutist (USB 5 V) | Kaabel annab ka pildi; läheb roboti taha, J4 pööre ei sega. |
+| Katsetoide | USB-C kaabel arvutist (USB 5 V nimipinge) | USB kaudu saadi ka pilt. Lõpliku toite ja kogu liikumisulatuse kontroll jääb avatuks. |
 | Kaabli marsruut | TODO — waiting for physical test | Kontrollida kogu käe liikumisel ja J4 pööramisel. |
 | Tõmbetõke | TODO — waiting for physical test | |
 
 ## USB üldvaate veebikaamera
 
+Verbatim AWC-03 paigaldati toruotsal olevale postile ja ühendati USB kaudu. [25.10 kaader](photos/veebikaamera-kaader-2026-10-25.jpg) näitab ruudustikku, hoidikuid ja robotit. Kaader kinnitab vaadet pildistamise hetkel; vibratsiooni, korduspaigaldust ja roboti kogu liikumisulatust ei mõõdetud.
+
 | Väli | Mõõdetud / valitud väärtus | Katse / märkus |
 |---|---|---|
 | Kaamera X/Y/Z (mm) | TODO — waiting for physical test | |
-| Kinnituse tüüp ja liides | TODO — waiting for physical test | |
+| Kinnituse tüüp ja liides | Post rakise toru otsas; USB | Paigaldatud 25.10. |
 | MG400 käe suurim kõrgus (mm) | TODO — waiting for physical test | Mõõta tegelikul liikumisteel. |
 | Vajalik kaamera kõrgus (mm) | TODO — waiting for physical test | Kogu ruudustik ja robot peavad kaadrisse mahtuma. |
 | Asukoht ruudustiku suhtes | TODO — waiting for physical test | Ruut või mõõdetud nihe X/Y/Z (mm). |
@@ -161,7 +163,7 @@ Ruudustik on lükatud roboti platvormi (pesa) vastu. R 33, napp flantsi all kesk
 - Ruudustiku asukoht kaksikus „vastu ja keskel“ suhtes: +0,7 mm (= vastu), −2,8 mm külgsuunas piki torusid (`twin.grid_slide()`).
 - Kontroll: slot picker sõitis uue kalibreerimisega D+3-sse (heade väljund); Denys: napp keskel, „все идеально“.
 - B-2 (ülesande soovitatud ruut) ei sobi: raadiusel ~192 mm J1-st jõuab napp ainult Z ≈ −98-ni (J3 105° piir), kasti põhja ei ulatu.
-- Mõõtmata: kasti välja/tagasi kordustäpsus.
+- Mõõtmata: kalibreerimiskasti välja/tagasi asendiviga. Klaasitsükli kolme hoidiku korduspaigaldus toimis ringis 3 ilma ümberõpetamiseta ([katsetabel](refit_test.csv)); selle asendiviga millimeetrites ei mõõdetud.
 
 ### Klaasi sisendhoidiku õpetus (24.10.26 õhtu)
 
@@ -208,6 +210,6 @@ Kasutaja esialgne hinnang on **umbes 80 g (?)**, orientiirina **60–110 g**. Ol
 
 Kõigi kolme hoidikutüübi kohta kinnitas kasutaja: detail läheb vastavasse pesasse ja jõuab põhjani, liigub olemasoleva lõtku piires vabalt, tuleb sõrmedega välja ning kontrollil ei kiilunud. Kontrollitud pesade arvu ja klaasihoidiku prindiversiooni ei täpsustatud; kõigi 12 pesa eraldi nihikuga kontrollimist ei kinnitata. See on detaili sobivus pesas, mitte Gridfinity jala istumise, eemaldamise/tagasipaneku kordustäpsuse ega kogu robotitsükli kinnitus.
 
-Komponentide kokkulepitud lähteväärtused jäävad ülaloleva Maksimi registri järgi: AtomS3 `nominal`, aku `measured`, klaas `confirmed`; uusi komponendi nihikunäite ega varasemate mõõtmiste kuupäevi ei lisata. Olemasolevate `.f3d` ja `.stl` failide kontroll ning digitaalsed pesamõõdud on [`CAD-ülevaate 24.10 täiendusena`](cad-measurement-review.md). **CAD dimensions**, **Physical fit confirmed** ja **Physical pocket dimensions** on eraldi tõendid: CAD-arvud ei täida siinse tabeli puuduvaid füüsilisi mõõte.
+24.10 kehtisid Maksimi registri olekud: AtomS3 `nominal`, aku `measured`, klaas `confirmed`. AtomS3 ja klaasi lõppseisu gabariidid on 13.11 nihikumõõdud. Digitaalsed pesamõõdud on [CAD-ülevaate 24.10 täienduses](cad-measurement-review.md). CAD-mõõdud, käsitsi kinnitatud sobivus ja prinditud pesade füüsilised mõõdud on eraldi tõendid.
 
 Kui hiljem leitakse vale mõõt, ära kustuta seda. Lisa kuupäevaga parandus vana väärtuse alla ning selgita mõõtekonteksti.

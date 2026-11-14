@@ -12,7 +12,7 @@ Esimene kaitsmine on **29.10.2026, veebis**. Kontrollitud 23.10.2026 [ajakohases
 
 Kavandada MG400 töölauale Gridfinity hoidikud sisenditele, töökohtadele ning heade ja praakdetailide väljundile. Hoidik peab pärast ruudustikust eemaldamist ja tagasipanekut jääma roboti suhtes samasse kohta. Kaamerad peavad nägema töökohta ja kogu lauda.
 
-## Kaamerate ja Smart Solutionsi arhitektuur — 23.10.2026
+## Kaamerad: CAD-etapi tulemus ja Smart Solutionsi jätkutöö
 
 XIAO ESP32S3 Sense on füüsiliselt kontrollitud **USB Serial** diagnostikapüsivaraga: **COM5**, sensor **OV3660**, JPEG **1600 × 1200 px**. Tegelik foto on [`tool-camera-first-frame.jpg`](docs/photos/tool-camera-first-frame.jpg); katse on kirjeldatud allpool 23.10.26 arenduspäevikus. See tõendab USB kaudu pildi saamist, kuid mitte Wi-Fi HTTP tööd ega töökoha lõplikku nähtavust.
 
@@ -21,11 +21,13 @@ Smart Solutions Lab 2 lõppvariandiks valime eraldi [Wi-Fi HTTP püsivara](https
 | Seade | Valitud ühendus ja roll | Kinnituse piir |
 |---|---|---|
 | XIAO tööriistakaamera | Wi-Fi HTTP → jaamaarvuti (station PC); USB Serial jääb diagnostikaks | USB kaader kontrollitud; Wi-Fi HTTP füüsiline kontroll: TODO — waiting for physical test |
-| Verbatim AWC-03 üldvaatekaamera | USB → station PC | Mudel tuvastatud; kogu laua vaade, vibratsioon ja korduspaigaldus: TODO — waiting for physical test |
+| Verbatim AWC-03 üldvaatekaamera | USB → station PC | Post paigaldatud; [25.10 kaadris](docs/photos/veebikaamera-kaader-2026-10-25.jpg) on ruudustik, hoidikud ja robot |
 | MG400 | Ethernet; käsud station PC-st | Ühenduse valik ei tõenda kogu liikumisvahemiku kokkupõrkevabadust |
 | Atom | USB Serial ja Wi-Fi | Arhitektuuri ühendused; selle sissekandega ei kinnitata uut sidetesti |
 
-Wi-Fi füüsiline toimimine ja station PC võrgust ligipääs, kaablite marsruut ja tõmbetõke, lõplik toide koos pinge/voolu kontrolliga, MG400 kogu kavandatud liikumine ja J4 pööre ning terav töökoha kaader koos terve **30 × 30 mm** klaasi ja Atomiga: **TODO — waiting for physical test**. USB-katse ajal kasutati arvuti USB-C toidet; seda ei loeta lõpliku toite ega kogu liikumistee katseks. Katsete järjekord: [`docs/test-procedure.md`](docs/test-procedure.md), osad F–G.
+3D printimise tulemus: mõlema kaamera kinnituse CAD-mudel, prinditud ja paigaldatud kinnitus ning päris kaader. XIAO [24.10 töökoha kaadris](docs/photos/tool-camera-workstation-2026-10-24.jpg) on AtomS3 ja klaas. Verbatimi pilti nähti Hubis.
+
+Smart Solutionsi jätkutöö: XIAO Wi-Fi HTTP katse, mõlema kaamera lõplik integreerimine Stationisse, tegeliku kaadrisageduse (FPS), viite ja võrguliikluse mõõtmine ning kaablite ja tõmbetõkete kontroll kogu liikumisulatuses, sh J4 pöördel. Lõplik toite- ja ohutuskontroll jääb avatuks. USB-katse arvuti USB-C toitel kinnitas pildi saamist. Vt [katseprotseduuri](docs/test-procedure.md#f-tööriistakaamera-katse).
 
 ## Kontrollnimekiri
 
@@ -33,35 +35,35 @@ Wi-Fi füüsiline toimimine ja station PC võrgust ligipääs, kaablite marsruut
   - 13.11.26: uus paigutus (ruudustik roboti platvormi vastu): klaasi sisend D/E −1/−2, AtomS3 sisend D/E −3/−4, oranž töökoht + praak D/E +1/+2 (töökoht E+2), heade väljund D/E +3/+4, kalibreerimiskast F−2; skeem ja roboti sihtpunktid [`docs/layout.md`](docs/layout.md).
 - [x] 1 x 1 Gridfinity kalibreerimishoidik testitud ruudustikus ja robotiga.
   - 13.11.26: ruudustik on roboti platvormi (pesa) vastu. Kalibreerimiskast `gridfinity-calibration` (1 × 1, standardne jalg, pesa 37 × 37 mm, rist põhjas) ruutudes F-2 ja C+4: napp seati silmaga pesa keskele ja lasti põhjani (Z −155,0) — F-2 353,80 / 69,80, C+4 232,80 / −144,20 (R 33). Jäik sobitus `calibration/cells.py`: pööre +1,48°, jääkviga 0,47 mm punkti kohta; kontroll D+3-s (väljund) — napp keskel (Denys). Andmed: [`docs/calibration.csv`](docs/calibration.csv), [`docs/measurements.md`](docs/measurements.md).
-- [x] Kolm sisendhoidikut, igaühes vähemalt neli mõõdetud pesa.
+- [x] Kolm prinditud sisendhoidikut, igaühes neli pesa; detailide sobivus kontrollitud.
   - Klaas (`glass-input-holder`), AtomS3 (`atoms3-input-holder`) ja akumoodul/töökoht (`ready-parts-input-holder`): kõik 2 × 2, neli pesa, standardne Gridfinity jalg, prinditud ja laual. Detailid lähevad pesasse põhjani, tulevad sõrmedega välja ega kiildu (Denys). Pesade mõõdud on Fusioni failides; klaasi pesad kasutati klaasitsüklis.
 - [x] Töökoha hoidik ja heade ning praakdetailide väljundikohad.
   - **Töökoht:** oranž 2 × 2 hoidik (`ready-parts-input-holder`), ruudud D/E +1/+2; tsükli töökoht E+2. Akumooduli pesas on tihvtid, mis lähevad AtomS3 aku pistikusse, seega saab AtomS3 seal olla ainult ühte moodi (Denys 13.11.26). Klaasil eraldi pesa ei ole: robot paneb klaasi AtomS3 ekraani peale keskele.
   - **Praak:** sama oranži hoidiku vabad pesad (meeskonna otsus 23.10.26, kinnitas Denys 13.11.26).
-  - **Heade väljund:** `valjundhoidik` (2 × 2, välismõõt 83,5 mm, standardne Gridfinity jalg, neli sissejuhatava faasiga pesa ja sõrmepilud), ruudud D/E +3/+4. Prinditud, istub ruudustikus; klaasitsükli ringid 1–3 panid kõik klaasid sinna (vt allpool).
+  - **Heade väljund:** `valjundhoidik` (2 × 2, välismõõt 83,5 mm, standardne Gridfinity jalg, neli sissejuhatava faasiga pesa ja sõrmepilud), ruudud D/E +3/+4. Prinditud, istub ruudustikus; 13.11 jõudsid kõik ringide 2–3 klaasid sellesse hoidikusse.
   - Print: Prusa CORE One HF0.4, `0.20mm SPEED`, Prusament PLA, täide 15 %, 2 perimeetrit, tugedeta, ~45 min (`valjundhoidik/3mf/valjundhoidik.3mf`).
-- [x] Iga pesa mõõt ja roboti sihtpunkt dokumenteeritud ruudu ning nihkega.
-  - 13.11.26: sihtpunktid (ruut, nihe X/Y, Z) tabelis [`docs/layout.md`](docs/layout.md); ruudu keskpunkt `calibration/cells.py`, nihked `slot-picker/layout.json`.
+- [x] Pesade CAD-mõõdud ja klaasitsükli roboti sihtpunktid dokumenteeritud.
+  - 13.11.26: sihtpunktid (ruut, nihe X/Y, Z) tabelis [`docs/layout.md`](docs/layout.md); ruudu keskpunkt `calibration/cells.py`, nihked `slot-picker/layout.json`. Prinditud pesade arvulisi nihikumõõte ei ole kirjas.
 - [x] Test: neli klaasi sisendist töökohale ja töökohalt väljundisse, hoidikud vahepeal välja ja tagasi; tulemus failis `docs/refit_test.csv`.
-  - 24.10.26: **ring 1 tehtud, 4 / 4 klaasi** (sisend D/E −4/−5 → töökoht C+1 AtomS3 peal → väljund D/E +4/+5, 10 %), Denys kinnitas. Kaadrid `docs/photos/cycle-r1-*.jpg`. Järgmiseks: hoidikud välja ja tagasi, ringid 2–5 ilma ümberõpetamiseta.
+  - 24.10.26: **ring 1, 4 / 4 klaasi** varasemas paigutuses (sisend D/E −4/−5 → töökoht C+1 AtomS3 peal → väljund D/E +4/+5, 10 %), Denys kinnitas. Kaadrid `docs/photos/cycle-r1-*.jpg`.
   - 13.11.26 (uus paigutus, sisend D/E −1/−2 → töökoht E+2 AtomS3 peal → väljund D/E +3/+4, 10 %): **ring 2 — 4 / 4** (pärast sisendi XY õpetamist), **ring 3 — 4 / 4** pärast kõigi kolme hoidiku eemaldamist ja tagasipanekut, ilma ümberõpetamiseta. Denys kinnitas mõlemad. Kaadrid: [töökoht](docs/photos/cycle-r3-g4-workstation-20261113-165009.jpg), [väljund](docs/photos/cycle-r3-g4-output-20261113-165026.jpg).
-  - Meeskonna otsus (Denys 13.11.26): ringe 4–5 ei tehta. Põhjendus: standardse Gridfinity jalaga hoidik istub ruudustikus tihedalt ja tuleb pärast eemaldamist samasse kohta; ring 3 seda kinnitas. Kaksikus (24.10, hoidiku nihe kuni ±1 mm) läksid ringid 2–5 läbi 16 / 16 ([`docs/sim_refit.txt`](docs/sim_refit.txt)).
-- [x] XIAO ESP32S3 Sense kaamera kinnitus ning valitud ja katsetatud toide.
+  - **Füüsiline tulemus 12/12 kahel paigutusel.** Meeskond lõpetas katsed pärast kolmandat ringi. Ringe 4–5 ja füüsilist 42 mm ümberpaigutuskatset ei tehtud. [Kaksiku tulemused](docs/sim_refit.txt) jäävad simulatsioonitulemusteks.
+- [x] XIAO ESP32S3 Sense kaamerakinnitus paigaldatud ja USB kaudu saadud pilt.
   - 24.10.26: kinnitus `xiao-square-mount-v2` (kaamerapesa objektiivi aknaga, tihvt) prinditud ja paigaldatud, töötab.
   - 23.10.26: XIAO istub prinditud kinnituses roboti küljes ja annab pilti. Toide katsetamisel USB-C kaudu arvutist (COM5). Püsivara `tool-camera/firmware/` (JPEG 1600 × 1200 USB kaudu, sest labori arvutil pole WiFi-t), kaader `python tool-camera/capture.py COM5 <fail>.jpg`. Sensor OV3660 (PID 0x3660), PSRAM 8 MB. Esimene kaader: [`docs/photos/tool-camera-first-frame.jpg`](docs/photos/tool-camera-first-frame.jpg) — pildis on iminapp, ruudustik ja oranž hoidik; iminapa voolik läheb diagonaalis üle kaadri.
-  - **Toide: USB-C kaabel** (sama kaabel annab ka pildi). Kinnitus on J4 mootori nelikandil, mis J4-ga kaasa ei pöörle; kaabel läheb roboti taha ega sega J4 pööret. Aku jäi ära: lisakaal käe otsas ja tühjeneb. Roboti tööriistapistik jäi ära: pinge kontrollimata, vale pinge rikub mooduli. Kumbki ei anna ka pilti.
-  - **Kaal (hinnang, kaalumata):** kinnitus v2 ≈ 15 g (STL maht 13,6 cm³, PrusaSlicer 16,2 g koos tugedega), XIAO ESP32S3 Sense ≈ 5–10 g, kaabli tükk paar grammi → tööriistale lisandub ≈ 25 g, MG400 500 g piirist väike osa.
-  - **Napp jääb vabaks:** kinnituse madalaim punkt on 15,4 mm nelikandi põhjast allpool, napp ulatub J4 mootori alt ~66 mm → kinnitus ja kaamera on napa otsast ~50 mm kõrgemal ega sega laskumist pesasse.
+  - **Katsetoide ja pilt:** USB-C kaabel arvutist. Kinnitus on J4 mootori nelikandil; kaabel läheb roboti taha. Roboti tööriistapistiku pinget ja kaabli käitumist kogu liikumisulatuses ei ole kontrollitud.
+  - **Mass (hinnang):** kinnitus v2 ≈ 15 g (STL maht 13,6 cm³, PrusaSlicer 16,2 g koos tugedega), XIAO ESP32S3 Sense ≈ 5–10 g ja kaabel paar grammi. Hinnanguline lisamass on ≈ 25 g. Tööriista kogumassi ei kaalutud.
+  - **Kinnituse asend:** kinnituse madalaim punkt on CAD-is 15,4 mm nelikandi põhjast allpool. Klaasitsüklid kinnitasid ligipääsu katsetatud pesadele; kogu liikumisulatuse kontroll jääb avatuks.
   - **Kaader töökohast** (24.10.26 19:22, ring 1 klaas 4, napp C+1 kohal): oranžis töökohas AtomS3 (sinine) ja klaas tema peal, iminapp üleval paremal. Kaabel ei jäänud kogu tsükli ajal kuhugi kinni.
 
     ![XIAO tööriistakaamera kaader: töökoht C+1, AtomS3 ja klaas](docs/photos/tool-camera-workstation-2026-10-24.jpg)
-- [x] USB UHD veebikaamera jäik post: kaamera on robotist kõrgemal, näeb kogu lauda ja käsi ei ulatu temani.
+- [x] USB UHD veebikaamera post paigaldatud; kaadris on ruudustik ja robot.
   - Pildikõikumist roboti täiskiirusel ei mõõdetud.
-  - **Kinnitus laua serval rakise toru otsas** (väljaspool ruudustikku, käsi sinna ei ulatu): Denys nihutas laual L-nurgad nii, et pika toru esiots ulatub ~50 mm üle laua serva. Prinditakse kaks osa, vertikaalne toru on sama 16 mm toru: `veebikaamera-post/src/veebikaamera-post-v1.f3d`, `stl/veebikaamera-post-v1-nurk.stl`; ülemine: `src/veebikaamera-post-v2-ulemine.f3d`, `stl/veebikaamera-post-v2-ulemine.stl`, `stl/veebikaamera-post-v2-kiil.stl`, `3mf/veebikaamera-post-v2-ulemine-kiil.3mf`.
+  - **Kinnitus laua serval rakise toru otsas** (väljaspool ruudustikku): Denys nihutas laual L-nurgad nii, et pika toru esiots ulatub ~50 mm üle laua serva. Prinditakse kaks osa, vertikaalne toru on sama 16 mm toru: `veebikaamera-post/src/veebikaamera-post-v1.f3d`, `stl/veebikaamera-post-v1-nurk.stl`; ülemine: `src/veebikaamera-post-v2-ulemine.f3d`, `stl/veebikaamera-post-v2-ulemine.stl`, `stl/veebikaamera-post-v2-kiil.stl`, `3mf/veebikaamera-post-v2-ulemine-kiil.3mf`.
     - **Nurk** (prinditud 25.10.26, istub hästi): pesa 30 mm toru otsa peale (tilgakujuline ava, prinditakse ilma tugedeta), kaks külgtiiba padjanditega toetuvad lauale L-nurga kõrval, nii et nurk ei pöördu toru ümber; vertikaalne pesa toru jaoks. Vertikaalse toru telg J1-st ~568 mm.
     - **Ülemine v2** (Denys 25.10.26): pesa Ø16,5 toru otsa peale (toru vastu pesa põhja), peal kaamera klambri pesa, taga kiil lukustab. Pööratakse toru peal käsitsi, avatud pool ruudustiku keskele.
     - Vertikaalne toru: kavandatud 458 mm, lõigatud **~480 mm** (Denys 25.10.26).
-    - **Paigaldatud 25.10.26:** ülemine osa prinditud, toru lõigatud ~480 mm, kaamera postil ja ühendatud (Verbatim 49580 UHD 4K, 3840×2160, 30 fps). Kaader näitab kogu ruudustikku, kõiki hoidikuid ja robotit ülevalt; pilti näeb ja salvestab MG400 Station Hubis (`3d-print/hub`, nupp **Webcam**).
+    - **Paigaldatud 25.10.26:** ülemine osa prinditud, toru lõigatud ~480 mm, Verbatim 49580 USB-kaamera postil ja ühendatud. Salvestatud 3840 × 2160 px kaadris on ruudustik, hoidikud ja robot. Pilti nähti MG400 Station Hubi vaates **Webcam**; tegelikku FPS-i ei mõõdetud.
     - Veel teha: käe suurim kõrgus; pildi värin täiskiirusel; kaamera maha-tagasi sama pilt; kaabel mööda toru alla kinni.
 
     ![Veebikaamera kaader postilt: kogu ruudustik, hoidikud ja robot](docs/photos/veebikaamera-kaader-2026-10-25.jpg)
@@ -116,7 +118,7 @@ Oranž väike avatud kast ristiga põhjas ruudustikul. Foto kinnitab kasti olema
 
 Lähivaates on läbipaistev plaat oranžis avatud konteineris, iminapp selle kohal ja joonlaud kõrval. See on asendi tõend, mitte foto põhjal kinnitatud vaakumhaare, klaasi automaatne ülekandmine või täpne kõrgusmõõt.
 
-Olemasolevad `measured` mõõtmised, `estimated` massihinnang ja `CAD dimensions` jäävad [`docs/measurements.md`](docs/measurements.md) ning [`docs/cad-measurement-review.md`](docs/cad-measurement-review.md) andmeteks. Fotod ei muuda neid olekuid: puuduvad prinditud pesade arvulised mõõdud, tegelik kaalumine enne/pärast kaamerat, kaamerate ja kaablite täielikud katsed ning ringid 2–5 koos hoidikute välja/tagasi katsega jäävad `TODO — waiting for physical test`.
+Fotod ei asenda [nihikumõõte](docs/measurements.md), [CAD-mõõte](docs/cad-measurement-review.md) ega [klaasitsükli katsetabelit](docs/refit_test.csv). 13.11 korduspaigalduse tulemus on kirjas [kokkuvõttes](#väljundid-ja-tulemused).
 
 ## Teadaolevad lähteandmed
 
@@ -127,6 +129,7 @@ Olemasolevad `measured` mõõtmised, `estimated` massihinnang ja `CAD dimensions
 - Hoidiku välismõõt on `42 × n − 0,5 mm`; ühe ruudu hoidik on `41,5 mm`. Standardse Gridfinity jala ametlik kirjelduskõrgus on `4,75 mm`.
 - Ametliku ülesande nominaalid: polükarbonaatklaas `24 × 24 × 2 mm` ja töökoha prinditud Atomi mannekeen `24 × 24 × 13 mm`. Hoidiku lõplikud mõõdud peavad tuginema päris detailide mõõtmisele.
   - **23.10.2026 parandus meie detailile:** ametlik tsitaat jääb alles; meie klaas on `30 × 30 × 2 mm` (`confirmed`), AtomS3 `24 × 24 × 12,9 mm` on `nominal`. Akumoodul `24,04 × 24,01 × 21,97 mm` ja XIAO põhiplaat `17,74 × 21,33 × 1,21 mm` on Maksimi tabelis `measured`. USB-C keskjoon Atomil on `11,4 mm` valitud servast (`measured`), kuid serv tuleb veel skeemil tuvastada. Kõik allikad ja olekud: [`docs/measurements.md`](docs/measurements.md).
+  - **13.11.2026 nihikumõõt:** Denys mõõtis klaasi `30 × 30 × 1,2 mm` ja AtomS3 `24 × 24 × 12,9 mm`. Klaasi 2 mm on 23.10 kinnitatud varasem Exceli lähteväärtus, mille mõõtemeetodit ei ole kirjas. Lõppseisu klaasimõõt on [13.11 nihikumõõt](docs/measurements.md#13112026--atoms3-ja-klaas-nihikuga).
 - 23.10.26 otsus: töökohal kasutame prinditud mannekeeni asemel **päris AtomS3-t**. Klaas asetatakse päris Atomi peale; mannekeeni ei prindita.
 - Laua ja ametliku ülesande materjal on PLA.
 
@@ -136,18 +139,9 @@ Olemasolevad `measured` mõõtmised, `estimated` massihinnang ja `CAD dimensions
 - `0,2 mm` lõtkuga detail kiilus ja vajas vabastamist.
 - Lab 1 lõpptulemus on ainult vahemik `0,2–0,4 mm`; `0,3 mm` ei prinditud ega füüsiliselt kinnitatud.
 
-### Tegelikku mõõtmist või katset vajavad väärtused
+### Mõõtmiste ja katsete piirid
 
-23.10.2026 täiendus: allolev varasem loend ei tähenda, et kõik komponendimõõdud oleks endiselt puudu. Maksimi Exceli ülekanne ja allesjäänud puudused on [`mõõteregistris`](docs/measurements.md); nimimõõt, kinnitatud mõõt ja mõõdetud väärtus on seal eristatud. Füüsilise sobivuse katsed jäävad avatuks.
-
-- AtomS3, klaaside, akumooduli, XIAO ESP32S3 Sense'i, olemasoleva iminapa tööriistahoidiku ja veebikaamera tegelikud mõõdud.
-- Gridfinity jala sobivus ja loks päris laual ning sobiva lõtku valik.
-- Roboti telgede vastavus lauakoordinaatidele, B-2 kalibreerimisnihe, Z ja kauge ruudu viga.
-- Hoidikute ruudud ja täpsed sihtpunktid, detailipesade sobivus ning eemaldamise/tagasipaneku kordustäpsus.
-- Tööriistakaamera nurk, kõrgus, nähtav ala, mass, toide, kaabli marsruut ja tõmbetõke.
-- Üldvaatekaamera kõrgus, asukoht, kaabli pikkus, vibratsioon ning eemaldamise/tagasipaneku kordustäpsus.
-
-Kõigi nende olek on `TODO — waiting for physical test`.
+Vaata [lõppseisu](#väljundid-ja-tulemused) ja [mõõteregistrit](docs/measurements.md). Pesade CAD-mõõdud, käsitsi kinnitatud sobivus ja robotiga läbitud katsed on eraldi tõendid. Ühe eduka korduspaigaldusega ei mõõdetud asendiviga millimeetrites.
 
 ## Tööfailid ja katsejuhendid
 
@@ -386,23 +380,28 @@ mitte ei muudeta.
 * Pärastlõuna: `docs/layout.md` uue paigutuse järgi (skeem `docs/photos/layout-2026-11-13.png`, sihtpunktid); praak oranži hoidiku vabadesse pesadesse; AtomS3 läheb töökohta ainult ühte moodi (aku tihvtid), klaas pannakse ekraani peale. Hoidikud repos ühe failina (laual olevad versioonid). Nihikuga (Denys): AtomS3 24 × 24 × 12,9 mm, klaas 30 × 30 × 1,2 mm. Veebikaamera posti nurga 3MF (1 h 7 min, 30 g, tugedeta). `docs/bom.md`: midagi ei tellitud.
 * Labor esitatud: tag `3d-print-lab2`.
 
+**14.11.2026 — CAD-etapi lõppseisu koondamine**
+* Meeskond loeb 13.11 katsetatud prototüübi CAD-etapi lõpetamiseks piisavaks. Ringe 4–5 ega 42 mm füüsilist ümberpaigutuskatset ei tehtud. Õppejõu eraldi nõusolekut katsemahu vähendamiseks pole dokumenteeritud.
+* Täpsustus 23.10 lähteväärtusele: Denysi 13.11 nihikumõõt on klaasil 30 × 30 × 1,2 mm. Varasem 2 mm jääb mõõteregistrisse Exceli lähteväärtusena. Uusi mõõtmisi ega katseid ei tehtud.
+
 ### Väljundid ja tulemused
 
-**Kinnitatud tulemused**
+**CAD-etapp on meeskonna otsusel lõpetatud.** Meeskond projekteeris ja printis Gridfinity sisend-, töökoha- ja väljundhoidikud ning kalibreerimiskasti, kontrollis nende sobivust ja katsetas lõpppaigutust päris robotiga. XIAO tööriistakaamera ja Verbatimi üldvaatekaamera kinnitused on modelleeritud, prinditud ja paigaldatud. Mõlemast kaamerast saadi päris pilt: [XIAO töökoht](docs/photos/tool-camera-workstation-2026-10-24.jpg) ja [Verbatimi üldvaade](docs/photos/veebikaamera-kaader-2026-10-25.jpg).
 
-* **Klaasitsükkel, 24.10.2026:** MG400 viis esimeses ringis **4/4 klaasi** kiirusel 10 % sisendist (D−4, D−5, E−4, E−5) töökohale C+1, seal päris AtomS3 peale, ning sealt väljundisse (D+4, D+5, E+4, E+5). Denys kinnitas tulemuse. [Katsetabel](docs/refit_test.csv), [töökoha kaader](docs/photos/cycle-r1-g4-workstation-20261024-192229.jpg) ja [väljundi kaader](docs/photos/cycle-r1-g4-output-20261024-192256.jpg); [päevik, 24.10 kell 19:15 ja 19:20](https://github.com/Dennel04/3d-printing-course/blob/89f08c706a734b092519c131fdb860ffbee713ad/3d-print/lab2/README.md#L336-L347).
-* **Kasutatud hoidikud ja sihtpunktid:** Ringis 1 olid kasutusel klaasi sisendhoidik, oranž töökoha hoidik ja väljundhoidik v1. Denys õpetas töökohal C+1 roboti Z-koordinaadiks −119,0 mm ja väljundis D+4 −153,0 mm (mõlema XY-nihe 0 / 0 mm). Käsitsi kontroll kinnitas detailide sobivust kolme tüüpi prinditud sisendhoidikusse. 25.10 kinnitas Denys, et standardse jalaga klaasi sisendhoidik istub ruudustikus; ring 1 toimus eelmisel päeval. [Paigutus](docs/layout.md#roboti-sihtpunktid-ruut--nihe-r-33), [mõõteregister](docs/measurements.md) ja [hoidikute foto](docs/photos/gridfinity-workspace-overview-ruler-2026-10-24.jpg).
-* **Kaamerad:** 23.10 saadi XIAO ESP32S3 Sense'ilt (OV3660, COM5) USB kaudu [1600 × 1200 px kaader](docs/photos/tool-camera-first-frame.jpg). 24.10 oli prinditud v2 kinnitus robotil kasutusel; [töökoha kaadris](docs/photos/tool-camera-workstation-2026-10-24.jpg) on AtomS3 ja klaas. Klaasi 1 töökoha kaader jäi lugemisvea tõttu salvestamata. 25.10 paigaldas Denys Verbatim AWC-03 USB-kaamera toruotsal olevale postile ja ühendas arvutiga. Hubis nähti kogu ruudustikku, hoidikuid ja robotit; [salvestatud kaader on 3840 × 2160 px](docs/photos/veebikaamera-kaader-2026-10-25.jpg). Vt [24.10 kinnituse](https://github.com/Dennel04/3d-printing-course/blob/89f08c706a734b092519c131fdb860ffbee713ad/3d-print/lab2/README.md#L300-L304) ja [25.10 veebikaamera päevikukirjet](https://github.com/Dennel04/3d-printing-course/blob/89f08c706a734b092519c131fdb860ffbee713ad/3d-print/lab2/README.md#L368-L372).
-* **Füüsilised mõõtmised:** 13.11 kalibreerimisel seadis Denys iminapa kalibreerimiskasti keskele ja lasi põhjani: F-2 353,80 / 69,80, C+4 232,80 / −144,20, Z −155,0 mm ([CSV](docs/calibration.csv)). 24.10 mõõdeti nihikuga eraldi kummist iminapa välisläbimõõt 22,25 mm ja kõrgus 13,80 mm; eksemplari samasus paigaldatud napaga pole kinnitatud. Maksimi tabelis on akumoodul 24,04 × 24,01 × 21,97 mm ja XIAO põhiplaat 17,74 × 21,33 × 1,21 mm märgitud mõõdetuks; mõõtevahend pole kirjas. 13.11 mõõtis Denys nihikuga: AtomS3 24 × 24 × 12,9 mm, klaas 30 × 30 × 1,2 mm. [Mõõteregister](docs/measurements.md) eristab neid [CAD-i pesamõõtudest](docs/cad-measurement-review.md) ja tööriista ligikaudsest 80 g massihinnangust.
+| Füüsiline ring | Paigutus ja katse tingimus | Tulemus |
+|---|---|---|
+| 1, 24.10.2026 | Varasem paigutus: D/E −4/−5 → C+1 → D/E +4/+5 | 4/4 |
+| 2, 13.11.2026 | Uus kalibreerimine ja [lõpppaigutus](docs/layout.md): D/E −1/−2 → E+2 → D/E +3/+4; sisendi nihe õpetati uuesti | 4/4 |
+| 3, 13.11.2026 | Sama lõpppaigutus; kolm tsüklis kasutatud hoidikut võeti välja ja pandi tagasi samadesse ruutudesse, punkte ümber ei õpetatud | 4/4 |
 
-**Lahtised katsed ja mõõtmised** (`TODO — waiting for physical test`)
+[Katsetabelis](docs/refit_test.csv) on **12/12 edukat füüsilist ülekannet kahel paigutusel**. Ringi 3 [töökoha](docs/photos/cycle-r3-g4-workstation-20261113-165009.jpg) ja [väljundi](docs/photos/cycle-r3-g4-output-20261113-165026.jpg) kaadrid näitavad lõppseisu. [13.11 kalibreerimine](docs/calibration.csv) F−2 ja C+4 järgi andis pöörde **+1,48°** ning sobituse jääkvea **0,47 mm punkti kohta**. Denys kinnitas D+3 keskpunkti silmaga. Sobituse jääkviga ei ole hoidikute korduspaigalduse mõõtetulemus.
 
-* Hoidikud eemaldada ja tagasi panna; teha ringid 2–5 samade punktidega. Mõõta korduspaigalduse viga ning teha 42 mm ümberpaigutuskatse. CSV kinnitab ainult ringi 1.
-* Mõõta prinditud pesad ja lõtkud ning tööriista mass enne ja pärast kaamera lisamist. Kontrollida 25.10 prinditud klaasihoidiku võtmispunkte.
-* Kontrollida XIAO Wi-Fi HTTP, lõplikku toidet, kaabli kinnitust ja liikumisvaru kogu trajektooril. Üldvaatekaameral mõõta vibratsiooni ja kaadri korduvust pärast tagasi paigaldamist ning kontrollida käe kõrgust ja kaabli kinnitust. Vt [katseprotseduuri](docs/test-procedure.md).
+Meeskond ei jätka hoidikute korduskatseid. **Ringid 4–5 ja füüsiline 42 mm ümberpaigutuskatse jäid tegemata.** Seega on tulemus väiksema katsemahuga kui [ametliku ülesande](assignment-EST.md) viie ringi protokoll. Simulatsioonikatseid füüsiliste ülekannete hulka ei loeta. Ringi 3 tulemus kinnitab toimivust pärast üht korduspaigaldust; asendiviga millimeetrites ei mõõdetud.
+
+**Piirangud ja jätkutöö:** prinditud pesade arvulist lõtku ega tööriista massi enne ja pärast kaamerat ei mõõdetud; ligikaudu 80 g on [hinnang](docs/measurements.md). Wi-Fi HTTP, kahe kaamera lõplik Stationi integratsioon, FPS, viide ja võrguliiklus ning täielik kaabli-, toite- ja ohutuskontroll jäävad Smart Solutionsi tööks. Üldvaatekaamera vibratsiooni ja kaadri korduvust pärast kaamera korduspaigaldust ei mõõdetud. Vt [katseprotseduuri](docs/test-procedure.md).
 
 **KAARDISTA ISE, lõpus.**
-* Git repo ja tag: TODO — lisada alles esitamisel.
-* Numbrid, mille see labor andis, ühikutega: vt kinnitatud tulemusi ja mõõteregistrit eespool.
-* Mida me teeksime teisiti: kokkuvõte pärast korduskatseid.
-* Mida järgmine labor peaks enne alustamist teadma: ülaltoodud sihtpunktid kehtivad 24.10 katses kasutatud hoidikutele. Pärast hoidiku vahetust kontrollida vastavat sihtpunkti.
+* Git repo ja tag: [Dennel04/3d-printing-course](https://github.com/Dennel04/3d-printing-course); [`3d-print-lab2`](https://github.com/Dennel04/3d-printing-course/tree/3d-print-lab2) on avaldatud ja jääb esitamise seisu.
+* Numbrid: 12/12 füüsilist ülekannet; 13.11 kalibreerimise pööre +1,48° ja jääkviga 0,47 mm punkti kohta; Denysi nihikumõõdud: klaas 30 × 30 × 1,2 mm, AtomS3 24 × 24 × 12,9 mm.
+* Mida me teeksime teisiti: paneksime ruudustiku vastu roboti pesa ja kalibreeriksime enne sihtpunktide õpetamist.
+* Mida järgmine labor peaks teadma: kasuta [13.11 paigutust ja sihtpunkte](docs/layout.md). 24.10 punktid kuuluvad varasemasse paigutusse. Kinnituse või paigutuse muutmisel kontrolli vastavaid sihtpunkte.

@@ -23,7 +23,7 @@ Paigutus 13.11.2026: ruudustik on lükatud roboti platvormi (pesa) vastu, kalibr
 3. Robot: klaas klaasi sisendist → AtomS3 ekraani peale (klaasil eraldi pesa ei ole).
 4. Robot: valmis detail → heade väljund; ebaõnnestunud → praak (oranži hoidiku vabad pesad).
 
-Selle labori test teeb ainult klaasi tee: sisend → töökoht E+2 (päris AtomS3 aku peal) → heade väljund. Tulemus: [`refit_test.csv`](refit_test.csv).
+Selle paigutuse füüsilises katses liigutas robot ainult klaasi: sisend → töökoht E+2 (päris AtomS3 aku peal) → heade väljund. 13.11 läbisid ringid 2 ja 3 mõlemad 4/4; ring 3 järgnes kolme hoidiku tagasipanekule samadesse ruutudesse ilma ümberõpetamiseta. [Katsetabeli](refit_test.csv) ring 1 käis 24.10 varasema paigutuse järgi. Ringe 4–5 ja 42 mm füüsilist ümberpaigutuskatset ei tehtud.
 
 - **Töökohti üks:** kõik sammud toimuvad samas kohas virna peal (ülesanne lubab sammul kohta eelmisega jagada).
 - **Väljundeid kaks:** heade väljund ja praak.
@@ -58,6 +58,6 @@ Allikas [`measurements.md`](measurements.md).
 
 | Detail | X × Y × Z (mm) | Olek |
 |---|---|---|
-| Polükarbonaatklaas | 30 × 30 × 1,2 | nihikuga 13.11.26, 4 tk |
+| Polükarbonaatklaas | 30 × 30 × 1,2 | nihikuga 13.11.26, 4 tk; 2 mm oli varasem Exceli lähteväärtus |
 | AtomS3 | 24 × 24 × 12,9 | nihikuga 13.11.26, sama mis M5Stacki mudel |
 | Akumoodul | 24,04 × 24,01 × 21,97 | mõõdetud |
