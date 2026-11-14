@@ -1,0 +1,87 @@
+{
+  "parts": {
+    "01_UV_Shroud_405nm_PROTOTYPE": {
+      "bbox_mm": [
+        66.0,
+        66.0,
+        29.0
+      ],
+      "volume_mm3": 33594.8,
+      "watertight": true,
+      "triangles": 1174,
+      "placement_center_xy_mm": [
+        37,
+        37
+      ]
+    },
+    "02_Metcal_910B_Syringe_C_Clip_FIT_TEST": {
+      "bbox_mm": [
+        50.0,
+        39.005,
+        23.7
+      ],
+      "volume_mm3": 8235.6,
+      "watertight": true,
+      "triangles": 1684,
+      "placement_center_xy_mm": [
+        115,
+        38
+      ]
+    },
+    "03_Gridfinity_1x1_Purge_Cup_Sarstedt_30ml": {
+      "bbox_mm": [
+        41.5,
+        41.5,
+        25.5
+      ],
+      "volume_mm3": 27359.2,
+      "watertight": true,
+      "triangles": 1016,
+      "placement_center_xy_mm": [
+        26,
+        105
+      ]
+    },
+    "04_Gridfinity_1x1_Nozzle_Dark_Park_PROTOTYPE": {
+      "bbox_mm": [
+        41.5,
+        41.5,
+        29.0
+      ],
+      "volume_mm3": 21805.6,
+      "watertight": true,
+      "triangles": 1328,
+      "placement_center_xy_mm": [
+        82,
+        105
+      ]
+    },
+    "05_Oring_11x2p5_Groove_Fit_Coupon": {
+      "bbox_mm": [
+        32.0,
+        25.0,
+        21.5
+      ],
+      "volume_mm3": 5607.0,
+      "watertight": true,
+      "triangles": 1024,
+      "placement_center_xy_mm": [
+        137,
+        105
+      ]
+    }
+  },
+  "plate_bbox_mm": [
+    [
+      4.0,
+      4.0,
+      0.0
+    ],
+    [
+      153.0,
+      125.75,
+      29.0
+    ]
+  ],
+  "3mf": "LAB3_FIT_TESTS_ONE_PLATE.3mf"
+}
