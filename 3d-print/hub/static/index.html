@@ -108,6 +108,9 @@
         <button data-step="10">10</button><button data-step="hold" title="Keep moving while the button is held">Hold</button>
         <span class="unit" id="stepUnit">mm</span>
       </div>
+      <div class="poseNow" aria-live="off">
+        <span>X <b id="pX">–</b></span><span>Y <b id="pY">–</b></span><span>Z <b id="pZ">–</b></span><span>R <b id="pR">–</b></span>
+      </div>
       <div class="dials">
         <svg class="dial" id="dialA" viewBox="-110 -110 220 220" role="group" aria-label="First pad"></svg>
         <svg class="dial" id="dialB" viewBox="-110 -110 220 220" role="group" aria-label="Second pad"></svg>
@@ -120,6 +123,25 @@
         <button class="ghost" data-pump="suck">Suck</button><button class="ghost" data-pump="blow">Blow</button>
         <button class="ghost" data-pump="off">Off</button>
       </div>
+      <section class="zone" aria-labelledby="zoneTitle">
+        <div class="row between">
+          <span class="label" id="zoneTitle">Work zone</span>
+          <span class="hint" id="zoneSaved"></span>
+        </div>
+        <p class="hint">Hold the pen over each sheet corner and press its point (height does not matter). Point 1 → Point 2 is the direction of a text line; 3 and 4 are the other corners in any order. Then lower the pen until it touches the paper and press Pen height.</p>
+        <div class="row zonePoints">
+          <button class="ghost" data-zone="1">Point 1</button><button class="ghost" data-zone="2">Point 2</button>
+          <button class="ghost" data-zone="3">Point 3</button><button class="ghost" data-zone="4">Point 4</button>
+        </div>
+        <ol class="zoneList" id="zoneList"></ol>
+        <div class="row">
+          <button class="ghost" id="zonePen">Pen height</button><span class="hint" id="zonePenVal">—</span>
+        </div>
+        <div class="row">
+          <button id="zoneDone" disabled title="Save the zone and write it into the Lab 1 drawing calibration">Done</button>
+          <button class="ghost" id="zoneClear">Clear</button>
+        </div>
+      </section>
       <div class="msg" id="jogMsg" role="status"></div>
     </div>
 

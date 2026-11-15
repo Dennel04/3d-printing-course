@@ -18,3 +18,5 @@ Thumbs.db
 __pycache__/
 3d-print/lab2/webcam-frames/
 3d-print/hub/.mode
+3d-print/hub/workspace.json
+3d-print/hub/workspace_draft.json

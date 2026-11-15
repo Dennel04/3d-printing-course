@@ -31,6 +31,7 @@ sys.path.insert(0, str(SIM))
 import mg400_kin as kin  # noqa: E402
 from sim_robot import SimRobot  # noqa: E402
 from real_robot import RealRobot, DEFAULT_IP, Z_FLOOR  # noqa: E402
+from workspace import Workspace  # noqa: E402
 
 CART_AXES = ("x", "y", "z", "r")
 JOINT_AXES = ("j1", "j2", "j3", "j4")
@@ -56,6 +57,9 @@ TESTS = {
                "Scene and cycle animation for the 3D view from the current layout"),
     "hub": ("Hub self-test", None, [], "Simulation robot, joint jog and the hub API"),
 }
+
+# Work zone calibration goes into the Smart Solutions Lab 1 drawing calibration (sibling course repo)
+LAB1_CONFIG = HERE.parents[2] / "smart-solutions-course" / "smart-solutions" / "lab1" / "config"
 
 
 def verdict(name, out, code):
@@ -339,7 +343,7 @@ def scene_stale(lab):
 WEBCAM_MAX_BYTES = 20_000_000   # a 4K JPEG is ~1-3 MB
 
 
-def build(lab, port, mode_file=None, real=None):
+def build(lab, port, mode_file=None, real=None, workspace=None):
     sys.path.insert(0, str(lab / "slot-picker"))
     import slot_picker as sp
 
@@ -351,6 +355,7 @@ def build(lab, port, mode_file=None, real=None):
         threading.Thread(target=robots.ensure_connected, daemon=True).start()
     seq = sp.Sequencer(robots, layout, sp.ToolCamera(layout["camera_port"]), sp.PressureMonitor(layout.get("pressure_port")))
     live = LivePose()
+    zone = workspace or Workspace(HERE / "workspace.json", None)
     tests = Tests(lab, on_export=lambda: live.reset_glasses() if live.twin else None)
     Picker = sp.make_handler(layout, seq, port)
     if scene_stale(lab):          # also after a hub restart that cut a rebuild short
@@ -401,6 +406,8 @@ def build(lab, port, mode_file=None, real=None):
                                         "camera": seq.camera.state})
             if path == "/hub/tests":
                 return self._json(200, {"tests": tests.state})
+            if path == "/hub/workspace":
+                return self._json(200, zone.state())
             return super().do_GET()
 
         def do_POST(self):
@@ -510,6 +517,19 @@ def build(lab, port, mode_file=None, real=None):
                 name = time.strftime("webcam-%Y%m%d-%H%M%S.jpg")
                 (folder / name).write_bytes(jpeg)
                 return {"name": name}
+            if path == "/hub/workspace/point":
+                # records where the arm is now; it never moves the arm
+                zone.set_point(int(data.get("n", 0)), robot_status().get("pose"), robots.mode)
+                return zone.state()
+            if path == "/hub/workspace/pen":
+                zone.set_pen(robot_status().get("pose"), robots.mode)
+                return zone.state()
+            if path == "/hub/workspace/clear":
+                zone.clear()
+                return zone.state()
+            if path == "/hub/workspace/save":
+                zone.save()
+                return zone.state()
             if path == "/hub/glasses/reset":
                 live.reset_glasses()
                 return {}
@@ -524,10 +544,14 @@ def main():
     ap.add_argument("--lab", default=str(HERE.parent / "lab2"))
     ap.add_argument("--robot-ip", default=DEFAULT_IP, help="MG400 address for Real (default %(default)s)")
     ap.add_argument("--z-floor", type=float, default=Z_FLOOR, help="lowest Z the Real arm may go (default %(default)s)")
+    ap.add_argument("--lab1-calibration", default=str(LAB1_CONFIG / "robot_calibration_pen.json"),
+                    help="Lab 1 drawing calibration the work zone is written to (default %(default)s)")
     a = ap.parse_args()
     lab = Path(a.lab).resolve()
     real = RealRobot(ip=a.robot_ip, z_floor=a.z_floor)
-    handler, robots = build(lab, a.port, mode_file=HERE / ".mode", real=real)
+    zone = Workspace(HERE / "workspace.json", Path(a.lab1_calibration),
+                     LAB1_CONFIG / "robot_calibration_air_pen.json")
+    handler, robots = build(lab, a.port, mode_file=HERE / ".mode", real=real, workspace=zone)
     server = ThreadingHTTPServer(("127.0.0.1", a.port), handler)
     print(f"MG400 Station Hub on http://127.0.0.1:{a.port}  (lab {lab.name}, robot: {robots.mode}, motion off)")
     server.serve_forever()

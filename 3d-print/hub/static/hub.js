@@ -95,6 +95,7 @@ function renderState(s) {
   const p = r.pose || [], j = r.joints || [];
   const f = v => (typeof v === "number" ? v.toFixed(2) : "–");
   ["rx", "ry", "rz", "rr"].forEach((id, i) => $("#" + id).textContent = f(p[i]));
+  ["pX", "pY", "pZ", "pR"].forEach((id, i) => $("#" + id).textContent = f(p[i]));
   ["j1", "j2", "j3", "j4"].forEach((id, i) => $("#" + id).textContent = j.length ? j[i].toFixed(2) + "°" : "–");
   $("#pump").textContent = r.pump_mode || "–";
   const seq = s.seq || {};
@@ -117,6 +118,36 @@ function renderState(s) {
   if (s.pose3d) live.target = s.pose3d;
   $("#btnGlasses").hidden = !s.glasses_moved;
 }
+
+/* ---------------- work zone ---------------- */
+function renderZone(z) {
+  const f = v => v.toFixed(1);
+  $$("[data-zone]").forEach(b => b.setAttribute("aria-pressed", String(!!z.points[b.dataset.zone - 1])));
+  $("#zoneList").innerHTML = z.points.map((p, i) =>
+    `<li>${p ? `X ${f(p[0])} · Y ${f(p[1])} · Z ${f(p[2])} · R ${f(p[3])}` : "—"}</li>`).join("");
+  $("#zoneDone").disabled = z.points.some(p => !p) || !z.pen;
+  $("#zonePen").setAttribute("aria-pressed", String(!!z.pen));
+  $("#zonePenVal").textContent = z.pen ? `Z ${f(z.pen[2])} · R ${f(z.pen[3])}` : "—";
+  const s = z.saved;
+  $("#zoneSaved").textContent = s
+    ? `saved ${s.saved_at.replace("T", " ").slice(0, 16)} · ${s.paper.width_mm} × ${s.paper.height_mm} mm · pen ${s.pose.pen_down_z} · fit ±${s.corner_err_mm} mm`
+    : "not saved yet";
+}
+async function zone(path, body) {
+  try {
+    const z = await api(path, body);
+    renderZone(z);
+    return z;
+  } catch (e) { toast(e.message, "bad"); }
+}
+$$("[data-zone]").forEach(b => b.onclick = () => zone("/hub/workspace/point", { n: +b.dataset.zone }));
+$("#zonePen").onclick = () => zone("/hub/workspace/pen", {});
+$("#zoneClear").onclick = () => zone("/hub/workspace/clear", {});
+$("#zoneDone").onclick = async () => {
+  const z = await zone("/hub/workspace/save", {});
+  if (z) toast(`Work zone saved${z.lab1_file ? " and written to Lab 1" : ""}`, "ok");
+};
+api("/hub/workspace").then(renderZone).catch(() => {});
 
 async function poll() {
   try { renderState(await api("/hub/state")); }

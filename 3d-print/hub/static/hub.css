@@ -212,3 +212,12 @@ button.arm[aria-pressed="true"] .lock::before { left: 6px; }
 .row3d button { background: var(--panel); font-size: 13px; padding: 3px 10px; }
 .row3d .hint { background: color-mix(in srgb, var(--panel) 85%, transparent); padding: 2px 6px; border-radius: 4px; }
 .row3d .hint:empty { display: none; }
+
+/* work zone calibration (Jog tab) */
+.zone { border-top: 1px solid var(--line, #8884); margin-top: 10px; padding-top: 8px; display: grid; gap: 6px; }
+.zone .hint { font-size: 12px; opacity: .75; margin: 0; }
+.zonePoints button[aria-pressed="true"] { border-color: var(--ok); color: var(--ok); }
+.zoneList { margin: 0; padding-left: 1.6em; font: 12px/1.5 ui-monospace, monospace; }
+.zone #zonePen[aria-pressed="true"] { border-color: var(--ok); color: var(--ok); }
+.poseNow { display: flex; gap: 14px; font: 600 15px/1.4 ui-monospace, monospace; color: var(--muted); }
+.poseNow b { color: var(--ink); font-weight: 600; }
