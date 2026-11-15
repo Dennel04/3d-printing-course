@@ -48,12 +48,12 @@ Järgmised 14 kohustuslikku punkti on ametlikust ülesandest sõna-sõnalt. Üht
 9. **Abikohad ja kuivkatse:** planeeri prügitops ja pime otsikupark Lab 2 paigutuse kõrvale; asukohad on valimata. Tee 20 tsüklit järjekorras doseerimine → tõstmine → kõvendamine → väljund, tühi süstal ja LED väljas. Esimene jooks on 20 % kiirusel, otsikud 20 mm kõrgemal õhus. Tulemused lähevad [CSV-sse](docs/cycle_test.csv).
 10. **Tellimus ja kaitsmine:** LED-i ja draiveri valib meeskond, õppejõud ostab Mouserist; kinnitatud valiku juurde tuleb Mouseri tootekood ja põhjendus [BOM-is](docs/bom.md). Tellimus 06.11.2026, esimene kaitsmine 19.11.2026 veebis. Tag lisatakse alles eraldi esitamisotsusega.
 
-Uue MG400 tööriista füüsilised mõõtmised: `TODO — waiting for physical measurement`. Tööriista sobivus ning rõhu-, UV-, süstlavahetus- ja robotikatsed: `TODO — waiting for physical test`.
+15.11 mõõdeti osa tööriista komponente ja tehti kuivsobituskatseid. Lõppkoostu mõõdud, kogumass ja sobivus ning rõhu-, UV-, süstlavahetus- ja robotikatsed on lahtised.
 
 ## Varasemate laborite lähteandmed ja piirangud
 
 - Lab 1: `0,4 mm` lõtk liikus vabalt, `0,2 mm` kiilus, `0,3 mm` pole füüsiliselt testitud. Paindekatse tulemused on [Lab 1 README-s](../lab1/README.md); neid ei kanta automaatselt teise geomeetriaga klambrile.
-- [Lab 2 mõõteregister](../lab2/docs/measurements.md): klaas `30 × 30 × 2 mm` on meeskonna kinnitatud, mõõtevahend ja hajuvus pole teada; klaasi mass on veel kaaluda. Eraldi kummist napa `22,25 mm` läbimõõt ja `13,80 mm` kõrgus on nihikuga mõõdetud, kuid samasus robotil oleva napaga pole kinnitatud. Tööriista varasem hinnanguline mass pole kaalumistulemus ega massieelarve alus.
+- Lab 2 [13.11 nihikumõõt](../lab2/docs/measurements.md#13112026--atoms3-ja-klaas-nihikuga) andis klaasi gabariidiks `30 × 30 × 1,2 mm`. `30 × 30 × 2 mm` oli 23.10 lähteväärtus. 15.11 kaalutud klaas oli `1,70 g`. Lab 2-s mõõdeti eraldi kummist napa läbimõõduks `22,25 mm` ja kõrguseks `13,80 mm`. Selle samasus robotil olnud napaga on kinnitamata. 15.11 kaalutud napa koostu andmed on [mõõtelehel](docs/measurements.md#mõõtmised-15112026).
 - [Lab 2 README](../lab2/README.md) ja [paigutus](../lab2/docs/layout.md) dokumenteerivad 24.10.2026 ühe ringi nelja klaasiga ning olemasoleva kaamera ja hoidikute tõendid. Need ei ole Lab 3 doseerimis-, UV- ega 20 tsükli tulemused.
 - [Kasutatav kalibreerimine](../lab2/calibration/cells.py) on vana nihutatud napa jaoks `R = 33°`; nelja ruudu sobituse jääkvead ulatuvad ligikaudu 1–2 mm-ni. [Nelja sisenurga meetod](../lab2/docs/test-procedure.md) ja mõõteregistri hilisemad parandused on lähtekontekst, mitte uue tööriista punktid. Uue hoidiku, J4 suuna ja nelja nihke järel tuleb punktid füüsiliselt üle õpetada/kontrollida.
 - [Ühine digitaalne kaksik](../sim/README.md) kasutab Lab 2 geomeetriat ja [slot-picker](../lab2/slot-picker/README.md) Lab 2 klaasitsüklit. Nende praegused tulemused ei kinnita Lab 3 uut tööriista ega pneumaatikat; selles sessioonis neid ei muudeta ega käivitata.
@@ -85,6 +85,7 @@ Failid asuvad [ametlikus kaustas](https://github.com/KKallas/Narva-subjects/tree
 - [`docs/leak_test.csv`](docs/leak_test.csv) — surve- ja lekkekatsete kirjed.
 - [`docs/cycle_test.csv`](docs/cycle_test.csv) — 20 tühja kuivtsükli rida.
 - [`docs/bom.md`](docs/bom.md) — inventuur ja põhjendatud tellimisvajadus.
+- [15.11 mõõtmised](docs/measurements.md#mõõtmised-15112026) · [Prooviprindi ja kuivsobituse tulemused](docs/test-procedure.md#prooviprint-ja-kuivsobitus-15112026) · [Proovikomplekti printimisjuhend](preprint-fit-tests-v2/bgcode/PRINT.md).
 
 ## CAD-failide tulevane hoidmine
 
@@ -141,3 +142,8 @@ Lisa iga töökorra lõppu uus sissekanne; ära kirjuta varasemaid sissekandeid 
 - Andmehõive repos avaldati oranži V1 algfailid ning koondati Denysi varem avaldatud valge V2 ja AtomS3R ekraanipoole maketi CAD-, ekspordi- ja prindifailide viited. [Andmehõive kommit](https://github.com/Dennel04/data-acquisition-course/commit/9acedccc57e2071129754852e6df119f9962c7be) · [Mudelid ja prindifailid](#andmehõive-lab-3-tilgaplaadid-ja-atoms3r-maketid).
 - Esimene valge V2 ja kuus AtomS3R maketti olid prinditud. Mõõdeti oranži V1, esimest valget V2 ja üht valget maketti ning dokumenteeriti V2 ja maketi istuvus. [Mõõtmised](https://github.com/Dennel04/data-acquisition-course/blob/9acedccc57e2071129754852e6df119f9962c7be/data-acquisition/lab3/tilgaplaat/measurements.md) · [Fotod](https://github.com/Dennel04/data-acquisition-course/blob/9acedccc57e2071129754852e6df119f9962c7be/data-acquisition/lab3/tilgaplaat/photos/README.md).
 - Teine V2 oli viimase kinnituse järgi veel printimisel. Uue MG400 tööriista valmimine, tilkade doseerimine, UV-katsed ja robotitsüklid on TODO. Lab 3 kontrollnimekirja olek jäi samaks.
+
+**15.11.2026 — komponentide mõõtmine, prooviprint ja kuivsobitus**
+- Kaaluti klapi koost, läbipaistev süstlakorpus, klaas, napa koost ja kaks kaamerat. Mõõdeti süstla gabariidid ja takistus klapi klemmide vahel. [Mõõtmised](docs/measurements.md#mõõtmised-15112026) · [Kaalueelarve](docs/tool_layout.md#kaalueelarve).
+- Prusa CORE One'il prinditi kõik viis proovikomplekti detaili. C-klamber hoidis süstalt radiaalselt, kuid süstal võis pöörduda ja telgsuunas nihkuda. Mõlemad Gridfinity detailid istusid tasaselt, kuid roosa otsik ei püsinud pargis stabiilselt. UV-kate läbis visuaalse ülevaatuse. O-rõnga proovikeha prinditi ja rõngast laboris ei leitud. [Prooviprindi ja kuivsobituse tulemused](docs/test-procedure.md#prooviprint-ja-kuivsobitus-15112026).
+- Lahtised on klapi lülitus, topsi sobivus, süstla korratav fikseerimine ja 20 vahetust töökoostus, otsikupargi stabiilsus, UV-katsed, valmis päis ja lekkekatse, lõppkoostu kaalumine, neli nihet ning 20 robotitsüklit.

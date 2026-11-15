@@ -12,6 +12,48 @@ digitaalse allikafaili kontrolli. Füüsilised mõõdud jäävad olekusse
 `TODO — waiting for physical test`. Kontrollitud blob SHA tõendab ainult
 digitaalset allikat, mitte mudeli füüsilist sobivust.
 
+## Mõõtmised 15.11.2026
+
+Mõõdud ja massid käivad sel töökorral vaadeldud eksemplaride kohta.
+Tähis ≈ märgib ligikaudset näitu.
+
+| Detail | Mõõdetud mass | Kaalutud koosseis |
+|---|---:|---|
+| 3/2 solenoidklapi koost | 68,84 g | Klapp koos prinditud kinnituse, kinnitusvahendite ja lühikeste voolikutega. |
+| Läbipaistev süstlakorpus | 6,33 g | Tühi korpus ilma otsiku ja kolvita. |
+| Klaas | 1,70 g | Eraldi kaalutud klaas. |
+| Iminapp | 42,03 g | Koos metallhoidiku ja liitmikuga. |
+| XIAO tööriistakaamera | 4,05 g | Ilma eraldi hoidiku ja kaablita. |
+| Verbatimi üldvaatekaamera | ≈135,68 g | Koos kaabliga. Asub eraldi kõrgel postil. |
+
+Klapi klemmide vahel mõõdeti **589,6 Ω**. Mähise märgistus on
+**DC 24 V, 1 W**. Klappi ei pingestatud ega lülitatud. Kontaktidel on
+kaitsedioodi meenutav komponent, mille ühendusskeem ja polaarsus on
+kinnitamata.
+
+### Läbipaistva süstla mõõdud
+
+| Väli | Füüsiline mõõt |
+|---|---:|
+| Silindri välisläbimõõt | 18,26 mm |
+| Silindri siseläbimõõt | ≈15,75 mm |
+| Krae suurim laius | 34,4 mm |
+| Krae ristisuunaline mõõt | 22,6 mm |
+| Krae paksus | 3,3 mm |
+| Kogupikkus ilma otsikuta | ≈91,40 mm |
+| Sirge silindrilise osa pikkus | ≈73,80 mm |
+| Kogupikkus koos otsikuga | ≈128,35 mm |
+
+Otsik fikseerub pöörates. Luer Lock on oletus. Läbipaistva süstla täpset
+mudelit ei kinnitatud märgistuse põhjal. Esialgse CAD-i nimipikkus on
+**90,9 mm**, allikaks Metcali 910-B mõõt
+[proovikomplekti lähteandmetes](../preprint-fit-tests-v2/README_RU.md).
+
+Klaasi gabariidi lähteandmed on Lab 2 [13.11 nihikumõõt
+30 × 30 × 1,2 mm](../../lab2/docs/measurements.md#13112026--atoms3-ja-klaas-nihikuga).
+Varasem 2 mm jääb 23.10 lähteväärtuseks. Käesoleval töökorral registreeriti
+klaasi mass.
+
 ## Solenoidklapp
 
 | Väli | Mõõdetud väärtus | Meetod / märkus |
@@ -33,13 +75,14 @@ digitaalset allikat, mitte mudeli füüsilist sobivust.
 | Ühendatud 4 mm vooliku paindumisruum (mm) | TODO — waiting for physical measurement | Mõõda ilma voolikut murdmata. |
 | Elektripistiku mõõdud (mm) | TODO — waiting for physical measurement | |
 | Elektripistiku suund | TODO — waiting for physical measurement | |
-| Mõõdetud mass (g) | TODO — waiting for physical measurement | Koos nende liitmikega, mida kasutatakse. |
+| Mõõdetud mass (g) | 68,84 | 15.11 mõõdetud koost, vt [koosseis](#mõõtmised-15112026). Lõplik paigalduskoht on lahtine. |
 | Võimalikud paigaldussuunad | TODO — waiting for physical test | |
 | Ligipääsetavaks jäävad alad | TODO — waiting for physical test | Liitmikud, pistik, kruvid ja hooldusruum. |
 
 ## Süstlad
 
-Täida eraldi rida iga tegelikult kasutatava süstla ja otsiku kombinatsiooni kohta.
+Läbipaistva proovieksemplari andmed on [15.11 mõõtmistes](#läbipaistva-süstla-mõõdud).
+Täida eraldi rida iga lõppkoostus kasutatava süstla ja otsiku kombinatsiooni kohta.
 Ülesande komponent on must Metcal 910-B, 10 cc (nimetus ja nimimaht, mitte
 füüsiline mõõtetulemus). Mõõda tegelik süstal ja kanna enda mõõdud Fusioni
 kasutajaparameetritesse. Õpetaja parameetriline mudel, Metcali süstal ja kolb
@@ -123,8 +166,8 @@ väljad puudutavad Lab 3-s tegelikult kasutatavat komplekti ja jäävad seni TOD
 | Objektiivi keskpunkt X/Y/Z (mm) | TODO — waiting for physical measurement | Märgi kasutatud nullpunkt. |
 | Kinnituse mõõdud (mm) | TODO — waiting for physical measurement | |
 | USB-C vaba ruum (mm) | TODO — waiting for physical measurement | Koos ühendatud kaabliga. |
-| Mass (g) | TODO — waiting for physical measurement | |
-| Olemasolev Lab 2 paigaldusasend | TODO — waiting for physical test | Viide kinnitatud Lab 2 tulemusele, kui see tekib. |
+| XIAO mooduli mass (g) | 4,05 | 15.11 mõõdetud ilma eraldi hoidiku ja kaablita. |
+| Olemasolev Lab 2 paigaldusasend | XIAO MG400 J4 tööriista juures, Verbatim eraldi kõrgel postil | [Lab 2 kaamerate paigaldus](../../lab2/README.md#kaamerad-cad-etapi-tulemus-ja-smart-solutionsi-jätkutöö). Uue tööriista asend ja nihked on kontrollimata. |
 | Keep-out-tsoon | TODO — waiting for physical test | Objektiiv, antenn, lintkaabel ja pistik. |
 
 ## MG400 ja tööriista referents
@@ -189,8 +232,8 @@ klapikinnitust ei asendata automaatselt uue konstruktsiooniga.
 
 | Väli | Mõõdetud väärtus | Märkus |
 |---|---|---|
-| Klaasi ID ja mass (g) | TODO — waiting for physical measurement | Lab 2 kinnitatud gabariit on 30 × 30 × 2 mm; see ei anna massi. |
-| Tühja süstla ID ja mass (g) | TODO — waiting for physical measurement | Märgi kaasatud kolb/päis/otsik. |
+| Klaasi ID ja mass (g) | 1,70 | 15.11 kaalutud klaas. Lab 2 gabariidi muutus on kirjas [ülal](#mõõtmised-15112026). |
+| Tühja süstla ID ja mass (g) | 6,33 | 15.11 läbipaistev korpus ilma kolvi ja otsikuta. Täpne mudel kinnitamata. |
 | Täis süstla mass (g) | TODO — waiting for physical measurement | Märgi täiteseisund ja koosseis; korraldus õppejõuga. |
 
 ## Süstla päis ja O-rõngas
@@ -209,7 +252,7 @@ Allikafaili blob SHA kontrolli [README tabelist](../README.md#õpetaja-cad-refer
 | Soone CAD-põhjaläbimõõt, laius ja sügavus (mm) | TODO — CAD-arvutus tegemata | Kandidaat ja arvutuse allikas; mitte füüsiline mõõt. |
 | Prinditud soone põhjaläbimõõt, laius ja sügavus (mm) | TODO — waiting for physical measurement | Füüsiline mõõtmine eraldi CAD-kandidaadist. |
 | Arvutatud rõnga venitus, kokkusurumine ja soone täitumine (%) | TODO — CAD-arvutus tegemata | Arvutus valitud rõnga ning mõõdetud paarilise alusel. |
-| Soone proovikeha versioon ja tulemus | TODO — waiting for physical test | |
+| Soone proovikeha versioon ja tulemus | `preprint-fit-tests-v2` proovikeha prinditud 15.11.2026 | Rõngast laboris ei leitud. Sobivus on kontrollimata. [Prooviprindi tulemused](test-procedure.md#prooviprint-ja-kuivsobitus-15112026). |
 | Päise seina paksus (mm), perimeetrid ja täidis (%) | TODO — waiting for physical test | Kirjuta tegeliku prindi seaded. |
 | Pumba mõõdetud suurim rõhk (kPa) | TODO — waiting for physical test | Andur ja kalibreerimisallikas; napi haru kinni, klapp voolu all. |
 | Päise survekatse tulemus ja lekkekohad | TODO — waiting for physical test | Kõik ebaõnnestumised säilitada. |

@@ -8,20 +8,24 @@ kontrollimata sobivus või otsus on `TODO — waiting for physical test`.
 
 | Komponent | Mõõdetud mõõdud (mm) | Mõõdetud mass (g) | Kinnitusviis | Olek | Märkused |
 |---|---|---:|---|---|---|
-| 3/2 solenoidklapp koos kasutatavate liitmikega | TODO — waiting for physical measurement | TODO — waiting for physical measurement | TODO — waiting for physical measurement | TODO — waiting for physical test | Kinnitusavad, liitmikud ja pistik peavad jääma ligipääsetavaks. |
+| 3/2 solenoidklapi koost | TODO — waiting for physical measurement | 68,84 | Prinditud kinnitus. Lõplik paigalduskoht on lahtine. | Kaalutud 15.11.2026. | Koos kinnituse, kinnitusvahendite ja lühikeste voolikutega. Kinnitusavad, liitmikud ja pistik peavad jääma ligipääsetavaks. |
 | Süstal kavandatud tööolekus | TODO — waiting for physical measurement | TODO — waiting for physical measurement | TODO — waiting for physical measurement | TODO — waiting for physical test | Viita süstla ja otsiku ID-le. |
 | Otsik | TODO — waiting for physical measurement | TODO — waiting for physical measurement | TODO — waiting for physical measurement | TODO — waiting for physical test | Viita otsiku ID-le. |
 | UV LED ja jahutusradiaator | TODO — waiting for physical measurement | TODO — waiting for physical measurement | TODO — waiting for physical measurement | TODO — waiting for physical test | Jahutusradiaatori ümber peab jääma õhuruum. |
 | LED-i draiver, kui see paikneb tööriistal | TODO — waiting for physical measurement | TODO — waiting for physical measurement | TODO — waiting for physical measurement | TODO — waiting for physical test | Lõplik asukoht on valimata. |
-| Iminapp ja olemasolev imuriist | TODO — waiting for physical measurement | TODO — waiting for physical measurement | TODO — waiting for physical measurement | TODO — waiting for physical test | Lab 2 CAD-eeldust ei märgita mõõdetud väärtuseks. |
-| Kaamera | TODO — waiting for physical measurement | TODO — waiting for physical measurement | TODO — waiting for physical measurement | TODO — waiting for physical test | Kontrolli USB-C ja objektiivi keep-out-tsooni. |
+| Iminapp, metallhoidik ja liitmik | TODO — waiting for physical measurement | 42,03 | TODO — waiting for physical measurement | Kaalutud 15.11.2026. | Uue tööriista paigutus on lahtine. |
+| XIAO tööriistakaamera | TODO — waiting for physical measurement | 4,05 | Lab 2-s MG400 J4 juures prinditud hoidikus. | Moodul kaalutud 15.11.2026. | Hoidiku ja kaabli mass on lahtine. Kontrolli USB-C ja objektiivi vaba ruumi. |
+| Verbatimi üldvaatekaamera | TODO — waiting for physical measurement | ≈135,68 | Eraldi kõrgel postil. | 15.11 ligikaudne mass koos kaabliga. | Üldvaatekaamera jääb väljapoole MG400 kaalueelarvet. |
 | Voolikud ja juhtmed | TODO — waiting for physical measurement | TODO — waiting for physical measurement | TODO — waiting for physical measurement | TODO — waiting for physical test | Sisalda tõmbetõket ja liikumisvaru. |
 
 ## Kaalueelarve
 
+[15.11 kaalutud koosseisud](measurements.md#mõõtmised-15112026) · [Lab 2 kaamerate paigaldus](../../lab2/README.md#kaamerad-cad-etapi-tulemus-ja-smart-solutionsi-jätkutöö).
+
 MG400 ametlik tööriista kogukoormuse piir Lab 3 ülesandes on **500 g**, kaasa
-arvatud kogu tööriist, täis süstal ja klaas iminapa küljes korraga. Allolevad massid tuleb
-füüsiliselt kaaluda; neid ei asendata CAD-i arvutuse või internetiandmetega.
+arvatud kogu tööriist, täis süstal ja klaas iminapa küljes korraga.
+Kogumass ja varu arvutatakse pärast lõpliku koosseisu selgumist ning
+puuduvate masside kaalumist.
 
 Summeeri ainult robotil olevad, omavahel kattumata osad. Kui aluskoostu
 mass sisaldab mõnda allolevat komponenti, märgi see kaasatuks ja ära lisa
@@ -32,16 +36,16 @@ kontrollread, mitte summale lisatavad komponendid.
 |---|---:|---|
 | MG400 ametlik tööriista kogukoormus | 500 g | Ametlik piir. |
 | Uus tööriistahoidik / aluskoost | TODO — waiting for physical measurement | Kirjelda koosseisu; ära liida sama osa topelt. |
-| Klapp koos kasutatavate liitmikega | TODO — waiting for physical measurement | MG400 koormuses ainult tööriistal paiknedes; laual olev klapp ja tema kinnitus ei kuulu robotikoormusesse. Liitmikud arvesta ainult siin või teise osakoostu sees. |
+| 3/2 klapi mõõdetud koost | 68,84 | MG400 koormuses ainult tööriistal paiknedes. Selle koostu kinnitust, kinnitusvahendeid ja lühikesi voolikuid arvesta üks kord. |
 | Süstal kavandatud tööolekus | TODO — waiting for physical measurement | Mõõdetud mass. |
 | Otsik | TODO — waiting for physical measurement | Mõõdetud mass. |
 | UV LED ja jahutusradiaator | TODO — waiting for physical measurement | Mõõdetud mass. |
 | LED-i draiver, kui robotil | TODO — waiting for physical measurement | Laual paiknev osa robotikoormusesse ei kuulu. |
 | Süstla päis ja O-rõngas | TODO — waiting for physical measurement | Kui süstla kaalumine neid juba sisaldab, ära liida uuesti. |
-| Klaas iminapa küljes | TODO — waiting for physical measurement | Eraldi kaalumine. |
-| Iminapp ja kinnitus | TODO — waiting for physical measurement | Ainult kui aluskoostu massis ei sisaldu. |
+| Klaas iminapa küljes | 1,70 | 15.11 eraldi kaalutud klaas. |
+| Iminapp koos metallhoidiku ja liitmikuga | 42,03 | Arvesta üks kord, kui see koost kuulub lõppkoostu. |
 | Must UV-kate, kui robotil | TODO — waiting for physical measurement | Laual olev kate robotikoormusesse ei kuulu. |
-| Kaamera | TODO — waiting for physical measurement | Mõõdetud mass. |
+| XIAO tööriistakaamera | 4,05 | Moodul. Tööriistaga kaasaliikuva hoidiku ja kaabli tegelik mass on veel kaaluda. |
 | Prinditud kinnitused | TODO — waiting for physical measurement | Lõplike füüsiliste osade mass. |
 | Voolikud ja juhtmed | TODO — waiting for physical measurement | Tööriistaga liikuv osa. |
 | Poldid, mutrid, seibid, liitmikud ja muud robotil olevad osad | TODO — waiting for physical measurement | Ära liida osakoostudes juba kaalutut uuesti. |

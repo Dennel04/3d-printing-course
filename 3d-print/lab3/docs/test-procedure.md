@@ -82,6 +82,19 @@ valmis enne, kui kõik 20 füüsilist vahetust on päriselt tehtud.
 |---|---|---|---|
 | 1–20 | TODO — waiting for physical test | TODO — waiting for physical test | TODO — waiting for physical test |
 
+## Prooviprint ja kuivsobitus 15.11.2026
+
+Prusa CORE One'il prinditi kõik viis `preprint-fit-tests-v2` detaili
+[selle BGCODE-failiga](../preprint-fit-tests-v2/bgcode/LAB3_FIT_TESTS_v2_COREONE_HF04_PLA.bgcode).
+
+| Proovidetail | Täheldatud tulemus | Lahtine |
+|---|---|---|
+| Süstla C-klamber | Süstal läheb ülalt vabalt sisse ja küljelt väikese jõuga. Klamber hoiab seda radiaalselt. Süstal pöörleb vabalt ja võib telje suunas nihkuda. | Osaline õnnestumine. Krae korduv istuvus on veel kinnitamata. Lõpptööriista jaoks on vaja kindlat ja korratavat fikseerimist. Töökoostu 20 vahetust on tegemata. |
+| Gridfinity topsikuhoidik | Mahub ruudustikku ja seisab tasaselt. | Tegeliku topsi sobivus on kinnitamata. |
+| Gridfinity otsikupark | Mahub ruudustikku ja seisab tasaselt. Eraldi roosa metalltoruga otsik jääb viltu ja püsib ebakindlalt. | Otsiku mehaanilise istuvuse stabiilsuskontroll ebaõnnestus. Sobivus robotiga kasutamiseks ja valguskaitse vajavad kontrolli. |
+| UV-kate | Prinditud kattel polnud silmaga näha pragusid ega kihtide eraldumist. Ava jäi terveks ja toed eemaldati kahjustusteta. | Valguskaitse, valguskoonus, temperatuur ja LED-i paigaldus on katsetamata. |
+| O-rõnga soone proovikeha | Proovikeha prinditi. O-rõngast laboris ei leitud. | Rõnga sobivus, valmis süstlapäis ja hermeetilisus on kontrollimata. |
+
 ## E. Tööriista kuiv sobitus enne robotit
 
 1. Paigalda kuivalt iminapp, süstal, UV-lamp, kaamera, voolikud ja juhtmed.
