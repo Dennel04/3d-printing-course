@@ -7,7 +7,7 @@ python slot_picker.py          # ava http://127.0.0.1:8010
 python slot_picker.py --check  # prindi F-2, C+4, D+3, G-1, B+5 arvutatud X/Y
 ```
 
-Ainult Pythoni standardteek, lisapakette pole vaja.
+Kaamera ja rõhuanduri moodulid impordivad `pyserial`-i ka siis, kui neid seadmeid pole ühendatud. Pakett on [Hubi sõltuvustes](../../hub/requirements.txt).
 
 ## Kuidas liigub
 
@@ -17,7 +17,7 @@ Iga klõps teeb kolm liigutust ja ootab pärast igaüht, kuni käsi kohale jõua
 2. üle `travel_z` kõrgusel lahtri keskpunkti kohale;
 3. alla hõljumiskõrgusele (Hover Z).
 
-Pessa ei laskuta: ruudustiku pinna Z puudutus on veel tegemata. R on alati `tool_r` (33), sest napp ei ole J4 teljel ja X/Y sõltub R-ist.
+Drive-režiim lõpeb hõljumiskõrgusel. Kasuta `tool_r` väärtust 33°, mille juures mõõdeti 13.11 ruutude koordinaadid. Sel töökorral oli napp ligikaudu flantsi keskel. [Kalibreerimine 13.11](../docs/measurements.md#kalibreerimine-13112026)
 
 ## Kaitsed
 
@@ -38,9 +38,11 @@ Pessa ei laskuta: ruudustiku pinna Z puudutus on veel tegemata. R on alati `tool
 
 ## Test: klaasi tsükkel ja refit-test
 
-Vahekaart **Test** teeb ülesande osa 3 (`assignment-EST.md`): klaas sisendist töökohale, töökohalt väljundisse, neli tükki järjest; tulemused faili `../docs/refit_test.csv`. Loogika failis [`cycle.py`](cycle.py).
+Vahekaart **Test** teeb [ülesande](../assignment-EST.md) klaasitsükli. Loogika on failis [`cycle.py`](cycle.py) ja füüsilised tulemused [`refit_test.csv`](../docs/refit_test.csv)-s.
 
-**24.10.26 otsus: praegu testime ainult ülekannet** — üks klaas ühest klaasialusest teise, töökohata. See on vaikimisi (`cycle.workstation_step: false`): rollides ainult Input ja Output, õpetada sisendi `pick_z` ja väljundi `place_z` (+ XY), **Run one glass** viib klaasi n sisendi n-ndast lahtrist väljundi n-ndasse. Mitme klaasi käivitus („Loaded input pockets“) on selles režiimis peidetud ja serveris keelatud. CSV-s jäävad töökoha veerud tühjaks (mitte `no`). Täistsükkel töökohaga: märgi **Workstation step** ja **Save roles**. Testitud simuleeritud robotiga; päris robotiga: TODO — waiting for physical test.
+**Praegune paigutus (13.11.2026).** Versioonihalduses oleva [`layout.json`](layout.json) järgi on `cycle.workstation_step: true`. Klaas käib sisendist läbi töökoha E+2 heade väljundisse. Füüsiliselt tehti kolm ringi (12/12), neist kaks lõpppaigutuses 13.11 ja viimane pärast kolme hoidiku tagasipanekut samadesse ruutudesse ilma ümberõpetamiseta. Ringid 4–5 ja 42 mm füüsiline ümberpaigutus jäid tegemata. [Paigutus ja õpetatud punktid](../docs/layout.md) · [Katsetabel](../docs/refit_test.csv)
+
+**Varasem ülekanderežiim (24.10.2026).** `cycle.workstation_step: false` või puuduva võtme korral käib üks klaas otse sisendist väljundisse. Õpeta sisendi `pick_z`, väljundi `place_z` ja vajadusel XY-nihked. Mitme klaasi käivitus on selles režiimis peidetud ja serveris keelatud. Töökoha CSV-veerud jäävad tühjaks. Töökohaga tsükli taastamiseks märgi **Workstation step** ja salvesta rollid.
 
 1. **Rollid** — vali, milline hoidik on sisend, töökoht (ja mis lahter temas) ning väljund. Klaas n võetakse sisendi n-ndast lahtrist ja pannakse väljundi n-ndasse lahtrisse (lahtri järjekord nagu redaktori loendis; ruudustikul sildid `in 1`…`out 4`, `ws`).
 2. **Punktide õpetamine** — **Go above** viib käe pesa kohale (`cycle.travel_z`, vaikimisi −100), Jog-nuppudega (0,2 / 1 / 5 mm) lastakse alla ja **Set** salvestab praeguse asendi: sisend `pick_z`, töökoht `place_z` + `pick_z`, väljund `place_z`, igale ka XY nihe lahtri keskpunktist. Väärtused on hoidiku juures (`holders[].teach`), mitte lahtri juures: kui hoidik pannakse teise ruutu, kasutatakse sama nihet + 42 mm sammu — see on refit-testi 42 mm küsimus. Õpetada R 33 juures.
@@ -51,13 +53,13 @@ Vahekaart **Test** teeb ülesande osa 3 (`assignment-EST.md`): klaas sisendist t
 
 Ringide vahel võta kõik hoidikud ruudustikust välja ja pane tagasi, ära õpeta punkte uuesti. STOP jätab pumba nagu oli (kantav klaas ei kuku); Pump **Off** vabastab.
 
-Ilma rõhuandurita (Atom COM4) haaratakse õpetatud kõrgusel; vaakumi kontrolli veel pole. Testitud 24.10.26 ainult simuleeritud mg400 API-ga (98 käsku, 4 klaasi, CSV kirjutamine); päris robotiga: TODO — waiting for physical test.
+Ilma rõhuanduri andmeteta haaratakse õpetatud kõrgusel. 24.10 tehtud simuleeritud API katses kontrolliti nelja klaasi tsüklit (98 käsku) ja CSV kirjutamist. Füüsilised klaasiülekanded on eraldi [katsetabelis](../docs/refit_test.csv).
 
 ## Kaamera (View)
 
 **View** teeb XIAO tööriistakaameraga (`camera_port`, COM5) kaadri kausta `frames/` (gitignore); leht näitab alati kõige uuemat kaadrit sellest kaustast — ka neid, mille sinna salvestab Claude.
 
-**Live camera** näitab otsepilti (MJPEG `/stream.mjpg`, kuni 4 kaadrit/s, 1600 × 1200). COM5 on avatud ainult siis, kui keegi kaadreid tahab (otsepilt, View, tsükli kaader), ja vabaneb ~10 s pärast; alles siis saab `tool-camera/capture.py` porti kasutada. Olekureal `camera on, N fps` või viga. Testitud 24.10.26 simuleeritud kaameraga (4,0 kaadrit/s); päris XIAO kiirus USB kaudu: TODO — waiting for physical test.
+**Live camera** näitab otsepilti (MJPEG `/stream.mjpg`, kuni 4 kaadrit/s, 1600 × 1200). COM5 on avatud ainult siis, kui keegi kaadreid tahab (otsepilt, View, tsükli kaader), ja vabaneb ~10 s pärast. Seejärel saab [`tool-camera/capture.py`](../tool-camera/capture.py) porti kasutada. Olekureal `camera on, N fps` või viga. Simuleeritud kaamera andis 24.10 katses 4,0 kaadrit/s. Päris XIAO USB-kaadrid on [Lab 2 README-s](../README.md#kaamerad-cad-etapi-tulemus-ja-smart-solutionsi-jätkutöö), USB otsepildi kaadrisagedus on selles katses mõõtmata.
 
 ## Rõhk (Atom, COM4)
 
@@ -88,6 +90,4 @@ Kasulikud esimesed jooksud: Z ↓ ruudustiku pinnale (ilma ja koos imemisega), Z
 - `motion` — Drive-režiimi kõrgused, kiiruse piir, ulatus.
 - `cycle` — tsükli rollid, töökoha lahter, `travel_z`, `approach_mm`, `suck_dwell_s`, `blow_s`.
 - `types` — hoidikute tüübid (nimi, värv, `no_go`).
-- `holders` — hoidikud: `name`, `type`, `cells`, `status`. Muuda redaktoriga. Praegused read on **ettepanek**, mitte kinnitatud paigutus (`docs/layout.md`); 24.10.26 oli klaas tegelikult B+5 hoidikus.
-
-Testitud ainult simuleeritud mg400-base API-ga. Päris robotiga: TODO — waiting for physical test.
+- `holders` — hoidikute `name`, `type`, `cells`, `status` ja vajadusel `teach`. `status` sisaldab vanu 24.10 silte (sh „not placed yet“). Asukohti, õpetatud punkte ja füüsilise kasutuse tõendeid vaata [13.11 paigutusest](../docs/layout.md) ja [katsetabelist](../docs/refit_test.csv). Klaasi sisend, töökoht ja väljund osalesid klaasitsüklis, kalibreerimiskasti kasutati ruutude õpetamisel. AtomS3 sisendist automaatne võtmine jääb eraldi kontrolliks.

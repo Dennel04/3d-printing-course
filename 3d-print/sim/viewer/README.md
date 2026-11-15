@@ -3,11 +3,13 @@
 Brauseris mängitav klaasitsükkel: MG400 (Doboti URDF), rakis, hoidikud `layout.json` järgi, XIAO kinnitus,
 iminapp ja klaasid. Asendid arvutab sama kaksik, mis `dry_run.py` (sama `cycle.py`, `cells.py`, liigesemudel);
 iga liikumise värv ajajoonel on `dry_run.py` otsus (roheline ok, kollane < 3 mm, punane kokkupõrge).
+Klaasi mudel kasutab sama 1,2 mm paksust kui kokkupõrkearvutus. Napa animatsioon näitab
+mudeli kontaktikõrguse erinevust. [Kontaktikõrgus ja füüsiline kokkusurumine](../README.md#kontaktikõrgus-ja-füüsiline-kokkusurumine)
 
 ```
 cd 3d-print/sim
 .venv/Scripts/python export_viewer.py            # layout.json nii, nagu robot seda praegu käitaks
-.venv/Scripts/python export_viewer.py --full     # planeeritud täistsükkel
+.venv/Scripts/python export_viewer.py --full     # mudeli tuletatud punktid, töökoht hoidiku esimeses lahtris
 python -m http.server -d viewer 8020             # ava http://127.0.0.1:8020
 ```
 
@@ -36,4 +38,4 @@ Hoidikud tulevad ise `slot-picker/layout.json`-ist (tüüp → STL `twin.py` `HO
   adapter (fotod; avalikku CAD-i pole).
 * Napp: kummil tempel **C20** = SMC ZP20C tüüpi lame ribidega napp Ø20 (SMC kataloog ZPT 13-11-6: välis-Ø23,
   kõrgus C 14; nihik: Ø22,25 × 13,8). Puhvrivedru ei ole: kokku surutakse ainult kummiserv.
-* Napa kokkusurumist näitab leht (`audit_scene.py`). TODO nihikuga: hoidiku vaba pikkus.
+* `audit_scene.py` loeb viimasest ekspordist õpetatud Z ja mudeli esimese puudutuse vahe. Paigaldatud tööriista vaba pikkus ja napa füüsiline kokkusurumine vajavad mõõtmist.

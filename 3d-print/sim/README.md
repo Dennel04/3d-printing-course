@@ -2,13 +2,16 @@
 
 Ühine kõigile laboritele (`3d-print/sim`): robot, rakis, liigesemudel ja kokkupõrked on samad. Laboripõhised sisendid (kalibreerimine `calibration/cells.py`, `slot-picker/layout.json` ja `cycle.py`, detailide STL-id) ja tulemused (`docs/`) on labori kaustas; valik `--lab` (vaikimisi `../lab2`) või keskkonnamuutuja `SIM_LAB`.
 
-Eesmärk: enne päris robotit näha, kuhu käsi ulatub, kui madalale iminapp võib minna, kas tsükkel kuskile vastu läheb ja kui suurt kalibreerimisviga tsükkel talub. Kaksik kasutab **samu andmeid ja sama koodi** mis robot: labori `slot-picker/layout.json`, `slot-picker/cycle.py`, `calibration/cells.py` ja `mg400-base` liigesepiirid.
+Kaksik hindab ulatust, kokkupõrkeid ja tundlikkust kalibreerimisveale. Ta kasutab Slot Pickeriga sama `layout.json`-i, `cycle.py` tegevusplaani, `calibration/cells.py` kalibreerimist ning sama liigesemudeli lähteandmeid. Kokkupõrkekontroll on geomeetriline arvutus. Lab 2-l on toimiv sisendkomplekt. Lab 3 tööriista jaoks tuleb sisendid ja mudel eraldi ette valmistada.
 
 ## Käivitamine
 
+Loo simulatsioonikaustas Python 3.11 virtuaalkeskkond. Windows PowerShellis kasuta
+`py -3.11 -m venv .venv` ja macOS-is/Linuxis `python3.11 -m venv .venv`.
+Näited kasutavad Windowsi Pythoni teed. macOS-is/Linuxis asenda `.venv/Scripts/python` teega `./.venv/bin/python`.
+
 ```
 cd 3d-print/sim
-python -m venv .venv
 .venv/Scripts/python -m pip install -r requirements.txt
 .venv/Scripts/python reach_map.py          # <lab>/docs/sim_reach.csv, <lab>/docs/photos/sim-reach-map.png
 .venv/Scripts/python check_calibration.py  # kus nelja nurga meetod kalibreerimiskastiga töötab
@@ -17,9 +20,11 @@ python -m venv .venv
 .venv/Scripts/python tolerance.py          # kalibreerimisvea taluvus, <lab>/docs/sim_tolerance.txt
 .venv/Scripts/python refit_sim.py         # korduskatse ringid 2-5: hoidikud juhuslikult jala lõtku piires (--play 1), <lab>/docs/sim_refit.txt
 .venv/Scripts/python export_viewer.py     # 3D-vaade brauseris (viewer/), vt viewer/README.md
-.venv/Scripts/python audit_scene.py       # kas objektid on õiges kohas: hoidikute istumine, klaaside vahe, napa + puhvri kokkusurumine
-.venv/Scripts/python reach_map.py --lab ../lab3   # teine labor (vajab oma calibration/, slot-picker/)
+.venv/Scripts/python audit_scene.py       # hoidikute istumine, klaaside vahe ja mudeli kontaktikõrgus
 ```
+
+`--lab` viitab kaustale, kus on kalibreerimine, paigutus, tsükli kood ja mudelid. Kui soovid
+salvestatud aruandeid säilitada, käivita faile kirjutavad käsud eraldi töökoopias.
 
 ## Millest kaksik koosneb
 
@@ -30,23 +35,44 @@ python -m venv .venv
 | Rakis | `scene/rakis_*.stl` (Fusion, `MG 400 rakis`) + laud ruudustiku alumisel serval (z −16,72). Laud Treston, 700 mm sügav (CAD-i laud; Treston TP on 500/700/800): tagaserv roboti taga tagumiste L-ide all (rakise x +163,5), esiserv x −536,5 eesmiste L-ide all; 670 mm torud ulatuvad ette ~50 mm üle serva, veebikaamera post toru otsas. Laua laius 700 (mõõtmata). Pesa ja roboti alus on roboti juures (URDF: J1 on aluse kasti keskelt 5 mm taga); ruudustik on pesa vastu ja selle asukoht tuleb `cells.py`-st. `twin.grid_slide()`: ruudustik „vastu ja keskel“ suhtes +0,7 mm (= vastu), −2,8 mm külgsuunas piki torusid | kaksiku lahtrikeskmed = `cells.py` (viga 0,0 mm) |
 | Ruudustik → robot | labori `calibration/cells.py` (13.11.26 kahe ruudu sobitus F-2 + C+4, +1,48°) | kaksiku lahtrikeskmed vs `cells.py` ≤ 0,06 mm |
 | Hoidikud | labori `layout.json` tüüp → STL (`twin.py` `HOLDER_STL`, praegu Lab 2 detailid); vanade jalgadega hoidik tõuseb taladele (jala 3 mm pikendus, +2,85 mm) | — |
-| Iminapp | välisläbimõõt Ø 22,25 mm (nihik 24.10, `measurements.md`; õpetaja: komplekti napp φ13/φ16), flantsi all keskel (nihe J4 teljest ≈ 0), pikkus J4 mootori alt **66,2 mm** | pikkus: kalibreerimiskasti põhja puudutus Z −155,0 (päris) vs kaksik −154,8 |
+| Iminapp | `CUP_D` on Ø 22,25 mm, 24.10 mõõdetud eraldi kummilt. Mudeli XY-nihe J4 teljest R = 33° juures on (0, 0). J4 mootori alt tipuni **66,2 mm** tuletati 24.10 vana hoidiku puudutusest. | Kalibreerimiskasti põhja puudutuse võrdlus Z −155,0 (päris) vs −154,8 (mudel). Paigaldatud napa samasus mõõdetud kummiga, vaba kogupikkus ja lubatav kokkusurumine vajavad füüsilist kontrolli. [Lab 2 mõõteregister](../lab2/docs/measurements.md#eraldi-kummist-iminapp--measured) |
 | XIAO kinnitus + kaamera | `camera-mounts/stl/xiao-square-mount-v2.stl` J4 mootori all; selles Seeedi ametlik XIAO ESP32S3 Sense mudel (`../models/xiao-esp32s3-sense/`) täpselt nagu `xiao-square-mount-v2.f3d`-s, Fusionist eksporditud kinnituse koordinaatides: `scene/xiao-esp32s3-sense-in-mount-v2.stl` | — |
 | Aku + AtomS3 töökohal | M5Stacki CAD (`../models/`): Atomic Battery Base (põhi + kate) 18,0 mm, AtomS3 12,9 mm; virn pesa põhjal. M5Stacki failis on ainult plastkorpus (ekraani pole, raami ava 16,1 × 16,1 näitab sisemust) → kaksik lisab tumeda ekraaniploki ava täiteks, pealispind raami faasi põhjas 0,8 mm raami pealt (eeldus, mõõtmata) | mõõdetud akumoodul on 21,97 mm (`measurements.md`) — CAD-virnaga on töökoha 24.10 puudutus 1,2 mm esimesest puudutusest madalamal nagu sisend/väljund (0,7–1,2), mõõdetud kõrgusega oleks vahe 5,1 mm. TODO nihikuga: aku kõrgus ilma Atomita |
 | Kokkupõrked | `python-fcl` täpsed kolmnurkvõrgud (mitte kumerad kestad), `trimesh` | negatiivtestid allpool |
 
 ## Mida dry_run kontrollib
 
-Vaikimisi kontrollitakse seda, mida robot praegu teeks: `layout.json` režiim (`workstation_step`), rollid (võivad olla sama hoidik) ja õpetatud dx/dy/Z; õpetamata Z tuletatakse geomeetriast ning õpetatud ja tuletatud väärtus kirjutatakse kõrvuti. `--full` kontrollib planeeritud täistsüklit (rollid ettepanekupaigutusest, kõik Z tuletatud); `tolerance.py` kasutab täistsüklit.
+Vaikimisi kasutab `dry_run.py` [Lab 2 paigutust](../lab2/slot-picker/layout.json), kus
+`workstation_step: true` ja töökoht on E+2. `cycle.py` lisab 13.11 `cells.py` järgi arvutatud
+lahtrikeskmetele hoidikute õpetatud XY-nihked (sisend +1,0/+0,5 mm, töökoht ja väljund 0/0).
+R on 33° ning õpetatud Z on sisendis −152 mm, töökohas panekul −119 mm ja võtmisel −121 mm,
+väljundis −153 mm. Puuduva õpetatud Z tuletab kaksik mudelist ja kuvab selle aruandes.
+[Kalibreerimine](../lab2/docs/measurements.md#kalibreerimine-13112026) · [Õpetatud punktid](../lab2/docs/layout.md#roboti-sihtpunktid-ruut--nihe-r-33)
 
-- iga liikumine sirgjoonena iga 2 mm järel (**eeldus**: `mg400-base` liigub sirgelt): liigesepiirid, käe, XIAO kinnituse ja kaamera, napa ja kantava klaasi (30 × 30 × 2) kokkupõrge rakise, hoidikute, posti, pesades olevate klaaside ning aku + Atomi virnaga;
-- oma sihtmärki (klaas, Atom, väljundi põhi) võib napp/klaas puudutada ainult lähenemisel ja **mitte sügavamalt kui 1,5 mm** (õpetatud võtmine surub 1 mm);
-- võtmisel: napa nihe klaasi keskelt ≤ 5 mm (Ø 20 napp 30 mm klaasil);
-- vabastamisel: millele klaas jääb (töökohal ainult Atomi ekraanile).
+`--full` kasutab vaikimisi kolme rolli, jätab õpetatud XY- ja Z-väärtused kõrvale ning võtab
+töökohaks hoidiku esimese lahtri (praeguses failis E+1). `tolerance.py` ja `refit_sim.py` kasutavad
+seda varianti. Vaaturi eksport kasutab samu kahte režiimi.
+
+- Sirgjoonelist liikumist kontrollitakse ligikaudu 2 mm sammuga. Mudel kontrollib liigesepiire ning käe, kaamera, napa ja klaasi kokkupõrkeid. **30 × 30 × 1,2 mm** pärineb 13.11 nihikumõõdust. `dry_run.GLASS` määrab klaasi kokkupõrkekeha, paigutuse ja tuletatud Z. `export_viewer.py` kasutab sama mõõtu. Varasem 2 mm oli 23.10 Exceli lähteväärtus. [Klaasi mõõtmine](../lab2/docs/measurements.md#13112026--atoms3-ja-klaas-nihikuga)
+- Lubatud sihtkontakti korral võrdleb mudel laskumise lõpp-Z-d esimese arvutusliku puudutusega. Muu geomeetria vaba ruumi puhul märgib `WARN_CLEARANCE = 3.0` alla 3 mm tulemuse `close`-iks.
+- Võtmisel on kesknihke piir `PICK_OFFSET_MAX = (30 − 22,25) / 2` ehk 3,875 mm. Vabastamisel kontrollib mudel all olevat pinda (töökohal Atomi ekraan).
+
+### Kontaktikõrgus ja füüsiline kokkusurumine
+
+`dry_run.py` praegune `PRESS_ALLOWED = 6.0` mm on laskumise lubatud **Z-erinevus mudeli esimesest
+puudutusest**. Algne 1,5 mm oli 24.10 kaksiku kriteerium. 25.10 asendati see 6,0 mm-ga pärast
+võrdlust esimese füüsilise ringi õpetatud punktidega. Koodi kommentaaris olevad 4,2 / 5,2 / 0,7 mm
+on mudeli ja õpetatud Z erinevused. Neisse võib jääda tööriista pikkuse, hoidikute ja koostu kõrguse
+viga. Hilisem ülevaatus tuvastas, et tööriistal puudub vedrupuhver. [Piiri muutus](https://github.com/Dennel04/3d-printing-course/commit/1816b0449939a38d81a9694e5f766d2fade2ba34) · [Puhvrita tööriista täpsustus](https://github.com/Dennel04/3d-printing-course/commit/057761a7ca657385d74ea30dee27fcf442dc5ebd)
+
+Napa ohutu füüsiline kokkusurumine on mõõtmata. Vaaturi näidatud deformatsioon on arvutusliku vahe
+visualiseering. Salvestatud vaikimisi jooksus arvutab mudel töökoha vabastusel 3,5 mm kukkumise.
+Enne töökoormuse või liikumispiiri muutmist mõõda paigaldatud tööriista vaba pikkust, tegelikku
+kontakti ja napa deformatsiooni. Kontrolli töökohal aku ning Atomi koostukõrgust. [Salvestatud arvutus](../lab2/docs/sim_dry_run.txt)
 
 Negatiivtestid (24.10.26), kõik leitud: travel Z −140 → 15 kokkupõrget; töökoht 10 mm liiga madal → „surub 10 mm Atomisse“; võtmine 3 mm liiga madal → „surub 4,1 mm klaasi“; väljund +40 mm küljele → klaas vastu oranži hoidikut; +70 mm → seina sisse; −70 mm → „VALE KOHT: klaas jääb ruudustikule“; töökoht +15 mm → „VALE KOHT: hoidiku servale“; 6 mm viga võtmisel → „napp pole täielikult klaasil“.
 
-## Lab 2 tulemused 24.10.26 (ettepanekupaigutus `lab2/slot-picker/layout.json`)
+## Lab 2 ajaloolised simulatsioonitulemused 24.10.26 (ettepanekupaigutus)
 
 - Kaart: `../lab2/docs/photos/sim-reach-map.png`, tabel `../lab2/docs/sim_reach.csv`. A±1, A±2, G±4, G±5 kättesaamatud; B±1/B±2 ja G-rida piirab liiges (napp ei jõua alla 19–40 mm ruudustiku kohal).
 - **B-2 ei sobi kalibreerimiseks** (ülesanne soovitab B-2): napp jõuab B-2-s alla ainult +19,1 mm ruudustiku kohale, kalibreerimiskasti ülaserv on +16,0 mm — napp ei mahu kasti (J3 piir). Kalibreeritakse kaugetes ruutudes F-2 ja C+4.
@@ -55,9 +81,15 @@ Negatiivtestid (24.10.26), kõik leitud: travel Z −140 → 15 kokkupõrget; t�
 
 ## Piirid (mida kaksik ei näe)
 
-Printimise vead (elevandijalg, tugede jäägid, kahanemine) — selleks on füüsiline jala test ja nihik. Pehme napa kaldumine seina vastu. Füüsika (klaasi libisemine) — järgmine samm (MuJoCo). TODO mõõta: napa läbimõõt, napa nihe J4 teljest, napa pikkus J4 mootori alt.
+Kaksik ei mõõda printimisvigu, napa elastset käitumist ega klaasi libisemist. Hubi `Live arm` vaate
+klaasi haarde- ja kandmiskõrguses kasutab `LivePose` eraldi 1,0 mm keskme nihet. Seetõttu võib selle
+kuva erineda 1,2 mm klaasi eksporditud taasesitusest. Lab 3 mõõtis 15.11 napa koostu massiks
+42,03 g. Uue tööriista gabariidid, kaugus flantsist ja neli nihet vajavad mõõtmist ning uut geomeetriat.
+[Lab 3 mõõtmised](../lab3/docs/measurements.md#mõõtmised-15112026) · [Nihked](../lab3/docs/tool_offsets.md)
 
 ## 24.10.26 õhtu: kontroll (layout pärast 17:06 muudatusi)
+
+Allolevad kirjed kirjeldavad 24.10 paigutust ja selleaegset 1,5 mm mudelikriteeriumi.
 
 - Täistsükkel (`--full`): 4 klaasi kokkupõrgeteta, taluvus endine (võtmine 5 mm, väljund 3 mm).
 - Ülekandetest (praegune `layout.json`: kõik rollid = Glass input, D-4/D-5/E-4/E-5): kokkupõrkeid pole; output `place_z` pole õpetatud (slot picker ei lase seda käivitada, kaksik tuletab −147,0).

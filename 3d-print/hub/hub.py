@@ -1,12 +1,16 @@
 """hub.py — MG400 Station Hub: one page for the robot, the slot picker, the digital twin and its checks.
 
     cd 3d-print/hub
-    ../sim/.venv/Scripts/python hub.py            # http://127.0.0.1:8020, starts in Simulation
-    ../sim/.venv/Scripts/python hub.py --lab ../lab2 --port 8020
+    ../sim/.venv/Scripts/python.exe hub.py         # Windows, http://127.0.0.1:8020
+    ../sim/.venv/bin/python hub.py                 # macOS/Linux
+
+Startup restores hub/.mode (Simulation if no valid mode was saved). Saved Real triggers a connection
+attempt to the arm. Connection, controller enable and the Hub's Motion gate are separate. Startup
+does not send Enable, and the Motion gate starts off.
 
 Simulation: an in-process MG400 (sim_robot.py). Real: the arm itself over TCP/IP (real_robot.py with the
 driver in mg400/, default 192.168.1.6, --robot-ip / --z-floor); no mg400-base server any more.
-Switching is allowed only while nothing moves. Everything the slot picker does (drive to a
+The Hub refuses mode switches during an active Picker sequence. Everything the slot picker does (drive to a
 cell, layout editor, teach points, glass cycle, refit CSV, tool camera) runs unchanged on top of the
 selected robot; the hub adds the DobotStudio-style jog (Cartesian and joint), the live 3D view and
 the twin checks (sim/*.py) behind buttons.

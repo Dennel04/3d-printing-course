@@ -4,7 +4,8 @@ Uses the action list cycle.plan_glass() builds for the robot and slot-picker/lay
 (mode, roles, taught dx/dy/Z), i.e. what the robot would run now. A Z not taught yet is derived from
 the twin geometry (pick: cup on the glass top pressed 1 mm, place on the workstation: glass on the Atom
 screen, output: glass 1 mm above the floor); taught and derived values are both reported.
---full checks the planned full cycle instead: roles below, workstation step on, all Z derived. Every move is checked as a straight line every 2 mm (assumption: mg400-base streams a
+--full checks the planned cycle with the roles below, the workstation holder's first cell and model-derived
+points. Every move is sampled along a straight line at roughly 2 mm intervals (assumption: mg400-base streams a
 straight Cartesian path): joint limits, and collisions of the arm, the XIAO mount + camera, the cup and the
 carried glass with the rig, holders, the webcam post, glasses in pockets and the battery+Atom stack.
 The cup and the carried glass may touch only their own target pocket during approach/down/lift.
@@ -40,12 +41,12 @@ def load_cycle():
 
 load_cycle()
 
-GLASS = (30.0, 30.0, 1.2)        # caliper 13.11.26 (1.0-1.2)
+GLASS = (30.0, 30.0, 1.2)        # Lab 2 caliper record, 13.11.26
 MODELS = twin.HERE.parent / "models"     # shared purchased-part models (3d-print/models, see its README)
 BATTERY_H_MEASURED = 21.97               # measurements.md (Maksim's table, tool not noted)
 STEP = 2.0
 WARN_CLEARANCE = 3.0
-PICK_OFFSET_MAX = (GLASS[0] - twin.CUP_D) / 2   # cup fully on the glass up to this offset (5 mm)
+PICK_OFFSET_MAX = (GLASS[0] - twin.CUP_D) / 2   # 3.875 mm with the model's 22.25 mm cup
 PRESS_ALLOWED = 6.0     # taught Z below the twin's first touch: refit round 1 (24.10) worked with 4.2 / 5.2 / 0.7 mm
                         # (audit_scene.py). The pad (SMC ZP20C type, no buffer) gives ~1-2 mm; the rest is twin height
                         # error (cup length from one touch, holder heights): TODO caliper the tool free length

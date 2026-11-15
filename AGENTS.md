@@ -7,13 +7,14 @@ own folder under the matching subject prefix (e.g. `3d-print/lab1/`,
 
 ## What this course is building toward
 
-By the end of the year, an MG400 robot arm assembles a sign: an AtomS3
-(ESP32) with a polycarbonate screen glued on. Every part that mounts on the
-robot or holds electronics is 3D printed by the team. Three subjects share
-one team and one demo: **press a key on the AtomS3, the robot draws that
-letter** — this course provides the printed mechanical parts (holder,
-mounts), a separate programming course drives the robot, a separate
-electronics course drives the display.
+The shared project is an MG400 cell that assembles a sign by fitting
+polycarbonate glass to an AtomS3 and curing the adhesive. 3D Printing & CAD
+provides the printed fixtures and tooling. Data Acquisition measures
+pressure, dispensing and cycle outcomes. Smart Solutions provides the
+station workflow and records those outcomes. Lab 1 demonstrated letter
+drawing with a pen holder. Lab 2 tested glass transfers through the
+workstation. Lab 3 develops the dispensing and UV tool. Lab 4 prepares a
+comparison of the original, manual and generative designs for one part.
 
 ## Repo layout
 

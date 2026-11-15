@@ -10,7 +10,7 @@ Sources (all in this repo or vendored):
 - joints and limits: mg400_kin.py (= mg400-base, fitted to the real arm)
 - arm geometry: robot/ (Dobot-Arm/MG400_ROS URDF + meshes, MIT, commit 2bcf6a9)
 - rig: scene/rakis_*.stl (MG 400 rakis, exported from Fusion in the rig frame)
-- grid -> robot: <lab>/calibration/cells.py (lab2: 24.10.26 fit, rotation +0.87 deg)
+- grid -> robot: <lab>/calibration/cells.py (Lab 2: 13.11.26 fit, rotation +1.48 deg)
 - holders: <lab>/slot-picker/layout.json + the holders' STL files in <lab>
 """
 import importlib.util

@@ -3,15 +3,27 @@
 One page for the MG400 cell: the robot (simulated or real), the slot picker, the live 3D twin, a
 DobotStudio-style jog pad and the twin checks.
 
-```
+Before launching for a simulation-only session, check `3d-print/hub/.mode`. The Hub selects Simulation
+if the file is absent or contains `sim`. A saved `real` selects Real and triggers a background
+connection attempt on startup. Use the [standalone browser replay](../sim/viewer/README.md) to inspect the
+twin without launching the Hub.
+
+From the repository root, with the virtual environment from the [simulation setup](../sim/README.md#käivitamine):
+
+```powershell
 cd 3d-print/hub
-../sim/.venv/Scripts/python -m pip install -r requirements.txt   # once (sim packages + pyserial)
-../sim/.venv/Scripts/python hub.py                               # http://127.0.0.1:8020
-../sim/.venv/Scripts/python hub.py --robot-ip 192.168.1.6 --z-floor -160              # Real defaults
+../sim/.venv/Scripts/python.exe -m pip install -r requirements.txt
+../sim/.venv/Scripts/python.exe hub.py
 ```
 
-The hub always starts in **Simulation**. Do not run the old `slot_picker.py` on the same COM ports at
-the same time (tool camera COM5, pressure COM4).
+```sh
+cd 3d-print/hub
+../sim/.venv/bin/python -m pip install -r requirements.txt
+../sim/.venv/bin/python hub.py
+```
+
+Open `http://127.0.0.1:8020`. The shared layout uses Windows serial port names (tool camera COM5,
+pressure COM4). Keep the standalone Slot Picker and Hub from opening the same ports at the same time.
 
 ## Robot: Simulation or Real
 
@@ -22,8 +34,12 @@ the same time (tool camera COM5, pressure COM4).
 | Speed | 300 mm/s × ratio, 0.5 s ramp | 200 mm/s × ratio, 0.5 s ramp |
 | Before use | nothing | robot powered, nothing else driving it (no mg400-base server, DobotStudio not in JOG); API mode is switched on by Connect |
 
-Switching needs a second click on **Real robot** (the button turns red: "Confirm: real arm") and is refused
-while a sequence runs.
+| State | Meaning |
+|---|---|
+| **Selected mode** | The Hub routes requests to Simulation or Real and saves the selection in `hub/.mode` (git-ignored). The UI asks for a second click on **Real robot** to switch to it and refuses a switch during a sequence. `--robot-ip` and `--z-floor` configure Real without selecting it. |
+| **Connection** | Real can be selected while disconnected. The Hub attempts to connect on entering Real or restoring it at startup. Use **Connect** if the link is down. The driver may switch the controller to TCP/IP API mode during connection. |
+| **Enable** | Connection and controller enable are separate. The Hub sends Enable on an explicit **Enable robot** action, which also starts its servo follower. The controller may already report ENABLED while the follower is stopped, for example after a fault. |
+| **Motion** | The Hub gate for jog and Picker movement starts off and resets on a mode switch. Check it after reconnecting. Switch it on only with the work area clear and the physical emergency stop within reach. |
 
 **One motion lock for the whole hub.** Every request that can move the arm (jog, picker drive, go above, move
 glass, cycle, probe) is refused by the server until the **Motion** switch at the top of the Jog tab is on.
@@ -35,13 +51,8 @@ nudge, the arrow collapses the panel; the size is remembered in this browser). T
 turns the view to a face (TOP, X±, Y± in robot axes); Fit and Tool are the two fixed views. Enable robot and
 Clear error appear only when they are needed; messages pop up under the top bar.
 
-The hub remembers the last selected robot (`hub/.mode`, not in git) and opens it again after a restart;
-on Real it opens the link to the arm by itself. Motion always starts off, Enable stays a click.
-**Enable robot** also shows when the arm says ENABLED but the hub has stopped following (after a fault):
-the arm ignores moves until it is pressed.
-
-If the robot drops off (power, cable, e-stop, DobotStudio took it) the top bar shows **Connect**: it
-reconnects to the robot without moving; then **Enable robot** (the arm holds where it is) and **Motion** on in the Jog tab.
+After a dropped link, check the controller state, reconnect, enable the follower as needed and verify
+the **Motion** switch before moving. The physical emergency stop remains the hardware stop.
 
 ## Tabs
 
@@ -78,10 +89,19 @@ Windows Camera app or a video call must not hold it. **Save frame** stores a ful
 
 ## Tests
 
-```
+```powershell
 cd 3d-print/hub/tests
-../../sim/.venv/Scripts/python -m unittest -v test_hub
+../../sim/.venv/Scripts/python.exe -m unittest -v test_hub test_real_robot test_workspace
 ```
 
-Simulation only: the simulated robot (moves, jog, reach, Z floor, pump), the joint jog maths, the hub API
-(page, picker page, state, jog limits, the slot picker on the simulation, mode switch, foreign Origin refused).
+```sh
+cd 3d-print/hub/tests
+../../sim/.venv/bin/python -m unittest -v test_hub test_real_robot test_workspace
+```
+
+`test_hub` covers simulation, joint jog, the local API and switching to a fake Real backend.
+`test_real_robot` drives only `fake_mg400.py` on loopback. `test_workspace` tests the paper-frame
+calibration and writes test files to a temporary directory. Its Smart Solutions integration case
+needs the sibling clone under the name `smart-solutions-course`. Run the suites in an isolated
+checkout with the physical robot and serial devices disconnected. The Hub tests can generate a
+viewer scene and attempt to open the camera and pressure ports configured in the Lab 2 layout.

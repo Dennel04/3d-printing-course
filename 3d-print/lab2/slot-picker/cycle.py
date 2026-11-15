@@ -8,8 +8,8 @@ that is the 42 mm question of the refit test.
 Glass n (1-based) is taken from the n-th input cell and put into the n-th output cell; the
 workstation always uses layout["cycle"]["workstation_cell"].
 
-With layout["cycle"]["workstation_step"] false (the default for now) the workstation is skipped:
-one glass goes straight from the input tray to the output tray (transfer test).
+The checked-in Lab 2 layout sets layout["cycle"]["workstation_step"] to true and uses E+2.
+If the setting is false or absent, a glass goes directly from input to output (transfer-only mode).
 """
 import csv
 from pathlib import Path
