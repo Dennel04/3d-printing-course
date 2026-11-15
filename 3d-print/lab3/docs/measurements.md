@@ -25,6 +25,7 @@ Tähis ≈ märgib ligikaudset näitu.
 | Iminapp | 42,03 g | Koos metallhoidiku ja liitmikuga. |
 | XIAO tööriistakaamera | 4,05 g | Ilma eraldi hoidiku ja kaablita. |
 | Verbatimi üldvaatekaamera | ≈135,68 g | Koos kaabliga. Asub eraldi kõrgel postil. |
+| Laboris leitud must süstlapäis | 24,05 g | Varem valmistatud päis kahe kinnituskruvi ja õhuvooliku avaga. [Kuivsobitus](test-procedure.md#kordusproov-ja-leitud-süstlapäis-15112026). |
 
 Klapi klemmide vahel mõõdeti **589,6 Ω**. Mähise märgistus on
 **DC 24 V, 1 W**. Klappi ei pingestatud ega lülitatud. Kontaktidel on

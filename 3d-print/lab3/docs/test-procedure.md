@@ -95,6 +95,21 @@ Prusa CORE One'il prinditi kõik viis `preprint-fit-tests-v2` detaili
 | UV-kate | Prinditud kattel polnud silmaga näha pragusid ega kihtide eraldumist. Ava jäi terveks ja toed eemaldati kahjustusteta. | Valguskaitse, valguskoonus, temperatuur ja LED-i paigaldus on katsetamata. |
 | O-rõnga soone proovikeha | Proovikeha prinditi. O-rõngast laboris ei leitud. | Rõnga sobivus, valmis süstlapäis ja hermeetilisus on kontrollimata. |
 
+### Kordusproov ja leitud süstlapäis 15.11.2026
+
+Kasutaja asetas süstla teisel proovimisel prinditud C-klambrisse
+sügavamale. Süstal püsis tihedalt. Vaba pöörlemist ega iseeneslikku
+telgnihkumist ei täheldatud ja eemaldamiseks tuli jõudu rakendada.
+Istuvuse korratavus ja 20 vahetust töökoostus on kontrollimata. Tugede
+täielikku eemaldamist enne lõppkatset pole eraldi kinnitatud.
+
+Kasutaja proovis ka laboris leitud varem valmistatud musta päist, millel
+on kaks kinnituskruvi ja ava õhuvoolikule. Süstal läks pessa ja lukustus
+pöörates. Õhuvoolik läks avasse ning püsis mehaaniliselt paigal.
+Mudeli päritolu, O-rõnga parameetrid ja sobivus Lab 3 lõpp-päiseks on
+kinnitamata. Surve-, lekke- ja 20 vahetuse korduvuskatse on tegemata.
+Meeskonnal tuleb lõpetada oma prinditud O-rõngaga päis.
+
 ## E. Tööriista kuiv sobitus enne robotit
 
 1. Paigalda kuivalt iminapp, süstal, UV-lamp, kaamera, voolikud ja juhtmed.

@@ -18,6 +18,12 @@ kontrollimata sobivus või otsus on `TODO — waiting for physical test`.
 | Verbatimi üldvaatekaamera | TODO — waiting for physical measurement | ≈135,68 | Eraldi kõrgel postil. | 15.11 ligikaudne mass koos kaabliga. | Üldvaatekaamera jääb väljapoole MG400 kaalueelarvet. |
 | Voolikud ja juhtmed | TODO — waiting for physical measurement | TODO — waiting for physical measurement | TODO — waiting for physical measurement | TODO — waiting for physical test | Sisalda tõmbetõket ja liikumisvaru. |
 
+Laboris leitud must süstlapäis kaalub **24,05 g**. See on CAD-i
+võrdlusdetaili kandidaat. Süstla pöördkinnitus ja vooliku mehaaniline
+püsimine on kuivalt kontrollitud. Näidise mass on kirjas eraldi.
+Lõppkoostu kaalueelarvesse kantakse valitud päise tegelik mass.
+[Kuivsobitus](test-procedure.md#kordusproov-ja-leitud-süstlapäis-15112026).
+
 ## Kaalueelarve
 
 [15.11 kaalutud koosseisud](measurements.md#mõõtmised-15112026) · [Lab 2 kaamerate paigaldus](../../lab2/README.md#kaamerad-cad-etapi-tulemus-ja-smart-solutionsi-jätkutöö).
