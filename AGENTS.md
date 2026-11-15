@@ -63,6 +63,12 @@ electronics course drives the display.
       src/  stl/  3mf/
     nozzle-park/        <- dark, covered parking spot for the syringe nozzle
       src/  stl/  3mf/
+  lab4/
+    README.md           <- tööplaan, kontrollnimekiri, tulemused ja arenduspäevik
+    assignment-EST.md   <- õppejõu algne ülesanne
+    docs/               <- originaali analüüs, disain, uuringud, katsed, BOM ja integratsioon
+    data/test.csv       <- üheksa füüsilise katse tabel
+    notebooks/          <- üheksa viilutuse tabel ja analüüs
 fusion-tutor/            <- Claude Code tutor for learning Fusion (run `claude` inside it);
                            see fusion-tutor/README.md. Per-student memory in
                            fusion-tutor/people/<github-login>/, team material in shared/.

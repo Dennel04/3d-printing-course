@@ -1,0 +1,10 @@
+sample_id,variant,revision,orientation_id,status,test_order,print_time_slicer_min,print_time_actual_min,part_mass_g,support_mass_slicer_g,print_ok,interface_ok,fit_ok,loaded_tool_mass_g,service_check_ok,peak_force_n,failure_force_n,previous_pass_force_n,residual_displacement_mm,failure_mode,failure_location,tested_at,test_setup_id,stl_ref,project_3mf_ref,measurements_ref,evidence_ref,notes
+O-01,O,,,planned,,,,,,,,,,,,,,,,,,,,,,,
+O-02,O,,,planned,,,,,,,,,,,,,,,,,,,,,,,
+O-03,O,,,planned,,,,,,,,,,,,,,,,,,,,,,,
+H-01,H,,,planned,,,,,,,,,,,,,,,,,,,,,,,
+H-02,H,,,planned,,,,,,,,,,,,,,,,,,,,,,,
+H-03,H,,,planned,,,,,,,,,,,,,,,,,,,,,,,
+G-01,G,,,planned,,,,,,,,,,,,,,,,,,,,,,,
+G-02,G,,,planned,,,,,,,,,,,,,,,,,,,,,,,
+G-03,G,,,planned,,,,,,,,,,,,,,,,,,,,,,,
